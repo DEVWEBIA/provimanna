@@ -93,6 +93,7 @@ En attendant le monorepo, le moteur de prix se teste seul : `node --test package
 
 ## Comment travailler
 
+0. **Nouvelle conversation : lis d'abord `docs/10-reprise.md`** (état courant, décisions, pièges, prochaine étape), puis le journal de `docs/09-plan-action.md`.
 1. Suis `docs/08-roadmap-claude-code.md`, lot par lot. Ne saute pas de lot.
 2. Avant de coder un écran, ouvre sa maquette et liste ce que tu vas reproduire.
 3. Termine chaque tâche par : typecheck, lint, tests, et une phrase sur ce qui reste.

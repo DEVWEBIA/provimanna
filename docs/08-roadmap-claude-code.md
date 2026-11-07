@@ -108,7 +108,7 @@ sous 30 relevés récents (renvoie notFound()). Mode cuisine : Wake Lock, minute
 ```
 apps/admin. Maquettes BO*. Auth staff via la table roles (has_role), garde par rôle sur chaque route
 (cf. docs/07). Commence par BOVue, BOPrix, BOTickets, BORecettes (coût en direct via core),
-puis le reste. Journalise chaque action de modération (ajoute une migration 0004_audit.sql, propose-la d'abord).
+puis le reste. Journalise chaque action de modération (ajoute une migration 0005_audit.sql, propose-la d'abord).
 ```
 
 ## Lot 10 — Tickets de caisse et prix  ☐
