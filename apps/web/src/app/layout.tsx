@@ -13,7 +13,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr-FR" className={`${bricolage.variable} ${nunito.variable}`}>
-      <body>
+      {/* Les extensions de navigateur (ex. ColorZilla) ajoutent des attributs sur <body> : on ignore ces écarts-là uniquement. */}
+      <body suppressHydrationWarning>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>
