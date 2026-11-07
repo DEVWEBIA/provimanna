@@ -1,5 +1,11 @@
 import type { Metadata } from 'next';
+import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
+import couscousLegumes from '@/assets/photos/couscous-legumes.jpg';
+import curryPoisChiches from '@/assets/photos/curry-pois-chiches-courge.jpg';
+import familleCuisine from '@/assets/photos/famille-cuisine.jpg';
+import legumesRotis from '@/assets/photos/legumes-rotis.jpg';
+import veloutePotimarron from '@/assets/photos/veloute-potimarron.jpg';
 import { costPerServing, formatEuro } from '@repas/core';
 import { Icon, Plat, TicketCard, type IconName } from '@repas/ui';
 import { Faq } from '@/components/site/faq';
@@ -30,6 +36,14 @@ export const metadata: Metadata = {
 };
 
 const SIGNUP = '/commencer';
+
+// Photos sous licence Unsplash (crédits : src/assets/photos/CREDITS.md).
+const PHOTOS: Record<(typeof LANDING_RECIPES)[number]['slug'], StaticImageData> = {
+  'veloute-potimarron': veloutePotimarron,
+  'curry-pois-chiches-courge': curryPoisChiches,
+  'couscous-legumes': couscousLegumes,
+  'legumes-rotis': legumesRotis,
+};
 
 const STEPS: { icon: IconName; title: string; text: string }[] = [
   {
@@ -111,34 +125,47 @@ export default function HomePage() {
         </section>
 
         {/* COMMENT ÇA MARCHE */}
-        <section id="comment" aria-labelledby="comment-titre" className="mx-auto max-w-[720px] px-6 py-16">
-          <h2 id="comment-titre" className={`${sectionTitle} mb-10 text-center`}>
-            Comment ça marche ?
-          </h2>
-          <ol className="flex flex-col gap-7">
-            {STEPS.map((s, i) => (
-              <li key={s.title} className="flex items-start gap-5">
-                <span
-                  className="rounded-pill bg-brand-soft text-brand grid h-14 w-14 shrink-0 place-items-center"
-                  aria-hidden="true"
-                >
-                  <Icon name={s.icon} size={24} />
-                </span>
-                <div className="pt-1">
-                  <h3 className="flex items-center gap-2.5 text-[19px] font-black">
-                    <span
-                      className="rounded-pill bg-brand text-brand-on grid h-7 w-7 place-items-center text-[13px]"
-                      aria-hidden="true"
-                    >
-                      {i + 1}
-                    </span>
-                    {s.title}
-                  </h3>
-                  <p className="text-ink-muted mt-1 text-[16px] leading-6">{s.text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+        <section
+          id="comment"
+          aria-labelledby="comment-titre"
+          className="mx-auto flex max-w-[1000px] flex-wrap items-center gap-x-14 gap-y-10 px-6 py-16"
+        >
+          <Image
+            src={familleCuisine}
+            alt="Une mère et sa fille préparent le repas ensemble dans leur cuisine"
+            placeholder="blur"
+            sizes="(min-width: 1000px) 420px, 100vw"
+            className="aspect-square w-full min-w-0 flex-[1_1_320px] rounded-[28px] object-cover object-[68%_center] sm:max-w-[420px]"
+          />
+          <div className="min-w-0 flex-[1_1_380px]">
+            <h2 id="comment-titre" className={`${sectionTitle} mb-10`}>
+              Comment ça marche ?
+            </h2>
+            <ol className="flex flex-col gap-7">
+              {STEPS.map((s, i) => (
+                <li key={s.title} className="flex items-start gap-5">
+                  <span
+                    className="rounded-pill bg-brand-soft text-brand grid h-14 w-14 shrink-0 place-items-center"
+                    aria-hidden="true"
+                  >
+                    <Icon name={s.icon} size={24} />
+                  </span>
+                  <div className="pt-1">
+                    <h3 className="flex items-center gap-2.5 text-[19px] font-black">
+                      <span
+                        className="rounded-pill bg-brand text-brand-on grid h-7 w-7 place-items-center text-[13px]"
+                        aria-hidden="true"
+                      >
+                        {i + 1}
+                      </span>
+                      {s.title}
+                    </h3>
+                    <p className="text-ink-muted mt-1 text-[16px] leading-6">{s.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
         </section>
 
         {/* RECETTES */}
@@ -152,7 +179,12 @@ export default function HomePage() {
                 key={r.slug}
                 className="bg-surface-0 flex items-center gap-4 rounded-[20px] p-3 pr-6 shadow-[0_2px_12px_rgba(42,26,40,0.06)]"
               >
-                <Plat variant={r.plat} size={72} decorative />
+                <Image
+                  src={PHOTOS[r.slug]}
+                  alt=""
+                  sizes="88px"
+                  className="h-[88px] w-[88px] shrink-0 rounded-[14px] object-cover"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="text-[17px] font-black">{r.title}</p>
                   <p className="text-ink-muted mt-1 flex items-center gap-2.5 text-[14px] font-bold">

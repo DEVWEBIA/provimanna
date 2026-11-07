@@ -62,40 +62,19 @@ export const LANDING_FAQ: { q: string; a: string }[] = [
 ];
 
 /**
- * Recettes mises en avant sur la landing. Coût pour 4 parts chez Lidl (données de démo, semaine 46) ;
- * le velouté vient du seed (4,06 €). TODO(lot 8) : lire les recettes publiées et leur coût réel.
+ * Recettes mises en avant sur la landing (photos : src/assets/photos, crédits dans CREDITS.md).
+ * Coût pour 4 parts chez Lidl (données de démo, semaine 46) ; le velouté vient du seed (4,06 €).
+ * TODO(lot 8) : lire les recettes publiées et leur coût réel.
  */
 export const LANDING_RECIPES = [
+  { slug: 'veloute-potimarron', title: 'Velouté de potimarron', minutes: 35, tag: 'de saison', cents4: 406 },
   {
-    slug: 'veloute-potimarron',
-    title: 'Velouté de potimarron',
-    plat: 'soupe',
-    minutes: 35,
-    tag: 'de saison',
-    cents4: 406,
-  },
-  {
-    slug: 'dahl-lentilles-corail',
-    title: 'Dahl de lentilles corail',
-    plat: 'dahl',
+    slug: 'curry-pois-chiches-courge',
+    title: 'Curry de pois chiches et courge',
     minutes: 30,
     tag: 'végé',
-    cents4: 352,
-  },
-  {
-    slug: 'curry-pois-chiches',
-    title: 'Curry de pois chiches',
-    plat: 'curry',
-    minutes: 25,
-    tag: 'rapide',
     cents4: 468,
   },
-  {
-    slug: 'gratin-potimarron',
-    title: 'Gratin de potimarron',
-    plat: 'gratin',
-    minutes: 50,
-    tag: 'gourmand',
-    cents4: 544,
-  },
+  { slug: 'couscous-legumes', title: 'Couscous de légumes', minutes: 40, tag: 'familial', cents4: 512 },
+  { slug: 'legumes-rotis', title: 'Plaque de légumes rôtis', minutes: 45, tag: 'sans effort', cents4: 380 },
 ] as const;
