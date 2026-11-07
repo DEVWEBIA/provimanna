@@ -25,4 +25,5 @@ export const ROUTES = {
   mentionsLegales: '/mentions-legales',
   confidentialite: '/confidentialite',
   connexion: '/connexion',
+  commencer: '/commencer',
 } as const;

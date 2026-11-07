@@ -91,6 +91,9 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - **07/11 — Lot 4 : étape 4 provisoire.** Tant que la génération du plan n'existe pas (lot 5), l'étape 4 affiche « Foyer enregistré · Tout est prêt pour ta première semaine » et un total **estimé** (≈), au lieu de « Plan généré · Ta semaine 47 est prête ». Le texte de la maquette reviendra au lot 5.
 - **07/11 — Lot 4 : Google et Apple** sont prêts dans le code mais désactivés dans `supabase/config.toml` en attendant vos identifiants ; les boutons affichent alors un message clair.
 
+- **07/11 — Page d'accueil simplifiée (demande d'Emmanuel).** Inspiration : une page épurée, fond clair, peu de blocs. Elle ne garde que le hero (titre, une phrase, un bouton, ticket comparateur), « Comment ça marche » en 3 lignes, 4 recettes avec leur prix par part, une FAQ courte (gardée pour le SEO), l'encart final et un pied de page d'une ligne. La maquette `Main.dc.html` n'est plus la référence pour la landing. Les tarifs, l'observatoire et les menus auront leurs propres pages (lot 8).
+- **07/11 — Questionnaire avant le compte (demande d'Emmanuel).** « Créer mon plan gratuit » mène à `/commencer` : les 3 étapes du questionnaire, puis l'email à l'étape 4. Les réponses partent avec la demande de lien magique (métadonnées du compte) et sont appliquées au foyer à la première ouverture de l'espace client, même si le lien est ouvert sur un autre appareil. `/app/bienvenue` reste pour les comptes créés via « Se connecter ». Le questionnaire est désormais enregistré en une fois à la fin de l'étape 3, et non plus étape par étape.
+
 ## Questions ouvertes (à trancher par vous)
 
 1. ~~Liste d'attente ou inscription directe ?~~ → inscription directe (07/11). Une liste d'attente peut s'ajouter plus tard si besoin.

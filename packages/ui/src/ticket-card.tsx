@@ -7,6 +7,8 @@ export type TicketEdge = 'surface-50' | 'surface-0' | 'brand';
 export interface TicketCardProps {
   children: ReactNode;
   edge?: TicketEdge;
+  /** Couleur de la carte : blanche (défaut) ou aubergine (encart mis en avant). */
+  tone?: 'paper' | 'brand';
   as?: ElementType;
   className?: string;
 }
@@ -15,7 +17,13 @@ export interface TicketCardProps {
  * Signature de marque : carte « ticket de caisse » à bord inférieur dentelé
  * (radial-gradient, cf. classe .edge de design/maquettes/Main.dc.html).
  */
-export function TicketCard({ children, edge = 'surface-50', as: Tag = 'div', className }: TicketCardProps) {
+export function TicketCard({
+  children,
+  edge = 'surface-50',
+  tone = 'paper',
+  as: Tag = 'div',
+  className,
+}: TicketCardProps) {
   const edgeStyle: CSSProperties = {
     background: `radial-gradient(circle, var(--${edge}) 7px, transparent 7.5px) repeat-x`,
     backgroundSize: '22px 16px',
@@ -23,7 +31,8 @@ export function TicketCard({ children, edge = 'surface-50', as: Tag = 'div', cla
   return (
     <Tag
       className={cx(
-        'bg-surface-0 text-ink relative rounded-t-[20px] px-[18px] pb-[26px] pt-[18px]',
+        tone === 'brand' ? 'bg-brand text-brand-on' : 'bg-surface-0 text-ink',
+        'relative rounded-t-[20px] px-[18px] pb-[26px] pt-[18px]',
         className,
       )}
     >
