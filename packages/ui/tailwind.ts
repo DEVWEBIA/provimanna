@@ -17,8 +17,9 @@ export function createTailwindConfig(content: string[]): Config {
         },
         keyframes: {
           shimmer: { '0%': { backgroundPosition: '-400px 0' }, '100%': { backgroundPosition: '400px 0' } },
+          marquee: { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
         },
-        animation: { shimmer: 'shimmer 1.4s linear infinite' },
+        animation: { shimmer: 'shimmer 1.4s linear infinite', marquee: 'marquee 40s linear infinite' },
       },
     },
   };

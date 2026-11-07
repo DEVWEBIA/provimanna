@@ -3,6 +3,7 @@
 //   ex. node scripts/screenshots.mjs /tmp/shots /dev/ui /dev/ui/shell
 // Chaque chemin est capturé en desktop (1280 px) et en mobile (390 px), page entière.
 // STEPS=n : capture plutôt n écrans successifs (plus lisibles qu'une page entière très haute).
+// WAIT=ms : attente après chaque défilement (laisser finir les animations d apparition).
 import { chromium } from '@playwright/test';
 
 const [out, ...paths] = process.argv.slice(2);
@@ -23,7 +24,7 @@ for (const path of paths.length ? paths : ['/']) {
     if (steps > 0) {
       for (let i = 0; i < steps; i++) {
         await page.evaluate((y) => window.scrollTo(0, y), i * viewport.height);
-        await page.waitForTimeout(150);
+        await page.waitForTimeout(Number(process.env.WAIT ?? 150));
         const file = `${out}/${slug}-${name}-${i + 1}.png`;
         await page.screenshot({ path: file });
         console.log(file);
