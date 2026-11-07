@@ -15,6 +15,10 @@ export function createTailwindConfig(content: string[]): Config {
           display: ['var(--font-display)'],
           sans: ['var(--font-sans)'],
         },
+        keyframes: {
+          shimmer: { '0%': { backgroundPosition: '-400px 0' }, '100%': { backgroundPosition: '400px 0' } },
+        },
+        animation: { shimmer: 'shimmer 1.4s linear infinite' },
       },
     },
   };

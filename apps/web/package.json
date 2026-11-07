@@ -7,7 +7,7 @@
     "dev": "next dev --turbopack -p 3000",
     "build": "next build",
     "start": "next start -p 3000",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -22,6 +22,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.0",
     "@repas/eslint-config": "workspace:*",
     "@types/node": "^22.10.0",
     "@types/react": "^19.2.0",

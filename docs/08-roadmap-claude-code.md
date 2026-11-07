@@ -32,7 +32,7 @@ Lis supabase/migrations/*.sql et supabase/seed.sql (déjà validés sur Postgres
 Ne modifie pas le schéma sans me le proposer d'abord.
 ```
 
-## Lot 2 — Design system (packages/ui)  ☐
+## Lot 2 — Design system (packages/ui)  ☑
 
 ```
 Ouvre design/maquettes/Composants.dc.html, Plat.dc.html, MTabBar.dc.html et Main.dc.html (classe .edge).

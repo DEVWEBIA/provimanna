@@ -19,17 +19,38 @@ const preset: Partial<Config> = {
         surface: { DEFAULT: v('surface-0'), 0: v('surface-0'), 50: v('surface-50') },
         line: v('line'),
         ink: { DEFAULT: v('ink'), muted: v('ink-muted') },
-        brand: { DEFAULT: v('brand'), on: v('on-brand'), soft: v('brand-soft'), 'soft-ink': v('brand-soft-ink') },
+        brand: {
+          DEFAULT: v('brand'),
+          on: v('on-brand'),
+          soft: v('brand-soft'),
+          'soft-ink': v('brand-soft-ink'),
+        },
         // Orange = économies UNIQUEMENT, toujours avec text-ink (jamais text-white).
         saving: { DEFAULT: v('saving'), soft: v('saving-soft'), ink: v('saving-ink') },
-        danger: v('danger'),
-        success: { DEFAULT: '#2F6B2A', soft: '#E3F0DF' },
-        // Pastilles d'enseignes : fonds pastel neutres, attribués par ordre, sans lien avec les couleurs officielles.
-        chip: { 1: '#EFE3EC', 2: '#E6EEF2', 3: '#F5E9DC', 4: '#E3F0DF', 5: '#F2E6E6', 6: '#ECEAF4' },
+        danger: { DEFAULT: v('danger'), soft: '#FBE4E1', ink: '#7A1A12', line: '#F3C7C2' },
+        success: { DEFAULT: '#2F6B2A', soft: '#E3F0DF', bright: '#B7DDB0' },
+        // Statuts « brouillon » et fiabilité moyenne (●●○).
+        warning: { DEFAULT: '#6B4A0E', soft: '#F6E7C8' },
+        // Encart « prix incomplets » (fond pêche) : texte plus foncé que saving-ink pour le contraste AA.
+        notice: { ink: '#5A2A0B' },
+        skeleton: { DEFAULT: '#EFEAE0', shine: '#F8F5EF' },
+        disabled: { DEFAULT: '#E3DDD0', ink: '#8A8088' },
+        toggle: { off: '#D9D2DA' },
+        // Pastilles d'enseignes : fonds pastel neutres, sans lien avec les couleurs officielles.
+        // Valeurs de design/maquettes/Composants.dc.html, dans l'ordre des enseignes du seed :
+        // 1 Lidl · 2 Aldi · 3 E.Leclerc · 4 Intermarché · 5 Carrefour · 6 Auchan.
+        chip: { 1: '#E3ECF6', 2: '#E7EFE2', 3: '#ECE6F5', 4: '#F5E9DC', 5: '#E2EFEF', 6: '#F4E3E6' },
         // Valeurs brutes (emails, OG images, cas où les variables CSS ne sont pas disponibles)
         raw: {
-          aubergine: '#4A2545', orange: '#EE7A30', sable: '#F6F3EC', encre: '#2A1A28',
-          peche: '#FCE3D3', 'peche-ink': '#9A420E', 'aubergine-clair': '#EFE3EC', ligne: '#E3DDD0', muted: '#625A60',
+          aubergine: '#4A2545',
+          orange: '#EE7A30',
+          sable: '#F6F3EC',
+          encre: '#2A1A28',
+          peche: '#FCE3D3',
+          'peche-ink': '#9A420E',
+          'aubergine-clair': '#EFE3EC',
+          ligne: '#E3DDD0',
+          muted: '#625A60',
         },
       },
       fontFamily: {
@@ -47,7 +68,7 @@ const preset: Partial<Config> = {
         overline: ['12px', { lineHeight: '16px', fontWeight: '800', letterSpacing: '0.6px' }],
       },
       borderRadius: { sm: '12px', md: '18px', lg: '24px', xl: '32px', pill: '999px' },
-      spacing: { 11: '44px', 'tap': '44px' },
+      spacing: { 11: '44px', tap: '44px' },
       minHeight: { tap: '44px' },
       minWidth: { tap: '44px' },
       boxShadow: { float: v('shadow-float') },

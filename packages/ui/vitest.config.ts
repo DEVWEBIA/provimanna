@@ -1,3 +1,6 @@
 import { defineConfig } from 'vitest/config';
 
-export default defineConfig({ test: { include: ['src/**/*.spec.ts?(x)'], passWithNoTests: true } });
+export default defineConfig({
+  esbuild: { jsx: 'automatic' },
+  test: { include: ['src/**/*.spec.ts?(x)'], passWithNoTests: true },
+});
