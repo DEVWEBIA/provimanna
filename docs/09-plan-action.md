@@ -101,9 +101,12 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 
 - **07/11 — Hero enrichi et nouveau menu (demande d'Emmanuel).** Entrée animée au chargement (lignes du titre dévoilées, trait orange dessiné sous « Tu choisis. », ticket qui arrive en pivotant puis flotte), deux étiquettes flottantes, barres du comparateur animées. Le fond est désormais un plat coloré (buddha bowl vu de dessus, détouré en cercle) qui sort par la droite et tourne lentement derrière le ticket : le plat est bien visible sans passer devant les éléments principaux. Menu : large et transparent en haut, il se rétracte en pastille de verre au défilement, surligne la section visible, et n'affiche « Créer mon plan » qu'une fois le hero dépassé (un seul bouton plein à l'écran). Panneau déroulant sur mobile. Lighthouse : desktop 100 ; mobile 94-95 (le bol est l'élément le plus lourd à afficher en 4G lente simulée).
 
+- **07/11 — Vrais logos des enseignes, uniquement dans le bandeau (option 2 choisie par Emmanuel).** Comme Planivore : logos officiels dans le bandeau « enseignes comparées », mais en gris (couleur au survol) et avec la mention « Marques et logos © leurs propriétaires respectifs ». Ailleurs, on garde les pastilles neutres. Fichiers issus de Wikimedia Commons (sources dans `src/assets/logos/SOURCES.md`). À retirer immédiatement si une enseigne le demande. Carrefour : aucun fichier réutilisable trouvé, le nom est affiché en lettres grises en attendant.
+
 ## Questions ouvertes (à trancher par vous)
 
 1. ~~Liste d'attente ou inscription directe ?~~ → inscription directe (07/11). Une liste d'attente peut s'ajouter plus tard si besoin.
+2. **Logo Carrefour** : fournir le fichier (SVG idéalement), ou accepter de garder le nom en lettres grises dans le bandeau.
 
 ## Avancement
 
