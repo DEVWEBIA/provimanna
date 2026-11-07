@@ -94,6 +94,9 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - **07/11 — Page d'accueil simplifiée (demande d'Emmanuel).** Inspiration : une page épurée, fond clair, peu de blocs. Elle ne garde que le hero (titre, une phrase, un bouton, ticket comparateur), « Comment ça marche » en 3 lignes, 4 recettes avec leur prix par part, une FAQ courte (gardée pour le SEO), l'encart final et un pied de page d'une ligne. La maquette `Main.dc.html` n'est plus la référence pour la landing. Les tarifs, l'observatoire et les menus auront leurs propres pages (lot 8).
 - **07/11 — Questionnaire avant le compte (demande d'Emmanuel).** « Créer mon plan gratuit » mène à `/commencer` : les 3 étapes du questionnaire, puis l'email à l'étape 4. Les réponses partent avec la demande de lien magique (métadonnées du compte) et sont appliquées au foyer à la première ouverture de l'espace client, même si le lien est ouvert sur un autre appareil. `/app/bienvenue` reste pour les comptes créés via « Se connecter ». Le questionnaire est désormais enregistré en une fois à la fin de l'étape 3, et non plus étape par étape.
 
+- **07/11 — Aubergine éclaircie : `#4A2545` → `#6B3868` (demande d'Emmanuel).** Le contraste du texte blanc sur la nouvelle teinte reste de 8,8:1, au-dessus du minimum AA (4,5:1). Les tokens, le preset, l'icône, l'image OG et la règle de `CLAUDE.md` sont mis à jour ; les maquettes `.dc.html` gardent l'ancienne valeur.
+- **07/11 — Photo de fond dans le hero.** Des potirons d'automne (Unsplash, crédits dans `src/assets/photos/CREDITS.md`) sous un voile sable dégradé pour la lisibilité. Les dents du ticket sont réellement découpées (`edge="cutout"`, masque CSS) pour rester propres sur la photo. Lighthouse : mobile 100, desktop 98 en performance.
+
 ## Questions ouvertes (à trancher par vous)
 
 1. ~~Liste d'attente ou inscription directe ?~~ → inscription directe (07/11). Une liste d'attente peut s'ajouter plus tard si besoin.

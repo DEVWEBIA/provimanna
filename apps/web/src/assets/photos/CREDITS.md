@@ -9,5 +9,6 @@ Photos sous [licence Unsplash](https://unsplash.com/license) : usage commercial 
 | curry-pois-chiches-courge.jpg | https://unsplash.com/photos/HJPd-_0bP-o | Weronika Krztoń |
 | couscous-legumes.jpg | https://unsplash.com/photos/RELOvb0rrCE | Daniela |
 | legumes-rotis.jpg | https://unsplash.com/photos/QF7Ve3kLmmM | Louis Hansel |
+| potirons-automne.jpg | https://unsplash.com/photos/XNo_ilUurdc | Katya Azimova |
 
 À remplacer à terme par vos propres photos des recettes du catalogue.

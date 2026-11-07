@@ -61,7 +61,7 @@ const preset: Partial<Config> = {
         chip: { 1: '#E3ECF6', 2: '#E7EFE2', 3: '#ECE6F5', 4: '#F5E9DC', 5: '#E2EFEF', 6: '#F4E3E6' },
         // Valeurs brutes (emails, OG images, cas où les variables CSS ne sont pas disponibles)
         raw: {
-          aubergine: '#4A2545',
+          aubergine: '#6B3868',
           orange: '#EE7A30',
           sable: '#F6F3EC',
           encre: '#2A1A28',

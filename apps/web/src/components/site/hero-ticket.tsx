@@ -11,7 +11,7 @@ export interface HeroTicketProps {
   households: readonly { people: number; label: string; factor: number }[];
   weekLabel: string;
   /** Couleur du fond derrière le ticket (dents du bord dentelé). */
-  edge?: 'surface-50' | 'brand';
+  edge?: 'surface-50' | 'brand' | 'cutout';
 }
 
 /** Ticket comparateur interactif du hero : le total des 6 enseignes suit la taille du foyer. */
@@ -27,7 +27,7 @@ export function HeroTicket({ stores, myStore, households, weekLabel, edge = 'sur
   return (
     <TicketCard
       edge={edge}
-      className="w-full max-w-[440px] -rotate-[1.2deg] rounded-t-[22px] px-[26px] pb-[34px] pt-[26px] shadow-[0_24px_48px_rgba(42,26,40,0.14)] motion-reduce:rotate-0"
+      className="w-full max-w-[440px] -rotate-[1.2deg] rounded-t-[22px] px-[26px] pb-[34px] pt-[26px] motion-reduce:rotate-0"
     >
       <div className="border-line flex items-baseline justify-between gap-3 border-b-2 border-dashed pb-3.5">
         <div>

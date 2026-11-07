@@ -5,6 +5,7 @@ import couscousLegumes from '@/assets/photos/couscous-legumes.jpg';
 import curryPoisChiches from '@/assets/photos/curry-pois-chiches-courge.jpg';
 import familleCuisine from '@/assets/photos/famille-cuisine.jpg';
 import legumesRotis from '@/assets/photos/legumes-rotis.jpg';
+import potironsAutomne from '@/assets/photos/potirons-automne.jpg';
 import veloutePotimarron from '@/assets/photos/veloute-potimarron.jpg';
 import { costPerServing, formatEuro } from '@repas/core';
 import { Icon, Plat, TicketCard, type IconName } from '@repas/ui';
@@ -94,33 +95,52 @@ export default function HomePage() {
 
       <main>
         {/* HERO */}
-        <section className="mx-auto flex max-w-[1000px] flex-wrap items-center gap-x-12 gap-y-14 px-6 pb-20 pt-8">
-          <div className="min-w-0 flex-[1_1_420px]">
-            <h1 className="font-display text-[clamp(44px,6vw,72px)] font-extrabold leading-[0.98] tracking-[-2px]">
-              Le même menu.
-              <br />
-              Six prix.
-              <br />
-              <span className="text-saving-ink">Tu choisis.</span>
-            </h1>
-            <p className="text-ink-muted mt-6 max-w-[440px] text-[19px] leading-[29px]">
-              On planifie tes repas de la semaine et on te montre ce que coûte ta liste de courses dans 6
-              enseignes.
-            </p>
-            <div className="mt-8">
-              <PrimaryCta />
+        <section className="relative isolate -mt-[92px] overflow-hidden pt-[92px]">
+          <Image
+            src={potironsAutomne}
+            alt=""
+            fill
+            priority
+            placeholder="blur"
+            sizes="100vw"
+            className="-z-20 object-cover object-bottom md:object-[center_78%]"
+          />
+          {/* Voile sable : garantit la lisibilité du texte sur la photo. */}
+          <div
+            aria-hidden="true"
+            className="from-raw-sable/95 via-raw-sable/90 via-55% to-raw-sable/30 md:from-raw-sable md:via-raw-sable/85 md:to-raw-sable/10 absolute inset-0 -z-10 bg-gradient-to-b md:bg-gradient-to-r"
+          />
+          <div className="mx-auto flex max-w-[1000px] flex-wrap items-center gap-x-12 gap-y-14 px-6 pb-24 pt-8">
+            <div className="min-w-0 flex-[1_1_420px]">
+              <h1 className="font-display text-[clamp(44px,6vw,72px)] font-extrabold leading-[0.98] tracking-[-2px]">
+                Le même menu.
+                <br />
+                Six prix.
+                <br />
+                <span className="text-saving-ink">Tu choisis.</span>
+              </h1>
+              <p className="text-ink-muted mt-6 max-w-[440px] text-[19px] leading-[29px]">
+                On planifie tes repas de la semaine et on te montre ce que coûte ta liste de courses dans 6
+                enseignes.
+              </p>
+              <div className="mt-8">
+                <PrimaryCta />
+              </div>
+              <p className="text-ink-muted mt-4 text-[14px] font-bold">
+                Gratuit · sans carte bancaire · prêt en 2 minutes
+              </p>
             </div>
-            <p className="text-ink-muted mt-4 text-[14px] font-bold">
-              Gratuit · sans carte bancaire · prêt en 2 minutes
-            </p>
-          </div>
-          <div className="flex min-w-0 flex-[1_1_380px] flex-col items-center gap-3">
-            <HeroTicket
-              stores={EXAMPLE_STORES}
-              myStore={EXAMPLE_MY_STORE}
-              households={HOUSEHOLD_FACTORS}
-              weekLabel={EXAMPLE_WEEK.label}
-            />
+            <div className="flex min-w-0 flex-[1_1_380px] flex-col items-center gap-3">
+              <div className="drop-shadow-[0_24px_40px_rgba(42,26,40,0.22)]">
+                <HeroTicket
+                  stores={EXAMPLE_STORES}
+                  myStore={EXAMPLE_MY_STORE}
+                  households={HOUSEHOLD_FACTORS}
+                  weekLabel={EXAMPLE_WEEK.label}
+                  edge="cutout"
+                />
+              </div>
+            </div>
           </div>
         </section>
 

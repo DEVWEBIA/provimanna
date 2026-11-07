@@ -55,7 +55,7 @@ docs/         brief, plan d'action, SEO/GEO, écrans → routes, roadmap
 
 ## Règles de design (non négociables)
 
-- Couleurs uniquement via tokens. Aubergine `#4A2545` = marque/actions. **Orange `#EE7A30` réservé aux économies, toujours avec texte foncé `#2A1A28`** (jamais de blanc sur orange). Sable `#F6F3EC` = fond.
+- Couleurs uniquement via tokens. Aubergine `#6B3868` = marque/actions (éclaircie le 07/11/2026 à la demande du propriétaire ; ancienne valeur `#4A2545`, encore présente dans les maquettes). **Orange `#EE7A30` réservé aux économies, toujours avec texte foncé `#2A1A28`** (jamais de blanc sur orange). Sable `#F6F3EC` = fond.
 - Polices : Bricolage Grotesque (titres site + grands chiffres), Nunito (interface). Chiffres de prix en `tabular-nums`.
 - **Enseignes : jamais de logo ni de couleur officielle.** Pastille neutre 2 lettres sur fond pastel + nom en clair.
 - Signature : carte « ticket de caisse » à bord dentelé (radial-gradient), voir `Main.dc.html` classe `.edge`.

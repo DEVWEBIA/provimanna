@@ -8,7 +8,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 // Couleurs brutes : les variables CSS ne sont pas disponibles dans ImageResponse (cf. raw.* du preset).
-const C = { aubergine: '#4A2545', orange: '#EE7A30', encre: '#2A1A28', clair: '#EBDDE7' };
+const C = { aubergine: '#6B3868', orange: '#EE7A30', encre: '#2A1A28', clair: '#EBDDE7' };
 
 /** Image Open Graph avec le chiffre clé : l'écart de prix du panier d'exemple. */
 export default function OpengraphImage() {

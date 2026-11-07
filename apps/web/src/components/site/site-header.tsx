@@ -5,7 +5,7 @@ import { ROUTES } from '@/lib/site';
 /** En-tête minimal du site : logo et connexion. */
 export function SiteHeader() {
   return (
-    <header className="mx-auto flex max-w-[1000px] items-center justify-between gap-4 px-6 py-6">
+    <header className="relative z-10 mx-auto flex h-[92px] max-w-[1000px] items-center justify-between gap-4 px-6">
       <Link href="/" className="no-underline" aria-label="Accueil">
         <Logo />
       </Link>
