@@ -1,0 +1,28 @@
+@import '../../../../design/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Relie les variables de next/font aux tokens de police. */
+:root {
+  --font-display: var(--font-bricolage), var(--font-nunito), system-ui, sans-serif;
+  --font-sans: var(--font-nunito), system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-surface-50 text-ink font-sans antialiased;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

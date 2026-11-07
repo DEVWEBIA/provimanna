@@ -1,5 +1,5 @@
 /* Appli repas — tokens Aubergine & orange (généré depuis tokens.json) */
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Nunito:wght@400;600;700;800;900&display=swap');
+/* Polices servies par next/font dans les apps (auto-hébergées) : pas d'import Google Fonts ici. */
 
 :root, [data-theme="light"] {
   --surface-0: #ffffff;

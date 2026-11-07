@@ -76,7 +76,7 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 
 ## Avancement
 
-- [ ] Lot 0 — Monorepo
+- [x] Lot 0 — Monorepo (Next.js 16, Tailwind 3.4 pour garder le preset JS tel quel, next-intl sans segment de locale, polices via next/font)
 - [ ] Lot 1 — Supabase
 - [ ] Lot 2 — Design system
 - [ ] Lot 3 — Landing et socle SEO

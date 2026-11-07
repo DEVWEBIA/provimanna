@@ -144,7 +144,6 @@ export function planCostInStore(
   now: Date,
 ): StoreTotal {
   let cents = 0;
-  let priced = 0;
   let fresh = 0;
   const missing: string[] = [];
   for (const line of lines) {
@@ -154,7 +153,6 @@ export function planCostInStore(
       continue;
     }
     cents += p.cents * line.units;
-    priced += 1;
     if (p.fresh) fresh += 1;
   }
   const freshRatio = lines.length === 0 ? 1 : fresh / lines.length;
@@ -195,5 +193,5 @@ export function costPerServing(totalCents: number, servings: number): number {
 export function formatEuro(cents: number): string {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' })
     .format(cents / 100)
-    .replace(/[  ]/g, ' ');
+    .replace(/[\u202f\u00a0]/g, '\u00a0');
 }

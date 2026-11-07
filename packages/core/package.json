@@ -5,13 +5,20 @@
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
-  "exports": { ".": "./src/index.ts" },
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
-    "test": "node --test src/*.test.ts",
-    "typecheck": "tsc --noEmit"
+    "test": "node --test src/*.test.ts && vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
   },
   "devDependencies": {
-    "typescript": "^5.6.0",
-    "@types/node": "^22.10.0"
+    "@repas/eslint-config": "workspace:*",
+    "@types/node": "^22.10.0",
+    "eslint": "^9.36.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.4"
   }
 }

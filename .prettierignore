@@ -1,0 +1,11 @@
+node_modules
+.next
+.turbo
+dist
+coverage
+pnpm-lock.yaml
+design/maquettes
+design/legacy-maquettes
+supabase/migrations
+supabase/seed.sql
+packages/core/src/database.types.ts

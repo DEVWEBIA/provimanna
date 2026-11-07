@@ -1,0 +1,19 @@
+{
+  "name": "@repas/eslint-config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./base": "./base.mjs",
+    "./next": "./next.mjs"
+  },
+  "dependencies": {
+    "@eslint/js": "^9.36.0",
+    "eslint-config-next": "16.4.5",
+    "eslint-config-prettier": "^10.1.0",
+    "typescript-eslint": "^8.45.0"
+  },
+  "peerDependencies": {
+    "eslint": "^9"
+  }
+}

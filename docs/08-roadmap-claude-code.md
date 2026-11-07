@@ -6,7 +6,7 @@ Astuce : commence chaque session par « Lis CLAUDE.md puis docs/08-roadmap-claud
 
 ---
 
-## Lot 0 — Monorepo  ☐
+## Lot 0 — Monorepo  ☑
 
 ```
 Lis CLAUDE.md. Crée le monorepo Turborepo + pnpm à partir des fichiers racine déjà présents
