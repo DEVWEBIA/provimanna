@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Erreur — prix indisponibles</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F3EC; color: #2A1A28; font-family: 'Nunito', system-ui, sans-serif; display: flex; flex-direction: column; padding: 18px 16px 22px; gap: 12px; overflow: hidden;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<button onClick="{{back}}" aria-label="Retour au plan" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 1px solid #E3DDD0; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: #2A1A28; cursor: pointer;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+</button>
+<h1 style="margin: 0; font-size: 22px; font-weight: 900;">Combien coûte ton plan&nbsp;?</h1>
+</div>
+<div style="display: flex; gap: 12px; align-items: flex-start; background: #FFFFFF; border: 2px solid #B42318; border-radius: 18px; padding: 14px;">
+<span style="width: 36px; height: 36px; flex-shrink: 0; border-radius: 18px; background: #FDE8E6; color: #B42318; display: flex; align-items: center; justify-content: center;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"></path><path d="M12 10v4M12 17v.5"></path></svg>
+</span>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
+<span style="font-size: 15px; font-weight: 900;">2 enseignes sans prix récents</span>
+<span style="font-size: 13px; line-height: 1.45; color: #625A60; font-weight: 600;">Nous n'avons pas de relevé de moins de 30 jours pour Intermarché et Carrefour près de chez toi. Les 4 autres sont à jour.</span>
+<button onClick="{{retry}}" style="align-self: flex-start; margin-top: 4px; min-height: 40px; padding: 0 16px; border-radius: 20px; border: 1px solid #E3DDD0; background: #F6F3EC; font-family: inherit; font-size: 14px; font-weight: 900; color: #2A1A28; cursor: pointer;">{{retryLabel}}</button>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+<div style="{{r.style}}">
+<span style="{{r.dot}}">{{r.short}}</span>
+<span style="flex-grow: 1; display: flex; flex-direction: column;">
+<span style="font-size: 16px; font-weight: 900;">{{r.name}}</span>
+<span style="font-size: 12px; color: #625A60; font-weight: 700;">{{r.note}}</span>
+</span>
+<span style="font-size: 17px; font-weight: 900; font-variant-numeric: tabular-nums;">{{r.total}}</span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; align-items: center; background: #EFE3EC; border-radius: 14px; padding: 12px 14px; color: #4A2545; font-size: 14px; font-weight: 800;">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"></path></svg>
+<span>Tu fais tes courses chez Intermarché&nbsp;? Scanne ton ticket pour débloquer ses prix.</span>
+</div>
+<div style="flex-grow: 1;"></div>
+<button onClick="{{toScan}}" style="height: 56px; border-radius: 28px; border: none; background: #4A2545; color: #FFFFFF; font-family: inherit; font-size: 16px; font-weight: 900; cursor: pointer;">Scanner un ticket</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { tries: 0 }; }
+  renderVals() {
+    var self = this, g = this.props.go;
+    var d = [["Lidl", "Li", "#E3EDF8", "#1E4570", "62,40 €", "Relevé il y a 3 jours"], ["Aldi", "Al", "#EEE7F7", "#4B2F75", "63,10 €", "Relevé il y a 5 jours"], ["E.Leclerc", "Le", "#E2F1EC", "#1C5A45", "68,90 €", "Relevé il y a 2 jours"], ["Auchan", "Au", "#FDF0DC", "#7A4A0E", "74,20 €", "Ton choix · il y a 4 jours"], ["Intermarché", "In", "#FBE9E4", "#8A2E1C", "—", "Prix indisponibles"], ["Carrefour", "Ca", "#E6ECF5", "#2B3F66", "—", "Prix indisponibles"]];
+    var rows = d.map(function (r) {
+      var off = r[4] === "—";
+      return { name: r[0], short: r[1], total: r[4], note: r[5],
+        style: "display: flex; align-items: center; gap: 12px; min-height: 58px; padding: 6px 14px 6px 10px; border-radius: 18px; box-sizing: border-box; background: " + (off ? "#F9F4F7" : "#FFFFFF") + "; border: " + (off ? "1.5px dashed #CEBDCB" : "1px solid #E3DDD0") + ";" + (off ? " color: #625A60;" : ""),
+        dot: "width: 34px; height: 34px; flex-shrink: 0; border-radius: 17px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; background: " + r[2] + "; color: " + r[3] + ";" + (off ? " opacity: 0.55;" : "") };
+    });
+    return { rows: rows, retryLabel: this.state.tries ? "Toujours rien, réessaie plus tard" : "Réessayer",
+      retry: function () { self.setState({ tries: self.state.tries + 1 }); },
+      back: function () { if (g) g("plan"); }, toScan: function () { if (g) g("scan"); } };
+  }
+}
+</script>
+</body>
+</html>

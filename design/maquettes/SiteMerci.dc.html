@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Merci, tu es sur la liste</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#4A2545}
+a{color:#FFFFFF}a:hover{color:#F6B98F}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.edge7{position:absolute;left:0;right:0;bottom:-8px;height:16px;background:radial-gradient(circle,#4A2545 7px,transparent 7.5px) repeat-x;background-size:22px 16px}
+.sh:hover{background:rgba(255,255,255,0.18)}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #FFFFFF; background: #4A2545; min-height: 100vh; padding: 28px 24px 64px; box-sizing: border-box;">
+<div style="max-width: 1180px; margin: 0 auto;">
+<a href="Main.dc.html" style="display: inline-flex; align-items: center; gap: 10px; font-weight: 900; font-size: 18px; text-decoration: none;"><svg width="30" height="30" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#EE7A30"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#2A1A28" stroke-width="2.4" stroke-linecap="round"></path></svg>[Nom de l'appli]</a>
+
+<div style="margin-top: 56px; display: flex; flex-wrap: wrap; gap: 56px; align-items: center;">
+<div style="flex: 1 1 520px; min-width: 0;">
+<p style="margin: 0 0 18px; display: inline-flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.12); padding: 8px 14px; border-radius: 999px; font-weight: 900; font-size: 14px;"><span style="color: #B7DDB0;">✓</span> Inscription confirmée</p>
+<h1 class="disp" style="margin: 0; font-size: clamp(44px, 6vw, 84px); line-height: 0.98; font-weight: 800; letter-spacing: -2.6px;">Tu es sur la liste.</h1>
+<p style="margin: 22px 0 0; font-size: 20px; line-height: 31px; color: #EBDDE7; max-width: 560px;">On t'écrit dès l'ouverture, avec 14 jours de Premium offerts. Pas d'autre email d'ici là.</p>
+
+<div style="margin-top: 36px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 24px; padding: 24px; max-width: 560px;">
+<p class="disp" style="margin: 0; font-size: 24px; font-weight: 800;">Passe en tête de liste</p>
+<p style="margin: 8px 0 16px; font-size: 16px; line-height: 24px; color: #E3CDE0;">Chaque proche qui s'inscrit avec ton lien te fait avancer de 10 places.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px;">
+<label for="lien" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Ton lien de parrainage</label>
+<input id="lien" readonly="" value="[domaine].fr/r/marion-4f2" style="flex: 1 1 240px; min-height: 52px; box-sizing: border-box; border-radius: 14px; border: 0; padding: 0 16px; font: 800 16px Nunito; color: #2A1A28; background: #FFFFFF;">
+<button type="button" onClick="{{copy}}" style="min-height: 52px; padding: 0 22px; border-radius: 14px; border: 0; background: #EE7A30; color: #2A1A28; font: 900 16px Nunito; cursor: pointer;">{{copyLabel}}</button>
+</div>
+<div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+<a href="#sms" class="sh" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 999px; background: rgba(255,255,255,0.1); text-decoration: none; font-weight: 800; font-size: 14px;">Par SMS</a>
+<a href="#messagerie" class="sh" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 999px; background: rgba(255,255,255,0.1); text-decoration: none; font-weight: 800; font-size: 14px;">Par messagerie</a>
+<a href="#mail" class="sh" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 999px; background: rgba(255,255,255,0.1); text-decoration: none; font-weight: 800; font-size: 14px;">Par email</a>
+</div>
+</div>
+</div>
+
+<div style="flex: 1 1 360px; min-width: 0; display: flex; justify-content: center;">
+<div style="position: relative; width: 100%; max-width: 360px; background: #FFFFFF; color: #2A1A28; border-radius: 22px 22px 0 0; padding: 26px 26px 36px; transform: rotate(2deg); box-shadow: 0 30px 60px rgba(20,8,18,0.35);">
+<p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 1.2px; color: #625A60;">TON TICKET D'ENTRÉE</p>
+<p class="disp" style="margin: 8px 0 16px; font-size: 56px; font-weight: 800; letter-spacing: -2px; line-height: 1;">n° [X]</p>
+<div style="border-top: 2px dashed #E3DDD0; padding-top: 14px; display: flex; flex-direction: column; gap: 8px; font-weight: 700; font-size: 15px;">
+<p style="margin: 0; display: flex; justify-content: space-between;"><span>Ouverture prévue</span><span>[date]</span></p>
+<p style="margin: 0; display: flex; justify-content: space-between;"><span>Premium offert</span><span>14 jours</span></p>
+<p style="margin: 0; display: flex; justify-content: space-between;"><span>Proches inscrits</span><span>{{invited}}</span></p>
+</div>
+<div style="display: flex; gap: 6px; margin-top: 18px;" aria-hidden="true"><dc-import variant="soupe" size="70" name="Plat" hint-size="70px,70px"></dc-import><dc-import variant="salade" size="70" name="Plat" hint-size="70px,70px"></dc-import><dc-import variant="curry" size="70" name="Plat" hint-size="70px,70px"></dc-import></div>
+<span class="edge7" aria-hidden="true"></span>
+</div>
+</div>
+</div>
+
+<div style="margin-top: 64px; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 28px; display: flex; flex-wrap: wrap; gap: 12px 32px; font-weight: 800;">
+<span style="color: #E3CDE0;">En attendant :</span>
+<a href="SiteMenu.dc.html">Le menu de la semaine à moins de 70 €</a>
+<a href="SiteComparatif.dc.html">L'observatoire des prix de novembre</a>
+<a href="SiteRecettes.dc.html">342 recettes avec leur prix</a>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { copied: false }; }
+  renderVals() {
+    var self = this;
+    return { copyLabel: this.state.copied ? 'Copié ✓' : 'Copier le lien', invited: '0', copy: function () { self.setState({ copied: true }); } };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Back-office — imports et recherche rapide</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F1EA}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.bnav{display:flex;align-items:center;gap:12px;min-height:40px;padding:0 12px;border-radius:10px;text-decoration:none;color:#D9CCD6;font-weight:700;font-size:14px}
+.bnav:hover{background:rgba(255,255,255,0.06);color:#FFFFFF}
+.tr:hover{background:#FBF9F4}
+.res{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border-radius:10px;text-decoration:none;color:#2A1A28;font-weight:700}
+.res:hover{background:#F6F3EC;color:#2A1A28}
+th,td{text-align:left}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F4F1EA; min-height: 100vh; display: flex; flex-wrap: wrap; position: relative;">
+
+<aside style="flex: 1 1 232px; max-width: 100%; background: #2A1A28; color: #FFFFFF; padding: 20px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; align-items: center; gap: 10px; padding: 0 8px;"><svg width="26" height="26" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#EE7A30"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#2A1A28" stroke-width="2.4" stroke-linecap="round"></path></svg><span style="font-weight: 900; font-size: 15px;">Back-office</span></div>
+<button type="button" onClick="{{openK}}" style="display: flex; align-items: center; justify-content: space-between; min-height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid #4A3A47; background: transparent; color: #B9ADB6; font: 700 13px Nunito; cursor: pointer;"><span>Rechercher…</span><span style="font-size: 12px; border: 1px solid #4A3A47; border-radius: 6px; padding: 1px 6px;">⌘K</span></button>
+<nav aria-label="Back-office" style="display: flex; flex-direction: column; gap: 2px;">
+<a href="BOVue.dc.html" class="bnav">Vue d'ensemble</a><a href="BOTickets.dc.html" class="bnav">Tickets</a>
+<a href="BOPrix.dc.html" class="bnav" aria-current="page" style="background: #4A2545; color: #FFFFFF;">Prix · Imports</a>
+<a href="BOProduits.dc.html" class="bnav">Produits</a><a href="BORecettes.dc.html" class="bnav">Recettes</a><a href="BOUtilisateurs.dc.html" class="bnav">Utilisateurs</a><a href="BOEnseignes.dc.html" class="bnav">Enseignes</a><a href="BOSeo.dc.html" class="bnav">Contenu SEO</a><a href="BOEngagement.dc.html" class="bnav">Engagement</a><a href="BORoles.dc.html" class="bnav">Rôles et journal</a><a href="BOParametres.dc.html" class="bnav">Paramètres</a>
+</nav>
+</aside>
+
+<main style="flex: 999 1 640px; min-width: 0; padding: 24px clamp(16px, 2.5vw, 36px) 48px; box-sizing: border-box;">
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+<div><p style="margin: 0; font-size: 13px; font-weight: 800; color: #625A60;"><a href="BOPrix.dc.html">Prix</a> › Imports</p><h1 class="disp" style="margin: 2px 0 0; font-size: 32px; font-weight: 800; letter-spacing: -0.8px;">Imports de prix</h1></div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap;"><span style="display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 10px; padding: 0 14px; min-height: 42px; font-size: 14px; font-weight: 800;">Planifié chaque jour à 4 h</span><button type="button" style="min-height: 42px; padding: 0 16px; border-radius: 10px; border: 0; background: #4A2545; color: #FFFFFF; font: 800 14px Nunito; cursor: pointer;">Lancer maintenant</button></div>
+</header>
+
+<div style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+<section style="flex: 3 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; overflow: hidden;">
+<div style="overflow-x: auto;">
+<table class="num" style="width: 100%; min-width: 620px; border-collapse: collapse; font-size: 14px;">
+<thead style="background: #FBF9F4;"><tr style="font-size: 12px; letter-spacing: 0.6px; color: #625A60;"><th scope="col" style="padding: 12px 16px; font-weight: 900;">IMPORT</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">AJOUTÉS</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">ÉCARTÉS</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">DURÉE</th><th scope="col" style="padding: 12px 16px; font-weight: 900;">ÉTAT</th></tr></thead>
+<tbody>
+<sc-for list="{{runs}}" as="r" hint-placeholder-count="6">
+<tr class="tr" style="{{r.tr}}"><th scope="row" style="padding: 8px 16px;"><button type="button" onClick="{{r.select}}" style="background: transparent; border: 0; padding: 4px 0; text-align: left; cursor: pointer; font-family: Nunito; color: #2A1A28;"><span style="display: block; font-weight: 900;">{{r.src}}</span><span style="font-size: 12px; color: #625A60; font-weight: 700;">{{r.when}}</span></button></th><td style="padding: 8px; font-weight: 900;">{{r.add}}</td><td style="padding: 8px; color: #625A60; font-weight: 700;">{{r.rej}}</td><td style="padding: 8px; color: #625A60; font-weight: 700;">{{r.dur}}</td><td style="padding: 8px 16px;"><span style="{{r.stStyle}}">{{r.st}}</span></td></tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</section>
+
+<aside style="flex: 2 1 340px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+<div><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.6px; color: #625A60;">{{sel.when}}</p><h2 class="disp" style="margin: 2px 0 0; font-size: 22px; font-weight: 800;">{{sel.src}}</h2></div>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+<sc-for list="{{sel.steps}}" as="s" hint-placeholder-count="4"><li style="display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 14px;"><span style="{{s.dot}}">{{s.mark}}</span><span style="flex: 1;">{{s.l}}</span><span class="num" style="color: #625A60; font-weight: 700;">{{s.n}}</span></li></sc-for>
+</ol>
+<div style="{{sel.noteStyle}}"><p style="margin: 0 0 4px; font-weight: 900;">{{sel.noteT}}</p><p style="margin: 0; font-size: 14px; line-height: 21px;">{{sel.noteD}}</p></div>
+<a href="BOPrix.dc.html" style="font-weight: 900; font-size: 14px;">Voir les {{sel.alerts}} alertes créées par cet import →</a>
+</aside>
+</div>
+</main>
+
+<!-- Palette ⌘K -->
+<sc-if value="{{kOpen}}" hint-placeholder-val="{{true}}">
+<div style="position: absolute; inset: 0; background: rgba(42,26,40,0.45); display: flex; justify-content: center; align-items: flex-start; padding: 96px 16px 0;">
+<div role="dialog" aria-label="Recherche rapide" style="width: min(640px, 100%); background: #FFFFFF; border-radius: 20px; box-shadow: 0 30px 80px rgba(20,8,18,0.35); overflow: hidden;">
+<div style="display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid #EFEAE0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#625A60" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><label for="kq" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Rechercher</label><input id="kq" value="{{kq}}" onInput="{{onKq}}" placeholder="Utilisateur, produit, recette, action…" style="flex: 1; min-height: 40px; border: 0; outline: none; font: 700 17px Nunito; color: #2A1A28;"><button type="button" onClick="{{closeK}}" style="font: 800 12px Nunito; color: #625A60; border: 1px solid #E3DDD0; border-radius: 6px; padding: 2px 8px; background: #FFFFFF; cursor: pointer;">Échap</button></div>
+<div style="max-height: 380px; overflow-y: auto; padding: 8px;">
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<p style="margin: 8px 0 4px; padding: 0 14px; font-size: 11px; font-weight: 900; letter-spacing: 1px; color: #625A60;">{{g.n}}</p>
+<sc-for list="{{g.items}}" as="i" hint-placeholder-count="2"><a href="{{i.href}}" class="res"><span style="width: 30px; height: 30px; border-radius: 8px; background: {{i.bg}}; display: grid; place-items: center; font-size: 11px; font-weight: 900;">{{i.k}}</span><span style="flex: 1;">{{i.l}}</span><span style="font-size: 12px; color: #625A60;">{{i.hint}}</span></a></sc-for>
+</sc-for>
+<sc-if value="{{kEmpty}}" hint-placeholder-val="{{false}}"><p style="margin: 0; padding: 24px; text-align: center; color: #625A60; font-weight: 800;">Aucun résultat</p></sc-if>
+</div>
+<p style="margin: 0; padding: 10px 18px; border-top: 1px solid #EFEAE0; font-size: 12px; color: #625A60; font-weight: 700;">↑ ↓ pour naviguer · Entrée pour ouvrir</p>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { sel: 0, k: true, kq: '' }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var R = [['Open Prices', 'Aujourd’hui 04:00', 2914, 86, '6 min', 'ok', [1.0, 1.0, 1.0, 1.0], 12], ['Tickets lus (OCR)', 'Aujourd’hui 03:30', 412, 31, '2 min', 'warn', [1.0, 1.0, 0.92, 1.0], 6], ['Open Food Facts · fiches', 'Hier 05:00', 138, 0, '4 min', 'ok', [1.0, 1.0, 1.0, 1.0], 0], ['Open Prices', 'Hier 04:00', 0, 0, '0 min', 'err', [0.0, 0, 0, 0], 0], ['Open Prices', '12/11 04:00', 2706, 74, '6 min', 'ok', [1.0, 1.0, 1.0, 1.0], 9], ['Tickets lus (OCR)', '12/11 03:30', 388, 27, '2 min', 'ok', [1.0, 1.0, 1.0, 1.0], 4]];
+    var ST = { ok: ['Réussi', 'background:#E3F0DF;color:#2F6B2A'], warn: ['Avec alertes', 'background:#F6E7C8;color:#6B4A0E'], err: ['Échec', 'background:#FBE4E1;color:#B42318'] };
+    var runs = R.map(function (r, i) {
+      return { src: r[0], when: r[1], add: r[2].toLocaleString('fr-FR'), rej: r[3], dur: r[4], st: ST[r[5]][0], stStyle: 'font-size:12px;font-weight:900;padding:3px 9px;border-radius:99px;' + ST[r[5]][1],
+        tr: 'border-top:1px solid #EFEAE0;' + (s.sel === i ? 'background:#F7F0F5;box-shadow:inset 3px 0 0 #4A2545' : ''), select: function () { self.setState({ sel: i }); } };
+    });
+    var r = R[s.sel], labels = ['Téléchargement', 'Correspondance EAN', 'Contrôle des écarts', 'Publication'];
+    var counts = r[5] === 'err' ? ['délai dépassé', '—', '—', '—'] : [(r[2] + r[3]).toLocaleString('fr-FR') + ' lignes', Math.round((r[2] + r[3]) * 0.97).toLocaleString('fr-FR') + ' reconnues', r[3] + ' écartées', r[2].toLocaleString('fr-FR') + ' publiées'];
+    var steps = labels.map(function (l, k) {
+      var v = r[6][k], ok = v >= 1, part = v > 0 && v < 1;
+      return { l: l, n: counts[k], mark: ok ? '✓' : (part ? '!' : '✕'),
+        dot: 'width:26px;height:26px;border-radius:99px;display:grid;place-items:center;font-size:13px;font-weight:900;' + (ok ? 'background:#E3F0DF;color:#2F6B2A' : (part ? 'background:#F6E7C8;color:#6B4A0E' : 'background:#FBE4E1;color:#B42318')) };
+    });
+    var notes = { ok: ['Tout s’est bien passé', 'Les prix sont en ligne. Les écarts de plus de 40 % ont créé des alertes à vérifier.', 'background:#E3F0DF;color:#1F4A1B;border-radius:14px;padding:14px'], warn: ['31 lignes à revoir', '8 % des lignes OCR n’ont pas trouvé de produit. Elles attendent dans la file des tickets.', 'background:#F6E7C8;color:#5A3D08;border-radius:14px;padding:14px'], err: ['L’API Open Prices n’a pas répondu', 'Nouvel essai automatique à 06:00. Aucun prix n’a été modifié.', 'background:#FBE4E1;color:#7A1A12;border-radius:14px;padding:14px'] };
+    var n = notes[r[5]];
+    var G = [['PAGES', [['Prix · alertes', 'BOPrix.dc.html', 'P', '#EFE3EC', 'G puis P'], ['Tickets à valider', 'BOTickets.dc.html', 'T', '#EFE3EC', 'G puis T'], ['Paramètres', 'BOParametres.dc.html', '⚙', '#EFE3EC', '']]], ['UTILISATEURS', [['Marion D. · Essai Premium', 'BOUtilisateurs.dc.html', 'MD', '#EFE3EC', 'Lyon'], ['Thomas L. · Premium', 'BOUtilisateurs.dc.html', 'TL', '#E3ECF6', 'Nantes']]], ['PRODUITS', [['Potimarron vrac', 'BOProduits.dc.html', 'EAN', '#E8F0DF', '6 enseignes'], ['Châtaignes cuites 200 g', 'BOProduits.dc.html', 'EAN', '#FCE3D3', 'à lier']]], ['ACTIONS', [['Lancer un import Open Prices', 'BOImports.dc.html', '↻', '#F6F3EC', ''], ['Offrir 7 jours de Premium', 'BOUtilisateurs.dc.html', '+7', '#F6F3EC', '']]]];
+    var q = s.kq.toLowerCase(), total = 0;
+    var groups = [];
+    G.forEach(function (g) {
+      var items = g[1].filter(function (i) { return !q || i[0].toLowerCase().indexOf(q) > -1; }).map(function (i) { return { l: i[0], href: i[1], k: i[2], bg: i[3], hint: i[4] }; });
+      total += items.length; if (items.length) groups.push({ n: g[0], items: items });
+    });
+    return { runs: runs, sel: { src: r[0], when: r[1].toUpperCase(), steps: steps, noteT: n[0], noteD: n[1], noteStyle: n[2], alerts: r[7] },
+      kOpen: s.k, kq: s.kq, groups: groups, kEmpty: total === 0,
+      openK: function () { self.setState({ k: true }); }, closeK: function () { self.setState({ k: false }); }, onKq: function (e) { self.setState({ kq: e.target.value }); } };
+  }
+}
+</script>
+</body>
+</html>

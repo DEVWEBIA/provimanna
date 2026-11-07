@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mobile — paywall</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #FFFFFF; font-family: 'Nunito', sans-serif; color: #2A1A28;">
+<div style="position: absolute; inset: 0; overflow-y: auto;">
+<div style="background: #4A2545; color: #FFFFFF; padding: 18px 20px 30px; border-radius: 0 0 32px 32px; position: relative;">
+<a href="MComparateur.dc.html" aria-label="Fermer" style="position: absolute; top: 16px; right: 16px; width: 42px; height: 42px; border-radius: 99px; background: rgba(255,255,255,0.14); display: grid; place-items: center; text-decoration: none; color: #FFFFFF; font-weight: 900; font-size: 20px;">×</a>
+<p style="margin: 8px 0 0; font-size: 12px; font-weight: 900; letter-spacing: 1px; color: #E3CDE0;">TON ESSAI SE TERMINE DIMANCHE</p>
+<h1 class="disp" style="margin: 10px 0 0; font-size: 32px; line-height: 1.04; font-weight: 800; letter-spacing: -1px;">Tu as économisé <span style="background: #EE7A30; color: #2A1A28; padding: 0 8px; border-radius: 10px;">58,30 €</span> depuis septembre.</h1>
+<div style="display: flex; gap: 4px; margin-top: 16px;" aria-hidden="true"><dc-import variant="dahl" size="58" name="Plat" hint-size="58px,58px"></dc-import><dc-import variant="tarte" size="58" name="Plat" hint-size="58px,58px"></dc-import><dc-import variant="poisson" size="58" name="Plat" hint-size="58px,58px"></dc-import></div>
+</div>
+<div style="padding: 22px 20px 30px; display: flex; flex-direction: column; gap: 12px;">
+<ul style="list-style: none; margin: 0 0 6px; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 15px; font-weight: 700;">
+<li style="display: flex; gap: 10px;"><span style="color: #4A2545; font-weight: 900;">✓</span>Le détail produit par produit</li>
+<li style="display: flex; gap: 10px;"><span style="color: #4A2545; font-weight: 900;">✓</span>Ta liste basculée chez la moins chère en un clic</li>
+<li style="display: flex; gap: 10px;"><span style="color: #4A2545; font-weight: 900;">✓</span>Plans illimités, alertes promo, famille</li>
+</ul>
+<div role="radiogroup" aria-label="Formule" style="display: flex; flex-direction: column; gap: 8px;">
+<sc-for list="{{plans}}" as="p" hint-placeholder-count="2">
+<button type="button" role="radio" aria-checked="{{p.on}}" onClick="{{p.pick}}" style="{{p.style}}"><span style="width: 22px; height: 22px; flex: none; border-radius: 99px; box-sizing: border-box; border: {{p.radio}};"></span><span style="flex: 1; text-align: left;"><span style="display: block; font-weight: 900; font-size: 16px;">{{p.t}} <span style="{{p.tagStyle}}">{{p.tag}}</span></span><span style="font-size: 13px; color: #625A60; font-weight: 700;">{{p.d}}</span></span><span class="disp num" style="font-size: 22px; font-weight: 800;">{{p.price}}</span></button>
+</sc-for>
+</div>
+<button type="button" style="margin-top: 6px; min-height: 58px; border-radius: 999px; border: 0; background: #4A2545; color: #FFFFFF; font: 900 17px Nunito; cursor: pointer;">Continuer · {{cta}}</button>
+<a href="MDashboard.dc.html" style="min-height: 44px; display: flex; align-items: center; justify-content: center; font-weight: 800;">Rester en gratuit, sans rien perdre</a>
+<p style="margin: 0; text-align: center; font-size: 12px; color: #625A60;">Résiliable à tout moment · paiement sécurisé</p>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { plan: 'an' }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var plans = [['an', 'Annuel', '3,33 € / mois, facturé une fois', '39,99 €', '−33 %'], ['mois', 'Mensuel', 'Sans engagement', '4,99 €', '']].map(function (p) {
+      var on = s.plan === p[0];
+      return { t: p[1], d: p[2], price: p[3], tag: p[4], on: on ? 'true' : 'false', pick: function () { self.setState({ plan: p[0] }); },
+        tagStyle: p[4] ? 'background:#FCE3D3;color:#9A420E;font-size:11px;font-weight:900;padding:2px 7px;border-radius:999px' : 'display:none',
+        radio: on ? '7px solid #4A2545' : '2px solid #CFC5CD',
+        style: 'display:flex;align-items:center;gap:12px;padding:14px;border-radius:18px;background:#FFFFFF;cursor:pointer;font-family:Nunito;color:#2A1A28;' + (on ? 'border:2px solid #4A2545;box-shadow:0 0 0 3px #EFE3EC' : 'border:2px solid #E3DDD0') };
+    });
+    return { plans: plans, cta: s.plan === 'an' ? '39,99 € / an' : '4,99 € / mois' };
+  }
+}
+</script>
+</body>
+</html>

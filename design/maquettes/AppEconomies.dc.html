@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Web app — économies, historique et favoris</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.nav{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border-radius:14px;text-decoration:none;color:#2A1A28;font-weight:800;font-size:15px}
+.nav:hover{background:#F6F3EC;color:#2A1A28}
+.row:hover{background:#FBF9F4}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F6F3EC; min-height: 100vh; display: flex; flex-wrap: wrap;">
+
+<aside style="flex: 1 1 240px; max-width: 100%; background: #FFFFFF; border-right: 1px solid #E3DDD0; padding: 24px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px;">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; color: #4A2545; font-weight: 900; font-size: 17px; text-decoration: none; padding: 0 8px;"><svg width="28" height="28" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#4A2545"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"></path><circle cx="24" cy="23" r="3.2" fill="#EE7A30"></circle></svg>[Nom de l'appli]</a>
+<nav aria-label="Web app" style="display: flex; flex-direction: column; gap: 2px;">
+<a href="AppDashboard.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 11 12 4l9 7v9H3z"></path></svg>Accueil</a>
+<a href="AppPlan.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg>Mon plan</a>
+<a href="AppListe.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>Liste de courses</a>
+<a href="AppRecettes.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle></svg>Recettes</a>
+<a href="AppEconomies.dc.html" class="nav" aria-current="page" style="background: #EFE3EC; color: #4A2545;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Mes économies</a>
+<a href="AppFamille.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M2 20c1-3.5 3.6-5 7-5s6 1.5 7 5M15 15c3 0 5 1.5 6 4"></path></svg>Famille</a>
+<a href="AppNotifs.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"></path></svg>Notifications<span style="margin-left: auto; background: #EE7A30; color: #2A1A28; font-size: 12px; font-weight: 900; padding: 1px 8px; border-radius: 99px;">3</span></a>
+<a href="AppAbonnement.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4-6 8-6s7 2 8 6"></path></svg>Profil</a>
+</nav>
+</aside>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 28px clamp(20px, 3vw, 44px) 64px; box-sizing: border-box;">
+<section style="background: #4A2545; color: #FFFFFF; border-radius: 32px; padding: clamp(24px, 3.5vw, 44px); display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-end;">
+<div style="flex: 1 1 360px;">
+<p style="margin: 0; font-size: 13px; font-weight: 900; letter-spacing: 1.2px; color: #E3CDE0;">DEPUIS TON INSCRIPTION, LE 8 SEPTEMBRE</p>
+<h1 class="disp num" style="margin: 8px 0 0; font-size: clamp(56px, 6vw, 88px); line-height: 0.95; font-weight: 800; letter-spacing: -3px;">58,30 €</h1>
+<p style="margin: 12px 0 0; font-size: 17px; color: #E3CDE0; max-width: 420px;">d'écart évité par rapport à ton enseigne habituelle, à liste égale. De quoi payer un an de Premium, et encore 18 €.</p>
+<button type="button" style="margin-top: 20px; min-height: 48px; padding: 0 22px; border-radius: 999px; border: 0; background: #FFFFFF; color: #4A2545; font: 900 15px Nunito; cursor: pointer;">Partager mon récap</button>
+</div>
+<div style="flex: 1 1 300px; display: flex; align-items: flex-end; gap: 14px; height: 190px;" role="img" aria-label="Économies par mois : septembre 9,60 €, octobre 38,40 €, novembre 10,30 € à mi-mois">
+<div style="flex: 1; text-align: center;"><p class="num" style="margin: 0 0 6px; font-weight: 900;">9,60 €</p><div style="height: 40px; border-radius: 10px 10px 0 0; background: rgba(255,255,255,0.25);"></div><p style="margin: 6px 0 0; font-size: 13px; font-weight: 800; color: #E3CDE0;">Sept.</p></div>
+<div style="flex: 1; text-align: center;"><p class="num" style="margin: 0 0 6px; font-weight: 900;">38,40 €</p><div style="height: 140px; border-radius: 10px 10px 0 0; background: #EE7A30;"></div><p style="margin: 6px 0 0; font-size: 13px; font-weight: 800; color: #E3CDE0;">Oct.</p></div>
+<div style="flex: 1; text-align: center;"><p class="num" style="margin: 0 0 6px; font-weight: 900;">10,30 €</p><div style="height: 46px; border-radius: 10px 10px 0 0; background: rgba(255,255,255,0.25); border: 2px dashed rgba(255,255,255,0.5); border-bottom: 0; box-sizing: border-box;"></div><p style="margin: 6px 0 0; font-size: 13px; font-weight: 800; color: #E3CDE0;">Nov. (en cours)</p></div>
+</div>
+</section>
+
+<div role="tablist" aria-label="Sections" style="margin-top: 24px; display: inline-flex; gap: 4px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 999px; padding: 5px;">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="3"><button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.l}}</button></sc-for>
+</div>
+
+<sc-if value="{{is.badges}}" hint-placeholder-val="{{true}}">
+<section aria-label="Badges" style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px;">
+<sc-for list="{{badges}}" as="b" hint-placeholder-count="6">
+<article style="{{b.box}}">
+<span style="{{b.medal}}">{{b.k}}</span>
+<h3 style="margin: 0; font-size: 17px; font-weight: 900;">{{b.t}}</h3>
+<p style="margin: 0; font-size: 14px; color: #625A60; font-weight: 700;">{{b.d}}</p>
+<span style="height: 8px; border-radius: 9px; background: #F1ECE2; display: block;"><span style="display: block; height: 8px; border-radius: 9px; width: {{b.w}}; background: {{b.bar}};"></span></span>
+</article>
+</sc-for>
+</section>
+</sc-if>
+
+<sc-if value="{{is.hist}}" hint-placeholder-val="{{false}}">
+<section style="margin-top: 18px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 24px; overflow: hidden;">
+<sc-for list="{{weeks}}" as="w" hint-placeholder-count="6">
+<div class="row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 14px 20px; border-top: 1px solid #EFEAE0;">
+<span class="disp" style="min-width: 64px; font-size: 22px; font-weight: 800;">{{w.s}}</span>
+<span style="flex: 1 1 200px;"><span style="display: block; font-weight: 900;">{{w.dates}}</span><span style="font-size: 14px; color: #625A60; font-weight: 700;">{{w.meta}}</span></span>
+<span class="num" style="font-weight: 900; min-width: 80px; text-align: right;">{{w.total}}</span>
+<span class="num" style="background: #FCE3D3; color: #9A420E; font-weight: 900; font-size: 13px; padding: 3px 10px; border-radius: 999px; min-width: 64px; text-align: center;">{{w.saved}}</span>
+<button type="button" onClick="{{w.reuse}}" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 2px solid #E3DDD0; background: #FFFFFF; font: 800 13px Nunito; color: #2A1A28; cursor: pointer;">{{w.cta}}</button>
+</div>
+</sc-for>
+</section>
+</sc-if>
+
+<sc-if value="{{is.fav}}" hint-placeholder-val="{{false}}">
+<section style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px;">
+<sc-for list="{{favs}}" as="f" hint-placeholder-count="4">
+<a href="AppRecette.dc.html" style="text-decoration: none; color: #2A1A28; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+<span style="display: flex; justify-content: space-between; align-items: flex-start;"><dc-import variant="{{f.v}}" size="96" name="Plat" hint-size="96px,96px"></dc-import><svg width="22" height="22" viewBox="0 0 24 24" fill="#EE7A30" aria-label="Favori"><path d="M12 21s-7-4.4-9.3-9C1.2 8.8 3.3 5 7 5c2 0 3.5 1.2 5 3 1.5-1.8 3-3 5-3 3.7 0 5.8 3.8 4.3 7-2.3 4.6-9.3 9-9.3 9z"></path></svg></span>
+<span style="font-weight: 900; font-size: 17px;">{{f.n}}</span>
+<span class="num" style="font-size: 14px; color: #625A60; font-weight: 700;">Cuisiné {{f.c}} fois · {{f.p}} / part</span>
+</a>
+</sc-for>
+</section>
+</sc-if>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { tab: 'badges', reused: -1 }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var tabs = [['badges', 'Badges'], ['hist', 'Historique des plans'], ['fav', 'Favoris']].map(function (t) {
+      var on = s.tab === t[0];
+      return { l: t[1], on: on ? 'true' : 'false', pick: function () { self.setState({ tab: t[0] }); },
+        style: 'min-height:44px;padding:0 20px;border-radius:999px;border:0;font:900 15px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF' : 'background:transparent;color:#2A1A28') };
+    });
+    var B = [['OCT', 'Octobre malin', 'Défi d’octobre réussi', 1], ['4S', 'Série de 4', '4 semaines d’affilée', 1], ['1T', 'Premier ticket', 'Merci pour les prix', 1], ['NOV', 'Novembre < 70 €', '3 semaines sur 4', 0.75], ['10S', 'Série de 10', '6 semaines sur 10', 0.6], ['10T', '10 tickets', '2 tickets sur 10', 0.2]];
+    var badges = B.map(function (b) {
+      var done = b[3] >= 1;
+      return { k: b[0], t: b[1], d: done ? 'Obtenu · ' + b[2] : b[2], w: Math.round(b[3] * 100) + '%', bar: done ? '#2F6B2A' : '#EE7A30',
+        box: 'background:#FFFFFF;border:1px solid #E3DDD0;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:8px;' + (done ? '' : 'opacity:0.9'),
+        medal: 'width:56px;height:56px;border-radius:99px;display:grid;place-items:center;font-weight:900;font-size:13px;' + (done ? 'background:#4A2545;color:#FFFFFF;box-shadow:inset 0 0 0 4px #EE7A30' : 'background:#F1ECE2;color:#8A8088;border:2px dashed #CFC5CD;box-sizing:border-box') };
+    });
+    var W = [['S47', '16 – 22 nov.', 'Auchan · 14 repas · en cours', 71.6, 0], ['S46', '9 – 15 nov.', 'Courses chez Lidl · 14 repas', 61.2, 10.3], ['S45', '2 – 8 nov.', 'Auchan · 12 repas', 66.4, 0], ['S44', '26 oct. – 1er nov.', 'Auchan · 14 repas', 70.9, 0], ['S43', '19 – 25 oct.', 'Courses chez Lidl · 14 repas', 60.4, 11.5], ['S42', '12 – 18 oct.', 'Courses chez Lidl · 14 repas', 61.0, 9.2]];
+    var fmt = function (v) { return v.toFixed(2).replace('.', ',') + ' €'; };
+    var weeks = W.map(function (w, i) {
+      return { s: w[0], dates: w[1], meta: w[2], total: fmt(w[3]), saved: w[4] ? '−' + fmt(w[4]) : '—', cta: s.reused === i ? 'Ajouté à S48 ✓' : 'Réutiliser',
+        reuse: function () { self.setState({ reused: i }); } };
+    });
+    var favs = [['curry', 'Curry de pois chiches', 3, 0.98], ['soupe', 'Velouté de potimarron', 2, 1.02], ['pates', 'Lasagnes végé', 2, 1.36], ['salade', 'Salade lentilles et feta', 1, 1.24]].map(function (f) { return { v: f[0], n: f[1], c: f[2], p: fmt(f[3]) }; });
+    return { tabs: tabs, badges: badges, weeks: weeks, favs: favs, is: { badges: s.tab === 'badges', hist: s.tab === 'hist', fav: s.tab === 'fav' } };
+  }
+}
+</script>
+</body>
+</html>

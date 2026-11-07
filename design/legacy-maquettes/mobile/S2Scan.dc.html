@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Scan de ticket</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #1B111A; color: #FFFFFF; font-family: 'Nunito', system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 18px 20px 28px; gap: 16px; overflow: hidden; position: relative;">
+<div style="align-self: stretch; display: flex; align-items: center; justify-content: space-between;">
+<button onClick="{{close}}" aria-label="Fermer" style="width: 44px; height: 44px; border-radius: 22px; border: none; background: #443542; display: flex; align-items: center; justify-content: center; color: #FFFFFF; cursor: pointer;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+</button>
+<span style="font-size: 17px; font-weight: 900;">Scanner un ticket</span>
+<span style="width: 44px;"></span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 18px; background: #EE7A30; color: #2A1A28; font-size: 14px; font-weight: 900;">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7"></path></svg>
++3 jours Premium par ticket
+</div>
+<div style="width: 290px; height: 420px; position: relative; display: flex; align-items: center; justify-content: center;">
+<div style="width: 190px; height: 370px; background: #F7F1EA; border-radius: 4px; padding: 18px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; transform: rotate(-2deg);">
+<span style="align-self: center; font-size: 13px; font-weight: 900; color: #6E6458; letter-spacing: 2px;">LIDL</span>
+<sc-for list="{{lines}}" as="l" hint-placeholder-count="11">
+<div style="display: flex; justify-content: space-between; gap: 10px;"><span style="{{l.a}}"></span><span style="height: 6px; width: 24px; background: #CFC6B8; border-radius: 3px;"></span></div>
+</sc-for>
+<span style="height: 1px; background: #CFC6B8; margin: 4px 0;"></span>
+<div style="display: flex; justify-content: space-between;"><span style="height: 8px; width: 42px; background: #9E9384; border-radius: 3px;"></span><span style="height: 8px; width: 36px; background: #9E9384; border-radius: 3px;"></span></div>
+</div>
+<span style="position: absolute; left: 0; top: 0; width: 46px; height: 46px; border-left: 4px solid #EE7A30; border-top: 4px solid #EE7A30; border-radius: 16px 0 0 0;"></span>
+<span style="position: absolute; right: 0; top: 0; width: 46px; height: 46px; border-right: 4px solid #EE7A30; border-top: 4px solid #EE7A30; border-radius: 0 16px 0 0;"></span>
+<span style="position: absolute; left: 0; bottom: 0; width: 46px; height: 46px; border-left: 4px solid #EE7A30; border-bottom: 4px solid #EE7A30; border-radius: 0 0 0 16px;"></span>
+<span style="position: absolute; right: 0; bottom: 0; width: 46px; height: 46px; border-right: 4px solid #EE7A30; border-bottom: 4px solid #EE7A30; border-radius: 0 0 16px 0;"></span>
+<span style="position: absolute; left: 14px; right: 14px; top: 46%; height: 3px; border-radius: 2px; background: #EE7A30; box-shadow: 0 0 16px #EE7A30;"></span>
+</div>
+<p style="margin: 0; font-size: 16px; font-weight: 800; text-align: center;">Place ton ticket bien à plat dans le cadre</p>
+<p style="margin: 0; font-size: 14px; line-height: 1.45; color: #C3BFC3; text-align: center; max-width: 300px;">Tes tickets gardent les prix à jour pour tout le monde. Aucune donnée personnelle n'est conservée.</p>
+<div style="flex-grow: 1;"></div>
+<div style="align-self: stretch; display: flex; align-items: center; justify-content: space-between; padding: 0 22px;">
+<button aria-label="Importer depuis la galerie" style="width: 52px; height: 52px; border-radius: 16px; border: none; background: #443542; display: flex; align-items: center; justify-content: center; color: #FFFFFF; cursor: pointer;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="M21 16l-5-5-9 9"></path></svg>
+</button>
+<button onClick="{{shoot}}" aria-label="Prendre la photo" style="width: 80px; height: 80px; border-radius: 40px; border: 4px solid #FFFFFF; background: transparent; padding: 5px; cursor: pointer;">
+<span style="display: block; width: 100%; height: 100%; border-radius: 50%; background: #FFFFFF;"></span>
+</button>
+<span style="width: 52px;"></span>
+</div>
+<sc-if value="{{done}}" hint-placeholder-val="{{false}}">
+<div style="position: absolute; left: 0; right: 0; bottom: 0; background: #F6F3EC; color: #2A1A28; border-radius: 28px 28px 0 0; padding: 22px 20px 28px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.35);">
+<span style="align-self: center; width: 40px; height: 5px; border-radius: 3px; background: #CEBDCB;"></span>
+<div style="display: flex; align-items: center; gap: 14px;">
+<span style="width: 56px; height: 56px; border-radius: 28px; background: #EE7A30; display: flex; align-items: center; justify-content: center; color: #2A1A28; flex-shrink: 0;">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+</span>
+<div style="display: flex; flex-direction: column;">
+<span style="font-size: 20px; font-weight: 900;">Ticket lu, merci&nbsp;!</span>
+<span style="font-size: 14px; color: #625A60; font-weight: 700;">23 prix mis à jour chez Lidl</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; background: #FCE3D3; border-radius: 16px; padding: 12px 14px; color: #9A420E; font-size: 15px; font-weight: 900;">+3 jours Premium ajoutés · 12 jours restants</div>
+<button onClick="{{close}}" style="height: 56px; border-radius: 28px; border: none; background: #4A2545; color: #FFFFFF; font-family: inherit; font-size: 16px; font-weight: 900; cursor: pointer;">Retour à ma liste</button>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"showResult":{"editor":"boolean","default":false},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { shot: false }; }
+  renderVals() {
+    var self = this, g = this.props.go;
+    var w = [70, 52, 80, 60, 45, 74, 58, 66, 50, 62, 40];
+    return {
+      lines: w.map(function (n) { return { a: "height: 6px; width: " + n + "%; background: #DDD4C6; border-radius: 3px;" }; }),
+      done: this.state.shot || this.props.showResult === true,
+      shoot: function () { self.setState({ shot: true }); },
+      close: function () { self.setState({ shot: false }); if (g) g("liste"); }
+    };
+  }
+}
+</script>
+</body>
+</html>

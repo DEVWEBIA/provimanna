@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Bibliothèque de composants</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.sec{background:#FFFFFF;border:1px solid #E3DDD0;border-radius:26px;padding:28px}
+.h2{margin:0 0 4px;font-family:'Bricolage Grotesque','Nunito',sans-serif;font-size:28px;font-weight:800;letter-spacing:-0.6px}
+.cap{margin:0 0 20px;font-size:15px;color:#625A60}
+.lab{display:block;font-size:12px;font-weight:900;letter-spacing:0.8px;color:#625A60;margin-bottom:8px}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.edgeC{position:absolute;left:0;right:0;bottom:-8px;height:16px;background:radial-gradient(circle,#FFFFFF 7px,transparent 7.5px) repeat-x;background-size:22px 16px}
+@keyframes sh{0%{background-position:-300px 0}100%{background-position:300px 0}}
+.sk{background:linear-gradient(90deg,#EFEAE0 0,#F8F5EF 50%,#EFEAE0 100%);background-size:600px 100%;animation:sh 1.4s linear infinite;border-radius:10px}
+@media (prefers-reduced-motion: reduce){.sk{animation:none}}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F6F3EC; min-height: 100vh; padding: 40px 24px 80px;">
+<div style="max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px;">
+<div><p style="margin: 0 0 8px; font-size: 13px; font-weight: 900; letter-spacing: 1.4px; color: #9A420E;">DESIGN SYSTEM · AUBERGINE &amp; ORANGE</p><h1 class="disp" style="margin: 0; font-size: clamp(40px, 5vw, 64px); line-height: 1; font-weight: 800; letter-spacing: -2px;">Bibliothèque de composants</h1></div>
+<p style="margin: 0; max-width: 420px; font-size: 16px; line-height: 24px; color: #625A60;">Les briques communes au site, à la web app et au back-office. Les valeurs viennent de tokens.css.</p>
+</header>
+
+<!-- Couleurs -->
+<section class="sec">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center;"><h2 class="h2">Couleurs</h2><div role="tablist" aria-label="Thème" style="display: inline-flex; gap: 4px; background: #F6F3EC; border-radius: 999px; padding: 4px;"><sc-for list="{{themes}}" as="t" hint-placeholder-count="2"><button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.l}}</button></sc-for></div></div>
+<p class="cap">L'orange est réservé aux économies, toujours avec un texte foncé.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; padding: 16px; border-radius: 20px; background: {{swBg}};">
+<sc-for list="{{swatches}}" as="w" hint-placeholder-count="8">
+<div style="border-radius: 16px; overflow: hidden; border: 1px solid {{w.line}};"><div style="height: 72px; background: {{w.hex}};"></div><div style="padding: 10px 12px; background: {{w.cardBg}}; color: {{w.cardInk}};"><p style="margin: 0; font-weight: 900; font-size: 14px;">{{w.n}}</p><p class="num" style="margin: 2px 0 0; font-size: 13px; font-weight: 700; opacity: 0.8;">{{w.hex}} · {{w.u}}</p></div></div>
+</sc-for>
+</div>
+</section>
+
+<!-- Typo -->
+<section class="sec">
+<h2 class="h2">Typographie</h2>
+<p class="cap">Bricolage Grotesque pour les titres du site et les grands chiffres, Nunito pour l'interface.</p>
+<div style="display: flex; flex-direction: column; gap: 14px;">
+<div class="row" style="gap: 24px;"><span class="lab" style="width: 140px; margin: 0;">DISPLAY XL · 88</span><span class="disp" style="font-size: 72px; font-weight: 800; letter-spacing: -2.5px; line-height: 1;">Six prix.</span></div>
+<div class="row" style="gap: 24px;"><span class="lab" style="width: 140px; margin: 0;">TITRE · 48</span><span class="disp" style="font-size: 48px; font-weight: 800; letter-spacing: -1.4px; line-height: 1;">Ma liste de courses</span></div>
+<div class="row" style="gap: 24px;"><span class="lab" style="width: 140px; margin: 0;">PRIX · 60 / 800</span><span class="disp num" style="font-size: 60px; font-weight: 800; letter-spacing: -2px; line-height: 1;">71,60 €</span></div>
+<div class="row" style="gap: 24px;"><span class="lab" style="width: 140px; margin: 0;">SOUS-TITRE · 22</span><span style="font-size: 22px; font-weight: 900;">Tu compares, tu choisis</span></div>
+<div class="row" style="gap: 24px;"><span class="lab" style="width: 140px; margin: 0;">CORPS · 17</span><span style="font-size: 17px; line-height: 26px; max-width: 640px;">On planifie tes repas de la semaine et on te montre ce que coûte ta liste dans six enseignes.</span></div>
+<div class="row" style="gap: 24px;"><span class="lab" style="width: 140px; margin: 0;">SURTITRE · 13</span><span style="font-size: 13px; font-weight: 900; letter-spacing: 1.2px; color: #625A60;">SEMAINE 47 · 4 PERSONNES</span></div>
+</div>
+</section>
+
+<!-- Boutons -->
+<section class="sec">
+<h2 class="h2">Boutons et filtres</h2>
+<p class="cap">Un seul bouton plein par écran. Hauteur minimale 44 px.</p>
+<span class="lab">BOUTONS</span>
+<div class="row">
+<button type="button" style="min-height: 52px; padding: 0 26px; border-radius: 999px; border: 0; background: #4A2545; color: #FFFFFF; font: 900 16px Nunito; cursor: pointer;">Principal</button>
+<button type="button" style="min-height: 52px; padding: 0 24px; border-radius: 999px; border: 2px solid #4A2545; background: #FFFFFF; color: #4A2545; font: 900 16px Nunito; cursor: pointer;">Secondaire</button>
+<button type="button" style="min-height: 52px; padding: 0 22px; border-radius: 999px; border: 2px solid #E3DDD0; background: #FFFFFF; color: #2A1A28; font: 800 16px Nunito; cursor: pointer;">Neutre</button>
+<button type="button" style="min-height: 52px; padding: 0 24px; border-radius: 999px; border: 0; background: #EE7A30; color: #2A1A28; font: 900 16px Nunito; cursor: pointer;">Économie</button>
+<button type="button" style="min-height: 52px; padding: 0 18px; border-radius: 999px; border: 0; background: transparent; color: #4A2545; font: 900 16px Nunito; text-decoration: underline; cursor: pointer;">Lien</button>
+<button type="button" style="min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid #F3C7C2; background: #FFFFFF; color: #B42318; font: 900 14px Nunito; cursor: pointer;">Danger (BO)</button>
+<button type="button" disabled="" style="min-height: 52px; padding: 0 24px; border-radius: 999px; border: 0; background: #E3DDD0; color: #8A8088; font: 900 16px Nunito;">Désactivé</button>
+</div>
+<span class="lab" style="margin-top: 22px;">FILTRES ET ONGLETS</span>
+<div class="row">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="4"><button type="button" onClick="{{c.toggle}}" aria-pressed="{{c.on}}" style="{{c.style}}">{{c.l}}</button></sc-for>
+<span style="display: inline-flex; gap: 4px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 999px; padding: 4px;"><span style="min-height: 40px; display: inline-flex; align-items: center; padding: 0 18px; border-radius: 999px; background: #4A2545; color: #FFFFFF; font-weight: 900;">Ingrédients</span><span style="min-height: 40px; display: inline-flex; align-items: center; padding: 0 18px; font-weight: 900;">Étapes</span></span>
+</div>
+</section>
+
+<!-- Champs -->
+<section class="sec">
+<h2 class="h2">Champs et contrôles</h2>
+<p class="cap">Toujours un libellé visible. L'erreur dit quoi corriger.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+<div><label for="c1" class="lab">CHAMP</label><input id="c1" placeholder="ton@email.fr" style="width: 100%; box-sizing: border-box; min-height: 52px; border-radius: 14px; border: 2px solid #E3DDD0; padding: 0 16px; font: 700 16px Nunito; color: #2A1A28;"></div>
+<div><label for="c2" class="lab">CHAMP EN ERREUR</label><input id="c2" value="marion@" style="width: 100%; box-sizing: border-box; min-height: 52px; border-radius: 14px; border: 2px solid #B42318; padding: 0 16px; font: 700 16px Nunito; color: #2A1A28;"><p style="margin: 6px 0 0; font-size: 13px; font-weight: 800; color: #B42318;">Il manque le domaine après le @.</p></div>
+<div><label for="c3" class="lab">LISTE</label><select id="c3" style="width: 100%; min-height: 52px; border-radius: 14px; border: 2px solid #E3DDD0; padding: 0 12px; font: 700 16px Nunito; color: #2A1A28; background: #FFFFFF;"><option>Auchan · 69003</option></select></div>
+<div><span class="lab">COMPTEUR</span><span style="display: inline-flex; align-items: center; gap: 12px;"><button type="button" onClick="{{minus}}" aria-label="Moins" style="width: 48px; height: 48px; border-radius: 99px; border: 2px solid #E3DDD0; background: #FFFFFF; font: 900 22px Nunito; color: #4A2545; cursor: pointer;">−</button><span class="disp num" style="font-size: 30px; font-weight: 800; min-width: 28px; text-align: center;">{{count}}</span><button type="button" onClick="{{plus}}" aria-label="Plus" style="width: 48px; height: 48px; border-radius: 99px; border: 0; background: #4A2545; font: 900 22px Nunito; color: #FFFFFF; cursor: pointer;">+</button></span></div>
+<div><span class="lab">INTERRUPTEUR ET CASE</span><span class="row"><button type="button" role="switch" aria-checked="{{swOn}}" aria-label="Exemple" onClick="{{toggleSw}}" style="{{swTrack}}"><span style="width: 24px; height: 24px; border-radius: 99px; background: #FFFFFF; display: block;"></span></button><label style="display: inline-flex; gap: 10px; align-items: center; font-weight: 800; min-height: 44px; cursor: pointer;"><input type="checkbox" checked="" style="width: 22px; height: 22px; accent-color: #4A2545;">Déjà dans le placard</label></span></div>
+<div><label for="c4" class="lab">CURSEUR</label><input id="c4" type="range" min="80" max="99" value="95" style="width: 100%; accent-color: #4A2545;"></div>
+</div>
+</section>
+
+<!-- Badges -->
+<section class="sec">
+<h2 class="h2">Badges, pastilles et fiabilité</h2>
+<p class="cap">Enseignes : jamais de logo ni de couleur officielle, deux lettres sur fond pastel et le nom en clair.</p>
+<div class="row">
+<span style="background: #FCE3D3; color: #9A420E; font-size: 13px; font-weight: 900; padding: 4px 12px; border-radius: 999px;">Le moins cher</span>
+<span style="background: #EFE3EC; color: #4A2545; font-size: 13px; font-weight: 900; padding: 4px 12px; border-radius: 999px;">Ton enseigne</span>
+<span style="background: #4A2545; color: #FFFFFF; font-size: 12px; font-weight: 900; padding: 4px 10px; border-radius: 999px;">PREMIUM</span>
+<span style="background: #E3F0DF; color: #2F6B2A; font-size: 12px; font-weight: 900; padding: 4px 10px; border-radius: 999px;">Validé</span>
+<span style="background: #F6E7C8; color: #6B4A0E; font-size: 12px; font-weight: 900; padding: 4px 10px; border-radius: 999px;">Brouillon</span>
+<span style="background: #FBE4E1; color: #B42318; font-size: 12px; font-weight: 900; padding: 4px 10px; border-radius: 999px;">Rejeté</span>
+<span style="font-weight: 900;"><span style="color: #2F6B2A;">●●●</span> élevée</span><span style="font-weight: 900;"><span style="color: #6B4A0E;">●●○</span> moyenne</span><span style="font-weight: 900;"><span style="color: #9A420E;">●○○</span> estimation</span>
+</div>
+<div class="row" style="margin-top: 18px;">
+<span style="display: inline-flex; align-items: center; gap: 8px; font-weight: 800;"><span style="width: 36px; height: 36px; border-radius: 10px; background: #E3ECF6; display: grid; place-items: center; font-size: 12px; font-weight: 900;">LI</span>Lidl</span>
+<span style="display: inline-flex; align-items: center; gap: 8px; font-weight: 800;"><span style="width: 36px; height: 36px; border-radius: 10px; background: #E7EFE2; display: grid; place-items: center; font-size: 12px; font-weight: 900;">AL</span>Aldi</span>
+<span style="display: inline-flex; align-items: center; gap: 8px; font-weight: 800;"><span style="width: 36px; height: 36px; border-radius: 10px; background: #ECE6F5; display: grid; place-items: center; font-size: 12px; font-weight: 900;">EL</span>E.Leclerc</span>
+<span style="display: inline-flex; align-items: center; gap: 8px; font-weight: 800;"><span style="width: 36px; height: 36px; border-radius: 10px; background: #F5E9DC; display: grid; place-items: center; font-size: 12px; font-weight: 900;">IN</span>Intermarché</span>
+<span style="display: inline-flex; align-items: center; gap: 8px; font-weight: 800;"><span style="width: 36px; height: 36px; border-radius: 10px; background: #E2EFEF; display: grid; place-items: center; font-size: 12px; font-weight: 900;">CA</span>Carrefour</span>
+<span style="display: inline-flex; align-items: center; gap: 8px; font-weight: 800;"><span style="width: 36px; height: 36px; border-radius: 10px; background: #F4E3E6; display: grid; place-items: center; font-size: 12px; font-weight: 900;">AU</span>Auchan</span>
+</div>
+</section>
+
+<!-- Cartes -->
+<section class="sec" style="background: #F6F3EC;">
+<h2 class="h2">Cartes</h2>
+<p class="cap">Rayon 18 à 30 px, bordure fine plutôt qu'ombre. Le ticket dentelé est la signature de marque.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; align-items: start;">
+<div style="background: #FFFFFF; border: 2px solid #EFEAE0; border-radius: 20px; padding: 12px; display: flex; gap: 12px; align-items: center;"><dc-import variant="dahl" size="72" name="Plat" hint-size="72px,72px"></dc-import><span><span style="display: block; font-size: 12px; font-weight: 900; color: #625A60;">SOIR</span><span style="display: block; font-weight: 900;">Dahl de lentilles</span><span class="num" style="font-size: 14px; font-weight: 800; color: #9A420E;">0,88 € / part</span></span></div>
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 16px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.8px; color: #625A60;">ACTIFS HEBDO</p><p class="disp num" style="margin: 6px 0 0; font-size: 30px; font-weight: 800;">1 912</p><p style="margin: 2px 0 0; font-size: 13px; font-weight: 800; color: #2F6B2A;">+6,8 % vs S45</p></div>
+<div style="position: relative; background: #FFFFFF; border-radius: 20px 20px 0 0; padding: 18px 18px 26px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 1px; color: #625A60;">TICKET</p><p class="disp num" style="margin: 4px 0 0; font-size: 34px; font-weight: 800;">60,10 €</p><span class="edgeC" aria-hidden="true" style="background: radial-gradient(circle,#F6F3EC 7px,transparent 7.5px) repeat-x; background-size: 22px 16px;"></span></div>
+<div style="background: #4A2545; color: #FFFFFF; border-radius: 24px; padding: 20px;"><p style="margin: 0; font-size: 12px; font-weight: 900; color: #E3CDE0;">CARTE MISE EN AVANT</p><p class="disp" style="margin: 6px 0 0; font-size: 24px; font-weight: 800;">Ton menu est prêt</p></div>
+</div>
+</section>
+
+<!-- Retours -->
+<section class="sec">
+<h2 class="h2">Retours et états</h2>
+<p class="cap">Messages positifs et utiles, jamais culpabilisants.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
+<div role="status" style="display: flex; gap: 12px; align-items: center; background: #2A1A28; color: #FFFFFF; border-radius: 16px; padding: 14px 16px;"><span style="color: #B7DDB0; font-weight: 900;">✓</span><span style="flex: 1; font-weight: 700;">Pâtes à la tomate ajoutées mardi soir</span><button type="button" style="background: transparent; border: 0; color: #F6B98F; font: 900 14px Nunito; cursor: pointer;">Annuler</button></div>
+<div style="background: #FCE3D3; color: #5A2A0B; border-radius: 16px; padding: 14px 16px; font-weight: 700;"><strong>Prix incomplets</strong> chez Intermarché : total estimé.</div>
+<div style="background: #FBE4E1; color: #7A1A12; border-radius: 16px; padding: 14px 16px; font-weight: 700;"><strong>Le plan n'a pas pu être généré.</strong> Réessaie dans un instant.</div>
+<div style="display: flex; flex-direction: column; gap: 8px;" aria-hidden="true"><span class="sk" style="height: 18px; width: 60%;"></span><span class="sk" style="height: 46px;"></span><span class="sk" style="height: 46px;"></span></div>
+</div>
+</section>
+
+<!-- Illustrations -->
+<section class="sec">
+<h2 class="h2">Illustrations de plats</h2>
+<p class="cap">Vue de dessus, sur assiette blanche. Composant Plat : 12 variantes.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px;">
+<sc-for list="{{plats}}" as="p" hint-placeholder-count="12">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; background: #F6F3EC; border-radius: 20px; padding: 14px 8px;"><dc-import variant="{{p.v}}" size="110" name="Plat" hint-size="110px,110px"></dc-import><span style="font-size: 13px; font-weight: 800; text-align: center;">{{p.l}}</span><span style="font-size: 11px; font-weight: 800; color: #625A60;">{{p.v}}</span></div>
+</sc-for>
+</div>
+</section>
+
+<!-- Icônes -->
+<section class="sec">
+<h2 class="h2">Icônes</h2>
+<p class="cap">Trait de 2 px, coins arrondis, jamais d'emoji.</p>
+<div class="row" style="gap: 18px; color: #4A2545;">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Accueil"><path d="M3 11 12 4l9 7v9H3z"></path></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Plan"><rect x="3" y="4" width="18" height="17" rx="3"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Liste"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Recettes"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Profil"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4-6 8-6s7 2 8 6"></path></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Panier"><path d="M3 9h18M5 9l1 11h12l1-11M9 9V6a3 3 0 0 1 6 0v3"></path></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Ticket"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Notification"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"></path></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Horloge"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Favori"><path d="M12 21s-7-4.4-9.3-9C1.2 8.8 3.3 5 7 5c2 0 3.5 1.2 5 3 1.5-1.8 3-3 5-3 3.7 0 5.8 3.8 4.3 7-2.3 4.6-9.3 9-9.3 9z"></path></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Télécharger"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></svg>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Verrou"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+</div>
+</section>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2800}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { theme: 'light', chips: { 'De saison': true }, count: 4, sw: true }; }
+  renderVals() {
+    var self = this, s = this.state, dark = s.theme === 'dark';
+    var L = [['Aubergine', '#4A2545', 'marque, actions'], ['Orange', '#EE7A30', 'économies'], ['Sable', '#F6F3EC', 'fond'], ['Encre', '#2A1A28', 'texte, BO'], ['Pêche', '#FCE3D3', 'encarts moins cher'], ['Texte pêche', '#9A420E', 'sur pêche'], ['Aubergine clair', '#EFE3EC', 'sélection'], ['Ligne', '#E3DDD0', 'bordures']];
+    var D = [['Aubergine', '#C9A3C2', 'marque, actions'], ['Orange', '#F08A47', 'économies'], ['Fond', '#160F15', 'fond'], ['Texte', '#F3EDF1', 'texte'], ['Pêche', '#3D2418', 'encarts'], ['Texte pêche', '#F6B98F', 'sur pêche'], ['Aubergine clair', '#33212F', 'sélection'], ['Ligne', '#3A2D37', 'bordures']];
+    var swatches = (dark ? D : L).map(function (w) { return { n: w[0], hex: w[1], u: w[2], line: dark ? '#3A2D37' : '#E3DDD0', cardBg: dark ? '#221820' : '#FFFFFF', cardInk: dark ? '#F3EDF1' : '#2A1A28' }; });
+    var themes = [['light', 'Clair'], ['dark', 'Sombre']].map(function (t) {
+      var on = s.theme === t[0];
+      return { l: t[1], on: on ? 'true' : 'false', pick: function () { self.setState({ theme: t[0] }); },
+        style: 'min-height:40px;padding:0 18px;border-radius:999px;border:0;font:900 14px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF' : 'background:transparent;color:#2A1A28') };
+    });
+    var chips = ['Végé', 'De saison', '− de 30 min', 'Enfants'].map(function (l) {
+      var on = !!s.chips[l];
+      return { l: l, on: on ? 'true' : 'false', toggle: function () { var o = Object.assign({}, s.chips); o[l] = !on; self.setState({ chips: o }); },
+        style: 'min-height:44px;padding:0 16px;border-radius:999px;font:800 14px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF;border:2px solid #4A2545' : 'background:#FFFFFF;color:#2A1A28;border:2px solid #E3DDD0') };
+    });
+    var plats = [['curry', 'Curry de pois chiches'], ['salade', 'Salade lentilles feta'], ['soupe', 'Velouté de potimarron'], ['pates', 'Pâtes à la tomate'], ['gratin', 'Gratin de potimarron'], ['poisson', 'Saumon et haricots'], ['dahl', 'Dahl de lentilles'], ['omelette', 'Omelette aux herbes'], ['riz', 'Riz sauté'], ['tarte', 'Tarte aux poireaux'], ['lasagnes', 'Lasagnes végé'], ['soupeverte', 'Soupe de poireaux']].map(function (p) { return { v: p[0], l: p[1] }; });
+    return { swatches: swatches, themes: themes, chips: chips, plats: plats, swBg: dark ? '#160F15' : '#F6F3EC', count: s.count,
+      minus: function () { self.setState({ count: Math.max(1, s.count - 1) }); }, plus: function () { self.setState({ count: Math.min(9, s.count + 1) }); },
+      swOn: s.sw ? 'true' : 'false', toggleSw: function () { self.setState({ sw: !s.sw }); },
+      swTrack: 'width:52px;height:30px;flex:none;border-radius:99px;border:0;padding:3px;cursor:pointer;display:flex;' + (s.sw ? 'background:#4A2545;justify-content:flex-end' : 'background:#D9D2DA;justify-content:flex-start') };
+  }
+}
+</script>
+</body>
+</html>

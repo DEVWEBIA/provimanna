@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Web app — catalogue de recettes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.nav{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border-radius:14px;text-decoration:none;color:#2A1A28;font-weight:800;font-size:15px}
+.nav:hover{background:#F6F3EC;color:#2A1A28}
+.rc:hover{border-color:#4A2545}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F6F3EC; min-height: 100vh; display: flex; flex-wrap: wrap;">
+
+<aside style="flex: 1 1 240px; max-width: 100%; background: #FFFFFF; border-right: 1px solid #E3DDD0; padding: 24px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px;">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; color: #4A2545; font-weight: 900; font-size: 17px; text-decoration: none; padding: 0 8px;"><svg width="28" height="28" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#4A2545"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"></path><circle cx="24" cy="23" r="3.2" fill="#EE7A30"></circle></svg>[Nom de l'appli]</a>
+<nav aria-label="Web app" style="display: flex; flex-direction: column; gap: 2px;">
+<a href="AppDashboard.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 11 12 4l9 7v9H3z"></path></svg>Accueil</a>
+<a href="AppPlan.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg>Mon plan</a>
+<a href="AppListe.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>Liste de courses</a>
+<a href="AppRecettes.dc.html" class="nav" aria-current="page" style="background: #EFE3EC; color: #4A2545;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle></svg>Recettes</a>
+<a href="AppEconomies.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Mes économies</a>
+<a href="AppFamille.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M2 20c1-3.5 3.6-5 7-5s6 1.5 7 5M15 15c3 0 5 1.5 6 4"></path></svg>Famille</a>
+<a href="AppNotifs.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"></path></svg>Notifications<span style="margin-left: auto; background: #EE7A30; color: #2A1A28; font-size: 12px; font-weight: 900; padding: 1px 8px; border-radius: 99px;">3</span></a>
+<a href="AppAbonnement.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4-6 8-6s7 2 8 6"></path></svg>Profil</a>
+</nav>
+</aside>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 28px clamp(20px, 3vw, 44px) 64px; box-sizing: border-box;">
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px;">
+<div><h1 class="disp" style="margin: 0; font-size: clamp(34px, 3.4vw, 48px); font-weight: 800; letter-spacing: -1.4px;">Recettes</h1><p style="margin: 4px 0 0; font-size: 16px; color: #625A60; font-weight: 700;">Prix par part chez Auchan, pour ton foyer de 4</p></div>
+<div style="flex: 0 1 380px; position: relative;"><label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Rechercher une recette</label><input id="q" value="{{q}}" onInput="{{onQ}}" placeholder="Potimarron, lentilles, poulet…" style="width: 100%; box-sizing: border-box; min-height: 52px; border-radius: 999px; border: 2px solid #E3DDD0; padding: 0 18px 0 46px; font: 700 16px Nunito; color: #2A1A28; background: #FFFFFF;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#625A60" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="position: absolute; left: 17px; top: 16px;"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></div>
+</header>
+
+<div style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px;" role="group" aria-label="Filtres"><sc-for list="{{filters}}" as="f" hint-placeholder-count="6"><button type="button" onClick="{{f.pick}}" aria-pressed="{{f.on}}" style="{{f.style}}">{{f.l}}</button></sc-for></div>
+
+<sc-if value="{{hasPicked}}" hint-placeholder-val="{{false}}">
+<div role="status" style="margin-top: 16px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; background: #2A1A28; color: #FFFFFF; border-radius: 18px; padding: 12px 18px;"><span style="font-weight: 800;"><span class="num" style="color: #F6B98F; font-weight: 900;">{{picked}}</span> recette(s) à placer dans ta semaine 48</span><a href="AppPlan.dc.html" style="min-height: 44px; display: inline-flex; align-items: center; padding: 0 18px; border-radius: 999px; background: #FFFFFF; color: #2A1A28; font-weight: 900; text-decoration: none;">Les placer dans mon plan</a></div>
+</sc-if>
+
+<p class="num" style="margin: 18px 0 12px; font-size: 14px; font-weight: 800; color: #625A60;">{{count}} recettes</p>
+<section aria-label="Recettes" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px;">
+<sc-for list="{{list}}" as="r" hint-placeholder-count="8">
+<article class="rc" style="background: #FFFFFF; border: 2px solid #EFEAE0; border-radius: 22px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+<a href="AppRecette.dc.html" style="display: flex; justify-content: center; background: {{r.tint}}; border-radius: 16px; padding: 12px 0; text-decoration: none;" aria-label="{{r.n}}"><dc-import variant="{{r.v}}" size="116" name="Plat" hint-size="116px,116px"></dc-import></a>
+<a href="AppRecette.dc.html" style="font-weight: 900; font-size: 17px; line-height: 1.2; text-decoration: none; color: #2A1A28;">{{r.n}}</a>
+<span class="num" style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; color: #625A60;"><span>{{r.t}} min · {{r.tag}}</span><span style="color: #9A420E; font-weight: 900;">{{r.p}}</span></span>
+<button type="button" onClick="{{r.toggle}}" aria-pressed="{{r.on}}" style="{{r.btn}}">{{r.cta}}</button>
+</article>
+</sc-for>
+</section>
+<sc-if value="{{empty}}" hint-placeholder-val="{{false}}"><p style="margin: 24px 0 0; background: #FFFFFF; border: 1px dashed #CFC5CD; border-radius: 18px; padding: 24px; text-align: center; font-weight: 800; color: #625A60;">Aucune recette ne correspond. Essaie un autre ingrédient.</p></sc-if>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { q: '', f: 'all', pick: {} }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var fmt = function (v) { return v.toFixed(2).replace('.', ',') + ' € / part'; };
+    var tint = { soupe: '#FCE3D3', curry: '#EFE3EC', salade: '#E8F0DF', pates: '#F5E9DC', gratin: '#FCE3D3', poisson: '#E3ECF6', dahl: '#F5E9DC', omelette: '#F6EFC8', riz: '#E8F0DF', tarte: '#F5E9DC', lasagnes: '#F4E3E6', soupeverte: '#E8F0DF' };
+    var R = [['Velouté de potimarron', 'soupe', 35, 1.24, 'saison'], ['Dahl de lentilles corail', 'dahl', 35, 1.06, 'veg'], ['Gratin de potimarron', 'gratin', 50, 1.38, 'saison'], ['Saumon et haricots verts', 'poisson', 25, 2.40, 'rapide'], ['Omelette aux herbes', 'omelette', 15, 0.92, 'rapide'], ['Riz sauté aux légumes', 'riz', 25, 0.95, 'veg'], ['Tarte aux poireaux', 'tarte', 55, 1.18, 'saison'], ['Lasagnes végé', 'lasagnes', 60, 1.62, 'enfants'], ['Soupe de poireaux', 'soupeverte', 30, 0.98, 'saison'], ['Curry de pois chiches', 'curry', 30, 1.18, 'veg'], ['Pâtes à la tomate', 'pates', 20, 0.90, 'enfants'], ['Salade lentilles et feta', 'salade', 15, 1.48, 'rapide']];
+    var lab = { saison: 'de saison', veg: 'végé', rapide: 'rapide', enfants: 'enfants' };
+    var q = s.q.toLowerCase();
+    var list = [], picked = 0;
+    R.forEach(function (r, i) {
+      var on = !!s.pick[i]; if (on) picked++;
+      if (s.f !== 'all' && r[4] !== s.f) return;
+      if (q && r[0].toLowerCase().indexOf(q) < 0) return;
+      list.push({ n: r[0], v: r[1], t: r[2], p: fmt(r[3]), tag: lab[r[4]], tint: tint[r[1]], on: on ? 'true' : 'false', cta: on ? 'Ajoutée ✓' : '+ Ajouter à ma semaine',
+        toggle: function () { var o = Object.assign({}, s.pick); o[i] = !on; self.setState({ pick: o }); },
+        btn: 'min-height:44px;border-radius:999px;font:900 14px Nunito;cursor:pointer;margin-top:auto;' + (on ? 'background:#4A2545;color:#FFFFFF;border:2px solid #4A2545' : 'background:#FFFFFF;color:#4A2545;border:2px solid #E3DDD0') });
+    });
+    var filters = [['all', 'Toutes'], ['saison', 'De saison'], ['veg', 'Végé'], ['rapide', '− de 30 min'], ['enfants', 'Enfants']].map(function (f) {
+      var on = s.f === f[0];
+      return { l: f[1], on: on ? 'true' : 'false', pick: function () { self.setState({ f: f[0] }); },
+        style: 'min-height:44px;padding:0 16px;border-radius:999px;font:800 14px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF;border:2px solid #4A2545' : 'background:#FFFFFF;color:#2A1A28;border:2px solid #E3DDD0') };
+    });
+    return { list: list, filters: filters, q: s.q, count: list.length, empty: list.length === 0, picked: picked, hasPicked: picked > 0, onQ: function (e) { self.setState({ q: e.target.value }); } };
+  }
+}
+</script>
+</body>
+</html>

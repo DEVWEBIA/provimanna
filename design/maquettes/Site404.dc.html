@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Page introuvable</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.lnk{text-decoration:none;color:inherit}.lnk:hover{text-decoration:underline}
+.tile:hover{border-color:#4A2545}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F6F3EC; min-height: 100vh;">
+<header style="background: #FFFFFF; border-bottom: 1px solid #E3DDD0;">
+<nav aria-label="Navigation principale" style="max-width: 1240px; margin: 0 auto; padding: 16px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px;">
+<a href="Main.dc.html" class="lnk" style="display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 18px; color: #4A2545;"><svg width="30" height="30" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#4A2545"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"></path><circle cx="24" cy="23" r="3.2" fill="#EE7A30"></circle></svg>[Nom de l'appli]</a>
+<div style="display: flex; flex-wrap: wrap; gap: 4px 22px; flex: 1 1 auto; font-weight: 700; font-size: 15px;"><a href="SiteRecettes.dc.html" class="lnk">Recettes</a><a href="SiteMenu.dc.html" class="lnk">Menus</a><a href="SiteComparatif.dc.html" class="lnk">Comparatifs</a><a href="SiteTarifs.dc.html" class="lnk">Tarifs</a></div>
+</nav>
+</header>
+<main style="max-width: 1040px; margin: 0 auto; padding: 72px 24px 80px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center;">
+<div style="flex: 0 1 320px; display: flex; justify-content: center;" aria-hidden="true">
+<svg width="300" height="300" viewBox="0 0 300 300"><circle cx="150" cy="150" r="140" fill="#EFE3EC"></circle><circle cx="150" cy="150" r="96" fill="#FFFFFF" stroke="#E3DDD0" stroke-width="4"></circle><circle cx="150" cy="150" r="70" fill="none" stroke="#E3DDD0" stroke-width="2" stroke-dasharray="6 9"></circle><circle cx="124" cy="140" r="9" fill="#F4CF6A"></circle><text x="150" y="178" text-anchor="middle" font-family="Bricolage Grotesque, Nunito, sans-serif" font-size="58" font-weight="800" fill="#4A2545">404</text><path d="M232 70c10 6 12 24 12 36h-12v52" stroke="#4A2545" stroke-width="5" stroke-linecap="round" fill="none"></path></svg>
+</div>
+<div style="flex: 1 1 420px; min-width: 0;">
+<h1 class="disp" style="margin: 0; font-size: clamp(38px, 4.6vw, 60px); line-height: 1; font-weight: 800; letter-spacing: -1.8px;">Cette page est partie faire les courses.</h1>
+<p style="margin: 18px 0 24px; font-size: 19px; line-height: 29px; color: #4D444B;">Le lien est peut-être ancien, ou la recette a changé de nom. Cherche-la, ou repars d'ici :</p>
+<form role="search" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;"><label for="q404" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Rechercher une recette</label><input id="q404" placeholder="Une recette, un ingrédient…" style="flex: 1 1 240px; min-height: 54px; box-sizing: border-box; border-radius: 999px; border: 2px solid #E3DDD0; padding: 0 20px; font: 700 16px Nunito; color: #2A1A28; background: #FFFFFF;"><button type="button" style="min-height: 54px; padding: 0 24px; border-radius: 999px; border: 0; background: #4A2545; color: #FFFFFF; font: 900 16px Nunito; cursor: pointer;">Rechercher</button></form>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px;">
+<a href="SiteRecettes.dc.html" class="lnk tile" style="background: #FFFFFF; border: 2px solid #E3DDD0; border-radius: 18px; padding: 16px; font-weight: 900;">Recettes de saison →</a>
+<a href="SiteMenu.dc.html" class="lnk tile" style="background: #FFFFFF; border: 2px solid #E3DDD0; border-radius: 18px; padding: 16px; font-weight: 900;">Menu de la semaine →</a>
+<a href="Main.dc.html" class="lnk tile" style="background: #FFFFFF; border: 2px solid #E3DDD0; border-radius: 18px; padding: 16px; font-weight: 900;">Page d'accueil →</a>
+</div>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

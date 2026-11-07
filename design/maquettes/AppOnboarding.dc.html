@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Onboarding — ton foyer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.tile:hover{border-color:#4A2545}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F6F3EC; min-height: 100vh; display: flex; flex-wrap: wrap;">
+
+<!-- Colonne gauche -->
+<aside style="flex: 1 1 380px; background: #4A2545; color: #FFFFFF; padding: 40px clamp(24px, 4vw, 56px); display: flex; flex-direction: column; gap: 40px; box-sizing: border-box; position: relative; overflow: hidden;">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; color: #FFFFFF; font-weight: 900; font-size: 18px; text-decoration: none;"><svg width="30" height="30" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#EE7A30"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#2A1A28" stroke-width="2.4" stroke-linecap="round"></path><circle cx="24" cy="23" r="3.2" fill="#2A1A28"></circle></svg>[Nom de l'appli]</a>
+<div>
+<p class="disp" style="margin: 0; font-size: clamp(32px, 3vw, 44px); line-height: 1.02; font-weight: 800; letter-spacing: -1.4px;">Ta première semaine en 2 minutes.</p>
+<p style="margin: 14px 0 0; font-size: 17px; line-height: 26px; color: #E3CDE0;">Tu peux tout changer plus tard dans ton profil.</p>
+</div>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+<li style="{{s.rowStyle}}"><span style="{{s.dotStyle}}">{{s.mark}}</span><span><span style="display: block; font-weight: 900; font-size: 16px;">{{s.t}}</span><span style="display: block; font-size: 14px; color: #D9C6D4;">{{s.d}}</span></span></li>
+</sc-for>
+</ol>
+<div style="margin-top: auto; display: flex; gap: 10px; align-items: flex-end;" aria-hidden="true">
+<dc-import variant="curry" size="110" name="Plat" hint-size="110px,110px"></dc-import>
+<dc-import variant="soupe" size="84" name="Plat" hint-size="84px,84px"></dc-import>
+<dc-import variant="pates" size="96" name="Plat" hint-size="96px,96px"></dc-import>
+</div>
+<p style="margin: 0; font-size: 14px; font-weight: 700; color: #D9C6D4;">14 jours de Premium offerts · sans carte bancaire</p>
+</aside>
+
+<!-- Contenu -->
+<main style="flex: 999 1 560px; min-width: 0; padding: 40px clamp(24px, 5vw, 88px); box-sizing: border-box; display: flex; flex-direction: column;">
+<div style="display: flex; align-items: center; gap: 16px; margin-bottom: 48px;">
+<div style="flex: 1; height: 8px; border-radius: 9px; background: #E3DDD0;" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="{{stepNum}}" aria-label="Progression"><div style="height: 8px; border-radius: 9px; background: #4A2545; width: {{progress}};"></div></div>
+<span class="num" style="font-weight: 900; font-size: 14px; color: #625A60;">Étape {{stepNum}} sur 4</span>
+</div>
+
+<div style="max-width: 680px; width: 100%; flex: 1;">
+<!-- 1 Foyer -->
+<sc-if value="{{is.s0}}" hint-placeholder-val="{{true}}">
+<h1 class="disp" style="margin: 0; font-size: clamp(34px, 3.6vw, 50px); line-height: 1.05; font-weight: 800; letter-spacing: -1.4px;">Vous êtes combien à table ?</h1>
+<p style="margin: 12px 0 36px; font-size: 18px; color: #625A60;">On adapte les quantités et le budget à ton foyer.</p>
+<div style="display: flex; flex-direction: column; gap: 14px;">
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 22px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+<span><span style="display: block; font-weight: 900; font-size: 19px;">Adultes</span><span style="font-size: 15px; color: #625A60;">13 ans et plus</span></span>
+<span style="display: flex; align-items: center; gap: 14px;"><button type="button" onClick="{{adMinus}}" aria-label="Retirer un adulte" style="width: 48px; height: 48px; border-radius: 99px; border: 2px solid #E3DDD0; background: #FFFFFF; font: 900 22px Nunito; color: #4A2545; cursor: pointer;">−</button><span class="disp num" style="font-size: 32px; font-weight: 800; min-width: 28px; text-align: center;">{{ad}}</span><button type="button" onClick="{{adPlus}}" aria-label="Ajouter un adulte" style="width: 48px; height: 48px; border-radius: 99px; border: 0; background: #4A2545; font: 900 22px Nunito; color: #FFFFFF; cursor: pointer;">+</button></span>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 22px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+<span><span style="display: block; font-weight: 900; font-size: 19px;">Enfants</span><span style="font-size: 15px; color: #625A60;">Portions adaptées</span></span>
+<span style="display: flex; align-items: center; gap: 14px;"><button type="button" onClick="{{enMinus}}" aria-label="Retirer un enfant" style="width: 48px; height: 48px; border-radius: 99px; border: 2px solid #E3DDD0; background: #FFFFFF; font: 900 22px Nunito; color: #4A2545; cursor: pointer;">−</button><span class="disp num" style="font-size: 32px; font-weight: 800; min-width: 28px; text-align: center;">{{en}}</span><button type="button" onClick="{{enPlus}}" aria-label="Ajouter un enfant" style="width: 48px; height: 48px; border-radius: 99px; border: 0; background: #4A2545; font: 900 22px Nunito; color: #FFFFFF; cursor: pointer;">+</button></span>
+</div>
+<p style="margin: 6px 0 0; background: #FCE3D3; color: #9A420E; border-radius: 16px; padding: 14px 18px; font-weight: 800; font-size: 15px;">Budget repère pour ce foyer : {{budget}} par semaine</p>
+</div>
+</sc-if>
+
+<!-- 2 Régime -->
+<sc-if value="{{is.s1}}" hint-placeholder-val="{{false}}">
+<h1 class="disp" style="margin: 0; font-size: clamp(34px, 3.6vw, 50px); line-height: 1.05; font-weight: 800; letter-spacing: -1.4px;">Des choses à éviter ?</h1>
+<p style="margin: 12px 0 36px; font-size: 18px; color: #625A60;">Choisis tout ce qui s'applique. Aucun choix, c'est très bien aussi.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+<sc-for list="{{diets}}" as="d" hint-placeholder-count="8">
+<button type="button" class="tile" onClick="{{d.toggle}}" aria-pressed="{{d.on}}" style="{{d.style}}">{{d.l}}</button>
+</sc-for>
+</div>
+<div style="margin-top: 32px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 22px; padding: 20px 24px;">
+<label for="temps" style="display: block; font-weight: 900; font-size: 17px; margin-bottom: 10px;">Temps de cuisine en semaine</label>
+<select id="temps" style="width: 100%; min-height: 52px; border-radius: 14px; border: 2px solid #E3DDD0; padding: 0 14px; font: 700 16px Nunito; color: #2A1A28; background: #FFFFFF;"><option>Moins de 30 minutes</option><option>30 à 45 minutes</option><option>Peu importe</option></select>
+</div>
+</sc-if>
+
+<!-- 3 Enseigne -->
+<sc-if value="{{is.s2}}" hint-placeholder-val="{{false}}">
+<h1 class="disp" style="margin: 0; font-size: clamp(34px, 3.6vw, 50px); line-height: 1.05; font-weight: 800; letter-spacing: -1.4px;">Où fais-tu tes courses ?</h1>
+<p style="margin: 12px 0 36px; font-size: 18px; color: #625A60;">On calcule les prix dans ton enseigne. Tu verras aussi les autres, pour comparer.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px;">
+<sc-for list="{{stores}}" as="s" hint-placeholder-count="6">
+<button type="button" class="tile" onClick="{{s.pick}}" aria-pressed="{{s.on}}" style="{{s.style}}"><span style="width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-weight: 900; background: {{s.bg}}; color: #2A1A28;">{{s.short}}</span><span style="font-weight: 900; font-size: 17px;">{{s.name}}</span></button>
+</sc-for>
+</div>
+<div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 12px; align-items: end;">
+<div style="flex: 1 1 220px;"><label for="cp" style="display: block; font-weight: 900; font-size: 15px; margin-bottom: 8px;">Code postal</label><input id="cp" value="69003" inputmode="numeric" style="width: 100%; box-sizing: border-box; min-height: 52px; border-radius: 14px; border: 2px solid #E3DDD0; padding: 0 16px; font: 800 17px Nunito; color: #2A1A28;"></div>
+<p style="flex: 1 1 260px; margin: 0; font-size: 14px; color: #625A60; line-height: 21px;">Il sert à choisir les prix des magasins proches. Il n'est jamais partagé.</p>
+</div>
+</sc-if>
+
+<!-- 4 Génération -->
+<sc-if value="{{is.s3}}" hint-placeholder-val="{{false}}">
+<p style="margin: 0 0 14px; display: inline-flex; gap: 8px; align-items: center; background: #E8F0DF; color: #34561C; font-weight: 900; font-size: 14px; padding: 8px 14px; border-radius: 999px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Plan généré</p>
+<h1 class="disp" style="margin: 0; font-size: clamp(34px, 3.6vw, 50px); line-height: 1.05; font-weight: 800; letter-spacing: -1.4px;">Ta semaine 47 est prête.</h1>
+<p style="margin: 12px 0 28px; font-size: 18px; color: #625A60;">14 repas pour {{people}} personnes, de saison, chez {{storeName}}.</p>
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 22px;">
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; text-align: center; font-size: 12px; font-weight: 900; color: #625A60;" aria-hidden="true">
+<span>LUN</span><span>MAR</span><span>MER</span><span>JEU</span><span>VEN</span><span>SAM</span><span>DIM</span>
+<span style="height: 44px; border-radius: 10px; background: #E9A23B;"></span><span style="height: 44px; border-radius: 10px; background: #7DB043;"></span><span style="height: 44px; border-radius: 10px; background: #E98A2E;"></span><span style="height: 44px; border-radius: 10px; background: #F4CF6A;"></span><span style="height: 44px; border-radius: 10px; background: #7DB043;"></span><span style="height: 44px; border-radius: 10px; background: #C8382B;"></span><span style="height: 44px; border-radius: 10px; background: #E9A23B;"></span>
+<span style="height: 44px; border-radius: 10px; background: #F4CF6A;"></span><span style="height: 44px; border-radius: 10px; background: #E98A2E;"></span><span style="height: 44px; border-radius: 10px; background: #7DB043;"></span><span style="height: 44px; border-radius: 10px; background: #E9A23B;"></span><span style="height: 44px; border-radius: 10px; background: #C8382B;"></span><span style="height: 44px; border-radius: 10px; background: #F4CF6A;"></span><span style="height: 44px; border-radius: 10px; background: #E98A2E;"></span>
+</div>
+<div style="margin-top: 20px; padding-top: 18px; border-top: 2px dashed #E3DDD0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
+<span><span style="display: block; font-size: 13px; font-weight: 900; letter-spacing: 1px; color: #625A60;">TOTAL CHEZ {{storeUp}}</span><span class="disp num" style="font-size: 44px; font-weight: 800; letter-spacing: -1.4px;">{{total}}</span></span>
+<span style="background: #FCE3D3; color: #9A420E; font-weight: 900; padding: 10px 16px; border-radius: 14px;">Possible dès {{min}} chez Lidl</span>
+</div>
+</div>
+</sc-if>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 48px; max-width: 680px;">
+<button type="button" onClick="{{back}}" style="min-height: 52px; padding: 0 22px; border: 0; background: transparent; font: 900 16px Nunito; color: #4A2545; cursor: pointer; visibility: {{backVis}};">← Retour</button>
+<sc-if value="{{notLast}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{next}}" style="min-height: 56px; padding: 0 34px; border: 0; border-radius: 999px; background: #4A2545; color: #FFFFFF; font: 900 17px Nunito; cursor: pointer;">{{nextLabel}}</button></sc-if>
+<sc-if value="{{is.s3}}" hint-placeholder-val="{{false}}"><a href="AppPlan.dc.html" style="min-height: 56px; display: inline-flex; align-items: center; padding: 0 34px; border-radius: 999px; background: #4A2545; color: #FFFFFF; font-weight: 900; font-size: 17px; text-decoration: none;">Voir mon plan →</a></sc-if>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { step: 0, ad: 2, en: 2, diets: { 'Sans porc': true }, store: 'Auchan' }; }
+  renderVals() {
+    var self = this, s = this.state, st = s.step;
+    var fmt = function (v) { return v.toFixed(2).replace('.', ',') + ' €'; };
+    var meta = [['Ton foyer', 'Adultes et enfants'], ['Tes préférences', 'Régime, temps de cuisine'], ['Ton enseigne', 'Et ton code postal'], ['Ta semaine', 'Générée pour toi']];
+    var steps = meta.map(function (m, i) {
+      var done = i < st, cur = i === st;
+      return { t: m[0], d: m[1], mark: done ? '✓' : String(i + 1),
+        rowStyle: 'display:flex;gap:14px;align-items:center;padding:12px 14px;border-radius:16px;' + (cur ? 'background:rgba(255,255,255,0.12)' : ''),
+        dotStyle: 'width:34px;height:34px;flex:none;border-radius:99px;display:grid;place-items:center;font-weight:900;font-size:14px;' + (done ? 'background:#EE7A30;color:#2A1A28' : (cur ? 'background:#FFFFFF;color:#4A2545' : 'border:2px solid rgba(255,255,255,0.4);color:#FFFFFF;box-sizing:border-box')) };
+    });
+    var dl = ['Végétarien', 'Sans porc', 'Sans gluten', 'Sans lactose', 'Halal', 'Sans poisson', 'Sans fruits à coque', 'Peu épicé'];
+    var diets = dl.map(function (l) {
+      var on = !!s.diets[l];
+      return { l: l, on: on ? 'true' : 'false', toggle: function () { var d = Object.assign({}, s.diets); d[l] = !on; self.setState({ diets: d }); },
+        style: 'min-height:48px;padding:0 20px;border-radius:999px;font:800 16px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF;border:2px solid #4A2545' : 'background:#FFFFFF;color:#2A1A28;border:2px solid #E3DDD0') };
+    });
+    var sl = [['LI', 'Lidl', '#E3ECF6', 60.1], ['AL', 'Aldi', '#E7EFE2', 61.4], ['EL', 'E.Leclerc', '#ECE6F5', 64.2], ['IN', 'Intermarché', '#F5E9DC', 68.9], ['CA', 'Carrefour', '#E2EFEF', 70.3], ['AU', 'Auchan', '#F4E3E6', 71.6]];
+    var people = s.ad + s.en, fx = (s.ad + s.en * 0.7) / 3.4;
+    var stores = sl.map(function (x) {
+      var on = s.store === x[1];
+      return { short: x[0], name: x[1], bg: x[2], on: on ? 'true' : 'false', pick: function () { self.setState({ store: x[1] }); },
+        style: 'min-height:76px;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:20px;background:#FFFFFF;cursor:pointer;font-family:Nunito;color:#2A1A28;text-align:left;' + (on ? 'border:2px solid #4A2545;box-shadow:0 0 0 4px #EFE3EC' : 'border:2px solid #E3DDD0') };
+    });
+    var cur = sl.filter(function (x) { return x[1] === s.store; })[0];
+    return {
+      steps: steps, diets: diets, stores: stores, ad: s.ad, en: s.en, people: people,
+      budget: fmt(cur[3] * fx), total: fmt(cur[3] * fx), min: fmt(60.1 * fx), storeName: s.store, storeUp: s.store.toUpperCase(),
+      stepNum: st + 1, progress: ((st + 1) * 25) + '%',
+      is: { s0: st === 0, s1: st === 1, s2: st === 2, s3: st === 3 }, notLast: st < 3,
+      nextLabel: st === 2 ? 'Générer ma semaine' : 'Continuer', backVis: st === 0 ? 'hidden' : 'visible',
+      next: function () { self.setState({ step: Math.min(3, st + 1) }); },
+      back: function () { self.setState({ step: Math.max(0, st - 1) }); },
+      adPlus: function () { self.setState({ ad: Math.min(8, s.ad + 1) }); }, adMinus: function () { self.setState({ ad: Math.max(1, s.ad - 1) }); },
+      enPlus: function () { self.setState({ en: Math.min(8, s.en + 1) }); }, enMinus: function () { self.setState({ en: Math.max(0, s.en - 1) }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

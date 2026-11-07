@@ -1,0 +1,17 @@
+---
+description: Règles du projet Appli Repas (toujours actives)
+globs:
+alwaysApply: true
+---
+
+Le contexte complet est dans `CLAUDE.md` à la racine : lis-le avant toute tâche. Résumé des règles à ne jamais enfreindre :
+
+- Décisions figées : Turborepo + pnpm, Next.js App Router, TypeScript strict, Tailwind (preset `design/tailwind-preset.ts`), Supabase (RLS partout), Stripe Billing, Resend. Ne les remets pas en cause.
+- Maquettes = référence : `design/maquettes/*.dc.html`. Correspondance écran → route dans `docs/07-ecrans-et-routes.md`. Reproduis les textes à l'identique (tutoiement).
+- Couleurs via tokens uniquement. Orange `#EE7A30` = économies seulement, toujours avec texte `#2A1A28`. Jamais de logo ni de couleur officielle d'enseigne : pastille 2 lettres neutre.
+- Montants en centimes (integer). Toute logique de prix passe par `@repas/core` (`packages/core`). `formatEuro()` pour l'affichage.
+- Toujours afficher la date des prix et la fiabilité (●●● ●●○ ●○○) ; estimations préfixées par `≈`.
+- Server Components par défaut, Zod sur toutes les entrées, jamais de clé service_role côté client.
+- Accessibilité : vrais éléments HTML, cibles ≥ 44 px, contraste AA, prefers-reduced-motion.
+- Travaille lot par lot (`docs/08-roadmap-claude-code.md`). Termine par typecheck + lint + tests.
+- Décision produit manquante → pose la question, n'invente pas.

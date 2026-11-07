@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>[S] Web app — plan de la semaine</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#4A2545}a:hover{color:#4A2545}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 960px; background: #F6F3EC; color: #2A1A28; font-family: 'Nunito', system-ui, sans-serif; display: flex; flex-wrap: wrap;">
+<aside style="flex: 1 1 248px; max-width: 100%; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #E3DDD0; padding: 24px 16px; display: flex; flex-direction: column; gap: 6px;">
+<div style="display: flex; align-items: center; gap: 10px; padding: 0 8px 18px;">
+<span style="width: 38px; height: 38px; border-radius: 12px; background: #4A2545; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"></path><path d="M5 19l7-7"></path></svg></span>
+<span style="font-size: 16px; font-weight: 900;">[Nom de l'appli]</span>
+</div>
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="6">
+<a href="{{n.href}}" aria-current="{{n.cur}}" style="{{n.style}}">{{n.label}}</a>
+</sc-for>
+</aside>
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px max(16px, 2.5vw) 40px; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<button aria-label="Semaine précédente" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #E3DDD0; background: #FFFFFF; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #2A1A28;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+<div style="display: flex; flex-direction: column;"><h1 style="margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.6px;">Semaine 47</h1><span style="font-size: 14px; color: #625A60; font-weight: 700;">16 – 22 nov. · 4 personnes · 14 repas</span></div>
+<button aria-label="Semaine suivante" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #E3DDD0; background: #FFFFFF; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #2A1A28;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+<div style="flex-grow: 1;"></div>
+<div role="group" aria-label="Filtres" style="display: flex; gap: 6px; flex-wrap: wrap;">
+<sc-for list="{{filters}}" as="f" hint-placeholder-count="4"><button onClick="{{f.t}}" aria-pressed="{{f.on}}" style="{{f.s}}">{{f.l}}</button></sc-for>
+</div>
+<button style="min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid #E3DDD0; background: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 900; color: #2A1A28; cursor: pointer;">Partager</button>
+<button style="min-height: 44px; padding: 0 18px; border-radius: 22px; border: none; background: #2A1A28; font-family: inherit; font-size: 14px; font-weight: 900; color: #FFFFFF; cursor: pointer;">Varier la semaine</button>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start;">
+<div style="flex: 3 1 640px; min-width: 0; overflow-x: auto; border-radius: 26px; background: #FFFFFF; border: 1px solid #E3DDD0;">
+<div style="min-width: 780px; display: grid; grid-template-columns: 64px repeat(7, minmax(0, 1fr)); gap: 8px; padding: 14px;">
+<span></span>
+<sc-for list="{{days}}" as="d" hint-placeholder-count="7">
+<div style="{{d.head}}"><span style="font-size: 12px; font-weight: 800;">{{d.l}}</span><span style="font-size: 20px; font-weight: 900;">{{d.n}}</span></div>
+</sc-for>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="2">
+<span style="font-size: 11px; font-weight: 900; color: #625A60; text-transform: uppercase; letter-spacing: 0.6px; writing-mode: vertical-rl; transform: rotate(180deg); align-self: center; justify-self: center;">{{r.when}}</span>
+<sc-for list="{{r.cells}}" as="c" hint-placeholder-count="7">
+<div style="{{c.s}}">
+<dc-import name="S2Plat" variant="{{c.v}}" size="64" hint-size="64px,64px"></dc-import>
+<span style="font-size: 13px; font-weight: 900; line-height: 1.2; text-align: center;">{{c.name}}</span>
+<span style="font-size: 12px; font-weight: 900; color: #4A2545;">{{c.price}}</span>
+</div>
+</sc-for>
+</sc-for>
+</div>
+</div>
+<div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 18px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 14px 34px rgba(74, 37, 69, 0.08);">
+<div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-size: 17px; font-weight: 900;">Ce plan coûte…</span><span style="font-size: 12px; font-weight: 800; color: #4A2545; background: #EFE3EC; padding: 3px 10px; border-radius: 10px;">prix à J-3</span></div>
+<div role="radiogroup" aria-label="Enseignes" style="display: flex; flex-direction: column; gap: 6px;">
+<sc-for list="{{stores}}" as="s" hint-placeholder-count="6">
+<button role="radio" aria-checked="{{s.on}}" onClick="{{s.pick}}" style="{{s.style}}">
+<span style="{{s.dot}}">{{s.short}}</span>
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+<span style="display: flex; justify-content: space-between; gap: 8px;"><span style="font-size: 14px; font-weight: 900;">{{s.name}}</span><span style="font-size: 14px; font-weight: 900; font-variant-numeric: tabular-nums;">{{s.total}}</span></span>
+<span style="height: 5px; border-radius: 3px; background: #F1EEE8; overflow: hidden;"><span style="{{s.bar}}"></span></span>
+</span>
+</button>
+</sc-for>
+</div>
+<div style="background: #FCE3D3; border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 13px; font-weight: 800; color: #9A420E;">{{deltaLabel}}</span>
+<span style="font-size: 22px; font-weight: 900;">{{delta}}</span>
+</div>
+<button style="min-height: 52px; border-radius: 26px; border: none; background: #4A2545; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 900; cursor: pointer; box-shadow: 0 8px 18px rgba(74, 37, 69, 0.25);">{{cta}}</button>
+<span style="font-size: 12px; color: #625A60; font-weight: 700; text-align: center;">Ton choix reste libre, même plus cher.</span>
+</div>
+<div style="background: #2A1A28; color: #FFFFFF; border-radius: 22px; padding: 16px; display: flex; gap: 12px; align-items: center;">
+<span style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 20px; background: #EE7A30; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A1A28" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg></span>
+<span style="flex-grow: 1; display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 900;">Produit par produit</span><span style="font-size: 12px; color: #D0CDD0; font-weight: 700;">29 produits moins chers chez Lidl</span></span>
+<span style="font-size: 11px; font-weight: 900; color: #2A1A28; background: #EE7A30; padding: 3px 8px; border-radius: 8px;">PREMIUM</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { sel: "lidl", f: { vege: true } }; }
+  renderVals() {
+    var self = this;
+    var items = [["Tableau de bord", "W2DashboardS.dc.html", false], ["Ma semaine", "W3PlanS.dc.html", true], ["Courses", "W3PlanS.dc.html", false], ["Recettes", "W3PlanS.dc.html", false], ["Défis", "W2DashboardS.dc.html", false], ["Profil", "W2DashboardS.dc.html", false]];
+    var nav = items.map(function (n) { return { label: n[0], href: n[1], cur: n[2] ? "page" : "false",
+      style: "display: flex; align-items: center; min-height: 46px; padding: 0 14px; border-radius: 14px; text-decoration: none; font-size: 15px; font-weight: " + (n[2] ? 900 : 700) + "; color: " + (n[2] ? "#4A2545" : "#2A1A28") + "; background: " + (n[2] ? "#EFE3EC" : "transparent") + ";" }; });
+    var fl = [["vege", "Végé"], ["rapide", "< 30 min"], ["saison", "De saison"], ["enfants", "Enfants"]];
+    var filters = fl.map(function (f) { var on = !!self.state.f[f[0]]; return { l: f[1], on: on,
+      t: function () { var n = Object.assign({}, self.state.f); n[f[0]] = !on; self.setState({ f: n }); },
+      s: "min-height: 40px; padding: 0 14px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 900; cursor: pointer; border: 1.5px solid " + (on ? "#4A2545" : "#E3DDD0") + "; background: " + (on ? "#4A2545" : "#FFFFFF") + "; color: " + (on ? "#FFFFFF" : "#2A1A28") + ";" }; });
+    var L = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+    var days = L.map(function (l, i) { var today = i === 0; return { l: l, n: 16 + i, head: "display: flex; flex-direction: column; align-items: center; padding: 6px 0; border-radius: 14px; " + (today ? "background: #4A2545; color: #FFFFFF;" : "color: #2A1A28;") }; });
+    var M = [["pates", "Pâtes tomate basilic", "0,98 €"], ["soupe", "Velouté potimarron", "1,12 €"], ["salade", "Salade lentilles feta", "1,40 €"], ["curry", "Curry pois chiches", "1,85 €"]];
+    var rows = ["Midi", "Soir"].map(function (w, ri) {
+      return { when: w, cells: L.map(function (l, i) { var m = M[(i + ri * 2) % 4]; return { v: m[0], name: m[1], price: m[2],
+        s: "display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 6px 12px; border-radius: 18px; background: " + ((i + ri) % 3 === 0 ? "#F6F3EC" : "#FFFFFF") + "; border: 1px solid #F1EEE8; min-height: 150px; box-sizing: border-box; cursor: grab;" }; }) };
+    });
+    var S = [["lidl", "Lidl", "Li", "#E3EDF8", "#1E4570", 60.10], ["aldi", "Aldi", "Al", "#EEE7F7", "#4B2F75", 61.40], ["leclerc", "E.Leclerc", "Le", "#E2F1EC", "#1C5A45", 66.20], ["inter", "Intermarché", "In", "#FBE9E4", "#8A2E1C", 69.80], ["auchan", "Auchan", "Au", "#FDF0DC", "#7A4A0E", 71.60], ["carrefour", "Carrefour", "Ca", "#E6ECF5", "#2B3F66", 72.90]];
+    function eur(n) { return n.toFixed(2).replace(".", ",") + " €"; }
+    var selRow = S[0];
+    var stores = S.map(function (s, i) { var on = self.state.sel === s[0]; if (on) selRow = s;
+      return { name: s[1], short: s[2], total: eur(s[5]), on: on, pick: function () { self.setState({ sel: s[0] }); },
+        style: "display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 6px 12px 6px 8px; border-radius: 16px; cursor: pointer; font-family: inherit; text-align: left; color: #2A1A28; background: " + (on ? "#F6F3EC" : "#FFFFFF") + "; border: 2px solid " + (on ? "#4A2545" : "transparent") + ";",
+        dot: "width: 32px; height: 32px; flex-shrink: 0; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; background: " + s[3] + "; color: " + s[4] + ";",
+        bar: "display: block; height: 5px; border-radius: 3px; width: " + Math.round(40 + (s[5] - 60.1) / 12.8 * 60) + "%; background: " + (i === 0 ? "#EE7A30" : (s[0] === "auchan" ? "#4A2545" : "#C4B8B4")) + ";" }; });
+    var d = 71.60 - selRow[5];
+    return { nav: nav, filters: filters, days: days, rows: rows, stores: stores,
+      deltaLabel: selRow[0] === "auchan" ? "Ton enseigne habituelle" : "Par rapport à Auchan", delta: selRow[0] === "auchan" ? eur(71.60) : (d > 0 ? "−" + eur(d) + " cette semaine" : "+" + eur(-d) + " cette semaine"),
+      cta: selRow[0] === "auchan" ? "Garder Auchan" : "Passer chez " + selRow[1] };
+  }
+}
+</script>
+</body>
+</html>

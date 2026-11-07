@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>[S] Site — page d'accueil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#4A2545}a:hover{color:#4A2545}
+</style>
+</helmet>
+<div style="width: 100%; background: #F6F3EC; color: #2A1A28; font-family: 'Nunito', system-ui, sans-serif;">
+<header style="max-width: 1200px; margin: 0 auto; padding: 20px 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+<a href="#" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #2A1A28;">
+<span style="width: 40px; height: 40px; border-radius: 13px; background: #4A2545; display: flex; align-items: center; justify-content: center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"></path><path d="M5 19l7-7"></path></svg></span>
+<span style="font-size: 18px; font-weight: 900;">[Nom de l'appli]</span>
+</a>
+<nav aria-label="Site" style="display: flex; gap: 22px; flex-wrap: wrap; flex-grow: 1;">
+<a href="#comment" style="font-size: 15px; font-weight: 800; color: #2A1A28; text-decoration: none;">Comment ça marche</a>
+<a href="#comparer" style="font-size: 15px; font-weight: 800; color: #2A1A28; text-decoration: none;">Enseignes</a>
+<a href="#tarifs" style="font-size: 15px; font-weight: 800; color: #2A1A28; text-decoration: none;">Tarifs</a>
+</nav>
+<a href="W2DashboardS.dc.html" style="font-size: 15px; font-weight: 800; text-decoration: none;">Se connecter</a>
+<a href="W2DashboardS.dc.html" style="min-height: 46px; padding: 0 20px; border-radius: 23px; background: #4A2545; color: #FFFFFF; display: flex; align-items: center; font-size: 15px; font-weight: 900; text-decoration: none;">Essayer gratuitement</a>
+</header>
+<section style="max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center;">
+<div style="flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 22px;">
+<span style="align-self: flex-start; display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; border-radius: 20px; background: #FFFFFF; border: 1px solid #E3DDD0; font-size: 14px; font-weight: 800;"><span style="padding: 3px 10px; border-radius: 14px; background: #EE7A30; font-size: 12px; font-weight: 900;">Nouveau</span>Menus d'automne disponibles</span>
+<h1 style="margin: 0; font-size: 64px; line-height: 1.02; font-weight: 900; letter-spacing: -2px; text-wrap: balance;">Le menu de la semaine, au <span style="color: #4A2545;">meilleur prix</span> du quartier.</h1>
+<p style="margin: 0; font-size: 19px; line-height: 1.55; color: #625A60; max-width: 520px;">On planifie tes repas, on calcule ta liste et on te montre combien elle coûte chez Lidl, Aldi, E.Leclerc, Intermarché, Auchan et Carrefour. Tu choisis où faire tes courses.</p>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+<a href="W2DashboardS.dc.html" style="min-height: 60px; padding: 0 28px; border-radius: 30px; background: #4A2545; color: #FFFFFF; display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 900; text-decoration: none; box-shadow: 0 12px 28px rgba(74, 37, 69, 0.30);">Créer mon plan gratuit<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+<span style="font-size: 14px; font-weight: 700; color: #625A60;">Sans carte bancaire · prêt en 2 minutes</span>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px;">
+<sc-for list="{{stores}}" as="s" hint-placeholder-count="6"><span style="{{s.dot}}" title="{{s.name}}">{{s.short}}</span></sc-for>
+<span style="font-size: 14px; font-weight: 800; color: #625A60;">6 enseignes comparées à chaque plan</span>
+</div>
+</div>
+<div style="flex: 1 1 460px; min-width: 0; position: relative; min-height: 520px;">
+<div style="position: absolute; inset: 20px 0 0 40px; border-radius: 40px; background: #4A2545; overflow: hidden;">
+<svg width="100%" height="100%" viewBox="0 0 500 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="420" cy="80" r="160" fill="#5C3B58"></circle><circle cx="420" cy="80" r="96" fill="#6E516A"></circle><circle cx="60" cy="470" r="120" fill="#5C3B58"></circle></svg>
+</div>
+<div style="position: absolute; right: 30px; top: 0; filter: drop-shadow(0 20px 26px rgba(42, 26, 40, 0.35));"><dc-import name="S2Plat" variant="curry" size="230" hint-size="230px,230px"></dc-import></div>
+<div style="position: absolute; left: 90px; top: 150px; transform: rotate(-10deg); filter: drop-shadow(0 16px 20px rgba(42, 26, 40, 0.3));"><dc-import name="S2Plat" variant="soupe" size="150" hint-size="150px,150px"></dc-import></div>
+<div style="position: absolute; right: 60px; bottom: 150px; transform: rotate(8deg); filter: drop-shadow(0 16px 20px rgba(42, 26, 40, 0.3));"><dc-import name="S2Plat" variant="salade" size="130" hint-size="130px,130px"></dc-import></div>
+<div style="position: absolute; left: 0; bottom: 24px; width: 300px; max-width: 80%; background: #FFFFFF; border-radius: 24px; padding: 16px; box-shadow: 0 20px 40px rgba(42, 26, 40, 0.22); display: flex; flex-direction: column; gap: 10px;">
+<div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-size: 14px; font-weight: 900;">Ta semaine · 4 pers.</span><span style="font-size: 11px; font-weight: 900; padding: 3px 8px; border-radius: 8px; background: #EE7A30;">−11,80 €</span></div>
+<sc-for list="{{mini}}" as="m" hint-placeholder-count="4">
+<div style="display: flex; align-items: center; gap: 10px;"><span style="width: 74px; font-size: 13px; font-weight: 800;">{{m.name}}</span><span style="flex-grow: 1; height: 8px; border-radius: 4px; background: #F1EEE8; overflow: hidden;"><span style="{{m.bar}}"></span></span><span style="width: 56px; text-align: right; font-size: 13px; font-weight: 900; font-variant-numeric: tabular-nums;">{{m.total}}</span></div>
+</sc-for>
+</div>
+<div style="position: absolute; right: 0; bottom: 40px; background: #2A1A28; color: #FFFFFF; border-radius: 20px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; box-shadow: 0 16px 30px rgba(42, 26, 40, 0.3);">
+<span style="width: 36px; height: 36px; border-radius: 18px; background: #EE7A30; color: #2A1A28; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L5 14h6l-1 8 8-12h-6z"></path></svg></span>
+<span style="display: flex; flex-direction: column;"><span style="font-size: 12px; color: #D0CDD0; font-weight: 700;">Série en cours</span><span style="font-size: 16px; font-weight: 900;">6 semaines</span></span>
+</div>
+</div>
+</section>
+<section id="comment" style="background: #FFFFFF; border-top: 1px solid #E3DDD0; border-bottom: 1px solid #E3DDD0;">
+<div style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 40px;">
+<div style="display: flex; flex-direction: column; gap: 10px; max-width: 640px;">
+<span style="font-size: 13px; font-weight: 900; color: #4A2545; text-transform: uppercase; letter-spacing: 1px;">Comment ça marche</span>
+<h2 style="margin: 0; font-size: 44px; line-height: 1.08; font-weight: 900; letter-spacing: -1px; text-wrap: balance;">Trois étapes, puis tu n'y penses plus.</h2>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="3">
+<div style="background: #F6F3EC; border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 14px;">
+<span style="width: 52px; height: 52px; border-radius: 26px; background: #4A2545; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900;">{{s.n}}</span>
+<h3 style="margin: 0; font-size: 22px; font-weight: 900;">{{s.t}}</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.55; color: #625A60;">{{s.d}}</p>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+<section id="comparer" style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center;">
+<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<span style="font-size: 13px; font-weight: 900; color: #4A2545; text-transform: uppercase; letter-spacing: 1px;">Le comparateur</span>
+<h2 style="margin: 0; font-size: 44px; line-height: 1.08; font-weight: 900; letter-spacing: -1px; text-wrap: balance;">Le même plan, six prix différents.</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.6; color: #625A60;">À chaque plan, tu vois le total dans chaque enseigne et l'écart avec la tienne. Tu restes libre : le prix est un repère, jamais une obligation.</p>
+<span style="align-self: flex-start; font-size: 13px; font-weight: 800; color: #625A60; background: #FFFFFF; border: 1px solid #E3DDD0; padding: 6px 12px; border-radius: 12px;">Exemple : famille de 4, semaine 46</span>
+</div>
+<div style="flex: 1 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 32px; padding: 28px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 20px 50px rgba(74, 37, 69, 0.08);">
+<sc-for list="{{big}}" as="b" hint-placeholder-count="6">
+<div style="display: flex; align-items: center; gap: 14px;">
+<span style="{{b.dot}}">{{b.short}}</span>
+<span style="width: 110px; font-size: 16px; font-weight: 900;">{{b.name}}</span>
+<span style="flex-grow: 1; height: 16px; border-radius: 8px; background: #F1EEE8; overflow: hidden;"><span style="{{b.bar}}"></span></span>
+<span style="width: 80px; text-align: right; font-size: 17px; font-weight: 900; font-variant-numeric: tabular-nums;">{{b.total}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+<section style="background: #2A1A28; color: #FFFFFF;">
+<div style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 36px;">
+<div style="display: flex; flex-direction: column; gap: 10px; max-width: 640px;">
+<span style="font-size: 13px; font-weight: 900; color: #EE7A30; text-transform: uppercase; letter-spacing: 1px;">Chaque semaine</span>
+<h2 style="margin: 0; font-size: 44px; line-height: 1.08; font-weight: 900; letter-spacing: -1px; text-wrap: balance;">Un petit rendez-vous qui fait de grosses économies.</h2>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+<sc-for list="{{habits}}" as="h" hint-placeholder-count="4">
+<div style="background: #3F313E; border-radius: 26px; padding: 24px; display: flex; flex-direction: column; gap: 10px;">
+<span style="font-size: 32px; font-weight: 900; color: #EE7A30;">{{h.big}}</span>
+<h3 style="margin: 0; font-size: 19px; font-weight: 900;">{{h.t}}</h3>
+<p style="margin: 0; font-size: 15px; line-height: 1.55; color: #D0CDD0;">{{h.d}}</p>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+<section id="tarifs" style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 32px; align-items: center;">
+<h2 style="margin: 0; font-size: 44px; line-height: 1.08; font-weight: 900; letter-spacing: -1px; text-align: center;">Gratuit pour commencer.</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%;">
+<div style="flex: 1 1 320px; max-width: 420px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 30px; padding: 30px; display: flex; flex-direction: column; gap: 14px;">
+<span style="font-size: 18px; font-weight: 900;">Gratuit</span>
+<span style="font-size: 42px; font-weight: 900;">0 €</span>
+<span style="font-size: 15px; color: #625A60; font-weight: 700;">1 plan par semaine · prix dans ton enseigne · totaux des autres</span>
+<a href="W2DashboardS.dc.html" style="margin-top: 8px; min-height: 52px; border-radius: 26px; border: 1.5px solid #CEBDCB; color: #2A1A28; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; text-decoration: none;">Commencer</a>
+</div>
+<div style="flex: 1 1 320px; max-width: 420px; background: #4A2545; color: #FFFFFF; border-radius: 30px; padding: 30px; display: flex; flex-direction: column; gap: 14px; position: relative; box-shadow: 0 20px 40px rgba(74, 37, 69, 0.3);">
+<span style="position: absolute; top: 24px; right: 24px; font-size: 12px; font-weight: 900; color: #2A1A28; background: #EE7A30; padding: 4px 10px; border-radius: 10px;">14 jours offerts</span>
+<span style="font-size: 18px; font-weight: 900;">Premium</span>
+<span style="font-size: 42px; font-weight: 900;">39,99 € <span style="font-size: 16px; color: #E3CDE0;">/ an</span></span>
+<span style="font-size: 15px; color: #E3CDE0; font-weight: 700;">ou 4,99 € / mois · détail produit par produit · plans illimités · alertes promos · famille</span>
+<a href="W2DashboardS.dc.html" style="margin-top: 8px; min-height: 52px; border-radius: 26px; background: #FFFFFF; color: #4A2545; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; text-decoration: none;">Essayer 14 jours sans carte</a>
+</div>
+</div>
+</section>
+<footer style="border-top: 1px solid #E3DDD0;">
+<div style="max-width: 1200px; margin: 0 auto; padding: 28px 24px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; font-size: 14px; color: #625A60; font-weight: 700;">
+<span>Prix indicatifs, relevés par la communauté et Open Prices.</span>
+<span style="display: flex; gap: 18px;"><a href="#">Mentions légales</a><a href="#">Confidentialité</a><a href="#">Contact</a></span>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3260}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var S = [["Lidl", "Li", "#E3EDF8", "#1E4570", 62.40], ["Aldi", "Al", "#EEE7F7", "#4B2F75", 63.10], ["E.Leclerc", "Le", "#E2F1EC", "#1C5A45", 68.90], ["Intermarché", "In", "#FBE9E4", "#8A2E1C", 72.50], ["Auchan", "Au", "#FDF0DC", "#7A4A0E", 74.20], ["Carrefour", "Ca", "#E6ECF5", "#2B3F66", 75.80]];
+    function eur(n) { return n.toFixed(2).replace(".", ",") + " €"; }
+    function pct(n) { return Math.round(40 + (n - 62.4) / (75.8 - 62.4) * 60); }
+    var stores = S.map(function (s) { return { name: s[0], short: s[1], dot: "width: 40px; height: 40px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; background: " + s[2] + "; color: " + s[3] + "; border: 2px solid #F6F3EC; margin-left: -14px;" }; });
+    stores[0].dot = stores[0].dot.replace("margin-left: -14px;", "");
+    var mini = [S[0], S[2], S[4], S[5]].map(function (s, i) { return { name: s[0], total: eur(s[4]), bar: "display: block; height: 8px; border-radius: 4px; width: " + pct(s[4]) + "%; background: " + (i === 0 ? "#EE7A30" : "#C4B8B4") + ";" }; });
+    var big = S.map(function (s, i) { return { name: s[0], short: s[1], total: eur(s[4]),
+      dot: "width: 40px; height: 40px; flex-shrink: 0; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; background: " + s[2] + "; color: " + s[3] + ";",
+      bar: "display: block; height: 16px; border-radius: 8px; width: " + pct(s[4]) + "%; background: " + (i === 0 ? "#EE7A30" : (s[0] === "Auchan" ? "#4A2545" : "#C4B8B4")) + ";" }; });
+    var steps = [
+      { n: 1, t: "Dis-nous qui mange", d: "Taille du foyer, régime, enseigne habituelle. Deux minutes, une seule fois." },
+      { n: 2, t: "Reçois ton plan", d: "14 repas équilibrés et de saison, que tu ajustes d'un clic. La liste se calcule toute seule." },
+      { n: 3, t: "Choisis ton enseigne", d: "Compare le total dans six enseignes, puis garde la tienne ou change. C'est toi qui décides." }
+    ];
+    var habits = [
+      { big: "Jeudi", t: "Ton menu t'attend", d: "Le plan de la semaine suivante est prêt chaque jeudi soir." },
+      { big: "+ €", t: "Tes économies cumulées", d: "Un compteur qui grimpe semaine après semaine, et un récap chaque mois." },
+      { big: "6 sem.", t: "Ta série", d: "Planifie chaque semaine pour faire grandir ta série. Un joker par mois pour les vacances." },
+      { big: "Défi", t: "Le défi du mois", d: "« Novembre à moins de 70 € par semaine » : relève-le en famille." }
+    ];
+    return { stores: stores, mini: mini, big: big, steps: steps, habits: habits };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Web app — mode cuisine</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#1E121C}
+a{color:#FFFFFF}a:hover{color:#F6B98F}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.big:hover{filter:brightness(1.1)}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #F3EDF1; background: #1E121C; min-height: 100vh; padding: 24px clamp(20px, 4vw, 56px) 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px;">
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 14px;"><dc-import variant="soupe" size="56" name="Plat" hint-size="56px,56px"></dc-import><span><span style="display: block; font-weight: 900; font-size: 18px;">Velouté de potimarron et châtaigne</span><span style="font-size: 14px; color: #B9ADB6; font-weight: 700;">4 parts · écran maintenu allumé</span></span></div>
+<a href="AppRecette.dc.html" aria-label="Quitter le mode cuisine" style="width: 52px; height: 52px; border-radius: 99px; background: #33212F; display: grid; place-items: center; text-decoration: none; font-size: 24px; font-weight: 900;">×</a>
+</header>
+
+<div style="display: flex; gap: 6px;" aria-hidden="true"><sc-for list="{{dots}}" as="d" hint-placeholder-count="5"><span style="flex: 1; height: 6px; border-radius: 9px; background: {{d.c}};"></span></sc-for></div>
+
+<main style="flex: 1; display: flex; flex-wrap: wrap; gap: 32px; align-items: center;">
+<section aria-live="polite" style="flex: 2 1 520px; min-width: 0;">
+<p class="num" style="margin: 0 0 14px; font-size: 15px; font-weight: 900; letter-spacing: 1.4px; color: #F6B98F;">ÉTAPE {{n}} SUR 5</p>
+<p class="disp" style="margin: 0; font-size: clamp(32px, 3.6vw, 52px); line-height: 1.15; font-weight: 700; letter-spacing: -0.8px;">{{text}}</p>
+<div style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 8px;"><sc-for list="{{ings}}" as="g" hint-placeholder-count="2"><span style="background: #33212F; border-radius: 999px; padding: 8px 14px; font-weight: 800; font-size: 15px;">{{g}}</span></sc-for></div>
+</section>
+<aside style="flex: 1 1 280px; min-width: 0;">
+<sc-if value="{{hasTimer}}" hint-placeholder-val="{{false}}">
+<div style="background: #33212F; border-radius: 28px; padding: 26px; text-align: center;">
+<p style="margin: 0; font-size: 13px; font-weight: 900; letter-spacing: 1.2px; color: #B9ADB6;">MINUTEUR</p>
+<p class="disp num" style="margin: 8px 0 16px; font-size: 72px; font-weight: 800; letter-spacing: -2px; line-height: 1; color: {{timerColor}};">{{timer}}</p>
+<button type="button" onClick="{{toggleTimer}}" style="min-height: 56px; padding: 0 30px; border-radius: 999px; border: 0; background: #EE7A30; color: #2A1A28; font: 900 17px Nunito; cursor: pointer;">{{timerCta}}</button>
+</div>
+</sc-if>
+</aside>
+</main>
+
+<footer style="display: flex; gap: 12px;">
+<button type="button" class="big" onClick="{{prev}}" disabled="{{isFirst}}" style="flex: 1; min-height: 76px; border-radius: 24px; border: 0; background: #33212F; color: #F3EDF1; font: 900 20px Nunito; cursor: pointer; opacity: {{prevOp}};">← Précédente</button>
+<button type="button" class="big" onClick="{{next}}" style="flex: 2; min-height: 76px; border-radius: 24px; border: 0; background: #C9A3C2; color: #1E121C; font: 900 20px Nunito; cursor: pointer;">{{nextLabel}}</button>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { i: 2, sec: 1500, run: false }; }
+  componentWillUnmount() { if (this.t) clearInterval(this.t); }
+  renderVals() {
+    var self = this, s = this.state;
+    var S = [
+      ['Lave le potimarron, retire les graines et coupe-le en cubes, sans l’éplucher.', ['1 kg de potimarron'], 0],
+      ['Fais revenir l’oignon émincé 3 minutes dans l’huile d’olive.', ['1 oignon', '1 c. à s. d’huile d’olive'], 180],
+      ['Ajoute le potimarron et les trois quarts des châtaignes. Couvre d’eau, émiette le bouillon et laisse cuire.', ['150 g de châtaignes', '1 cube de bouillon'], 1500],
+      ['Mixe avec la crème jusqu’à obtenir un velouté lisse. Sale et poivre.', ['10 cl de crème fraîche'], 0],
+      ['Sers avec les châtaignes restantes concassées par-dessus.', ['50 g de châtaignes'], 0]
+    ];
+    var cur = S[s.i];
+    var m = Math.floor(s.sec / 60), sc = s.sec % 60;
+    var go = function (j) { if (self.t) clearInterval(self.t); self.t = null; self.setState({ i: j, sec: S[j][2], run: false }); };
+    return {
+      n: s.i + 1, text: cur[0], ings: cur[1], hasTimer: cur[2] > 0,
+      timer: m + ':' + (sc < 10 ? '0' : '') + sc, timerColor: s.run ? '#F6B98F' : '#F3EDF1', timerCta: s.run ? 'Pause' : (s.sec < cur[2] ? 'Reprendre' : 'Lancer ' + Math.round(cur[2] / 60) + ' min'),
+      toggleTimer: function () {
+        if (s.run) { clearInterval(self.t); self.t = null; self.setState({ run: false }); }
+        else { self.t = setInterval(function () { self.setState(function (st) { return { sec: Math.max(0, st.sec - 1) }; }); }, 1000); self.setState({ run: true }); }
+      },
+      dots: S.map(function (_, k) { return { c: k < s.i ? '#C9A3C2' : (k === s.i ? '#EE7A30' : '#33212F') }; }),
+      isFirst: s.i === 0, prevOp: s.i === 0 ? 0.4 : 1,
+      nextLabel: s.i === 4 ? 'Terminé, bon appétit' : 'Étape suivante →',
+      prev: function () { if (s.i > 0) go(s.i - 1); }, next: function () { if (s.i < 4) go(s.i + 1); }
+    };
+  }
+}
+</script>
+</body>
+</html>

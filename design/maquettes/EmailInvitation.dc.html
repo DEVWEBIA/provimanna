@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Email — invitation famille</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}a{color:#4A2545}a:hover{color:#2A1A28}.num{font-variant-numeric:tabular-nums}</style>
+</helmet>
+<div style="width: 760px; min-height: 1100px; box-sizing: border-box; background: #EDE8DE; padding: 28px 80px 48px; font-family: 'Nunito', Arial, sans-serif; color: #2A1A28;">
+<div style="background: #FFFFFF; border: 1px solid #DCD5C8; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; font-size: 13px; line-height: 20px;">
+<p style="margin: 0;"><strong>De :</strong> Marion via [Nom de l'appli] &lt;famille@[domaine].fr&gt; · <strong>Envoi :</strong> à l'invitation</p>
+<p style="margin: 0;"><strong>Objet :</strong> Marion t'invite à partager les courses de la maison</p>
+<p style="margin: 0; color: #625A60;"><strong>Pré-en-tête :</strong> Le plan de la semaine et la liste, cochée à deux en temps réel.</p>
+</div>
+<div style="width: 600px; background: #FFFFFF; border-radius: 20px; overflow: hidden;">
+<div style="background: #4A2545; color: #FFFFFF; padding: 28px 40px 36px;">
+<p style="margin: 0; display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 16px;"><svg width="26" height="26" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#EE7A30"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#2A1A28" stroke-width="2.4" stroke-linecap="round"></path></svg>[Nom de l'appli]</p>
+<div style="display: flex; margin-top: 30px;"><span style="width: 56px; height: 56px; border-radius: 99px; background: #EE7A30; color: #2A1A28; display: grid; place-items: center; font-weight: 900; font-size: 18px; border: 3px solid #4A2545;">MD</span><span style="width: 56px; height: 56px; margin-left: -12px; border-radius: 99px; background: #FFFFFF; color: #4A2545; display: grid; place-items: center; font-weight: 900; font-size: 22px; border: 3px solid #4A2545;">+</span></div>
+<h1 style="margin: 18px 0 0; font-size: 34px; line-height: 38px; font-weight: 900; letter-spacing: -0.8px;">Marion t'invite dans le foyer.</h1>
+<p style="margin: 10px 0 0; font-size: 17px; line-height: 26px; color: #E3CDE0;">Vous partagerez le plan de la semaine et la liste de courses. Quand l'un coche, l'autre le voit tout de suite.</p>
+</div>
+<div style="padding: 28px 40px 8px;">
+<p style="margin: 0 0 12px; font-weight: 900;">Cette semaine chez vous</p>
+<div style="display: flex; gap: 12px; align-items: center; background: #F6F3EC; border-radius: 18px; padding: 14px 16px;">
+<span style="display: flex;"><dc-import variant="dahl" size="56" name="Plat" hint-size="56px,56px"></dc-import><dc-import variant="tarte" size="56" name="Plat" hint-size="56px,56px"></dc-import><dc-import variant="lasagnes" size="56" name="Plat" hint-size="56px,56px"></dc-import></span>
+<span style="font-size: 15px; line-height: 22px;"><strong style="display: block;">14 repas · 31 articles</strong><span class="num" style="color: #625A60;">68,40 € chez Auchan</span></span>
+</div>
+</div>
+<div style="padding: 24px 40px 12px; text-align: center;">
+<a href="AppFamille.dc.html" style="display: inline-block; background: #4A2545; color: #FFFFFF; text-decoration: none; font-weight: 900; font-size: 17px; padding: 18px 34px; border-radius: 999px;">Rejoindre le foyer de Marion</a>
+<p style="margin: 14px 0 0; font-size: 14px; color: #625A60;">Gratuit pour toi : l'abonnement du foyer te couvre. Invitation valable 7 jours.</p>
+</div>
+<div style="margin: 20px 40px 32px; border: 1px solid #E3DDD0; border-radius: 16px; padding: 14px 18px; font-size: 14px; line-height: 22px; color: #4D444B;">Tu verras le plan, les recettes et la liste. Tu ne verras ni l'abonnement ni les factures de Marion.</div>
+<div style="border-top: 1px solid #EFEAE0; padding: 22px 40px; background: #FBF9F4; font-size: 12px; line-height: 19px; color: #625A60;">Tu reçois cet email car Marion D. a saisi ton adresse. Tu ne recevras rien d'autre sans ton accord. [Raison sociale] · [Adresse]</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":760,"height":1100}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Menu de la semaine à moins de 70 € pour 4 personnes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.lnk{text-decoration:none;color:inherit}.lnk:hover{text-decoration:underline}
+.edge6{position:absolute;left:0;right:0;bottom:-8px;height:16px;background:radial-gradient(circle,#F6F3EC 7px,transparent 7.5px) repeat-x;background-size:22px 16px}
+.day:hover{border-color:#4A2545}
+th,td{text-align:left}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F6F3EC; min-height: 100vh;">
+
+<header style="background: #FFFFFF; border-bottom: 1px solid #E3DDD0;">
+<nav aria-label="Navigation principale" style="max-width: 1240px; margin: 0 auto; padding: 16px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px;">
+<a href="Main.dc.html" class="lnk" style="display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 18px; color: #4A2545;"><svg width="30" height="30" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#4A2545"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"></path><circle cx="24" cy="23" r="3.2" fill="#EE7A30"></circle></svg>[Nom de l'appli]</a>
+<div style="display: flex; flex-wrap: wrap; gap: 4px 22px; flex: 1 1 auto; font-weight: 700; font-size: 15px;"><a href="SiteRecettes.dc.html" class="lnk">Recettes</a><a href="SiteMenu.dc.html" class="lnk" style="color: #4A2545; font-weight: 900;">Menus</a><a href="SiteComparatif.dc.html" class="lnk">Comparatifs</a><a href="SiteTarifs.dc.html" class="lnk">Tarifs</a></div>
+<a href="AppConnexion.dc.html" style="text-decoration: none; background: #4A2545; color: #FFFFFF; font-weight: 900; font-size: 15px; padding: 12px 20px; border-radius: 999px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center;">Créer mon plan gratuit</a>
+</nav>
+</header>
+
+<main style="max-width: 1240px; margin: 0 auto; padding: 24px 24px 80px;">
+<nav aria-label="Fil d'Ariane" style="font-size: 14px; font-weight: 700; color: #625A60;"><a href="Main.dc.html" class="lnk">Accueil</a> › <a href="SiteMenu.dc.html" class="lnk">Menus</a> › <span style="color: #2A1A28;">Semaine à moins de 70 €</span></nav>
+
+<section style="padding: 36px 0 40px; display: flex; flex-wrap: wrap; gap: 40px; align-items: center;">
+<div style="flex: 1 1 560px; min-width: 0;">
+<p style="margin: 0 0 14px; font-size: 13px; font-weight: 900; letter-spacing: 1.4px; color: #9A420E;">MENU DE LA SEMAINE · NOVEMBRE 2026</p>
+<h1 class="disp" style="margin: 0; font-size: clamp(40px, 5vw, 68px); line-height: 1; font-weight: 800; letter-spacing: -2px;">La semaine à moins de 70 € pour 4 personnes</h1>
+<p style="margin: 22px 0 0; font-size: 20px; line-height: 31px; max-width: 640px;"><strong>Ce menu de 14 repas pour 2 adultes et 2 enfants coûte 60,10 € chez Lidl, soit 1,07 € par part.</strong> Il reste sous 70 € dans 4 enseignes sur 6.</p>
+<div style="margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px;"><span style="background: #FFFFFF; border: 1px solid #E3DDD0; font-weight: 800; padding: 8px 14px; border-radius: 999px;">14 repas</span><span style="background: #FFFFFF; border: 1px solid #E3DDD0; font-weight: 800; padding: 8px 14px; border-radius: 999px;">31 produits</span><span style="background: #FFFFFF; border: 1px solid #E3DDD0; font-weight: 800; padding: 8px 14px; border-radius: 999px;">6 recettes végé</span><span style="background: #FFFFFF; border: 1px solid #E3DDD0; font-weight: 800; padding: 8px 14px; border-radius: 999px;">2 h de batch le dimanche</span></div>
+</div>
+<div style="flex: 1 1 380px; min-width: 0; position: relative; background: #FFFFFF; border-radius: 26px 26px 0 0; padding: 24px 24px 34px; border: 1px solid #E3DDD0; border-bottom: 0;">
+<p style="margin: 0 0 12px; font-size: 13px; font-weight: 900; letter-spacing: 1px; color: #625A60;">CE MENU COÛTE…</p>
+<div role="radiogroup" aria-label="Enseigne" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;"><sc-for list="{{stores}}" as="s" hint-placeholder-count="6"><button type="button" role="radio" aria-checked="{{s.on}}" onClick="{{s.pick}}" style="{{s.style}}">{{s.n}}</button></sc-for></div>
+<p class="disp num" style="margin: 18px 0 2px; font-size: 60px; line-height: 1; font-weight: 800; letter-spacing: -2.4px;">{{total}}</p>
+<p class="num" style="margin: 0; font-size: 15px; font-weight: 800; color: {{noteColor}};">{{note}}</p>
+<span class="edge6" aria-hidden="true"></span>
+</div>
+</section>
+
+<section aria-labelledby="sem">
+<h2 id="sem" class="disp" style="margin: 0 0 16px; font-size: 32px; font-weight: 800; letter-spacing: -1px;">Les 14 repas</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;">
+<sc-for list="{{days}}" as="d" hint-placeholder-count="7">
+<article class="day" style="background: #FFFFFF; border: 2px solid #E3DDD0; border-radius: 22px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+<h3 style="margin: 0; font-size: 13px; font-weight: 900; letter-spacing: 1px; color: #625A60;">{{d.d}}</h3>
+<a href="SiteRecette.dc.html" class="lnk" style="display: flex; gap: 10px; align-items: center;"><dc-import variant="{{d.v1}}" size="48" name="Plat" hint-size="48px,48px"></dc-import><span style="font-size: 14px; font-weight: 800; line-height: 1.2;">{{d.m1}}</span></a>
+<a href="SiteRecette.dc.html" class="lnk" style="display: flex; gap: 10px; align-items: center;"><dc-import variant="{{d.v2}}" size="48" name="Plat" hint-size="48px,48px"></dc-import><span style="font-size: 14px; font-weight: 800; line-height: 1.2;">{{d.m2}}</span></a>
+</article>
+</sc-for>
+</div>
+</section>
+
+<div style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+<section style="flex: 1 1 440px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 24px;">
+<h2 class="disp" style="margin: 0 0 14px; font-size: 26px; font-weight: 800;">La liste de courses, par rayon</h2>
+<table class="num" style="width: 100%; border-collapse: collapse; font-size: 16px;">
+<thead><tr style="font-size: 12px; letter-spacing: 0.6px; color: #625A60;"><th scope="col" style="padding: 8px 0; font-weight: 900;">RAYON</th><th scope="col" style="padding: 8px 0; font-weight: 900;">PRODUITS</th><th scope="col" style="padding: 8px 0; font-weight: 900; text-align: right;">CHEZ LIDL</th></tr></thead>
+<tbody style="font-weight: 700;">
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 0; font-weight: 900;">Fruits et légumes</th><td>11</td><td style="text-align: right;">14,20 €</td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 0; font-weight: 900;">Épicerie</th><td>10</td><td style="text-align: right;">17,90 €</td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 0; font-weight: 900;">Crèmerie</th><td>5</td><td style="text-align: right;">11,40 €</td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 0; font-weight: 900;">Viande et poisson</th><td>3</td><td style="text-align: right;">12,30 €</td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 0; font-weight: 900;">Surgelés</th><td>2</td><td style="text-align: right;">4,30 €</td></tr>
+<tr style="border-top: 2px solid #2A1A28; font-weight: 900;"><th scope="row" style="padding: 12px 0;">Total</th><td>31</td><td style="text-align: right;">60,10 €</td></tr>
+</tbody>
+</table>
+</section>
+<section style="flex: 1 1 380px; min-width: 0; background: #E8F0DF; border-radius: 26px; padding: 24px;">
+<h2 class="disp" style="margin: 0 0 14px; font-size: 26px; font-weight: 800;">Le batch du dimanche, en 2 heures</h2>
+<ol style="margin: 0; padding: 0 0 0 22px; display: flex; flex-direction: column; gap: 10px; font-size: 16px; line-height: 24px;">
+<li>Cuire 500 g de lentilles : dahl lundi, salade jeudi.</li>
+<li>Rôtir le potimarron entier : velouté mardi, gratin samedi.</li>
+<li>Préparer une sauce tomate double : pâtes mercredi, lasagnes dimanche.</li>
+<li>Laver et couper les poireaux pour la soupe de vendredi.</li>
+</ol>
+<a href="SiteGuide.dc.html" style="display: inline-block; margin-top: 16px; font-weight: 900;">Lire le guide du batch cooking →</a>
+</section>
+</div>
+
+<section style="margin-top: 40px; background: #4A2545; color: #FFFFFF; border-radius: 32px; padding: clamp(28px, 4vw, 52px); display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between;">
+<div style="flex: 1 1 420px;"><h2 class="disp" style="margin: 0; font-size: clamp(28px, 3.2vw, 42px); line-height: 1.05; font-weight: 800; letter-spacing: -1.2px;">Adapte ce menu à ton foyer</h2><p style="margin: 10px 0 0; font-size: 17px; color: #E3CDE0;">Nombre de personnes, régime, enseigne : on recalcule tout, gratuitement.</p></div>
+<a href="AppConnexion.dc.html" style="text-decoration: none; background: #EE7A30; color: #2A1A28; font-weight: 900; font-size: 17px; padding: 18px 28px; border-radius: 999px;">Utiliser ce menu</a>
+</section>
+
+<section style="margin-top: 56px; max-width: 840px;">
+<h2 class="disp" style="margin: 0 0 16px; font-size: 30px; font-weight: 800; letter-spacing: -1px;">Questions fréquentes</h2>
+<details open="" style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 16px 20px; margin-bottom: 10px;"><summary style="font-weight: 900; font-size: 17px; cursor: pointer;">Peut-on vraiment nourrir 4 personnes avec 70 € par semaine ?</summary><p style="margin: 10px 0 0; line-height: 25px;">Oui pour les déjeuners et dîners : ce menu coûte entre 60,10 € et 71,60 € selon l'enseigne. Petits-déjeuners et goûters ne sont pas inclus.</p></details>
+<details style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 16px 20px; margin-bottom: 10px;"><summary style="font-weight: 900; font-size: 17px; cursor: pointer;">Le menu change-t-il chaque semaine ?</summary><p style="margin: 10px 0 0; line-height: 25px;">Oui. Un nouveau menu est publié chaque jeudi, avec les produits de saison et les prix de la semaine.</p></details>
+</section>
+</main>
+<footer style="background: #2A1A28; color: #B9ADB6; padding: 28px 24px; font-size: 14px; text-align: center;">Prix indicatifs relevés le 14 novembre 2026 · <a href="SiteMethodo.dc.html" style="color: #D9CCD6;">Méthodologie</a> · <a href="SiteLegal.dc.html" style="color: #D9CCD6;">Mentions légales</a></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2900}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { s: 'Lidl' }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var fmt = function (v) { return v.toFixed(2).replace('.', ',') + ' €'; };
+    var S = [['Lidl', 60.1], ['Aldi', 61.4], ['E.Leclerc', 64.2], ['Intermarché', 68.9], ['Carrefour', 70.3], ['Auchan', 71.6]];
+    var stores = S.map(function (x) {
+      var on = s.s === x[0];
+      return { n: x[0], on: on ? 'true' : 'false', pick: function () { self.setState({ s: x[0] }); },
+        style: 'min-height:44px;padding:0 6px;border-radius:12px;font:800 13px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF;border:2px solid #4A2545' : 'background:#FFFFFF;color:#2A1A28;border:2px solid #E3DDD0') };
+    });
+    var cur = S.filter(function (x) { return x[0] === s.s; })[0], under = cur[1] < 70;
+    var D = [['LUNDI', 'salade', 'Salade lentilles feta', 'curry', 'Dahl de lentilles'], ['MARDI', 'pates', 'Pâtes tomate basilic', 'soupe', 'Velouté de potimarron'], ['MERCREDI', 'curry', 'Curry de pois chiches', 'pates', 'Pâtes sauce maison'], ['JEUDI', 'salade', 'Salade lentilles', 'curry', 'Poulet coco'], ['VENDREDI', 'pates', 'Penne au thon', 'soupe', 'Soupe de poireaux'], ['SAMEDI', 'soupe', 'Velouté et tartines', 'pates', 'Gratin de potimarron'], ['DIMANCHE', 'curry', 'Curry de légumes', 'pates', 'Lasagnes végé']];
+    var days = D.map(function (d) { return { d: d[0], v1: d[1], m1: d[2], v2: d[3], m2: d[4] }; });
+    return { stores: stores, days: days, total: fmt(cur[1]), note: (under ? 'Sous les 70 € · ' : 'Au-dessus de 70 € · ') + fmt(cur[1] / 56) + ' par part',
+      noteColor: under ? '#2F6B2A' : '#9A420E' };
+  }
+}
+</script>
+</body>
+</html>

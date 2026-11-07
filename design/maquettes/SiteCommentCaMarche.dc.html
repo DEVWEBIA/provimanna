@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Comment ça marche — planning de repas et comparateur</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.lnk{text-decoration:none;color:inherit}.lnk:hover{text-decoration:underline}
+.st:hover{border-color:#4A2545}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F6F3EC; min-height: 100vh;">
+<header style="background: #FFFFFF; border-bottom: 1px solid #E3DDD0;">
+<nav aria-label="Navigation principale" style="max-width: 1240px; margin: 0 auto; padding: 16px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px;">
+<a href="Main.dc.html" class="lnk" style="display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 18px; color: #4A2545;"><svg width="30" height="30" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#4A2545"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"></path><circle cx="24" cy="23" r="3.2" fill="#EE7A30"></circle></svg>[Nom de l'appli]</a>
+<div style="display: flex; flex-wrap: wrap; gap: 4px 22px; flex: 1 1 auto; font-weight: 700; font-size: 15px;"><a href="SiteRecettes.dc.html" class="lnk">Recettes</a><a href="SiteMenu.dc.html" class="lnk">Menus</a><a href="SiteComparatif.dc.html" class="lnk">Comparatifs</a><a href="SiteTarifs.dc.html" class="lnk">Tarifs</a></div>
+<a href="AppConnexion.dc.html" style="text-decoration: none; background: #4A2545; color: #FFFFFF; font-weight: 900; font-size: 15px; padding: 12px 20px; border-radius: 999px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center;">Créer mon plan gratuit</a>
+</nav>
+</header>
+
+<main style="max-width: 1240px; margin: 0 auto; padding: 24px 24px 80px;">
+<nav aria-label="Fil d'Ariane" style="font-size: 14px; font-weight: 700; color: #625A60;"><a href="Main.dc.html" class="lnk">Accueil</a> › <span style="color: #2A1A28;">Comment ça marche</span></nav>
+<section style="padding: 40px 0 36px; max-width: 900px;">
+<h1 class="disp" style="margin: 0; font-size: clamp(40px, 5.2vw, 70px); line-height: 1; font-weight: 800; letter-spacing: -2.2px;">Ta semaine de repas, planifiée et chiffrée en 2 minutes.</h1>
+<p style="margin: 22px 0 0; font-size: 20px; line-height: 31px;"><strong>Tu décris ton foyer une fois. Chaque jeudi soir, on te propose 14 repas de saison avec leur liste de courses et leur prix dans 6 enseignes.</strong> Tu choisis où faire tes courses.</p>
+</section>
+
+<!-- Démo -->
+<section aria-label="Démonstration" style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 32px; padding: clamp(20px, 3vw, 36px); display: flex; flex-wrap: wrap; gap: 28px;">
+<ol role="tablist" aria-label="Étapes" style="list-style: none; margin: 0; padding: 0; flex: 1 1 320px; display: flex; flex-direction: column; gap: 10px;">
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+<li><button type="button" role="tab" class="st" aria-selected="{{s.on}}" onClick="{{s.pick}}" style="{{s.style}}"><span class="disp" style="{{s.numStyle}}">{{s.n}}</span><span style="text-align: left;"><span style="display: block; font-weight: 900; font-size: 18px;">{{s.t}}</span><span style="display: block; font-size: 15px; line-height: 22px; color: #625A60; margin-top: 2px;">{{s.d}}</span></span></button></li>
+</sc-for>
+</ol>
+<div role="tabpanel" style="flex: 2 1 460px; min-width: 0; background: #F6F3EC; border-radius: 24px; padding: 28px; min-height: 360px; display: flex; align-items: center; justify-content: center;">
+<sc-if value="{{is.s0}}" hint-placeholder-val="{{true}}">
+<div style="width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 10px;">
+<div style="background: #FFFFFF; border-radius: 18px; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; font-weight: 900;"><span>Adultes</span><span class="disp" style="font-size: 28px;">2</span></div>
+<div style="background: #FFFFFF; border-radius: 18px; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; font-weight: 900;"><span>Enfants</span><span class="disp" style="font-size: 28px;">2</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px;"><span style="background: #4A2545; color: #FFFFFF; padding: 8px 14px; border-radius: 999px; font-weight: 800;">Sans porc</span><span style="background: #FFFFFF; padding: 8px 14px; border-radius: 999px; font-weight: 800;">Auchan · 69003</span></div>
+</div>
+</sc-if>
+<sc-if value="{{is.s1}}" hint-placeholder-val="{{false}}">
+<div style="width: 100%; max-width: 460px;">
+<div style="background: #4A2545; color: #FFFFFF; border-radius: 18px; padding: 14px 16px; display: flex; gap: 12px; align-items: center; margin-bottom: 14px;"><span style="width: 36px; height: 36px; border-radius: 10px; background: #EE7A30;"></span><span><strong style="display: block;">Jeudi 19:00 · Ton menu est prêt</strong><span style="color: #E3CDE0; font-size: 14px;">68,40 € cette semaine</span></span></div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; justify-items: center;" aria-hidden="true"><dc-import variant="dahl" size="88" name="Plat" hint-size="88px,88px"></dc-import><dc-import variant="tarte" size="88" name="Plat" hint-size="88px,88px"></dc-import><dc-import variant="riz" size="88" name="Plat" hint-size="88px,88px"></dc-import><dc-import variant="poisson" size="88" name="Plat" hint-size="88px,88px"></dc-import></div>
+</div>
+</sc-if>
+<sc-if value="{{is.s2}}" hint-placeholder-val="{{false}}">
+<div style="width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 8px;">
+<div style="display: grid; grid-template-columns: 100px 1fr 76px; gap: 10px; align-items: center; font-weight: 800;"><span>Lidl</span><span style="height: 14px; border-radius: 9px; background: #EE7A30; width: 84%;"></span><span class="num" style="text-align: right;">57,40 €</span></div>
+<div style="display: grid; grid-template-columns: 100px 1fr 76px; gap: 10px; align-items: center; font-weight: 800;"><span>E.Leclerc</span><span style="height: 14px; border-radius: 9px; background: #D9CFDA; width: 90%;"></span><span class="num" style="text-align: right;">61,30 €</span></div>
+<div style="display: grid; grid-template-columns: 100px 1fr 76px; gap: 10px; align-items: center; font-weight: 800;"><span>Auchan</span><span style="height: 14px; border-radius: 9px; background: #4A2545; width: 100%;"></span><span class="num" style="text-align: right;">68,40 €</span></div>
+<p style="margin: 10px 0 0; font-weight: 800; color: #9A420E;">Le prix est un repère : c'est toi qui choisis.</p>
+</div>
+</sc-if>
+<sc-if value="{{is.s3}}" hint-placeholder-val="{{false}}">
+<div style="width: 100%; max-width: 420px; background: #FFFFFF; border-radius: 20px; overflow: hidden;">
+<p style="margin: 0; padding: 12px 16px; background: #E8F0DF; font-weight: 900; font-size: 13px; letter-spacing: 0.8px;">FRUITS ET LÉGUMES</p>
+<p style="margin: 0; padding: 12px 16px; border-top: 1px solid #EFEAE0; font-weight: 700;">☑ <span style="text-decoration: line-through; color: #8A8088;">Potimarron · 1 kg</span></p>
+<p style="margin: 0; padding: 12px 16px; border-top: 1px solid #EFEAE0; font-weight: 700;">☐ Poireaux · 3 pièces <span style="float: right; font-size: 12px; color: #625A60;">ajouté par Léa</span></p>
+<p style="margin: 0; padding: 12px 16px; border-top: 1px solid #EFEAE0; font-weight: 900; color: #4A2545;">Ouvrir le drive Auchan →</p>
+</div>
+</sc-if>
+</div>
+</section>
+
+<!-- Semaine type -->
+<section style="margin-top: 48px;">
+<h2 class="disp" style="margin: 0 0 18px; font-size: 34px; font-weight: 800; letter-spacing: -1px;">Une semaine type</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+<div style="background: #4A2545; color: #FFFFFF; border-radius: 20px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 1px; color: #E3CDE0;">JEUDI 19 H</p><p style="margin: 6px 0 0; font-weight: 900;">Le plan arrive</p></div>
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 20px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 1px; color: #625A60;">VENDREDI</p><p style="margin: 6px 0 0; font-weight: 900;">Tu ajustes et compares</p></div>
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 20px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 1px; color: #625A60;">SAMEDI</p><p style="margin: 6px 0 0; font-weight: 900;">Courses, liste partagée</p></div>
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 20px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 1px; color: #625A60;">DIMANCHE</p><p style="margin: 6px 0 0; font-weight: 900;">Batch de 2 heures</p></div>
+<div style="background: #FCE3D3; border-radius: 20px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 1px; color: #9A420E;">FIN DU MOIS</p><p style="margin: 6px 0 0; font-weight: 900;">Ton récap d'économies</p></div>
+</div>
+</section>
+
+<section style="margin-top: 48px; display: flex; flex-wrap: wrap; gap: 20px;">
+<div style="flex: 1 1 420px; background: #2A1A28; color: #FFFFFF; border-radius: 28px; padding: 28px;">
+<h2 class="disp" style="margin: 0 0 14px; font-size: 28px; font-weight: 800;">Ce que tu ne verras jamais</h2>
+<ul style="margin: 0; padding: 0 0 0 20px; display: flex; flex-direction: column; gap: 8px; font-size: 16px; line-height: 24px; color: #E3CDE0;"><li>De faux comptes à rebours pour te pousser à payer</li><li>Une enseigne mieux classée parce qu'elle nous paie</li><li>Tes données revendues</li><li>Des notifications sans intérêt</li></ul>
+</div>
+<div style="flex: 1 1 380px; background: #4A2545; color: #FFFFFF; border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 14px; justify-content: center;">
+<p class="disp" style="margin: 0; font-size: 30px; line-height: 1.05; font-weight: 800;">Prêt pour ton premier jeudi ?</p>
+<a href="AppConnexion.dc.html" style="align-self: flex-start; text-decoration: none; background: #EE7A30; color: #2A1A28; font-weight: 900; padding: 16px 24px; border-radius: 999px;">Créer mon plan gratuit</a>
+</div>
+</section>
+</main>
+<footer style="background: #2A1A28; color: #B9ADB6; padding: 28px 24px; font-size: 14px; text-align: center;"><a href="SiteMethodo.dc.html" style="color: #D9CCD6;">Méthodologie</a> · <a href="SiteTarifs.dc.html" style="color: #D9CCD6;">Tarifs</a> · <a href="SiteLegal.dc.html" style="color: #D9CCD6;">Mentions légales</a></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2700}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { s: 0 }; }
+  renderVals() {
+    var self = this, cur = this.state.s;
+    var S = [['Décris ton foyer', 'Adultes, enfants, régime, enseigne et code postal. Une minute, une seule fois.'], ['Reçois ton plan le jeudi', '14 repas de saison, remplaçables en un clic, avec la liste de courses.'], ['Compare les 6 enseignes', 'Le total dans chaque enseigne, daté et fiable. Tu restes libre.'], ['Fais tes courses', 'Liste par rayon, partagée en famille, disponible hors ligne.']];
+    var steps = S.map(function (x, i) {
+      var on = cur === i;
+      return { n: i + 1, t: x[0], d: x[1], on: on ? 'true' : 'false', pick: function () { self.setState({ s: i }); },
+        style: 'width:100%;display:flex;gap:16px;align-items:flex-start;padding:16px;border-radius:20px;cursor:pointer;font-family:Nunito;color:#2A1A28;background:' + (on ? '#F6F3EC' : '#FFFFFF') + ';border:2px solid ' + (on ? '#4A2545' : '#EFEAE0'),
+        numStyle: 'font-size:34px;font-weight:800;line-height:1;min-width:30px;color:' + (on ? '#EE7A30' : '#4A2545') };
+    });
+    return { steps: steps, is: { s0: cur === 0, s1: cur === 1, s2: cur === 2, s3: cur === 3 } };
+  }
+}
+</script>
+</body>
+</html>

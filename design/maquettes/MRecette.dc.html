@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mobile — fiche recette</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F3EC; font-family: 'Nunito', sans-serif; color: #2A1A28;">
+<div style="position: absolute; inset: 0 0 92px 0; overflow-y: auto;">
+<div style="position: relative; background: #FCE3D3; height: 290px; display: grid; place-items: center; border-radius: 0 0 36px 36px;">
+<a href="MPlan.dc.html" aria-label="Retour au plan" style="position: absolute; top: 18px; left: 16px; width: 44px; height: 44px; border-radius: 99px; background: #FFFFFF; display: grid; place-items: center; text-decoration: none; color: #2A1A28; font-weight: 900; font-size: 20px;">‹</a>
+<button type="button" onClick="{{fav}}" aria-pressed="{{favOn}}" aria-label="Ajouter aux favoris" style="position: absolute; top: 18px; right: 16px; width: 44px; height: 44px; border-radius: 99px; background: #FFFFFF; border: 0; display: grid; place-items: center; cursor: pointer;"><svg width="22" height="22" viewBox="0 0 24 24" fill="{{favFill}}" stroke="#EE7A30" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-4.4-9.3-9C1.2 8.8 3.3 5 7 5c2 0 3.5 1.2 5 3 1.5-1.8 3-3 5-3 3.7 0 5.8 3.8 4.3 7-2.3 4.6-9.3 9-9.3 9z"></path></svg></button>
+<dc-import variant="soupe" size="210" name="Plat" hint-size="210px,210px"></dc-import>
+</div>
+<div style="padding: 20px 18px 24px;">
+<div style="display: flex; flex-wrap: wrap; gap: 6px;"><span style="background: #E8F0DF; color: #34561C; font-size: 12px; font-weight: 900; padding: 4px 10px; border-radius: 999px;">Végé</span><span style="background: #FFFFFF; font-size: 12px; font-weight: 900; padding: 4px 10px; border-radius: 999px;">35 min · 4 parts</span></div>
+<h1 class="disp" style="margin: 10px 0 0; font-size: 30px; line-height: 1.05; font-weight: 800; letter-spacing: -1px;">Velouté de potimarron et châtaigne</h1>
+<div style="margin-top: 14px; display: flex; gap: 8px;">
+<div style="flex: 1; border: 2px solid #4A2545; border-radius: 16px; padding: 10px 12px;"><p style="margin: 0; font-size: 11px; font-weight: 900; color: #4A2545;">AUCHAN</p><p class="disp num" style="margin: 2px 0 0; font-size: 22px; font-weight: 800;">4,96 €</p></div>
+<div style="flex: 1; background: #FCE3D3; border-radius: 16px; padding: 10px 12px;"><p style="margin: 0; font-size: 11px; font-weight: 900; color: #9A420E;">LIDL</p><p class="disp num" style="margin: 2px 0 0; font-size: 22px; font-weight: 800;">4,06 €</p></div>
+</div>
+<div role="tablist" style="margin-top: 18px; display: flex; gap: 4px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 999px; padding: 4px;"><sc-for list="{{tabs}}" as="t" hint-placeholder-count="2"><button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.l}}</button></sc-for></div>
+<sc-if value="{{isIng}}" hint-placeholder-val="{{true}}">
+<ul style="list-style: none; margin: 10px 0 0; padding: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 20px; overflow: hidden;">
+<sc-for list="{{ings}}" as="g" hint-placeholder-count="6"><li style="border-top: 1px solid #EFEAE0;"><label style="display: flex; align-items: center; gap: 12px; min-height: 54px; padding: 0 14px; cursor: pointer;"><input type="checkbox" checked="{{g.have}}" onChange="{{g.toggle}}" style="width: 22px; height: 22px; accent-color: #4A2545;"><span style="flex: 1; font-size: 15px; {{g.txt}}"><strong>{{g.q}}</strong> {{g.n}}</span><span class="num" style="font-weight: 800; font-size: 14px; {{g.txt}}">{{g.p}}</span></label></li></sc-for>
+</ul>
+<p style="margin: 10px 0 0; font-size: 13px; color: #625A60; font-weight: 700;">Coche ce que tu as déjà : on le retire de ta liste.</p>
+</sc-if>
+<sc-if value="{{isSteps}}" hint-placeholder-val="{{false}}">
+<ol style="margin: 12px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+<li style="display: flex; gap: 12px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 14px;"><span class="disp" style="font-size: 24px; font-weight: 800; color: #4A2545;">1</span><span style="font-size: 15px; line-height: 23px;">Coupe le potimarron en cubes, sans l'éplucher.</span></li>
+<li style="display: flex; gap: 12px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 14px;"><span class="disp" style="font-size: 24px; font-weight: 800; color: #4A2545;">2</span><span style="font-size: 15px; line-height: 23px;">Fais revenir l'oignon 3 minutes dans l'huile.</span></li>
+<li style="display: flex; gap: 12px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 14px;"><span class="disp" style="font-size: 24px; font-weight: 800; color: #4A2545;">3</span><span style="font-size: 15px; line-height: 23px;">Ajoute potimarron, châtaignes, eau et bouillon. 25 minutes.</span></li>
+<li style="display: flex; gap: 12px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 14px;"><span class="disp" style="font-size: 24px; font-weight: 800; color: #4A2545;">4</span><span style="font-size: 15px; line-height: 23px;">Mixe avec la crème, sale et poivre.</span></li>
+</ol>
+</sc-if>
+</div>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 92px; box-sizing: border-box; background: #FFFFFF; border-top: 1px solid #E3DDD0; display: flex; gap: 10px; align-items: center; padding: 10px 16px 22px;">
+<span style="flex: 1;"><span style="display: block; font-size: 11px; font-weight: 900; color: #625A60;">À ACHETER</span><span class="disp num" style="font-size: 22px; font-weight: 800;">{{toBuy}}</span></span>
+<a href="AppCuisine.dc.html" style="min-height: 52px; display: inline-flex; align-items: center; padding: 0 24px; border-radius: 999px; background: #4A2545; color: #FFFFFF; font-weight: 900; text-decoration: none;">Mode cuisine</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { tab: 'ing', have: { 3: true, 5: true }, fav: false }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var fmt = function (v) { return v.toFixed(2).replace('.', ',') + ' €'; };
+    var B = [['1 kg', 'potimarron', 1.82], ['1', 'oignon', 0.19], ['200 g', 'châtaignes', 2.19], ['1', 'cube de bouillon', 0.12], ['10 cl', 'crème fraîche', 0.54], ['1 c. à s.', "huile d'olive", 0.10]];
+    var t = 0;
+    var ings = B.map(function (b, i) { var h = !!s.have[i]; if (!h) t += b[2]; return { q: b[0], n: b[1], p: fmt(b[2]), have: h, txt: h ? 'text-decoration:line-through;color:#8A8088;' : '', toggle: function () { var o = Object.assign({}, s.have); o[i] = !h; self.setState({ have: o }); } }; });
+    var tabs = [['ing', 'Ingrédients'], ['steps', 'Étapes']].map(function (x) { var on = s.tab === x[0]; return { l: x[1], on: on ? 'true' : 'false', pick: function () { self.setState({ tab: x[0] }); }, style: 'flex:1;min-height:42px;border-radius:999px;border:0;font:900 14px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF' : 'background:transparent;color:#2A1A28') }; });
+    return { ings: ings, tabs: tabs, isIng: s.tab === 'ing', isSteps: s.tab === 'steps', toBuy: fmt(t), favOn: s.fav ? 'true' : 'false', favFill: s.fav ? '#EE7A30' : 'none', fav: function () { self.setState({ fav: !s.fav }); } };
+  }
+}
+</script>
+</body>
+</html>

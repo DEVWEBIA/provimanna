@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Web app — envoi d'un ticket de caisse</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace}
+.nav{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border-radius:14px;text-decoration:none;color:#2A1A28;font-weight:800;font-size:15px}
+.nav:hover{background:#F6F3EC;color:#2A1A28}
+.drop:hover{border-color:#4A2545;background:#FBF8F3}
+.edge5{position:absolute;left:0;right:0;bottom:-8px;height:16px;background:radial-gradient(circle,#2A1A28 7px,transparent 7.5px) repeat-x;background-size:22px 16px}
+@keyframes scan{0%{top:8%}100%{top:88%}}
+.scan{position:absolute;left:-6px;right:-6px;height:3px;background:#EE7A30;box-shadow:0 0 16px #EE7A30;animation:scan 1.8s ease-in-out infinite alternate}
+@media (prefers-reduced-motion: reduce){.scan{animation:none;top:50%}}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F6F3EC; min-height: 100vh; display: flex; flex-wrap: wrap;">
+
+<aside style="flex: 1 1 240px; max-width: 100%; background: #FFFFFF; border-right: 1px solid #E3DDD0; padding: 24px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px;">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; color: #4A2545; font-weight: 900; font-size: 17px; text-decoration: none; padding: 0 8px;"><svg width="28" height="28" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#4A2545"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"></path><circle cx="24" cy="23" r="3.2" fill="#EE7A30"></circle></svg>[Nom de l'appli]</a>
+<nav aria-label="Web app" style="display: flex; flex-direction: column; gap: 2px;">
+<a href="AppDashboard.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 11 12 4l9 7v9H3z"></path></svg>Accueil</a>
+<a href="AppPlan.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg>Mon plan</a>
+<a href="AppListe.dc.html" class="nav" aria-current="page" style="background: #EFE3EC; color: #4A2545;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>Liste de courses</a>
+<a href="AppRecettes.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle></svg>Recettes</a>
+<a href="AppEconomies.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Mes économies</a>
+<a href="AppFamille.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M2 20c1-3.5 3.6-5 7-5s6 1.5 7 5M15 15c3 0 5 1.5 6 4"></path></svg>Famille</a>
+<a href="AppNotifs.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"></path></svg>Notifications<span style="margin-left: auto; background: #EE7A30; color: #2A1A28; font-size: 12px; font-weight: 900; padding: 1px 8px; border-radius: 99px;">3</span></a>
+<a href="AppAbonnement.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4-6 8-6s7 2 8 6"></path></svg>Profil</a>
+</nav>
+</aside>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 28px clamp(20px, 3vw, 44px) 64px; box-sizing: border-box;">
+<a href="AppListe.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; font-weight: 800; text-decoration: none;">← Ma liste de courses</a>
+<ol aria-label="Étapes" style="list-style: none; margin: 8px 0 24px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px;">
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="3"><li><button type="button" onClick="{{s.pick}}" aria-current="{{s.cur}}" style="{{s.style}}">{{s.l}}</button></li></sc-for>
+</ol>
+
+<!-- DÉPÔT -->
+<sc-if value="{{is.drop}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+<section style="flex: 2 1 460px; min-width: 0;">
+<h1 class="disp" style="margin: 0; font-size: clamp(34px, 3.4vw, 50px); line-height: 1.02; font-weight: 800; letter-spacing: -1.6px;">Envoie ton ticket, gagne 3 jours de Premium.</h1>
+<p style="margin: 12px 0 24px; font-size: 18px; line-height: 27px; color: #625A60;">Tes prix aident toute la communauté à comparer juste.</p>
+<button type="button" class="drop" onClick="{{toRead}}" style="width: 100%; min-height: 280px; border: 3px dashed #CFC5CD; border-radius: 28px; background: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; cursor: pointer; font-family: Nunito; color: #2A1A28; padding: 24px;">
+<span style="width: 72px; height: 72px; border-radius: 22px; background: #EFE3EC; display: grid; place-items: center;"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="4"></circle></svg></span>
+<span class="disp" style="font-size: 24px; font-weight: 800;">Glisse la photo ici</span>
+<span style="font-size: 15px; color: #625A60; font-weight: 700;">ou clique pour choisir un fichier · JPG, PNG, HEIC, PDF · 10 Mo max</span>
+</button>
+<div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 12px; align-items: end;">
+<div style="flex: 1 1 220px;"><label for="ens" style="display: block; font-weight: 900; font-size: 14px; margin-bottom: 6px;">Enseigne du ticket</label><select id="ens" style="width: 100%; min-height: 50px; border-radius: 14px; border: 2px solid #E3DDD0; padding: 0 12px; font: 700 16px Nunito; color: #2A1A28; background: #FFFFFF;"><option>Détection automatique</option><option>Auchan</option><option>Intermarché</option></select></div>
+<p style="flex: 1 1 260px; margin: 0; font-size: 14px; line-height: 21px; color: #625A60;">La photo est supprimée après lecture. Seuls les prix et le magasin sont gardés, sans lien avec ton nom.</p>
+</div>
+</section>
+<aside style="flex: 1 1 280px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 24px; padding: 22px;">
+<p style="margin: 0 0 12px; font-weight: 900;">Pour une lecture parfaite</p>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 15px; line-height: 22px;">
+<li style="display: flex; gap: 10px;"><span style="color: #4A2545; font-weight: 900;">1</span>Ticket à plat, en entier, bien éclairé</li>
+<li style="display: flex; gap: 10px;"><span style="color: #4A2545; font-weight: 900;">2</span>Ticket de moins de 7 jours</li>
+<li style="display: flex; gap: 10px;"><span style="color: #4A2545; font-weight: 900;">3</span>Un ticket long ? Envoie-le en 2 photos</li>
+</ul>
+<p style="margin: 16px 0 0; padding-top: 14px; border-top: 1px solid #EFEAE0; font-size: 14px; color: #625A60;">Ce mois-ci : 2 tickets envoyés, 6 jours gagnés (max. 14 par mois).</p>
+</aside>
+</div>
+</sc-if>
+
+<!-- LECTURE -->
+<sc-if value="{{is.read}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: center;">
+<div style="flex: 0 1 300px; display: flex; justify-content: center;">
+<div style="position: relative; width: 260px; background: #FFFFFF; border-radius: 6px 6px 0 0; padding: 22px 20px 30px; box-shadow: 0 20px 50px rgba(42,26,40,0.18); transform: rotate(-2deg);" aria-hidden="true">
+<p class="mono" style="margin: 0 0 12px; text-align: center; font-size: 12px; font-weight: 700;">AUCHAN · LYON<br>14/11/2026 18:42</p>
+<div class="mono" style="display: flex; flex-direction: column; gap: 7px; font-size: 11px;">
+<span style="display: flex; justify-content: space-between;"><span>POTIMARRON KG</span><span>1,82</span></span><span style="display: flex; justify-content: space-between;"><span>FETA AOP 200G</span><span>2,75</span></span><span style="display: flex; justify-content: space-between;"><span>LAIT COCO 40CL</span><span>1,35</span></span><span style="display: flex; justify-content: space-between;"><span>OEUFS X12</span><span>3,29</span></span><span style="display: flex; justify-content: space-between;"><span>PENNE 1KG</span><span>1,29</span></span><span style="display: flex; justify-content: space-between;"><span>POIREAUX BOTTE</span><span>2,29</span></span><span style="display: flex; justify-content: space-between;"><span>…</span><span></span></span>
+<span style="display: flex; justify-content: space-between; border-top: 1px dashed #2A1A28; padding-top: 6px; font-weight: 700;"><span>TOTAL</span><span>58,40</span></span>
+</div>
+<span class="scan"></span>
+<span class="edge5" aria-hidden="true" style="background: radial-gradient(circle,#F6F3EC 7px,transparent 7.5px) repeat-x; background-size: 22px 16px;"></span>
+</div>
+</div>
+<div style="flex: 1 1 380px; min-width: 0;" role="status" aria-live="polite">
+<h1 class="disp" style="margin: 0; font-size: clamp(32px, 3.2vw, 46px); font-weight: 800; letter-spacing: -1.4px;">On lit ton ticket…</h1>
+<p style="margin: 10px 0 20px; font-size: 17px; color: #625A60;">Environ 10 secondes. Tu peux fermer cette page, on te prévient.</p>
+<div style="height: 12px; border-radius: 9px; background: #E3DDD0;"><div style="height: 12px; width: 64%; border-radius: 9px; background: #4A2545;"></div></div>
+<ul style="margin: 20px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-weight: 800;">
+<li style="color: #2F6B2A;">✓ Enseigne reconnue : Auchan, Lyon 3e</li>
+<li style="color: #2F6B2A;">✓ 26 lignes lues</li>
+<li style="color: #4A2545;">… Correspondance avec les produits</li>
+</ul>
+<button type="button" onClick="{{toDone}}" style="margin-top: 24px; min-height: 48px; padding: 0 20px; border-radius: 999px; border: 2px solid #E3DDD0; background: #FFFFFF; font: 800 15px Nunito; color: #2A1A28; cursor: pointer;">Voir le résultat (démo)</button>
+</div>
+</div>
+</sc-if>
+
+<!-- RÉSULTAT -->
+<sc-if value="{{is.done}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+<section style="flex: 1 1 380px; min-width: 0; background: #4A2545; color: #FFFFFF; border-radius: 30px; padding: clamp(24px, 3vw, 40px); display: flex; flex-direction: column; gap: 18px;">
+<p style="margin: 0; font-size: 13px; font-weight: 900; letter-spacing: 1.2px; color: #E3CDE0;">MERCI MARION</p>
+<h1 class="disp" style="margin: 0; font-size: clamp(36px, 3.6vw, 54px); line-height: 1; font-weight: 800; letter-spacing: -1.8px;">23 prix mis à jour chez Auchan.</h1>
+<div style="display: flex; flex-wrap: wrap; gap: 12px;">
+<div style="flex: 1 1 140px; background: #EE7A30; color: #2A1A28; border-radius: 20px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900;">PREMIUM</p><p class="disp" style="margin: 4px 0 0; font-size: 34px; font-weight: 800;">+3 jours</p></div>
+<div style="flex: 1 1 140px; background: rgba(255,255,255,0.1); border-radius: 20px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; color: #E3CDE0;">TON PLAN</p><p class="disp num" style="margin: 4px 0 0; font-size: 34px; font-weight: 800;">71,20 €</p><p style="margin: 0; font-size: 13px; color: #E3CDE0;">au lieu de 71,60 €, prix plus frais</p></div>
+</div>
+<a href="AppPlan.dc.html" style="min-height: 52px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: #FFFFFF; color: #4A2545; font-weight: 900; text-decoration: none;">Revenir à mon plan</a>
+</section>
+<section style="flex: 1 1 380px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; overflow: hidden;">
+<h2 style="margin: 0; padding: 16px 20px; font-size: 16px; font-weight: 900;">Ce qu'on a lu</h2>
+<ul class="num" style="list-style: none; margin: 0; padding: 0; font-size: 15px;">
+<li style="display: flex; justify-content: space-between; gap: 10px; padding: 12px 20px; border-top: 1px solid #EFEAE0;"><span style="font-weight: 800;">Potimarron, au kg</span><span style="font-weight: 900;">1,82 € <span style="color: #2F6B2A;">✓</span></span></li>
+<li style="display: flex; justify-content: space-between; gap: 10px; padding: 12px 20px; border-top: 1px solid #EFEAE0;"><span style="font-weight: 800;">Feta AOP 200 g</span><span style="font-weight: 900;">2,75 € <span style="color: #2F6B2A;">✓</span></span></li>
+<li style="display: flex; justify-content: space-between; gap: 10px; padding: 12px 20px; border-top: 1px solid #EFEAE0;"><span style="font-weight: 800;">Lait de coco 40 cl</span><span style="font-weight: 900;">1,35 € <span style="color: #2F6B2A;">✓</span></span></li>
+<li style="display: flex; justify-content: space-between; gap: 10px; padding: 12px 20px; border-top: 1px solid #EFEAE0;"><span style="font-weight: 800;">Œufs × 12</span><span style="font-weight: 900;">3,29 € <span style="color: #2F6B2A;">✓</span></span></li>
+<li style="display: flex; justify-content: space-between; gap: 10px; padding: 12px 20px; border-top: 1px solid #EFEAE0; background: #FFF6EF;"><span style="font-weight: 800;">« BOUILL LEG X10 »</span><span style="font-size: 13px; font-weight: 900; color: #9A420E;">vérifié par l'équipe</span></li>
+<li style="display: flex; justify-content: space-between; gap: 10px; padding: 12px 20px; border-top: 1px solid #EFEAE0; background: #FFF6EF;"><span style="font-weight: 800;">« PROMO -30% COCO »</span><span style="font-size: 13px; font-weight: 900; color: #9A420E;">vérifié par l'équipe</span></li>
+</ul>
+<p style="margin: 0; padding: 14px 20px; border-top: 1px solid #EFEAE0; font-size: 14px; color: #625A60;">+ 17 autres lignes reconnues · 3 lignes hors alimentation ignorées</p>
+</section>
+</div>
+</sc-if>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { st: 'drop' }; }
+  renderVals() {
+    var self = this, s = this.state, order = ['drop', 'read', 'done'];
+    var steps = [['drop', '1 · Photo'], ['read', '2 · Lecture'], ['done', '3 · Résultat']].map(function (t) {
+      var on = s.st === t[0], past = order.indexOf(t[0]) < order.indexOf(s.st);
+      return { l: t[1], cur: on ? 'step' : 'false', pick: function () { self.setState({ st: t[0] }); },
+        style: 'min-height:40px;padding:0 16px;border-radius:999px;font:800 14px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF;border:0' : (past ? 'background:#E3F0DF;color:#2F6B2A;border:0' : 'background:#FFFFFF;color:#625A60;border:1px solid #E3DDD0')) };
+    });
+    return { steps: steps, is: { drop: s.st === 'drop', read: s.st === 'read', done: s.st === 'done' },
+      toRead: function () { self.setState({ st: 'read' }); }, toDone: function () { self.setState({ st: 'done' }); } };
+  }
+}
+</script>
+</body>
+</html>

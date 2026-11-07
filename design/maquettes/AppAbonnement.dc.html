@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Web app — Premium et profil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.nav{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border-radius:14px;text-decoration:none;color:#2A1A28;font-weight:800;font-size:15px}
+.nav:hover{background:#F6F3EC;color:#2A1A28}
+th,td{text-align:left}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F6F3EC; min-height: 100vh; display: flex; flex-wrap: wrap;">
+
+<aside style="flex: 1 1 240px; max-width: 100%; background: #FFFFFF; border-right: 1px solid #E3DDD0; padding: 24px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px;">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; color: #4A2545; font-weight: 900; font-size: 17px; text-decoration: none; padding: 0 8px;"><svg width="28" height="28" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#4A2545"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"></path><circle cx="24" cy="23" r="3.2" fill="#EE7A30"></circle></svg>[Nom de l'appli]</a>
+<nav aria-label="Web app" style="display: flex; flex-direction: column; gap: 2px;">
+<a href="AppDashboard.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 11 12 4l9 7v9H3z"></path></svg>Accueil</a>
+<a href="AppPlan.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg>Mon plan</a>
+<a href="AppListe.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>Liste de courses</a>
+<a href="AppRecettes.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle></svg>Recettes</a>
+<a href="AppEconomies.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Mes économies</a>
+<a href="AppFamille.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M2 20c1-3.5 3.6-5 7-5s6 1.5 7 5M15 15c3 0 5 1.5 6 4"></path></svg>Famille</a>
+<a href="AppNotifs.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"></path></svg>Notifications<span style="margin-left: auto; background: #EE7A30; color: #2A1A28; font-size: 12px; font-weight: 900; padding: 1px 8px; border-radius: 99px;">3</span></a>
+<a href="AppAbonnement.dc.html" class="nav" aria-current="page" style="background: #EFE3EC; color: #4A2545;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4-6 8-6s7 2 8 6"></path></svg>Profil</a>
+</nav>
+</aside>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 28px clamp(20px, 3vw, 44px) 64px; box-sizing: border-box;">
+<div role="tablist" aria-label="Vue" style="display: inline-flex; gap: 4px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 999px; padding: 5px; margin-bottom: 28px;">
+<sc-for list="{{views}}" as="v" hint-placeholder-count="2"><button type="button" role="tab" aria-selected="{{v.on}}" onClick="{{v.pick}}" style="{{v.style}}">{{v.l}}</button></sc-for>
+</div>
+
+<!-- PAYWALL -->
+<sc-if value="{{isPay}}" hint-placeholder-val="{{true}}">
+<section style="max-width: 1040px; display: flex; flex-wrap: wrap; border-radius: 34px; overflow: hidden; border: 1px solid #E3DDD0; background: #FFFFFF;">
+<div style="flex: 1 1 380px; background: #4A2545; color: #FFFFFF; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 22px;">
+<p style="margin: 0; font-size: 13px; font-weight: 900; letter-spacing: 1.2px; color: #E3CDE0;">TON ESSAI SE TERMINE DANS 2 JOURS</p>
+<p class="disp" style="margin: 0; font-size: clamp(34px, 3.6vw, 50px); line-height: 1.02; font-weight: 800; letter-spacing: -1.6px;">Tu as économisé <span style="background: #EE7A30; color: #2A1A28; padding: 0 10px; border-radius: 12px;">58,30 €</span> depuis septembre.</p>
+<p style="margin: 0; font-size: 17px; line-height: 26px; color: #E3CDE0;">Premium t'aide à aller plus loin : le détail de chaque produit, et ton panier basculé dans l'enseigne la moins chère en un clic.</p>
+<div style="margin-top: auto; display: flex; gap: 8px; align-items: flex-end;" aria-hidden="true"><dc-import variant="curry" size="90" name="Plat" hint-size="90px,90px"></dc-import><dc-import variant="salade" size="70" name="Plat" hint-size="70px,70px"></dc-import></div>
+</div>
+<div style="flex: 1 1 420px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 18px;">
+<h1 class="disp" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px;">Continuer avec Premium</h1>
+<fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+<legend style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Formule</legend>
+<sc-for list="{{plans}}" as="p" hint-placeholder-count="2">
+<button type="button" onClick="{{p.pick}}" aria-pressed="{{p.on}}" style="{{p.style}}">
+<span style="width: 24px; height: 24px; flex: none; border-radius: 99px; box-sizing: border-box; border: {{p.radio}};"></span>
+<span style="flex: 1; text-align: left;"><span style="display: block; font-weight: 900; font-size: 18px;">{{p.t}}</span><span style="font-size: 14px; color: #625A60; font-weight: 700;">{{p.d}}</span></span>
+<span style="text-align: right;"><span class="disp num" style="display: block; font-size: 26px; font-weight: 800;">{{p.price}}</span><span style="{{p.tagStyle}}">{{p.tag}}</span></span>
+</button>
+</sc-for>
+</fieldset>
+<table style="width: 100%; border-collapse: collapse; font-size: 15px;">
+<thead><tr style="font-size: 12px; letter-spacing: 0.8px; color: #625A60;"><th scope="col" style="padding: 8px 0; font-weight: 900;">INCLUS</th><th scope="col" style="padding: 8px; font-weight: 900; text-align: center;">GRATUIT</th><th scope="col" style="padding: 8px; font-weight: 900; text-align: center; color: #4A2545;">PREMIUM</th></tr></thead>
+<tbody style="font-weight: 700;">
+<tr style="border-top: 1px solid #EFEAE0;"><td style="padding: 11px 0;">Plan de la semaine</td><td style="text-align: center;">1</td><td style="text-align: center; color: #4A2545; font-weight: 900;">Illimité</td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><td style="padding: 11px 0;">Totaux des 6 enseignes</td><td style="text-align: center;">Oui</td><td style="text-align: center; color: #4A2545; font-weight: 900;">Oui</td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><td style="padding: 11px 0;">Détail produit par produit</td><td style="text-align: center; color: #8A8088;">—</td><td style="text-align: center; color: #4A2545; font-weight: 900;">Oui</td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><td style="padding: 11px 0;">Changer d'enseigne en un clic</td><td style="text-align: center; color: #8A8088;">—</td><td style="text-align: center; color: #4A2545; font-weight: 900;">Oui</td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><td style="padding: 11px 0;">Alertes promo et partage famille</td><td style="text-align: center; color: #8A8088;">—</td><td style="text-align: center; color: #4A2545; font-weight: 900;">Oui</td></tr>
+</tbody>
+</table>
+<button type="button" style="min-height: 58px; border-radius: 999px; border: 0; background: #4A2545; color: #FFFFFF; font: 900 17px Nunito; cursor: pointer;">Continuer · {{cta}}</button>
+<a href="AppRecette.dc.html" style="text-align: center; font-weight: 800; min-height: 44px; display: flex; align-items: center; justify-content: center;">Rester en gratuit, sans rien perdre</a>
+<p style="margin: 0; text-align: center; font-size: 13px; color: #625A60;">Paiement sécurisé par Stripe · résiliable à tout moment en 2 clics</p>
+</div>
+</section>
+</sc-if>
+
+<!-- PROFIL -->
+<sc-if value="{{isProfil}}" hint-placeholder-val="{{false}}">
+<h1 class="disp" style="margin: 0 0 24px; font-size: clamp(34px, 3.4vw, 48px); font-weight: 800; letter-spacing: -1.4px;">Profil et abonnement</h1>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; max-width: 1100px;">
+<section style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 24px; grid-row: span 2;">
+<div style="display: flex; justify-content: space-between; align-items: start; gap: 12px;"><h2 style="margin: 0; font-size: 19px; font-weight: 900;">Abonnement</h2><span style="background: #EFE3EC; color: #4A2545; font-weight: 900; font-size: 13px; padding: 6px 12px; border-radius: 999px;">Essai Premium</span></div>
+<p class="disp" style="margin: 18px 0 4px; font-size: 40px; font-weight: 800; letter-spacing: -1.2px;">9 jours restants</p>
+<p style="margin: 0; color: #625A60; font-weight: 700;">Se termine le 21 novembre · aucune carte enregistrée</p>
+<div style="margin: 18px 0; height: 10px; border-radius: 9px; background: #F1ECE2;"><div style="height: 10px; width: 36%; border-radius: 9px; background: #4A2545;"></div></div>
+<p style="margin: 0 0 18px; font-size: 15px; line-height: 23px;">À la fin de l'essai, tu repasses en gratuit automatiquement. Tes plans, ta liste et tes économies restent.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px;"><button type="button" onClick="{{toPay}}" style="min-height: 48px; padding: 0 22px; border-radius: 999px; border: 0; background: #4A2545; color: #FFFFFF; font: 900 15px Nunito; cursor: pointer;">Passer Premium</button><button type="button" style="min-height: 48px; padding: 0 20px; border-radius: 999px; border: 2px solid #E3DDD0; background: #FFFFFF; font: 800 15px Nunito; color: #2A1A28; cursor: pointer;">Factures</button></div>
+<hr style="border: 0; border-top: 1px solid #EFEAE0; margin: 24px 0;">
+<h3 style="margin: 0 0 12px; font-size: 16px; font-weight: 900;">Tes économies</h3>
+<div style="display: flex; gap: 12px; flex-wrap: wrap;"><div style="flex: 1 1 120px; background: #FCE3D3; border-radius: 18px; padding: 14px;"><p style="margin: 0; font-size: 12px; font-weight: 900; color: #9A420E;">DEPUIS SEPTEMBRE</p><p class="disp num" style="margin: 4px 0 0; font-size: 26px; font-weight: 800;">58,30 €</p></div><div style="flex: 1 1 120px; background: #F6F3EC; border-radius: 18px; padding: 14px;"><p style="margin: 0; font-size: 12px; font-weight: 900; color: #625A60;">SÉRIE</p><p class="disp" style="margin: 4px 0 0; font-size: 26px; font-weight: 800;">6 semaines</p></div></div>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 24px;">
+<div style="display: flex; justify-content: space-between; align-items: center;"><h2 style="margin: 0; font-size: 19px; font-weight: 900;">Mon foyer</h2><a href="AppOnboarding.dc.html" style="font-weight: 800;">Modifier</a></div>
+<dl style="margin: 16px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 10px 20px; font-size: 15px;"><dt style="color: #625A60; font-weight: 700;">Personnes</dt><dd style="margin: 0; font-weight: 800;">2 adultes, 2 enfants</dd><dt style="color: #625A60; font-weight: 700;">Régime</dt><dd style="margin: 0; font-weight: 800;">Sans porc</dd><dt style="color: #625A60; font-weight: 700;">Enseigne</dt><dd style="margin: 0; font-weight: 800;">Auchan · 69003</dd><dt style="color: #625A60; font-weight: 700;">Famille</dt><dd style="margin: 0; font-weight: 800;">Léa (liste partagée)</dd></dl>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 24px;">
+<h2 style="margin: 0 0 8px; font-size: 19px; font-weight: 900;">Notifications</h2>
+<sc-for list="{{notifs}}" as="n" hint-placeholder-count="3">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 56px; border-top: 1px solid #EFEAE0;"><span><span style="display: block; font-weight: 800;">{{n.t}}</span><span style="font-size: 13px; color: #625A60;">{{n.d}}</span></span><button type="button" role="switch" aria-checked="{{n.on}}" aria-label="{{n.t}}" onClick="{{n.toggle}}" style="{{n.track}}"><span style="{{n.knob}}"></span></button></div>
+</sc-for>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 24px;">
+<h2 style="margin: 0 0 6px; font-size: 19px; font-weight: 900;">Mes données</h2>
+<p style="margin: 0 0 14px; font-size: 14px; color: #625A60; line-height: 21px;">Photos de tickets supprimées après lecture. Tu peux tout récupérer ou tout effacer.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px;"><button type="button" style="min-height: 46px; padding: 0 18px; border-radius: 999px; border: 2px solid #E3DDD0; background: #FFFFFF; font: 800 14px Nunito; color: #2A1A28; cursor: pointer;">Exporter mes données</button><button type="button" style="min-height: 46px; padding: 0 18px; border-radius: 999px; border: 2px solid #F3C7C2; background: #FFFFFF; font: 800 14px Nunito; color: #B42318; cursor: pointer;">Supprimer mon compte</button></div>
+</section>
+</div>
+</sc-if>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { view: 'pay', plan: 'an', n: { 0: true, 1: true, 2: false } }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var views = [['pay', 'Fin d’essai (paywall)'], ['profil', 'Profil et abonnement']].map(function (v) {
+      var on = s.view === v[0];
+      return { l: v[1], on: on ? 'true' : 'false', pick: function () { self.setState({ view: v[0] }); },
+        style: 'min-height:44px;padding:0 20px;border-radius:999px;border:0;font:900 15px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF' : 'background:transparent;color:#2A1A28') };
+    });
+    var plans = [['an', 'Annuel', '3,33 € par mois, facturé une fois', '39,99 €', '−33 %'], ['mois', 'Mensuel', 'Sans engagement', '4,99 €', '']].map(function (p) {
+      var on = s.plan === p[0];
+      return { t: p[1], d: p[2], price: p[3], tag: p[4], on: on ? 'true' : 'false', pick: function () { self.setState({ plan: p[0] }); },
+        tagStyle: p[4] ? 'background:#FCE3D3;color:#9A420E;font-size:12px;font-weight:900;padding:2px 8px;border-radius:999px' : 'display:none',
+        radio: on ? '7px solid #4A2545' : '2px solid #CFC5CD',
+        style: 'display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:20px;background:#FFFFFF;cursor:pointer;font-family:Nunito;color:#2A1A28;' + (on ? 'border:2px solid #4A2545;box-shadow:0 0 0 4px #EFE3EC' : 'border:2px solid #E3DDD0') };
+    });
+    var nl = [['Ton menu est prêt', 'Le jeudi à 19 h'], ['Promos sur ton plan', 'Seulement les produits que tu achètes'], ['Récap du mois', 'Par email, le 1er du mois']];
+    var notifs = nl.map(function (x, i) {
+      var on = !!s.n[i];
+      return { t: x[0], d: x[1], on: on ? 'true' : 'false', toggle: function () { var o = Object.assign({}, s.n); o[i] = !on; self.setState({ n: o }); },
+        track: 'width:52px;height:30px;flex:none;border-radius:99px;border:0;padding:3px;cursor:pointer;display:flex;' + (on ? 'background:#4A2545;justify-content:flex-end' : 'background:#D9D2DA;justify-content:flex-start'),
+        knob: 'width:24px;height:24px;border-radius:99px;background:#FFFFFF;display:block' };
+    });
+    return { views: views, plans: plans, notifs: notifs, isPay: s.view === 'pay', isProfil: s.view === 'profil',
+      cta: s.plan === 'an' ? '39,99 € / an' : '4,99 € / mois', toPay: function () { self.setState({ view: 'pay' }); } };
+  }
+}
+</script>
+</body>
+</html>

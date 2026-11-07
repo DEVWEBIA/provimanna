@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Accueil — planning de repas et comparateur de prix</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif;font-optical-sizing:auto}
+.num{font-variant-numeric:tabular-nums}
+.edge{position:absolute;left:0;right:0;bottom:-8px;height:16px;background:radial-gradient(circle,#4A2545 7px,transparent 7.5px) repeat-x;background-size:22px 16px}
+.lnk{text-decoration:none;color:inherit}
+.lnk:hover{text-decoration:underline}
+.pill:hover{border-color:#4A2545}
+.faq:hover{background:#FBF9F4}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F6F3EC; min-height: 100vh;">
+
+<!-- NAV -->
+<header style="background: #4A2545; color: #FFFFFF;">
+<nav aria-label="Navigation principale" style="max-width: 1240px; margin: 0 auto; padding: 20px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px;">
+<a href="#top" class="lnk" style="display: flex; align-items: center; gap: 10px; color: #FFFFFF; font-weight: 900; font-size: 19px; letter-spacing: -0.3px;">
+<svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#EE7A30"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#2A1A28" stroke-width="2.4" stroke-linecap="round"></path><circle cx="24" cy="23" r="3.2" fill="#2A1A28"></circle></svg>
+[Nom de l'appli]</a>
+<div style="display: flex; flex-wrap: wrap; gap: 4px 24px; flex: 1 1 auto; font-weight: 700; font-size: 15px;">
+<a href="SiteCommentCaMarche.dc.html" class="lnk" style="color: #F3E6EF;">Comment ça marche</a>
+<a href="SiteRecettes.dc.html" class="lnk" style="color: #F3E6EF;">Recettes</a>
+<a href="SiteComparatif.dc.html" class="lnk" style="color: #F3E6EF;">Comparatifs</a>
+<a href="#tarifs" class="lnk" style="color: #F3E6EF;">Tarifs</a>
+</div>
+<a href="AppConnexion.dc.html" class="lnk" style="color: #FFFFFF; font-weight: 800; font-size: 15px;">Se connecter</a>
+<a href="#attente" style="text-decoration: none; background: #FFFFFF; color: #4A2545; font-weight: 900; font-size: 15px; padding: 12px 20px; border-radius: 999px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center;">Rejoindre la liste</a>
+</nav>
+
+<!-- HERO -->
+<section id="top" style="max-width: 1240px; margin: 0 auto; padding: 40px 24px 112px; display: flex; flex-wrap: wrap; gap: 56px; align-items: center;">
+<div style="flex: 1 1 520px; min-width: 0;">
+<p style="margin: 0 0 24px; display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.22); padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: 13px; letter-spacing: 0.4px; color: #F3E6EF;"><span style="width: 8px; height: 8px; border-radius: 99px; background: #EE7A30;"></span>Menus d'automne : potimarron, poireau, châtaigne</p>
+<h1 class="disp" style="margin: 0; font-size: clamp(46px, 6.4vw, 88px); line-height: 0.96; font-weight: 800; letter-spacing: -2.5px; color: #FFFFFF;">Le même menu.<br>Six prix.<br><span style="color: #EE7A30;">Tu choisis.</span></h1>
+<p style="margin: 28px 0 0; max-width: 520px; font-size: 20px; line-height: 30px; color: #EBDDE7;">On planifie tes repas de la semaine, on calcule ta liste de courses et on te montre ce qu'elle coûte chez Lidl, Aldi, E.Leclerc, Intermarché, Auchan et Carrefour.</p>
+<form id="attente" style="margin-top: 36px; display: flex; flex-wrap: wrap; gap: 10px; max-width: 540px;">
+<label for="mail-hero" class="sr">Ton adresse email</label>
+<input id="mail-hero" type="email" placeholder="ton@email.fr" style="flex: 1 1 240px; min-height: 56px; box-sizing: border-box; padding: 0 22px; border-radius: 999px; border: 2px solid transparent; font: 600 17px 'Nunito', sans-serif; color: #2A1A28; background: #FFFFFF;">
+<a href="SiteMerci.dc.html" style="min-height: 56px; display: inline-flex; align-items: center; padding: 0 28px; border-radius: 999px; background: #EE7A30; color: #2A1A28; font: 900 17px 'Nunito', sans-serif; text-decoration: none;">Créer mon plan gratuit</a>
+</form>
+<p style="margin: 14px 0 0; font-size: 14px; font-weight: 700; color: #D9C6D4;">Gratuit à vie pour 1 plan par semaine · sans carte bancaire · prêt en 2 minutes</p>
+</div>
+
+<!-- Ticket comparateur interactif -->
+<div style="flex: 1 1 440px; min-width: 0; position: relative; display: flex; justify-content: center; padding: 24px 0;">
+<div style="position: absolute; left: -10px; top: -6px;" aria-hidden="true"><dc-import name="Plat" variant="soupe" size="132" hint-size="132px,132px"></dc-import></div>
+<div style="position: absolute; right: -16px; bottom: -36px;" aria-hidden="true"><dc-import name="Plat" variant="salade" size="148" hint-size="148px,148px"></dc-import></div>
+<div style="position: relative; width: 100%; max-width: 440px; background: #FFFFFF; border-radius: 22px 22px 0 0; padding: 26px 26px 34px; box-sizing: border-box; box-shadow: 0 30px 60px rgba(20,8,18,0.35); transform: rotate(-1.2deg);">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-bottom: 2px dashed #E3DDD0; padding-bottom: 14px;">
+<div>
+<p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 1.2px; color: #625A60;">TA SEMAINE · 14 REPAS</p>
+<p class="disp" style="margin: 4px 0 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Combien ça coûte ?</p>
+</div>
+<p style="margin: 0; font-size: 12px; font-weight: 700; color: #625A60;">Exemple · sem. 46</p>
+</div>
+<fieldset style="border: 0; padding: 0; margin: 16px 0 12px;">
+<legend style="font-size: 13px; font-weight: 800; color: #625A60; margin-bottom: 8px;">Ton foyer</legend>
+<div style="display: flex; gap: 8px; flex-wrap: wrap;">
+<sc-for list="{{foyers}}" as="f" hint-placeholder-count="4">
+<button type="button" class="pill" onClick="{{f.pick}}" aria-pressed="{{f.on}}" style="{{f.style}}">{{f.label}}</button>
+</sc-for>
+</div>
+</fieldset>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px;">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+<li style="{{r.rowStyle}}">
+<span style="width: 34px; height: 34px; flex: none; border-radius: 10px; display: grid; place-items: center; font-size: 12px; font-weight: 900; background: {{r.bg}}; color: #2A1A28;">{{r.short}}</span>
+<span style="flex: 1 1 auto; min-width: 0;">
+<span style="display: flex; justify-content: space-between; gap: 8px; font-weight: 800; font-size: 15px;"><span>{{r.name}} <span style="{{r.tagStyle}}">{{r.tag}}</span></span><span class="num" style="font-weight: 900;">{{r.total}}</span></span>
+<span style="display: block; height: 6px; margin-top: 6px; border-radius: 9px; background: #F1ECE2;"><span style="display: block; height: 6px; border-radius: 9px; width: {{r.w}}; background: {{r.bar}};"></span></span>
+</span>
+</li>
+</sc-for>
+</ul>
+<div style="margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+<p style="margin: 0; font-size: 14px; font-weight: 700; color: #625A60; max-width: 200px;">Écart entre ton enseigne et la moins chère</p>
+<p class="disp num" style="margin: 0; background: #EE7A30; color: #2A1A28; padding: 8px 16px; border-radius: 14px; font-size: 30px; font-weight: 800; letter-spacing: -1px;">−{{gap}}</p>
+</div>
+<span class="edge" aria-hidden="true"></span>
+</div>
+</div>
+</section>
+</header>
+
+<!-- Bandeau faits -->
+<section aria-label="En bref" style="border-bottom: 1px solid #E3DDD0; background: #FFFFFF;">
+<div style="max-width: 1240px; margin: 0 auto; padding: 22px 24px; display: flex; flex-wrap: wrap; gap: 12px 40px; justify-content: space-between; font-weight: 800; font-size: 16px;">
+<span style="display: flex; align-items: center; gap: 10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 9h18M5 9l1 11h12l1-11M9 9V6a3 3 0 0 1 6 0v3"></path></svg>6 enseignes comparées à chaque plan</span>
+<span style="display: flex; align-items: center; gap: 10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Ton plan prêt chaque jeudi soir</span>
+<span style="display: flex; align-items: center; gap: 10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16v12H4zM4 7l2-3h12l2 3M9 12h6"></path></svg>Prix datés, sources ouvertes</span>
+<span style="display: flex; align-items: center; gap: 10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Tu restes libre de ton enseigne</span>
+</div>
+</section>
+
+<!-- COMMENT ÇA MARCHE -->
+<section id="comment" style="max-width: 1240px; margin: 0 auto; padding: 112px 24px 40px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 48px;">
+<h2 class="disp" style="margin: 0; font-size: clamp(36px, 4.4vw, 60px); line-height: 1; font-weight: 800; letter-spacing: -1.8px; max-width: 640px;">Trois étapes, puis tu n'y penses plus.</h2>
+<p style="margin: 0; max-width: 380px; font-size: 18px; line-height: 27px; color: #625A60;">Tu règles ton foyer une fois. Ensuite, chaque jeudi soir, la semaine suivante t'attend.</p>
+</div>
+<ol style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+<li style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+<span class="disp" style="font-size: 64px; line-height: 1; font-weight: 800; color: #4A2545; letter-spacing: -2px;">01</span>
+<div style="background: #F6F3EC; border-radius: 18px; padding: 18px; display: flex; flex-wrap: wrap; gap: 8px;">
+<span style="background: #4A2545; color: #FFFFFF; padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: 14px;">2 adultes</span>
+<span style="background: #4A2545; color: #FFFFFF; padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: 14px;">2 enfants</span>
+<span style="background: #EFE3EC; color: #4A2545; padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: 14px;">Sans porc</span>
+<span style="background: #EFE3EC; color: #4A2545; padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: 14px;">Auchan · 69000</span>
+</div>
+<div><h3 style="margin: 0 0 6px; font-size: 22px; font-weight: 900;">Tu décris ton foyer</h3><p style="margin: 0; font-size: 16px; line-height: 24px; color: #625A60;">Adultes, enfants, régime, enseigne habituelle et code postal. Une minute, une seule fois.</p></div>
+</li>
+<li style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+<span class="disp" style="font-size: 64px; line-height: 1; font-weight: 800; color: #4A2545; letter-spacing: -2px;">02</span>
+<div style="background: #F6F3EC; border-radius: 18px; padding: 18px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px;" aria-hidden="true">
+<span style="height: 26px; border-radius: 6px; background: #E9A23B;"></span><span style="height: 26px; border-radius: 6px; background: #7DB043;"></span><span style="height: 26px; border-radius: 6px; background: #E98A2E;"></span><span style="height: 26px; border-radius: 6px; background: #F4CF6A;"></span><span style="height: 26px; border-radius: 6px; background: #7DB043;"></span><span style="height: 26px; border-radius: 6px; background: #C8382B;"></span><span style="height: 26px; border-radius: 6px; background: #E9A23B;"></span>
+<span style="height: 26px; border-radius: 6px; background: #F4CF6A;"></span><span style="height: 26px; border-radius: 6px; background: #E98A2E;"></span><span style="height: 26px; border-radius: 6px; background: #7DB043;"></span><span style="height: 26px; border-radius: 6px; background: #E9A23B;"></span><span style="height: 26px; border-radius: 6px; background: #C8382B;"></span><span style="height: 26px; border-radius: 6px; background: #F4CF6A;"></span><span style="height: 26px; border-radius: 6px; background: #E98A2E;"></span>
+</div>
+<div><h3 style="margin: 0 0 6px; font-size: 22px; font-weight: 900;">On compose ta semaine</h3><p style="margin: 0; font-size: 16px; line-height: 24px; color: #625A60;">14 repas, midi et soir, de saison. Tu remplaces un plat en un clic, le total suit.</p></div>
+</li>
+<li style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+<span class="disp" style="font-size: 64px; line-height: 1; font-weight: 800; color: #4A2545; letter-spacing: -2px;">03</span>
+<div style="background: #F6F3EC; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 8px;" aria-hidden="true">
+<span style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 13px;"><span style="width: 52px;">Lidl</span><span style="height: 10px; border-radius: 9px; background: #EE7A30; width: 72%;"></span></span>
+<span style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 13px;"><span style="width: 52px;">Leclerc</span><span style="height: 10px; border-radius: 9px; background: #D9CFDA; width: 78%;"></span></span>
+<span style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 13px;"><span style="width: 52px;">Auchan</span><span style="height: 10px; border-radius: 9px; background: #4A2545; width: 86%;"></span></span>
+</div>
+<div><h3 style="margin: 0 0 6px; font-size: 22px; font-weight: 900;">Tu compares, tu choisis</h3><p style="margin: 0; font-size: 16px; line-height: 24px; color: #625A60;">Le total dans chaque enseigne, l'écart avec la tienne. Le prix est un repère, jamais une obligation.</p></div>
+</li>
+</ol>
+</section>
+
+<!-- COMPARATEUR -->
+<section style="padding: 72px 24px;">
+<div style="max-width: 1240px; margin: 0 auto; background: #2A1A28; color: #FFFFFF; border-radius: 36px; padding: clamp(28px, 5vw, 72px); display: flex; flex-wrap: wrap; gap: 56px; align-items: center;">
+<div style="flex: 1 1 380px; min-width: 0;">
+<p style="margin: 0 0 16px; font-size: 13px; font-weight: 900; letter-spacing: 1.4px; color: #EE7A30;">LE COMPARATEUR</p>
+<h2 class="disp" style="margin: 0; font-size: clamp(36px, 4.2vw, 58px); line-height: 1; font-weight: 800; letter-spacing: -1.6px;">Le même panier peut coûter <span style="color: #EE7A30;">16 %</span> de plus.</h2>
+<p style="margin: 24px 0 0; font-size: 18px; line-height: 28px; color: #D9CCD6;">Sur notre panier d'exemple (famille de 4, semaine 46), l'écart entre la moins chère et la plus chère des six enseignes atteint 11,50 €. Chaque total affiche sa date de relevé et un indice de fiabilité.</p>
+<a href="SiteComparatif.dc.html" style="margin-top: 28px; display: inline-flex; align-items: center; gap: 8px; color: #FFFFFF; font-weight: 900; font-size: 16px; text-decoration: none; border-bottom: 2px solid #EE7A30; padding-bottom: 4px;">Voir le comparatif complet des enseignes →</a>
+</div>
+<div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
+<sc-for list="{{base}}" as="b" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: 116px 1fr 92px; align-items: center; gap: 14px;">
+<span style="font-weight: 800; font-size: 16px;">{{b.name}}</span>
+<span style="height: 34px; border-radius: 10px; background: rgba(255,255,255,0.07); overflow: hidden;"><span style="display: block; height: 34px; border-radius: 10px; width: {{b.w}}; background: {{b.darkBar}};"></span></span>
+<span class="num disp" style="font-size: 22px; font-weight: 800; text-align: right;">{{b.total}}</span>
+</div>
+</sc-for>
+<p style="margin: 6px 0 0; font-size: 13px; color: #B9ADB6;">Exemple illustratif · prix relevés via Open Prices et tickets de la communauté</p>
+</div>
+</div>
+</section>
+
+<!-- RITUEL -->
+<section style="max-width: 1240px; margin: 0 auto; padding: 72px 24px;">
+<h2 class="disp" style="margin: 0 0 12px; font-size: clamp(36px, 4.4vw, 60px); line-height: 1; font-weight: 800; letter-spacing: -1.8px; max-width: 760px;">Un petit rendez-vous qui fait de grosses économies.</h2>
+<p style="margin: 0 0 48px; font-size: 18px; color: #625A60;">Pas de compte à rebours, pas de culpabilité. Juste tes économies, visibles.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+<article style="background: #4A2545; color: #FFFFFF; border-radius: 26px; padding: 26px; display: flex; flex-direction: column; gap: 18px; min-height: 300px;">
+<p style="margin: 0; font-size: 13px; font-weight: 900; letter-spacing: 1.2px; color: #E3CDE0;">JEUDI · 19 H</p>
+<div style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); border-radius: 18px; padding: 14px; display: flex; gap: 12px; align-items: center;">
+<span style="width: 36px; height: 36px; flex: none; border-radius: 10px; background: #EE7A30;"></span>
+<span style="font-size: 14px; line-height: 20px;"><strong style="display: block;">Ton menu est prêt</strong>68 € cette semaine, 14 repas</span>
+</div>
+<h3 style="margin: auto 0 0; font-size: 22px; font-weight: 900;">Le plan arrive tout seul</h3>
+</article>
+<article style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 26px; display: flex; flex-direction: column; gap: 18px; min-height: 300px;">
+<p style="margin: 0; font-size: 13px; font-weight: 900; letter-spacing: 1.2px; color: #625A60;">DEPUIS SEPTEMBRE</p>
+<p class="disp num" style="margin: 0; font-size: 52px; font-weight: 800; letter-spacing: -2px; line-height: 1;">58,30 €</p>
+<div style="display: flex; align-items: end; gap: 6px; height: 56px;" aria-hidden="true"><span style="flex: 1; height: 30%; background: #FCE3D3; border-radius: 6px;"></span><span style="flex: 1; height: 42%; background: #FCE3D3; border-radius: 6px;"></span><span style="flex: 1; height: 38%; background: #FCE3D3; border-radius: 6px;"></span><span style="flex: 1; height: 55%; background: #FCE3D3; border-radius: 6px;"></span><span style="flex: 1; height: 64%; background: #FCE3D3; border-radius: 6px;"></span><span style="flex: 1; height: 72%; background: #FCE3D3; border-radius: 6px;"></span><span style="flex: 1; height: 100%; background: #EE7A30; border-radius: 6px;"></span></div>
+<h3 style="margin: auto 0 0; font-size: 22px; font-weight: 900;">Le compteur d'économies</h3>
+</article>
+<article style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 26px; display: flex; flex-direction: column; gap: 18px; min-height: 300px;">
+<p style="margin: 0; font-size: 13px; font-weight: 900; letter-spacing: 1.2px; color: #625A60;">SÉRIE EN COURS</p>
+<p class="disp" style="margin: 0; font-size: 52px; font-weight: 800; letter-spacing: -2px; line-height: 1;">6 semaines</p>
+<div style="display: flex; gap: 8px;" aria-hidden="true"><span style="width: 28px; height: 28px; border-radius: 99px; background: #4A2545;"></span><span style="width: 28px; height: 28px; border-radius: 99px; background: #4A2545;"></span><span style="width: 28px; height: 28px; border-radius: 99px; background: #4A2545;"></span><span style="width: 28px; height: 28px; border-radius: 99px; background: #4A2545;"></span><span style="width: 28px; height: 28px; border-radius: 99px; background: #4A2545;"></span><span style="width: 28px; height: 28px; border-radius: 99px; background: #4A2545;"></span><span style="width: 28px; height: 28px; border-radius: 99px; border: 2px dashed #4A2545; box-sizing: border-box;"></span></div>
+<h3 style="margin: auto 0 0; font-size: 22px; font-weight: 900;">Un joker par mois pour les vacances</h3>
+</article>
+<article style="background: #FCE3D3; border-radius: 26px; padding: 26px; display: flex; flex-direction: column; gap: 18px; min-height: 300px;">
+<p style="margin: 0; font-size: 13px; font-weight: 900; letter-spacing: 1.2px; color: #9A420E;">DÉFI DE NOVEMBRE</p>
+<p class="disp" style="margin: 0; font-size: 34px; font-weight: 800; letter-spacing: -1px; line-height: 1.05;">Moins de 70 € par semaine</p>
+<div style="height: 12px; border-radius: 9px; background: rgba(154,66,14,0.15);"><div style="height: 12px; width: 75%; border-radius: 9px; background: #EE7A30;"></div></div>
+<h3 style="margin: auto 0 0; font-size: 22px; font-weight: 900;">3 semaines sur 4, un badge à la clé</h3>
+</article>
+</div>
+</section>
+
+<!-- MENUS (maillage SEO) -->
+<section style="background: #FFFFFF; border-top: 1px solid #E3DDD0; border-bottom: 1px solid #E3DDD0;">
+<div style="max-width: 1240px; margin: 0 auto; padding: 96px 24px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 40px;">
+<h2 class="disp" style="margin: 0; font-size: clamp(32px, 3.6vw, 48px); line-height: 1.05; font-weight: 800; letter-spacing: -1.4px;">Des menus prêts, prix compris</h2>
+<a href="SiteRecettes.dc.html" style="font-weight: 900; color: #4A2545;">Toutes les recettes de saison →</a>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<a href="SiteMenu.dc.html" class="lnk" style="background: #F6F3EC; border-radius: 26px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; justify-content: center; background: #EFE3EC; border-radius: 20px; padding: 18px 0;"><dc-import name="Plat" variant="curry" size="150" hint-size="150px,150px"></dc-import></div>
+<span style="font-size: 13px; font-weight: 900; letter-spacing: 1px; color: #625A60;">FAMILLE DE 4 · 14 REPAS</span>
+<span class="disp" style="font-size: 26px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.1;">La semaine à moins de 70 €</span>
+<span style="display: flex; justify-content: space-between; font-weight: 800;"><span>dès 60,10 €</span><span style="background: #FCE3D3; color: #9A420E; padding: 2px 10px; border-radius: 999px; font-size: 14px;">1,07 € / part</span></span>
+</a>
+<a href="SiteRecette.dc.html" class="lnk" style="background: #F6F3EC; border-radius: 26px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; justify-content: center; background: #FCE3D3; border-radius: 20px; padding: 18px 0;"><dc-import name="Plat" variant="soupe" size="150" hint-size="150px,150px"></dc-import></div>
+<span style="font-size: 13px; font-weight: 900; letter-spacing: 1px; color: #625A60;">VÉGÉTARIEN · DE SAISON</span>
+<span class="disp" style="font-size: 26px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.1;">Novembre végé, 100 % saison</span>
+<span style="display: flex; justify-content: space-between; font-weight: 800;"><span>dès 52,40 €</span><span style="background: #FCE3D3; color: #9A420E; padding: 2px 10px; border-radius: 999px; font-size: 14px;">0,94 € / part</span></span>
+</a>
+<a href="SiteRecette.dc.html" class="lnk" style="background: #F6F3EC; border-radius: 26px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; justify-content: center; background: #E8F0DF; border-radius: 20px; padding: 18px 0;"><dc-import name="Plat" variant="pates" size="150" hint-size="150px,150px"></dc-import></div>
+<span style="font-size: 13px; font-weight: 900; letter-spacing: 1px; color: #625A60;">MOINS DE 30 MIN</span>
+<span class="disp" style="font-size: 26px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.1;">La semaine express</span>
+<span style="display: flex; justify-content: space-between; font-weight: 800;"><span>dès 58,90 €</span><span style="background: #FCE3D3; color: #9A420E; padding: 2px 10px; border-radius: 999px; font-size: 14px;">1,05 € / part</span></span>
+</a>
+</div>
+</div>
+</section>
+
+<!-- TARIFS -->
+<section id="tarifs" style="max-width: 1240px; margin: 0 auto; padding: 112px 24px 72px;">
+<h2 class="disp" style="margin: 0 0 12px; text-align: center; font-size: clamp(36px, 4.4vw, 60px); line-height: 1; font-weight: 800; letter-spacing: -1.8px;">Gratuit pour de vrai.</h2>
+<p style="margin: 0 auto 48px; max-width: 560px; text-align: center; font-size: 18px; line-height: 27px; color: #625A60;">Le plan de la semaine reste gratuit, sans limite de durée. Premium t'aide à aller plus loin.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 920px; margin: 0 auto;">
+<article style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 28px; padding: 34px; display: flex; flex-direction: column; gap: 20px;">
+<h3 style="margin: 0; font-size: 20px; font-weight: 900;">Gratuit</h3>
+<p class="disp" style="margin: 0; font-size: 60px; font-weight: 800; letter-spacing: -2px; line-height: 1;">0 €</p>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 16px; font-weight: 600;">
+<li style="display: flex; gap: 10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>1 plan par semaine</li>
+<li style="display: flex; gap: 10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Prix détaillés dans ton enseigne</li>
+<li style="display: flex; gap: 10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Totaux des 5 autres enseignes</li>
+<li style="display: flex; gap: 10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Liste de courses partageable</li>
+</ul>
+<a href="AppOnboarding.dc.html" style="margin-top: auto; text-align: center; text-decoration: none; border: 2px solid #4A2545; color: #4A2545; border-radius: 999px; padding: 15px; font-weight: 900; font-size: 16px;">Commencer gratuitement</a>
+</article>
+<article style="background: #4A2545; color: #FFFFFF; border-radius: 28px; padding: 34px; display: flex; flex-direction: column; gap: 20px; position: relative;">
+<span style="position: absolute; top: 28px; right: 28px; background: #EE7A30; color: #2A1A28; font-weight: 900; font-size: 13px; padding: 6px 12px; border-radius: 999px;">14 jours offerts</span>
+<h3 style="margin: 0; font-size: 20px; font-weight: 900;">Premium</h3>
+<p style="margin: 0;"><span class="disp num" style="font-size: 60px; font-weight: 800; letter-spacing: -2px; line-height: 1;">39,99 €</span><span style="font-weight: 700; color: #E3CDE0;"> / an</span></p>
+<p style="margin: -10px 0 0; font-size: 15px; font-weight: 700; color: #E3CDE0;">soit 3,33 € par mois · ou 4,99 € au mois</p>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 16px; font-weight: 600;">
+<li style="display: flex; gap: 10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EE7A30" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Détail produit par produit</li>
+<li style="display: flex; gap: 10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EE7A30" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Changement d'enseigne en un clic</li>
+<li style="display: flex; gap: 10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EE7A30" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Plans illimités et alertes promo</li>
+<li style="display: flex; gap: 10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EE7A30" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Partage famille en temps réel</li>
+</ul>
+<a href="AppAbonnement.dc.html" style="margin-top: auto; text-align: center; text-decoration: none; background: #FFFFFF; color: #4A2545; border-radius: 999px; padding: 17px; font-weight: 900; font-size: 16px;">Essayer 14 jours, sans carte</a>
+</article>
+</div>
+</section>
+
+<!-- FAQ -->
+<section style="max-width: 880px; margin: 0 auto; padding: 72px 24px 96px;">
+<h2 class="disp" style="margin: 0 0 32px; font-size: clamp(32px, 3.6vw, 48px); line-height: 1.05; font-weight: 800; letter-spacing: -1.4px;">Questions fréquentes</h2>
+<div style="border-top: 1px solid #E3DDD0;">
+<sc-for list="{{faq}}" as="q" hint-placeholder-count="6">
+<div style="border-bottom: 1px solid #E3DDD0;">
+<h3 style="margin: 0;"><button type="button" class="faq" onClick="{{q.toggle}}" aria-expanded="{{q.open}}" style="width: 100%; min-height: 64px; display: flex; justify-content: space-between; align-items: center; gap: 16px; background: transparent; border: 0; padding: 18px 8px; text-align: left; font: 800 19px 'Nunito', sans-serif; color: #2A1A28; cursor: pointer;">{{q.q}}<span aria-hidden="true" style="font-size: 26px; color: #4A2545; font-weight: 600;">{{q.sign}}</span></button></h3>
+<sc-if value="{{q.open}}" hint-placeholder-val="{{false}}"><p style="margin: 0; padding: 0 8px 22px; font-size: 17px; line-height: 27px; color: #4D444B; max-width: 720px;">{{q.a}}</p></sc-if>
+</div>
+</sc-for>
+</div>
+</section>
+
+<!-- CTA FINAL -->
+<section style="padding: 0 24px 96px;">
+<div style="max-width: 1240px; margin: 0 auto; background: #EE7A30; border-radius: 36px; padding: clamp(32px, 6vw, 80px); display: flex; flex-wrap: wrap; gap: 32px; align-items: center; justify-content: space-between; color: #2A1A28;">
+<h2 class="disp" style="margin: 0; flex: 1 1 460px; font-size: clamp(36px, 4.6vw, 64px); line-height: 1; font-weight: 800; letter-spacing: -2px;">Ton menu de jeudi prochain t'attend.</h2>
+<form style="flex: 1 1 380px; display: flex; flex-wrap: wrap; gap: 10px;">
+<label for="mail-cta" class="sr">Ton adresse email</label>
+<input id="mail-cta" type="email" placeholder="ton@email.fr" style="flex: 1 1 220px; min-height: 58px; box-sizing: border-box; padding: 0 22px; border-radius: 999px; border: 2px solid #2A1A28; font: 600 17px 'Nunito', sans-serif; background: #FFFFFF; color: #2A1A28;">
+<button type="button" style="min-height: 58px; padding: 0 28px; border-radius: 999px; border: 0; background: #2A1A28; color: #FFFFFF; font: 900 17px 'Nunito', sans-serif; cursor: pointer;">Rejoindre la liste</button>
+</form>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background: #2A1A28; color: #D9CCD6;">
+<div style="max-width: 1240px; margin: 0 auto; padding: 64px 24px 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 32px; font-size: 15px;">
+<div><p style="margin: 0 0 12px; color: #FFFFFF; font-weight: 900; font-size: 18px;">[Nom de l'appli]</p><p style="margin: 0; line-height: 23px;">Planning de repas et comparateur de prix entre enseignes. Prix indicatifs, relevés via Open Prices et la communauté.</p></div>
+<nav aria-label="Recettes"><p style="margin: 0 0 12px; color: #FFFFFF; font-weight: 900;">Recettes</p><p style="margin: 0; line-height: 30px;"><a href="SiteRecette.dc.html" class="lnk" style="color: #D9CCD6;">De saison</a><br><a href="SiteRecette.dc.html" class="lnk" style="color: #D9CCD6;">Végétariennes</a><br><a href="SiteRecette.dc.html" class="lnk" style="color: #D9CCD6;">Moins de 30 min</a><br><a href="SiteRecette.dc.html" class="lnk" style="color: #D9CCD6;">Pour enfants</a></p></nav>
+<nav aria-label="Comparatifs"><p style="margin: 0 0 12px; color: #FFFFFF; font-weight: 900;">Comparatifs</p><p style="margin: 0; line-height: 30px;"><a href="SiteComparatif.dc.html" class="lnk" style="color: #D9CCD6;">Enseigne la moins chère</a><br><a href="SiteComparatif.dc.html" class="lnk" style="color: #D9CCD6;">Lidl ou E.Leclerc</a><br><a href="SiteComparatif.dc.html" class="lnk" style="color: #D9CCD6;">Observatoire des prix</a><br><a href="SiteMethodo.dc.html" class="lnk" style="color: #D9CCD6;">Méthodologie</a></p></nav>
+<nav aria-label="Informations"><p style="margin: 0 0 12px; color: #FFFFFF; font-weight: 900;">L'appli</p><p style="margin: 0; line-height: 30px;"><a href="#tarifs" class="lnk" style="color: #D9CCD6;">Tarifs</a><br><a href="#comment" class="lnk" style="color: #D9CCD6;">Comment ça marche</a><br><a href="SiteLegal.dc.html" class="lnk" style="color: #D9CCD6;">Mentions légales</a><br><a href="SiteLegal.dc.html" class="lnk" style="color: #D9CCD6;">Confidentialité</a></p></nav>
+</div>
+<p style="max-width: 1240px; margin: 0 auto; padding: 20px 24px 32px; border-top: 1px solid #3A2D37; font-size: 13px; color: #B9ADB6;">Les noms d'enseignes sont cités à titre de comparaison. Aucune affiliation.</p>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":5200}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { foyer: 4, open: 0 }; }
+  renderVals() {
+    var self = this;
+    var stores = [
+      { short: 'LI', name: 'Lidl', t: 60.10, bg: '#E3ECF6' },
+      { short: 'AL', name: 'Aldi', t: 61.40, bg: '#E7EFE2' },
+      { short: 'EL', name: 'E.Leclerc', t: 64.20, bg: '#ECE6F5' },
+      { short: 'IN', name: 'Intermarché', t: 68.90, bg: '#F5E9DC' },
+      { short: 'CA', name: 'Carrefour', t: 70.30, bg: '#E2EFEF' },
+      { short: 'AU', name: 'Auchan', t: 71.60, bg: '#F4E3E6' }
+    ];
+    var fx = { 1: 0.32, 2: 0.55, 4: 1, 6: 1.42 }[this.state.foyer];
+    var fmt = function (n) { return n.toFixed(2).replace('.', ',') + ' €'; };
+    var max = 71.6 * fx, min = 60.1 * fx;
+    var rows = stores.map(function (s, i) {
+      var v = s.t * fx, cheap = i === 0, mine = s.name === 'Auchan';
+      return {
+        short: s.short, name: s.name, bg: s.bg, total: fmt(v),
+        w: Math.round(v / max * 100) + '%',
+        bar: cheap ? '#EE7A30' : (mine ? '#4A2545' : '#D9CFDA'),
+        tag: cheap ? 'Le moins cher' : (mine ? 'Ton enseigne' : ''),
+        tagStyle: cheap ? 'margin-left:6px;background:#FCE3D3;color:#9A420E;font-size:11px;font-weight:900;padding:2px 8px;border-radius:999px' : (mine ? 'margin-left:6px;background:#EFE3EC;color:#4A2545;font-size:11px;font-weight:900;padding:2px 8px;border-radius:999px' : 'display:none'),
+        rowStyle: 'display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:14px;' + (cheap ? 'background:#FFF6EF;' : '')
+      };
+    });
+    var foyers = [1, 2, 4, 6].map(function (n) {
+      var on = self.state.foyer === n;
+      return {
+        label: n === 1 ? '1 pers.' : n + ' pers.', on: on ? 'true' : 'false',
+        pick: function () { self.setState({ foyer: n }); },
+        style: 'min-height:44px;padding:0 16px;border-radius:999px;font:800 14px Nunito,sans-serif;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF;border:2px solid #4A2545' : 'background:#FFFFFF;color:#2A1A28;border:2px solid #E3DDD0')
+      };
+    });
+    var base = stores.map(function (s, i) {
+      return { name: s.name, total: fmt(s.t), w: Math.round(s.t / 71.6 * 100) + '%', darkBar: i === 0 ? '#EE7A30' : (s.name === 'Auchan' ? '#C9A3C2' : 'rgba(255,255,255,0.28)') };
+    });
+    var qa = [
+      ['Est-ce vraiment gratuit ?', 'Oui. Le plan de la semaine, la liste de courses et le prix détaillé dans ton enseigne sont gratuits, sans limite de durée. Premium ajoute le détail produit par produit, les plans illimités et les alertes promo.'],
+      ['D’où viennent les prix ?', 'Des relevés publics Open Prices (Open Food Facts) et des tickets de caisse envoyés par la communauté. Chaque total affiche la date du relevé et un indice de fiabilité.'],
+      ['Quelles enseignes sont comparées ?', 'Lidl, Aldi, E.Leclerc, Intermarché, Auchan et Carrefour, en France. La Belgique, la Suisse et le Canada suivront.'],
+      ['Dois-je changer de supermarché ?', 'Non. Le prix est un repère : tu gardes ton enseigne si tu préfères, même si elle est plus chère.'],
+      ['Comment fonctionne l’essai Premium ?', '14 jours offerts dès l’inscription, sans carte bancaire. À la fin, tu repasses automatiquement au gratuit, sans rien perdre.'],
+      ['Puis-je commander en drive ?', 'Tu exportes ta liste et tu ouvres le drive de ton enseigne en un clic. La commande directe viendra plus tard.']
+    ];
+    var faq = qa.map(function (x, i) {
+      var open = self.state.open === i;
+      return { q: x[0], a: x[1], open: open, sign: open ? '−' : '+', toggle: function () { self.setState({ open: open ? -1 : i }); } };
+    });
+    return { rows: rows, foyers: foyers, gap: fmt(max - min), base: base, faq: faq };
+  }
+}
+</script>
+</body>
+</html>

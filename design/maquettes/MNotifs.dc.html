@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mobile — notifications</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F3EC; font-family: 'Nunito', sans-serif; color: #2A1A28;">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 84px; overflow-y: auto; padding: 18px 18px 28px; box-sizing: border-box;">
+<header style="display: flex; align-items: center; gap: 12px;"><a href="MDashboard.dc.html" aria-label="Retour" style="width: 44px; height: 44px; border-radius: 99px; background: #FFFFFF; display: grid; place-items: center; text-decoration: none; color: #2A1A28; font-weight: 900; font-size: 20px;">‹</a><h1 class="disp" style="margin: 0; flex: 1; font-size: 26px; font-weight: 800;">Notifications</h1><button type="button" onClick="{{readAll}}" style="min-height: 40px; border: 0; background: transparent; font: 900 13px Nunito; color: #4A2545; text-decoration: underline; cursor: pointer;">Tout lire</button></header>
+
+<div style="margin-top: 14px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 22px; overflow: hidden;">
+<sc-for list="{{items}}" as="n" hint-placeholder-count="6">
+<div>
+<sc-if value="{{n.showGroup}}" hint-placeholder-val="{{false}}"><p style="margin: 0; padding: 10px 14px 4px; font-size: 11px; font-weight: 900; letter-spacing: 1px; color: #625A60; background: #FBF9F4;">{{n.group}}</p></sc-if>
+<a href="{{n.href}}" onClick="{{n.read}}" style="display: flex; gap: 12px; padding: 12px 14px; border-top: 1px solid #EFEAE0; text-decoration: none; color: #2A1A28;">
+<span style="width: 40px; height: 40px; flex: none; border-radius: 12px; display: grid; place-items: center; font-weight: 900; font-size: 12px; {{n.ic}}">{{n.k}}</span>
+<span style="flex: 1; min-width: 0;"><span style="display: block; font-weight: {{n.w}}; font-size: 15px;">{{n.t}}</span><span style="display: block; font-size: 13px; line-height: 19px; color: #625A60;">{{n.d}}</span></span>
+<span style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;"><span style="font-size: 11px; font-weight: 800; color: #625A60;">{{n.when}}</span><span style="width: 9px; height: 9px; border-radius: 99px; background: {{n.dot}};"></span></span>
+</a>
+</div>
+</sc-for>
+</div>
+<p style="margin: 14px 0 0; text-align: center; font-size: 13px; font-weight: 700; color: #625A60;">2 notifications par semaine au maximum · <a href="MProfil.dc.html" style="color: #4A2545; font-weight: 900;">Réglages</a></p>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0;"><dc-import name="MTabBar" active="acc" hint-size="390px,84px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { read: { 3: true, 4: true, 5: true } }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var N = [['AUJOURD’HUI', 'J', 'Ton menu est prêt', 'Semaine 48 : 68,40 € chez Auchan, dès 57,40 € chez Lidl.', '19:00', 'MPlan.dc.html', 'background:#4A2545;color:#FFFFFF'], ['AUJOURD’HUI', '%', 'Lait de coco −30 %', 'Chez Carrefour, dans 2 repas de ton plan.', '11:20', 'MComparateur.dc.html', 'background:#FCE3D3;color:#9A420E'], ['AUJOURD’HUI', 'LD', 'Léa a coché 6 articles', 'Il reste 10 articles sur ta liste.', '10:05', 'MListe.dc.html', 'background:#EE7A30;color:#2A1A28'], ['CETTE SEMAINE', '✓', 'Ticket validé', '23 prix mis à jour, +3 jours Premium.', 'mar.', 'MTicket.dc.html', 'background:#E3F0DF;color:#2F6B2A'], ['CETTE SEMAINE', '6', 'Série de 6 semaines', 'Valide ton plan pour passer à 7.', 'dim.', 'MEconomies.dc.html', 'background:#EFE3EC;color:#4A2545'], ['CETTE SEMAINE', 'D', 'Défi : 3 semaines sur 4', 'Encore une sous 70 € et le badge est à toi.', 'lun.', 'MEconomies.dc.html', 'background:#F5E9DC;color:#6B4A0E']];
+    var last = '';
+    var items = N.map(function (n, i) {
+      var r = !!s.read[i], show = n[0] !== last; last = n[0];
+      return { group: n[0], showGroup: show, k: n[1], t: n[2], d: n[3], when: n[4], href: n[5], ic: n[6], w: r ? 700 : 900, dot: r ? 'transparent' : '#EE7A30',
+        read: function () { var o = Object.assign({}, s.read); o[i] = true; self.setState({ read: o }); } };
+    });
+    return { items: items, readAll: function () { self.setState({ read: { 0: true, 1: true, 2: true, 3: true, 4: true, 5: true } }); } };
+  }
+}
+</script>
+</body>
+</html>

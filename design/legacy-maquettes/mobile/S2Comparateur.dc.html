@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Comparateur d'enseignes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F3EC; color: #2A1A28; font-family: 'Nunito', system-ui, sans-serif; display: flex; flex-direction: column; padding: 18px 16px 20px; gap: 10px; overflow: hidden;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<button onClick="{{back}}" aria-label="Retour au plan" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 1px solid #E3DDD0; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: #2A1A28; cursor: pointer;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+</button>
+<div style="display: flex; flex-direction: column;">
+<h1 style="margin: 0; font-size: 22px; font-weight: 900; letter-spacing: -0.3px;">Combien coûte ton plan&nbsp;?</h1>
+<span style="font-size: 13px; color: #625A60; font-weight: 700;">Semaine 46 · 4 pers. · 38 produits</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; background: #EFE3EC; font-size: 13px; font-weight: 800; color: #4A2545;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"></path><path d="M9 12l2 2 4-4"></path></svg>
+<span style="flex-grow: 1;">Prix relevés il y a 3 jours</span>
+<span style="display: flex; gap: 3px;" aria-label="Fiabilité 4 sur 5"><span style="width: 6px; height: 12px; border-radius: 2px; background: #4A2545;"></span><span style="width: 6px; height: 12px; border-radius: 2px; background: #4A2545;"></span><span style="width: 6px; height: 12px; border-radius: 2px; background: #4A2545;"></span><span style="width: 6px; height: 12px; border-radius: 2px; background: #4A2545;"></span><span style="width: 6px; height: 12px; border-radius: 2px; background: #CEBDCB;"></span></span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px;" role="radiogroup" aria-label="Enseignes">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+<button role="radio" aria-checked="{{r.on}}" onClick="{{r.pick}}" style="{{r.style}}">
+<span style="display: flex; align-items: center; gap: 12px; width: 100%;">
+<span style="{{r.dot}}">{{r.short}}</span>
+<span style="flex-grow: 1; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+<span style="font-size: 16px; font-weight: 900;">{{r.name}}</span>
+<sc-if value="{{r.cheapest}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 900; color: #2A1A28; background: #EE7A30; padding: 2px 7px; border-radius: 7px; text-transform: uppercase; letter-spacing: 0.5px;">Top prix</span></sc-if>
+<sc-if value="{{r.current}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; font-weight: 900; color: #4A2545; background: #EFE3EC; padding: 2px 7px; border-radius: 7px; text-transform: uppercase; letter-spacing: 0.5px;">Ton choix</span></sc-if>
+</span>
+<span style="display: flex; flex-direction: column; align-items: flex-end;">
+<span style="font-size: 17px; font-weight: 900; font-variant-numeric: tabular-nums;">{{r.total}}</span>
+<span style="{{r.diffStyle}}">{{r.diff}}</span>
+</span>
+</span>
+<span style="display: block; width: 100%; height: 6px; border-radius: 3px; background: #F1EEE8; overflow: hidden;"><span style="{{r.bar}}"></span></span>
+</button>
+</sc-for>
+</div>
+<button onClick="{{toDetail}}" style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; border: 1.5px dashed #CEBDCB; background: #FFFFFF; cursor: pointer; font-family: inherit; color: #2A1A28; text-align: left;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>
+<span style="flex-grow: 1; font-size: 14px; font-weight: 800;">Comparer produit par produit</span>
+<span style="font-size: 11px; font-weight: 900; color: #FFFFFF; background: #4A2545; padding: 4px 9px; border-radius: 9px;">PREMIUM</span>
+</button>
+<div style="flex-grow: 1;"></div>
+<p style="margin: 0; font-size: 13px; line-height: 1.45; color: #625A60; text-align: center;">Le prix est un repère&nbsp;: c'est toi qui choisis, même si c'est plus cher.</p>
+<button onClick="{{confirm}}" style="height: 58px; border-radius: 29px; border: none; background: #4A2545; color: #FFFFFF; font-family: inherit; font-size: 16px; font-weight: 900; cursor: pointer; box-shadow: 0 8px 20px rgba(74, 37, 69, 0.28);">{{cta}}</button>
+<sc-if value="{{showKeep}}" hint-placeholder-val="{{true}}">
+<button onClick="{{keep}}" style="min-height: 40px; border: none; background: none; font-family: inherit; font-size: 15px; font-weight: 900; color: #4A2545; text-decoration: underline; cursor: pointer;">Garder Auchan</button>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { sel: "lidl" }; }
+  renderVals() {
+    var self = this, g = this.props.go;
+    function nav(s) { return function () { if (g) g(s); }; }
+    var base = 74.20, max = 75.80, min = 62.40;
+    var list = [
+      { id: "lidl", name: "Lidl", short: "Li", bg: "#E3EDF8", ink: "#1E4570", total: 62.40 },
+      { id: "aldi", name: "Aldi", short: "Al", bg: "#EEE7F7", ink: "#4B2F75", total: 63.10 },
+      { id: "leclerc", name: "E.Leclerc", short: "Le", bg: "#E2F1EC", ink: "#1C5A45", total: 68.90 },
+      { id: "inter", name: "Intermarché", short: "In", bg: "#FBE9E4", ink: "#8A2E1C", total: 72.50 },
+      { id: "auchan", name: "Auchan", short: "Au", bg: "#FDF0DC", ink: "#7A4A0E", total: 74.20 },
+      { id: "carrefour", name: "Carrefour", short: "Ca", bg: "#E6ECF5", ink: "#2B3F66", total: 75.80 }
+    ];
+    function eur(n) { return n.toFixed(2).replace(".", ",") + " €"; }
+    var selRow = list[0];
+    var rows = list.map(function (s, i) {
+      var on = self.state.sel === s.id; if (on) selRow = s;
+      var cur = s.id === "auchan", d = s.total - base;
+      var pct = Math.round(30 + (s.total - min) / (max - min) * 70);
+      return {
+        name: s.name, short: s.short, total: eur(s.total), on: on, cheapest: i === 0, current: cur,
+        pick: function () { self.setState({ sel: s.id }); },
+        diff: cur ? "référence" : (d < 0 ? "−" + eur(-d) : "+" + eur(d)),
+        diffStyle: "font-size: 12px; font-weight: 900; color: " + (!cur && d < 0 ? "#9A420E" : "#625A60") + ";",
+        style: "display: flex; flex-direction: column; gap: 6px; padding: 8px 12px 8px 8px; border-radius: 18px; cursor: pointer; font-family: inherit; text-align: left; color: #2A1A28; background: #FFFFFF; border: 2px solid " + (on ? "#4A2545" : "#E3DDD0") + ";" + (on ? " box-shadow: 0 6px 16px rgba(74, 37, 69, 0.16);" : ""),
+        dot: "width: 34px; height: 34px; flex-shrink: 0; border-radius: 17px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; background: " + s.bg + "; color: " + s.ink + ";",
+        bar: "display: block; height: 6px; border-radius: 3px; width: " + pct + "%; background: " + (i === 0 ? "#EE7A30" : (on ? "#4A2545" : "#C4B8B4")) + ";"
+      };
+    });
+    var isCur = selRow.id === "auchan";
+    return {
+      rows: rows, showKeep: !isCur, back: nav("plan"), toDetail: nav("detail"), keep: nav("liste"), confirm: nav("liste"),
+      cta: isCur ? "Garder Auchan · " + eur(selRow.total) : "Faire mes courses chez " + selRow.name + " · " + eur(selRow.total)
+    };
+  }
+}
+</script>
+</body>
+</html>

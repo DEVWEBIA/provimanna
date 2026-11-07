@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mobile — recettes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F3EC; font-family: 'Nunito', sans-serif; color: #2A1A28;">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 84px; overflow-y: auto; padding: 22px 18px 28px; box-sizing: border-box;">
+<h1 class="disp" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px;">Recettes</h1>
+<div style="position: relative; margin-top: 12px;"><label for="mq" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Rechercher</label><input id="mq" value="{{q}}" onInput="{{onQ}}" placeholder="Potimarron, lentilles…" style="width: 100%; box-sizing: border-box; min-height: 50px; border-radius: 999px; border: 2px solid #E3DDD0; padding: 0 16px 0 44px; font: 700 16px Nunito; color: #2A1A28; background: #FFFFFF;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#625A60" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="position: absolute; left: 16px; top: 15px;"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></div>
+<div role="group" aria-label="Filtres" style="margin: 12px -18px 0; padding: 0 18px; display: flex; gap: 6px; overflow-x: auto;"><sc-for list="{{filters}}" as="f" hint-placeholder-count="5"><button type="button" onClick="{{f.pick}}" aria-pressed="{{f.on}}" style="{{f.style}}">{{f.l}}</button></sc-for></div>
+<sc-if value="{{hasPicked}}" hint-placeholder-val="{{false}}"><a href="MPlan.dc.html" style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; background: #2A1A28; color: #FFFFFF; border-radius: 16px; padding: 12px 14px; text-decoration: none; font-weight: 800; font-size: 14px;"><span><span class="num" style="color: #F6B98F; font-weight: 900;">{{picked}}</span> à placer dans ta semaine</span><span style="font-weight: 900;">Placer ›</span></a></sc-if>
+<div style="margin-top: 14px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+<sc-for list="{{list}}" as="r" hint-placeholder-count="6">
+<article style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 20px; padding: 10px; display: flex; flex-direction: column; gap: 6px;">
+<a href="MRecette.dc.html" aria-label="{{r.n}}" style="display: flex; justify-content: center; background: {{r.tint}}; border-radius: 14px; padding: 8px 0;"><dc-import variant="{{r.v}}" size="96" name="Plat" hint-size="96px,96px"></dc-import></a>
+<a href="MRecette.dc.html" style="font-weight: 900; font-size: 14px; line-height: 1.2; color: #2A1A28; text-decoration: none; min-height: 34px;">{{r.n}}</a>
+<span class="num" style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: #625A60;"><span>{{r.t}} min</span><span style="color: #9A420E;">{{r.p}}</span></span>
+<button type="button" onClick="{{r.toggle}}" aria-pressed="{{r.on}}" aria-label="{{r.aria}}" style="{{r.btn}}">{{r.cta}}</button>
+</article>
+</sc-for>
+</div>
+<sc-if value="{{empty}}" hint-placeholder-val="{{false}}"><p style="margin: 20px 0 0; text-align: center; font-weight: 800; color: #625A60;">Aucune recette trouvée.</p></sc-if>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0;"><dc-import name="MTabBar" active="rec" hint-size="390px,84px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { q: '', f: 'all', pick: {} }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var fmt = function (v) { return v.toFixed(2).replace('.', ',') + ' €'; };
+    var tint = { soupe: '#FCE3D3', curry: '#EFE3EC', salade: '#E8F0DF', pates: '#F5E9DC', gratin: '#FCE3D3', poisson: '#E3ECF6', dahl: '#F5E9DC', omelette: '#F6EFC8', riz: '#E8F0DF', tarte: '#F5E9DC', lasagnes: '#F4E3E6', soupeverte: '#E8F0DF' };
+    var R = [['Velouté de potimarron', 'soupe', 35, 1.24, 'saison'], ['Dahl de lentilles', 'dahl', 35, 1.06, 'veg'], ['Gratin de potimarron', 'gratin', 50, 1.38, 'saison'], ['Saumon et haricots', 'poisson', 25, 2.40, 'rapide'], ['Omelette aux herbes', 'omelette', 15, 0.92, 'rapide'], ['Riz sauté aux légumes', 'riz', 25, 0.95, 'veg'], ['Tarte aux poireaux', 'tarte', 55, 1.18, 'saison'], ['Lasagnes végé', 'lasagnes', 60, 1.62, 'enfants'], ['Soupe de poireaux', 'soupeverte', 30, 0.98, 'saison'], ['Pâtes à la tomate', 'pates', 20, 0.90, 'enfants']];
+    var q = s.q.toLowerCase(), list = [], picked = 0;
+    R.forEach(function (r, i) {
+      var on = !!s.pick[i]; if (on) picked++;
+      if (s.f !== 'all' && r[4] !== s.f) return;
+      if (q && r[0].toLowerCase().indexOf(q) < 0) return;
+      list.push({ n: r[0], v: r[1], t: r[2], p: fmt(r[3]) + ' /p.', tint: tint[r[1]], on: on ? 'true' : 'false', cta: on ? 'Ajoutée ✓' : '+ Semaine', aria: (on ? 'Retirer ' : 'Ajouter ') + r[0] + ' à ma semaine',
+        toggle: function () { var o = Object.assign({}, s.pick); o[i] = !on; self.setState({ pick: o }); },
+        btn: 'min-height:40px;border-radius:999px;font:900 13px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF;border:2px solid #4A2545' : 'background:#FFFFFF;color:#4A2545;border:2px solid #E3DDD0') });
+    });
+    var filters = [['all', 'Toutes'], ['saison', 'De saison'], ['veg', 'Végé'], ['rapide', '− 30 min'], ['enfants', 'Enfants']].map(function (f) {
+      var on = s.f === f[0];
+      return { l: f[1], on: on ? 'true' : 'false', pick: function () { self.setState({ f: f[0] }); },
+        style: 'flex:none;min-height:40px;padding:0 14px;border-radius:999px;font:800 13px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF;border:2px solid #4A2545' : 'background:#FFFFFF;color:#2A1A28;border:2px solid #E3DDD0') };
+    });
+    return { list: list, filters: filters, q: s.q, empty: list.length === 0, picked: picked, hasPicked: picked > 0, onQ: function (e) { self.setState({ q: e.target.value }); } };
+  }
+}
+</script>
+</body>
+</html>

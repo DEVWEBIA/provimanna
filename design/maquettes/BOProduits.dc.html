@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Back-office — produits</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F1EA}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.bnav{display:flex;align-items:center;gap:12px;min-height:40px;padding:0 12px;border-radius:10px;text-decoration:none;color:#D9CCD6;font-weight:700;font-size:14px}
+.bnav:hover{background:rgba(255,255,255,0.06);color:#FFFFFF}
+.tr:hover{background:#FBF9F4}
+th,td{text-align:left}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F4F1EA; min-height: 100vh; display: flex; flex-wrap: wrap;">
+
+<aside style="flex: 1 1 232px; max-width: 100%; background: #2A1A28; color: #FFFFFF; padding: 20px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; align-items: center; gap: 10px; padding: 0 8px;"><svg width="26" height="26" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#EE7A30"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#2A1A28" stroke-width="2.4" stroke-linecap="round"></path></svg><span style="font-weight: 900; font-size: 15px;">Back-office</span></div>
+<nav aria-label="Back-office" style="display: flex; flex-direction: column; gap: 2px;">
+<a href="BOVue.dc.html" class="bnav">Vue d'ensemble</a><a href="BOTickets.dc.html" class="bnav">Tickets</a><a href="BOPrix.dc.html" class="bnav">Prix</a>
+<a href="BOProduits.dc.html" class="bnav" aria-current="page" style="background: #4A2545; color: #FFFFFF;">Produits</a>
+<a href="BORecettes.dc.html" class="bnav">Recettes</a><a href="BOUtilisateurs.dc.html" class="bnav">Utilisateurs</a><a href="BOEnseignes.dc.html" class="bnav">Enseignes</a><a href="BOSeo.dc.html" class="bnav">Contenu SEO</a><a href="BOEngagement.dc.html" class="bnav">Engagement</a><a href="BORoles.dc.html" class="bnav">Rôles et journal</a><a href="BOParametres.dc.html" class="bnav">Paramètres</a>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px 8px; border-top: 1px solid #3A2D37;"><span style="width: 32px; height: 32px; border-radius: 99px; background: #4A2545; display: grid; place-items: center; font-size: 12px; font-weight: 900;">CM</span><span style="font-size: 13px;"><strong style="display: block;">Camille</strong><span style="color: #B9ADB6;">Modératrice prix</span></span></div>
+</aside>
+
+<main style="flex: 999 1 640px; min-width: 0; padding: 24px clamp(16px, 2.5vw, 36px) 48px; box-sizing: border-box;">
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+<div><h1 class="disp" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.8px;">Produits</h1><p style="margin: 2px 0 0; font-size: 14px; color: #625A60; font-weight: 700;">4 812 fiches EAN · source Open Food Facts <span style="margin-left: 8px; background: #EFE3EC; color: #4A2545; font-size: 12px; font-weight: 900; padding: 2px 8px; border-radius: 99px;">Données d'exemple</span></p></div>
+<div style="display: flex; gap: 8px;"><button type="button" style="min-height: 42px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3DDD0; background: #FFFFFF; font: 800 14px Nunito; color: #2A1A28; cursor: pointer;">Importer depuis Open Food Facts</button><button type="button" style="min-height: 42px; padding: 0 16px; border-radius: 10px; border: 0; background: #4A2545; color: #FFFFFF; font: 800 14px Nunito; cursor: pointer;">Nouvelle fiche</button></div>
+</header>
+
+<div role="tablist" aria-label="File de travail" style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px;">
+<sc-for list="{{queues}}" as="q" hint-placeholder-count="4"><button type="button" role="tab" aria-selected="{{q.on}}" onClick="{{q.pick}}" style="{{q.style}}"><span style="display: block; font-size: 12px; font-weight: 900; letter-spacing: 0.6px; opacity: 0.8;">{{q.l}}</span><span class="disp num" style="font-size: 26px; font-weight: 800;">{{q.n}}</span></button></sc-for>
+</div>
+
+<div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+<section style="flex: 2 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; overflow: hidden;">
+<div style="overflow-x: auto;">
+<table class="num" style="width: 100%; min-width: 700px; border-collapse: collapse; font-size: 14px;">
+<thead style="background: #FBF9F4;"><tr style="font-size: 12px; letter-spacing: 0.6px; color: #625A60;"><th scope="col" style="padding: 12px 14px; font-weight: 900;">PRODUIT</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">RAYON</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">PRIX PAR ENSEIGNE (&lt; 7 J)</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">INGRÉDIENT LIÉ</th><th scope="col" style="padding: 12px 14px; font-weight: 900;">ÉTAT</th></tr></thead>
+<tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="7">
+<tr class="tr" style="{{r.trStyle}}">
+<th scope="row" style="padding: 8px 14px;"><button type="button" onClick="{{r.select}}" style="background: transparent; border: 0; padding: 4px 0; text-align: left; cursor: pointer; font-family: Nunito; color: #2A1A28;"><span style="display: block; font-weight: 900;">{{r.name}}</span><span style="font-size: 12px; color: #625A60; font-weight: 700;">{{r.brand}} · EAN {{r.ean}}</span></button></th>
+<td style="padding: 8px; font-weight: 700; color: #625A60;">{{r.ray}}</td>
+<td style="padding: 8px;"><span style="display: inline-flex; gap: 4px;" aria-label="{{r.covLabel}}"><sc-for list="{{r.cov}}" as="c" hint-placeholder-count="6"><span title="{{c.t}}" style="width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; font-size: 9px; font-weight: 900; {{c.s}}">{{c.k}}</span></sc-for></span></td>
+<td style="padding: 8px; font-weight: 700;">{{r.ing}}</td>
+<td style="padding: 8px 14px;"><span style="{{r.stStyle}}">{{r.st}}</span></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</section>
+
+<aside style="flex: 1 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+<div style="display: flex; gap: 14px; align-items: center;"><span style="width: 64px; height: 64px; border-radius: 14px; background: #F6F3EC; display: grid; place-items: center;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16l-1.5 13h-13zM9 7V5a3 3 0 0 1 6 0v2"></path></svg></span><div><h2 class="disp" style="margin: 0; font-size: 22px; font-weight: 800;">{{sel.name}}</h2><p style="margin: 2px 0 0; font-size: 13px; color: #625A60; font-weight: 700;">{{sel.brand}} · {{sel.ray}}</p></div></div>
+<dl style="margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px;"><dt style="color: #625A60; font-weight: 700;">EAN</dt><dd class="num" style="margin: 0; font-weight: 800;">{{sel.ean}}</dd><dt style="color: #625A60; font-weight: 700;">Format</dt><dd style="margin: 0; font-weight: 800;">{{sel.fmt}}</dd><dt style="color: #625A60; font-weight: 700;">Ingrédient</dt><dd style="margin: 0; font-weight: 800;">{{sel.ing}}</dd></dl>
+<div>
+<p style="margin: 0 0 8px; font-size: 12px; font-weight: 900; letter-spacing: 0.6px; color: #625A60;">DERNIERS PRIX</p>
+<table class="num" style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<tbody>
+<sc-for list="{{sel.prices}}" as="p" hint-placeholder-count="6"><tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 8px 0; font-weight: 800;">{{p.s}}</th><td style="padding: 8px 0; font-weight: 900;">{{p.v}}</td><td style="padding: 8px 0; color: #625A60; font-weight: 700; text-align: right;">{{p.d}}</td></tr></sc-for>
+</tbody>
+</table>
+</div>
+<sc-if value="{{sel.dup}}" hint-placeholder-val="{{false}}"><div style="background: #FCE3D3; border-radius: 14px; padding: 14px;"><p style="margin: 0 0 4px; font-weight: 900; color: #9A420E;">Doublon probable</p><p style="margin: 0 0 10px; font-size: 14px; line-height: 21px;">Même nom et même format qu'une autre fiche, avec un EAN différent.</p><button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 0; background: #2A1A28; color: #FFFFFF; font: 800 14px Nunito; cursor: pointer;">Fusionner les fiches</button></div></sc-if>
+<div style="display: flex; gap: 8px; flex-wrap: wrap;"><button type="button" style="flex: 1 1 120px; min-height: 42px; border-radius: 10px; border: 1px solid #E3DDD0; background: #FFFFFF; font: 800 14px Nunito; color: #2A1A28; cursor: pointer;">Modifier la fiche</button><button type="button" style="flex: 1 1 120px; min-height: 42px; border-radius: 10px; border: 0; background: #4A2545; color: #FFFFFF; font: 800 14px Nunito; cursor: pointer;">Lier à un ingrédient</button></div>
+</aside>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { q: 'all', sel: 0 }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var K = ['LI', 'AL', 'EL', 'IN', 'CA', 'AU'], N = ['Lidl', 'Aldi', 'E.Leclerc', 'Intermarché', 'Carrefour', 'Auchan'];
+    var P = [
+      ['Potimarron vrac', 'Sans marque', '2 000000 00417 3', 'Fruits et légumes', 'au kg', 'Potimarron', [1.49, 1.55, 1.69, 1.95, 1.89, 1.82], 'ok', false],
+      ['Châtaignes cuites', 'Marque A', '3 760000 00301 1', 'Épicerie', '200 g', 'À lier', [1.79, 0, 1.99, 0, 2.15, 2.19], 'link', false],
+      ['Châtaignes cuites', 'Marque A', '3 760000 00302 8', 'Épicerie', '200 g', 'À lier', [0, 0, 1.99, 0, 0, 0], 'dup', true],
+      ['Feta AOP', 'Marque B', '3 760000 00101 2', 'Crèmerie', '200 g', 'Feta', [2.25, 2.29, 2.45, 2.59, 2.69, 2.75], 'ok', false],
+      ['Lait de coco', 'Marque C', '3 760000 00214 9', 'Épicerie', '40 cl', 'Lait de coco', [1.19, 1.25, 1.29, 1.39, 1.35, 1.35], 'ok', false],
+      ['Quinoa blanc', 'Marque D', '3 760000 00877 1', 'Épicerie', '500 g', 'Quinoa', [0, 0, 0, 0, 0, 0], 'none', false],
+      ['Poireaux botte', 'Sans marque', '2 000000 00512 5', 'Fruits et légumes', '3 pièces', 'Poireau', [1.99, 2.09, 0, 2.29, 2.35, 2.29], 'ok', false]
+    ];
+    var st = { ok: ['Complet', 'background:#E3F0DF;color:#2F6B2A'], link: ['Correspondance à valider', 'background:#FCE3D3;color:#9A420E'], dup: ['Doublon', 'background:#FBE4E1;color:#B42318'], none: ['Sans prix', 'background:#F1ECE2;color:#625A60'] };
+    var counts = { all: 4812, link: 37, dup: 12, none: 214 };
+    var queues = [['all', 'TOUTES LES FICHES'], ['link', 'À LIER'], ['dup', 'DOUBLONS'], ['none', 'SANS PRIX']].map(function (q) {
+      var on = s.q === q[0];
+      return { l: q[1], n: counts[q[0]].toLocaleString('fr-FR'), on: on ? 'true' : 'false', pick: function () { self.setState({ q: q[0] }); },
+        style: 'min-width:150px;text-align:left;padding:12px 16px;border-radius:14px;cursor:pointer;font-family:Nunito;' + (on ? 'background:#2A1A28;color:#FFFFFF;border:1px solid #2A1A28' : 'background:#FFFFFF;color:#2A1A28;border:1px solid #E3DDD0') };
+    });
+    var fmt = function (v) { return v.toFixed(2).replace('.', ',') + ' €'; };
+    var rows = [];
+    P.forEach(function (p, i) {
+      if (s.q !== 'all' && p[7] !== s.q) return;
+      var n = 0;
+      var cov = p[6].map(function (v, k) { if (v) n++; return { k: K[k], t: N[k] + (v ? ' · ' + fmt(v) : ' · pas de prix récent'), s: v ? 'background:#4A2545;color:#FFFFFF' : 'background:#F1ECE2;color:#A39AA1' }; });
+      rows.push({ name: p[0], brand: p[1], ean: p[2], ray: p[3], ing: p[5], cov: cov, covLabel: n + ' enseignes sur 6 avec un prix récent', st: st[p[7]][0],
+        stStyle: 'font-size:12px;font-weight:900;padding:3px 9px;border-radius:99px;' + st[p[7]][1],
+        trStyle: 'border-top:1px solid #EFEAE0;' + (s.sel === i ? 'background:#F7F0F5;box-shadow:inset 3px 0 0 #4A2545' : ''),
+        select: function () { self.setState({ sel: i }); } });
+    });
+    var d = P[s.sel], dates = ['il y a 1 j', 'il y a 2 j', 'il y a 3 j', 'il y a 5 j', 'il y a 2 j', 'il y a 4 j'];
+    var prices = d[6].map(function (v, k) { return { s: N[k], v: v ? fmt(v) : '—', d: v ? dates[k] : 'aucun relevé' }; });
+    return { queues: queues, rows: rows, sel: { name: d[0], brand: d[1], ean: d[2], ray: d[3], fmt: d[4], ing: d[5], prices: prices, dup: d[8] } };
+  }
+}
+</script>
+</body>
+</html>

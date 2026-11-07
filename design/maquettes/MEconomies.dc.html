@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mobile — économies</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F3EC; font-family: 'Nunito', sans-serif; color: #2A1A28;">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 84px; overflow-y: auto; padding: 18px 18px 28px; box-sizing: border-box;">
+<header style="display: flex; align-items: center; gap: 12px;"><a href="MProfil.dc.html" aria-label="Retour au profil" style="width: 44px; height: 44px; border-radius: 99px; background: #FFFFFF; display: grid; place-items: center; text-decoration: none; color: #2A1A28; font-weight: 900; font-size: 20px;">‹</a><h1 class="disp" style="margin: 0; font-size: 26px; font-weight: 800;">Mes économies</h1></header>
+
+<section style="margin-top: 16px; background: #4A2545; color: #FFFFFF; border-radius: 26px; padding: 20px;">
+<p style="margin: 0; font-size: 11px; font-weight: 900; letter-spacing: 1px; color: #E3CDE0;">DEPUIS LE 8 SEPTEMBRE</p>
+<p class="disp num" style="margin: 6px 0 0; font-size: 56px; line-height: 0.95; font-weight: 800; letter-spacing: -2px;">58,30 €</p>
+<div style="margin-top: 16px; display: flex; align-items: flex-end; gap: 10px; height: 110px;" role="img" aria-label="Septembre 9,60 €, octobre 38,40 €, novembre 10,30 € en cours">
+<div style="flex: 1; text-align: center;"><div style="height: 28px; border-radius: 8px 8px 0 0; background: rgba(255,255,255,0.25);"></div><p style="margin: 4px 0 0; font-size: 11px; font-weight: 800; color: #E3CDE0;">Sept.</p></div>
+<div style="flex: 1; text-align: center;"><p class="num" style="margin: 0 0 4px; font-size: 12px; font-weight: 900;">38,40 €</p><div style="height: 76px; border-radius: 8px 8px 0 0; background: #EE7A30;"></div><p style="margin: 4px 0 0; font-size: 11px; font-weight: 800; color: #E3CDE0;">Oct.</p></div>
+<div style="flex: 1; text-align: center;"><div style="height: 30px; border-radius: 8px 8px 0 0; border: 2px dashed rgba(255,255,255,0.5); border-bottom: 0; box-sizing: border-box;"></div><p style="margin: 4px 0 0; font-size: 11px; font-weight: 800; color: #E3CDE0;">Nov.</p></div>
+</div>
+<button type="button" style="margin-top: 14px; width: 100%; min-height: 46px; border-radius: 999px; border: 0; background: #FFFFFF; color: #4A2545; font: 900 15px Nunito;">Partager mon récap</button>
+</section>
+
+<div role="tablist" style="margin-top: 16px; display: flex; gap: 4px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 999px; padding: 4px;"><sc-for list="{{tabs}}" as="t" hint-placeholder-count="3"><button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.l}}</button></sc-for></div>
+
+<sc-if value="{{is.b}}" hint-placeholder-val="{{true}}">
+<div style="margin-top: 12px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+<sc-for list="{{badges}}" as="b" hint-placeholder-count="6"><div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 12px 6px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;"><span style="{{b.medal}}">{{b.k}}</span><span style="font-size: 12px; font-weight: 900; line-height: 1.2;">{{b.t}}</span><span style="font-size: 11px; font-weight: 700; color: #625A60;">{{b.d}}</span></div></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{is.h}}" hint-placeholder-val="{{false}}">
+<div style="margin-top: 12px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 20px; overflow: hidden;">
+<sc-for list="{{weeks}}" as="w" hint-placeholder-count="5"><div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-top: 1px solid #EFEAE0;"><span class="disp" style="font-size: 18px; font-weight: 800; min-width: 44px;">{{w.s}}</span><span style="flex: 1; font-size: 13px; font-weight: 700; color: #625A60;">{{w.m}}</span><span class="num" style="font-weight: 900; font-size: 14px;">{{w.t}}</span><button type="button" onClick="{{w.reuse}}" style="min-height: 36px; padding: 0 10px; border-radius: 999px; border: 1px solid #E3DDD0; background: #FFFFFF; font: 800 12px Nunito; color: #4A2545;">{{w.cta}}</button></div></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{is.f}}" hint-placeholder-val="{{false}}">
+<div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+<sc-for list="{{favs}}" as="f" hint-placeholder-count="4"><a href="MRecette.dc.html" style="display: flex; gap: 12px; align-items: center; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 8px 12px 8px 8px; text-decoration: none; color: #2A1A28;"><dc-import variant="{{f.v}}" size="56" name="Plat" hint-size="56px,56px"></dc-import><span style="flex: 1;"><span style="display: block; font-weight: 900;">{{f.n}}</span><span class="num" style="font-size: 12px; color: #625A60; font-weight: 700;">Cuisiné {{f.c}} fois</span></span><span style="color: #EE7A30; font-size: 18px;" aria-hidden="true">♥</span></a></sc-for>
+</div>
+</sc-if>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0;"><dc-import name="MTabBar" active="prof" hint-size="390px,84px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { t: 'b', r: -1 }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var tabs = [['b', 'Badges'], ['h', 'Historique'], ['f', 'Favoris']].map(function (x) { var on = s.t === x[0]; return { l: x[1], on: on ? 'true' : 'false', pick: function () { self.setState({ t: x[0] }); }, style: 'flex:1;min-height:40px;border-radius:999px;border:0;font:900 13px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF' : 'background:transparent;color:#2A1A28') }; });
+    var B = [['OCT', 'Octobre malin', 'obtenu', 1], ['4S', 'Série de 4', 'obtenu', 1], ['1T', '1er ticket', 'obtenu', 1], ['NOV', 'Nov. < 70 €', '3/4', 0], ['10S', 'Série de 10', '6/10', 0], ['10T', '10 tickets', '2/10', 0]];
+    var badges = B.map(function (b) { return { k: b[0], t: b[1], d: b[2], medal: 'width:48px;height:48px;border-radius:99px;display:grid;place-items:center;font-weight:900;font-size:12px;' + (b[3] ? 'background:#4A2545;color:#FFFFFF;box-shadow:inset 0 0 0 3px #EE7A30' : 'background:#F1ECE2;color:#8A8088;border:2px dashed #CFC5CD;box-sizing:border-box') }; });
+    var W = [['S47', 'Auchan · en cours', '71,60 €'], ['S46', 'Lidl · −10,30 €', '61,20 €'], ['S45', 'Auchan', '66,40 €'], ['S44', 'Auchan', '70,90 €'], ['S43', 'Lidl · −11,50 €', '60,40 €']];
+    var weeks = W.map(function (w, i) { return { s: w[0], m: w[1], t: w[2], cta: s.r === i ? '✓' : 'Réutiliser', reuse: function () { self.setState({ r: i }); } }; });
+    var favs = [['curry', 'Curry de pois chiches', 3], ['soupe', 'Velouté de potimarron', 2], ['lasagnes', 'Lasagnes végé', 2], ['dahl', 'Dahl de lentilles', 1]].map(function (f) { return { v: f[0], n: f[1], c: f[2] }; });
+    return { tabs: tabs, badges: badges, weeks: weeks, favs: favs, is: { b: s.t === 'b', h: s.t === 'h', f: s.t === 'f' } };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche recette</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F3EC; color: #2A1A28; font-family: 'Nunito', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden; position: relative;">
+<div style="height: 260px; flex-shrink: 0; background: #EFE3EC; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+<svg width="390" height="260" viewBox="0 0 390 260" style="position: absolute; inset: 0;" aria-hidden="true"><circle cx="40" cy="40" r="70" fill="#E2D4DF"></circle><circle cx="360" cy="230" r="90" fill="#E2D4DF"></circle><circle cx="330" cy="40" r="10" fill="#EE7A30"></circle><circle cx="60" cy="210" r="6" fill="#4A2545"></circle></svg>
+<div style="position: relative; filter: drop-shadow(0 14px 18px rgba(74, 37, 69, 0.22));"><dc-import name="S2Plat" variant="curry" size="210" hint-size="210px,210px"></dc-import></div>
+<button onClick="{{back}}" aria-label="Retour au plan" style="position: absolute; left: 16px; top: 18px; width: 44px; height: 44px; border-radius: 22px; border: none; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: #2A1A28; cursor: pointer;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+</button>
+<button onClick="{{fav}}" aria-pressed="{{liked}}" aria-label="Ajouter aux favoris" style="position: absolute; right: 16px; top: 18px; width: 44px; height: 44px; border-radius: 22px; border: none; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: #4A2545; cursor: pointer;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="{{heartFill}}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"></path></svg>
+</button>
+</div>
+<div style="flex-grow: 1; margin-top: -26px; background: #F6F3EC; border-radius: 28px 28px 0 0; padding: 20px 20px 18px; display: flex; flex-direction: column; gap: 12px; position: relative;">
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<h1 style="margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -0.5px;">Curry de pois chiches</h1>
+<div style="display: flex; gap: 6px; flex-wrap: wrap;">
+<span style="padding: 5px 11px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E3DDD0; font-size: 13px; font-weight: 800;">35 min</span>
+<span style="padding: 5px 11px; border-radius: 12px; background: #FFFFFF; border: 1px solid #E3DDD0; font-size: 13px; font-weight: 800;">4 parts</span>
+<span style="padding: 5px 11px; border-radius: 12px; background: #EFE3EC; font-size: 13px; font-weight: 800; color: #4A2545;">Végétarien</span>
+<span style="padding: 5px 11px; border-radius: 12px; background: #FCE3D3; font-size: 13px; font-weight: 800; color: #9A420E;">Facile</span>
+</div>
+</div>
+<div style="display: flex; gap: 10px;">
+<div style="flex: 1; background: #FFFFFF; border: 2px solid #4A2545; border-radius: 18px; padding: 10px 12px;">
+<span style="display: block; font-size: 12px; font-weight: 800; color: #625A60;">Chez Auchan</span>
+<span style="font-size: 20px; font-weight: 900;">1,85 €</span><span style="font-size: 12px; color: #625A60; font-weight: 700;"> / part</span>
+</div>
+<div style="flex: 1; background: #FCE3D3; border-radius: 18px; padding: 10px 12px;">
+<span style="display: block; font-size: 12px; font-weight: 800; color: #9A420E;">Le moins cher · Lidl</span>
+<span style="font-size: 20px; font-weight: 900;">1,52 €</span><span style="font-size: 12px; color: #9A420E; font-weight: 700;"> / part</span>
+</div>
+</div>
+<div role="tablist" aria-label="Contenu de la recette" style="display: flex; background: #F1EEE8; border-radius: 16px; padding: 4px;">
+<button role="tab" aria-selected="{{isIng}}" onClick="{{showIng}}" style="{{tabIng}}">Ingrédients</button>
+<button role="tab" aria-selected="{{isSteps}}" onClick="{{showSteps}}" style="{{tabSteps}}">Étapes</button>
+</div>
+<sc-if value="{{isIng}}" hint-placeholder-val="{{true}}">
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 2px 14px;">
+<sc-for list="{{ing}}" as="i" hint-placeholder-count="6">
+<div style="{{i.row}}">
+<span style="flex-grow: 1; font-size: 15px; font-weight: 700;">{{i.name}}</span>
+<span style="font-size: 13px; color: #625A60; width: 70px; font-weight: 600;">{{i.qty}}</span>
+<span style="font-size: 15px; font-weight: 900; width: 54px; text-align: right; font-variant-numeric: tabular-nums;">{{i.price}}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{isSteps}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+<div style="display: flex; gap: 12px; align-items: flex-start; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 16px; padding: 10px 12px;">
+<span style="width: 28px; height: 28px; flex-shrink: 0; border-radius: 14px; background: #4A2545; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900;">{{s.n}}</span>
+<span style="font-size: 14px; line-height: 1.45; font-weight: 600;">{{s.t}}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<div style="flex-grow: 1;"></div>
+<div style="display: flex; gap: 10px;">
+<button onClick="{{back}}" style="flex: 1; height: 54px; border-radius: 27px; border: 1px solid #E3DDD0; background: #FFFFFF; font-family: inherit; font-size: 16px; font-weight: 900; color: #2A1A28; cursor: pointer;">Remplacer</button>
+<button onClick="{{toListe}}" style="flex: 2; height: 54px; border-radius: 27px; border: none; background: #4A2545; font-family: inherit; font-size: 16px; font-weight: 900; color: #FFFFFF; cursor: pointer; box-shadow: 0 8px 18px rgba(74, 37, 69, 0.25);">Voir ma liste</button>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { tab: "ing", liked: false }; }
+  renderVals() {
+    var self = this, g = this.props.go, t = this.state.tab;
+    function nav(s) { return function () { if (g) g(s); }; }
+    function tabStyle(on) { return "flex: 1; min-height: 40px; border-radius: 12px; border: none; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 900; background: " + (on ? "#FFFFFF" : "transparent") + "; color: " + (on ? "#4A2545" : "#625A60") + ";" + (on ? " box-shadow: 0 2px 6px rgba(42, 26, 40, 0.08);" : ""); }
+    var data = [["Pois chiches", "2 boîtes", "1,58 €"], ["Lait de coco", "40 cl", "1,29 €"], ["Riz basmati", "300 g", "0,95 €"], ["Oignons", "2", "0,40 €"], ["Pâte de curry", "1 pot", "1,90 €"], ["Épinards", "200 g", "1,28 €"]];
+    var ing = data.map(function (d, i) { return { name: d[0], qty: d[1], price: d[2], row: "display: flex; align-items: center; gap: 8px; min-height: 42px;" + (i < data.length - 1 ? " border-bottom: 1px solid #F1EEE8;" : "") }; });
+    var steps = ["Lance le riz. Émince les oignons et fais-les dorer 5 min.", "Ajoute la pâte de curry, puis les pois chiches égouttés.", "Verse le lait de coco, laisse mijoter 15 min.", "Ajoute les épinards 2 min avant de servir."].map(function (t, i) { return { n: i + 1, t: t }; });
+    return {
+      isIng: t === "ing", isSteps: t === "steps", tabIng: tabStyle(t === "ing"), tabSteps: tabStyle(t === "steps"),
+      showIng: function () { self.setState({ tab: "ing" }); }, showSteps: function () { self.setState({ tab: "steps" }); },
+      liked: this.state.liked, heartFill: this.state.liked ? "#4A2545" : "none", fav: function () { self.setState({ liked: !self.state.liked }); },
+      ing: ing, steps: steps, back: nav("plan"), toListe: nav("liste")
+    };
+  }
+}
+</script>
+</body>
+</html>

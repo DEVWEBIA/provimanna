@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Back-office — éditeur de recette</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F1EA}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.bnav{display:flex;align-items:center;gap:12px;min-height:40px;padding:0 12px;border-radius:10px;text-decoration:none;color:#D9CCD6;font-weight:700;font-size:14px}
+.bnav:hover{background:rgba(255,255,255,0.06);color:#FFFFFF}
+.fld{width:100%;box-sizing:border-box;min-height:44px;border-radius:10px;border:1px solid #E3DDD0;padding:0 12px;font:700 15px Nunito;color:#2A1A28;background:#FFFFFF}
+.lbl{display:block;font-size:12px;font-weight:900;letter-spacing:0.6px;color:#625A60;margin-bottom:6px}
+th,td{text-align:left}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F4F1EA; min-height: 100vh; display: flex; flex-wrap: wrap;">
+
+<aside style="flex: 1 1 232px; max-width: 100%; background: #2A1A28; color: #FFFFFF; padding: 20px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; align-items: center; gap: 10px; padding: 0 8px;"><svg width="26" height="26" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#EE7A30"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#2A1A28" stroke-width="2.4" stroke-linecap="round"></path></svg><span style="font-weight: 900; font-size: 15px;">Back-office</span></div>
+<nav aria-label="Back-office" style="display: flex; flex-direction: column; gap: 2px;">
+<a href="BOVue.dc.html" class="bnav">Vue d'ensemble</a>
+<a href="BOTickets.dc.html" class="bnav">Tickets</a>
+<a href="BOPrix.dc.html" class="bnav">Prix</a>
+<a href="BOProduits.dc.html" class="bnav">Produits</a>
+<a href="BORecettes.dc.html" class="bnav" aria-current="page" style="background: #4A2545; color: #FFFFFF;">Recettes</a>
+<a href="BOUtilisateurs.dc.html" class="bnav">Utilisateurs</a>
+<a href="BOEnseignes.dc.html" class="bnav">Enseignes</a>
+<a href="BOSeo.dc.html" class="bnav">Contenu SEO</a>
+<a href="BOEngagement.dc.html" class="bnav">Engagement</a>
+<a href="BORoles.dc.html" class="bnav">Rôles et journal</a><a href="BOParametres.dc.html" class="bnav">Paramètres</a>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px 8px; border-top: 1px solid #3A2D37;"><span style="width: 32px; height: 32px; border-radius: 99px; background: #4A2545; display: grid; place-items: center; font-size: 12px; font-weight: 900;">JR</span><span style="font-size: 13px;"><strong style="display: block;">Jules</strong><span style="color: #B9ADB6;">Éditeur recettes</span></span></div>
+</aside>
+
+<main style="flex: 999 1 640px; min-width: 0; padding: 24px clamp(16px, 2.5vw, 36px) 48px; box-sizing: border-box;">
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+<div><p style="margin: 0; font-size: 13px; font-weight: 800; color: #625A60;"><a href="BORecettes.dc.html">Recettes</a> › Velouté de potimarron</p><h1 class="disp" style="margin: 4px 0 0; font-size: 30px; font-weight: 800; letter-spacing: -0.8px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">Velouté de potimarron et châtaigne <span style="font-family: Nunito; background: #F6E7C8; color: #6B4A0E; font-size: 12px; font-weight: 900; padding: 4px 10px; border-radius: 99px; letter-spacing: 0;">Brouillon · enregistré il y a 1 min</span></h1></div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap;"><a href="SiteRecette.dc.html" style="min-height: 42px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 10px; border: 1px solid #E3DDD0; background: #FFFFFF; font-weight: 800; font-size: 14px; text-decoration: none; color: #2A1A28;">Aperçu</a><button type="button" style="min-height: 42px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3DDD0; background: #FFFFFF; font: 800 14px Nunito; color: #2A1A28; cursor: pointer;">Planifier</button><button type="button" style="min-height: 42px; padding: 0 18px; border-radius: 10px; border: 0; background: #4A2545; color: #FFFFFF; font: 800 14px Nunito; cursor: pointer;">Publier</button></div>
+</header>
+
+<div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+<!-- Colonne édition -->
+<div style="flex: 2 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<section style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 20px; display: flex; flex-wrap: wrap; gap: 20px;">
+<div style="flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+<div style="width: 150px; height: 150px; border-radius: 50%; background: #FCE3D3; display: grid; place-items: center;"><dc-import variant="{{plat}}" size="128" name="Plat" hint-size="128px,128px"></dc-import></div>
+<div style="display: flex; gap: 6px;"><sc-for list="{{plats}}" as="p" hint-placeholder-count="4"><button type="button" onClick="{{p.pick}}" aria-pressed="{{p.on}}" aria-label="{{p.l}}" style="{{p.style}}"><dc-import variant="{{p.v}}" size="30" name="Plat" hint-size="30px,30px"></dc-import></button></sc-for></div>
+</div>
+<div style="flex: 1 1 320px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
+<div style="grid-column: span 2;"><label class="lbl" for="t">TITRE</label><input id="t" class="fld" value="Velouté de potimarron et châtaigne"></div>
+<div style="grid-column: span 2;"><label class="lbl" for="slug">URL</label><input id="slug" class="fld" value="/recettes/veloute-potimarron-chataigne" style="color: #625A60;"></div>
+<div><label class="lbl" for="tps">TEMPS TOTAL</label><input id="tps" class="fld" value="35 min"></div>
+<div><label class="lbl" for="parts">PARTS</label><input id="parts" class="fld" value="4"></div>
+</div>
+<div style="flex: 1 1 100%;">
+<p class="lbl" style="margin: 0 0 8px;">SAISONNALITÉ</p>
+<div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px;"><sc-for list="{{months}}" as="m" hint-placeholder-count="12"><button type="button" onClick="{{m.toggle}}" aria-pressed="{{m.on}}" style="{{m.style}}">{{m.l}}</button></sc-for></div>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; overflow: hidden;">
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;"><h2 style="margin: 0; font-size: 17px; font-weight: 900;">Ingrédients et produits liés</h2><button type="button" style="min-height: 36px; padding: 0 12px; border-radius: 9px; border: 1px dashed #CFC5CD; background: transparent; font: 800 13px Nunito; color: #4A2545; cursor: pointer;">+ Ajouter</button></div>
+<div style="overflow-x: auto;">
+<table class="num" style="width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px;">
+<thead style="background: #FBF9F4;"><tr style="font-size: 12px; color: #625A60; letter-spacing: 0.6px;"><th scope="col" style="padding: 10px 20px; font-weight: 900;">INGRÉDIENT</th><th scope="col" style="padding: 10px 8px; font-weight: 900;">QTÉ</th><th scope="col" style="padding: 10px 8px; font-weight: 900;">PRODUIT CORRESPONDANT</th><th scope="col" style="padding: 10px 20px; font-weight: 900;">CORRESPONDANCE</th></tr></thead>
+<tbody style="font-weight: 700;">
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 20px; font-weight: 900;">Potimarron</th><td style="padding: 12px 8px;">1 kg</td><td style="padding: 12px 8px;">Potimarron vrac (au kg) · 6 enseignes</td><td style="padding: 12px 20px;"><span style="background: #E3F0DF; color: #2F6B2A; font-size: 12px; font-weight: 900; padding: 3px 9px; border-radius: 99px;">98 %</span></td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 20px; font-weight: 900;">Oignon</th><td style="padding: 12px 8px;">1</td><td style="padding: 12px 8px;">Oignons jaunes filet 1 kg · 6 enseignes</td><td style="padding: 12px 20px;"><span style="background: #E3F0DF; color: #2F6B2A; font-size: 12px; font-weight: 900; padding: 3px 9px; border-radius: 99px;">95 %</span></td></tr>
+<tr style="border-top: 1px solid #EFEAE0; background: #FFF6EF;"><th scope="row" style="padding: 12px 20px; font-weight: 900;">Châtaignes cuites</th><td style="padding: 12px 8px;">200 g</td><td style="padding: 12px 8px;"><label for="chat" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Choisir le produit</label><select id="chat" class="fld" style="min-height: 38px; font-size: 14px;"><option>2 produits possibles : choisir</option><option>Châtaignes cuites sous vide 200 g</option><option>Châtaignes au naturel bocal 400 g</option></select></td><td style="padding: 12px 20px;"><span style="background: #FCE3D3; color: #9A420E; font-size: 12px; font-weight: 900; padding: 3px 9px; border-radius: 99px;">À valider</span></td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 20px; font-weight: 900;">Bouillon de légumes</th><td style="padding: 12px 8px;">1 cube</td><td style="padding: 12px 8px;">Bouillon cube légumes × 10 · 5 enseignes</td><td style="padding: 12px 20px;"><span style="background: #E3F0DF; color: #2F6B2A; font-size: 12px; font-weight: 900; padding: 3px 9px; border-radius: 99px;">91 %</span></td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 20px; font-weight: 900;">Crème fraîche</th><td style="padding: 12px 8px;">10 cl</td><td style="padding: 12px 8px;">Crème fraîche épaisse 20 cl · 6 enseignes</td><td style="padding: 12px 20px;"><span style="background: #E3F0DF; color: #2F6B2A; font-size: 12px; font-weight: 900; padding: 3px 9px; border-radius: 99px;">97 %</span></td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 20px; font-weight: 900;">Huile d'olive</th><td style="padding: 12px 8px;">1 c. à s.</td><td style="padding: 12px 8px;">Placard (non compté au-delà de 10 cl)</td><td style="padding: 12px 20px;"><span style="background: #F6F3EC; color: #625A60; font-size: 12px; font-weight: 900; padding: 3px 9px; border-radius: 99px;">Placard</span></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 20px;">
+<h2 style="margin: 0 0 12px; font-size: 17px; font-weight: 900;">Étapes</h2>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+<li style="display: flex; gap: 12px; align-items: flex-start;"><span style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #EFE3EC; color: #4A2545; display: grid; place-items: center; font-weight: 900; font-size: 13px;">1</span><textarea aria-label="Étape 1" rows="2" class="fld" style="padding: 10px 12px; resize: vertical; font-weight: 600;">Lave le potimarron, retire les graines et coupe-le en cubes, sans l'éplucher.</textarea></li>
+<li style="display: flex; gap: 12px; align-items: flex-start;"><span style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #EFE3EC; color: #4A2545; display: grid; place-items: center; font-weight: 900; font-size: 13px;">2</span><textarea aria-label="Étape 2" rows="2" class="fld" style="padding: 10px 12px; resize: vertical; font-weight: 600;">Fais revenir l'oignon émincé 3 minutes dans l'huile d'olive.</textarea></li>
+<li style="display: flex; gap: 12px; align-items: flex-start;"><span style="width: 28px; height: 28px; flex: none; border-radius: 8px; background: #EFE3EC; color: #4A2545; display: grid; place-items: center; font-weight: 900; font-size: 13px;">3</span><textarea aria-label="Étape 3" rows="2" class="fld" style="padding: 10px 12px; resize: vertical; font-weight: 600;">Ajoute le potimarron et les trois quarts des châtaignes. Couvre d'eau, ajoute le bouillon. Cuis 25 minutes.</textarea></li>
+</ol>
+</section>
+</div>
+
+<!-- Colonne coût + SEO -->
+<div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+<section style="background: #2A1A28; color: #FFFFFF; border-radius: 18px; padding: 20px;">
+<div style="display: flex; justify-content: space-between; align-items: baseline;"><h2 style="margin: 0; font-size: 16px; font-weight: 900;">Coût calculé en direct</h2><span style="font-size: 12px; color: #B9ADB6; font-weight: 700;">pour 4 parts</span></div>
+<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+<sc-for list="{{cost}}" as="c" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: 92px 1fr 64px; gap: 10px; align-items: center; font-size: 14px;"><span style="font-weight: 800;">{{c.n}}</span><span style="height: 10px; border-radius: 9px; background: rgba(255,255,255,0.08);"><span style="display: block; height: 10px; border-radius: 9px; width: {{c.w}}; background: {{c.bar}};"></span></span><span class="num" style="text-align: right; font-weight: 900;">{{c.t}}</span></div>
+</sc-for>
+</div>
+<p style="margin: 14px 0 0; padding-top: 12px; border-top: 1px solid #4A3A47; font-size: 13px; color: #D9CCD6;">1,02 € à 1,24 € par part · 1 prix de plus de 7 jours (châtaignes, Intermarché)</p>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+<h2 style="margin: 0; font-size: 16px; font-weight: 900;">Référencement</h2>
+<div><label class="lbl" for="mt" style="display: flex; justify-content: space-between;"><span>TITRE SEO</span><span class="num" style="{{mtStyle}}">{{mtLen}} / 60</span></label><input id="mt" class="fld" value="{{mt}}" onInput="{{onMt}}"></div>
+<div><label class="lbl" for="md">MÉTA-DESCRIPTION</label><textarea id="md" rows="3" class="fld" style="padding: 10px 12px; resize: vertical; font-weight: 600;">Velouté de potimarron et châtaigne pour 4 : 1,02 € par part chez Lidl. Prix comparés dans 6 enseignes, prêt en 35 min, végétarien.</textarea></div>
+<div style="border: 1px solid #E3DDD0; border-radius: 12px; padding: 14px; font-family: Arial, sans-serif;">
+<p style="margin: 0; font-size: 12px; color: #4D5156;">[domaine].fr › recettes</p>
+<p style="margin: 4px 0; font-size: 18px; color: #1A0DAB; line-height: 1.3;">{{mt}}</p>
+<p style="margin: 0; font-size: 13px; color: #4D5156; line-height: 1.5;">Velouté de potimarron et châtaigne pour 4 : 1,02 € par part chez Lidl. Prix comparés dans 6 enseignes, prêt en 35 min, végétarien.</p>
+</div>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 14px; font-weight: 700;">
+<li style="display: flex; gap: 8px; align-items: center;"><span style="width: 20px; height: 20px; border-radius: 99px; background: #E3F0DF; color: #2F6B2A; display: grid; place-items: center; font-size: 12px; font-weight: 900;">✓</span>JSON-LD Recipe : ingrédients, temps, estimatedCost</li>
+<li style="display: flex; gap: 8px; align-items: center;"><span style="width: 20px; height: 20px; border-radius: 99px; background: #E3F0DF; color: #2F6B2A; display: grid; place-items: center; font-size: 12px; font-weight: 900;">✓</span>Réponse directe chiffrée en tête de page</li>
+<li style="display: flex; gap: 8px; align-items: center;"><span style="width: 20px; height: 20px; border-radius: 99px; background: #FCE3D3; color: #9A420E; display: grid; place-items: center; font-size: 12px; font-weight: 900;">!</span>FAQ : 3 questions, 1 sans réponse</li>
+<li style="display: flex; gap: 8px; align-items: center;"><span style="width: 20px; height: 20px; border-radius: 99px; background: #E3F0DF; color: #2F6B2A; display: grid; place-items: center; font-size: 12px; font-weight: 900;">✓</span>3 liens internes (menu, recettes liées)</li>
+</ul>
+</section>
+</div>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { plat: 'soupe', months: { 8: true, 9: true, 10: true, 11: true, 0: true }, mt: 'Velouté de potimarron et châtaigne : 1,02 € par part' }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var plats = [['soupe', 'Velouté'], ['curry', 'Curry'], ['salade', 'Salade'], ['pates', 'Pâtes']].map(function (p) {
+      var on = s.plat === p[0];
+      return { v: p[0], l: p[1], on: on ? 'true' : 'false', pick: function () { self.setState({ plat: p[0] }); },
+        style: 'width:44px;height:44px;border-radius:12px;display:grid;place-items:center;cursor:pointer;background:#FFFFFF;padding:0;' + (on ? 'border:2px solid #4A2545' : 'border:1px solid #E3DDD0') };
+    });
+    var ml = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+    var months = ml.map(function (l, i) {
+      var on = !!s.months[i];
+      return { l: l, on: on ? 'true' : 'false', toggle: function () { var o = Object.assign({}, s.months); o[i] = !on; self.setState({ months: o }); },
+        style: 'min-height:36px;padding:0;border-radius:8px;font:800 12px Nunito;cursor:pointer;' + (on ? 'background:#4A2545;color:#FFFFFF;border:0' : 'background:#FFFFFF;color:#625A60;border:1px solid #E3DDD0') };
+    });
+    var st = [['Lidl', 4.06], ['Aldi', 4.18], ['E.Leclerc', 4.39], ['Intermarché', 4.71], ['Carrefour', 4.85], ['Auchan', 4.96]];
+    var cost = st.map(function (x, i) { return { n: x[0], t: x[1].toFixed(2).replace('.', ',') + ' €', w: Math.round(x[1] / 4.96 * 100) + '%', bar: i === 0 ? '#EE7A30' : 'rgba(255,255,255,0.35)' }; });
+    var len = s.mt.length;
+    return { plats: plats, months: months, cost: cost, plat: s.plat, mt: s.mt, mtLen: len,
+      mtStyle: len > 60 ? 'color:#B42318' : 'color:#2F6B2A',
+      onMt: function (e) { self.setState({ mt: e.target.value }); } };
+  }
+}
+</script>
+</body>
+</html>

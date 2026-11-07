@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Accueil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F3EC; color: #2A1A28; font-family: 'Nunito', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 14px; padding: 20px 20px 12px; overflow: hidden;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="flex-grow: 1; display: flex; flex-direction: column;">
+<span style="font-size: 13px; font-weight: 800; color: #625A60;">Mardi 10 novembre</span>
+<h1 style="margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -0.5px;">Bonjour&nbsp;!</h1>
+</div>
+<button aria-label="Notifications, 1 nouvelle" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #E3DDD0; background: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #2A1A28; position: relative;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"></path><path d="M10 21h4"></path></svg>
+<span style="position: absolute; top: 9px; right: 10px; width: 9px; height: 9px; border-radius: 5px; background: #EE7A30; border: 2px solid #FFFFFF;"></span>
+</button>
+</div>
+<div style="background: #4A2545; color: #FFFFFF; border-radius: 26px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 12px; position: relative; overflow: hidden; box-shadow: 0 10px 24px rgba(74, 37, 69, 0.25);">
+<svg width="170" height="170" viewBox="0 0 170 170" style="position: absolute; right: -40px; top: -50px;" aria-hidden="true"><circle cx="85" cy="85" r="84" fill="#5C3B58"></circle><circle cx="85" cy="85" r="54" fill="#6E516A"></circle></svg>
+<div style="display: flex; justify-content: space-between; align-items: center; position: relative;">
+<span style="font-size: 13px; font-weight: 800; color: #E3CDE0;">Semaine 46 · 4 pers. · 14 repas</span>
+<span style="font-size: 12px; font-weight: 900; padding: 4px 10px; border-radius: 10px; background: #FFFFFF; color: #4A2545;">Auchan</span>
+</div>
+<div style="display: flex; align-items: flex-end; gap: 10px; position: relative;">
+<span style="font-size: 44px; line-height: 1; font-weight: 900; letter-spacing: -1.5px; font-variant-numeric: tabular-nums;">74,20&nbsp;€</span>
+<span style="font-size: 14px; font-weight: 700; color: #E3CDE0; padding-bottom: 5px;">soit 1,33 € / repas</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; position: relative;">
+<div style="height: 10px; border-radius: 5px; background: #4A2545; overflow: hidden; display: flex;"><span style="width: 84%; background: #EE7A30; border-radius: 5px;"></span></div>
+<span style="font-size: 12px; font-weight: 700; color: #E3CDE0;">Possible dès 62,40 € — 84 % du prix actuel</span>
+</div>
+<div style="display: flex; gap: 8px; position: relative;">
+<button onClick="{{toPlan}}" style="flex: 1; min-height: 46px; border-radius: 23px; border: none; background: #FFFFFF; color: #4A2545; font-family: inherit; font-size: 15px; font-weight: 900; cursor: pointer;">Voir mon plan</button>
+<button onClick="{{toComp}}" style="flex: 1; min-height: 46px; border-radius: 23px; border: 1.5px solid #E3CDE0; background: transparent; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 900; cursor: pointer;">Comparer</button>
+</div>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 22px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;">
+<div style="display: flex; justify-content: space-between; align-items: baseline;">
+<span style="font-size: 15px; font-weight: 900;">Tes économies</span>
+<span style="font-size: 13px; font-weight: 800; color: #9A420E; background: #FCE3D3; padding: 3px 10px; border-radius: 10px;">23,60 € en novembre</span>
+</div>
+<div style="display: flex; align-items: flex-end; gap: 14px; height: 74px; padding: 0 4px; border-bottom: 1px solid #F1EEE8;">
+<sc-for list="{{bars}}" as="b" hint-placeholder-count="4">
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; justify-content: flex-end; height: 74px;">
+<span style="font-size: 11px; font-weight: 800; color: #625A60; font-variant-numeric: tabular-nums;">{{b.val}}</span>
+<span style="{{b.bar}}"></span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 14px; padding: 0 4px;">
+<sc-for list="{{bars}}" as="b" hint-placeholder-count="4"><span style="flex: 1; text-align: center; font-size: 11px; font-weight: 800; color: #625A60;">{{b.lab}}</span></sc-for>
+</div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline;">
+<h2 style="margin: 0; font-size: 18px; font-weight: 900;">Au menu aujourd'hui</h2>
+<button onClick="{{toPlan}}" style="min-height: 32px; border: none; background: none; color: #4A2545; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer;">Toute la semaine</button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+<button onClick="{{toRecette}}" style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 22px; padding: 12px; display: flex; flex-direction: column; gap: 6px; text-align: left; cursor: pointer; font-family: inherit; color: #2A1A28;">
+<span style="align-self: center;"><dc-import name="S2Plat" variant="salade" size="96" hint-size="96px,96px"></dc-import></span>
+<span style="font-size: 11px; font-weight: 900; color: #625A60; text-transform: uppercase; letter-spacing: 0.6px;">Midi · 20 min</span>
+<span style="font-size: 15px; font-weight: 800; line-height: 1.25;">Salade lentilles &amp; feta</span>
+<span style="font-size: 14px; font-weight: 900; color: #4A2545;">1,40 € <span style="font-weight: 700; color: #625A60; font-size: 12px;">/ part</span></span>
+</button>
+<button onClick="{{toRecette}}" style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 22px; padding: 12px; display: flex; flex-direction: column; gap: 6px; text-align: left; cursor: pointer; font-family: inherit; color: #2A1A28;">
+<span style="align-self: center;"><dc-import name="S2Plat" variant="curry" size="96" hint-size="96px,96px"></dc-import></span>
+<span style="font-size: 11px; font-weight: 900; color: #625A60; text-transform: uppercase; letter-spacing: 0.6px;">Soir · 35 min</span>
+<span style="font-size: 15px; font-weight: 800; line-height: 1.25;">Curry de pois chiches</span>
+<span style="font-size: 14px; font-weight: 900; color: #4A2545;">1,85 € <span style="font-weight: 700; color: #625A60; font-size: 12px;">/ part</span></span>
+</button>
+</div>
+</div>
+<dc-import name="S2TabBar" active="accueil" go="{{go}}" hint-size="390px,80px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var g = this.props.go;
+    function nav(s) { return function () { if (g) g(s); }; }
+    var data = [["S43", 4.10, true], ["S44", 6.80, true], ["S45", 12.70, true], ["S46", 11.80, false]];
+    var max = 12.70;
+    var bars = data.map(function (d) {
+      var h = Math.round(d[1] / max * 50);
+      return { lab: d[0], val: d[1].toFixed(2).replace(".", ",") + " €",
+        bar: "width: 100%; height: " + h + "px; border-radius: 8px 8px 3px 3px; " + (d[2] ? "background: #EE7A30;" : "background: repeating-linear-gradient(135deg, #FCE3D3 0 6px, #F29B64 6px 9px);") };
+    });
+    return { go: g, bars: bars, toPlan: nav("plan"), toComp: nav("comparateur"), toRecette: nav("recette") };
+  }
+}
+</script>
+</body>
+</html>

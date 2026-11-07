@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Back-office — paramètres</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F1EA}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.bnav{display:flex;align-items:center;gap:12px;min-height:40px;padding:0 12px;border-radius:10px;text-decoration:none;color:#D9CCD6;font-weight:700;font-size:14px}
+.bnav:hover{background:rgba(255,255,255,0.06);color:#FFFFFF}
+.fld{width:100%;box-sizing:border-box;min-height:44px;border-radius:10px;border:1px solid #E3DDD0;padding:0 12px;font:700 15px Nunito;color:#2A1A28;background:#FFFFFF}
+.lbl{display:block;font-size:12px;font-weight:900;letter-spacing:0.6px;color:#625A60;margin-bottom:6px}
+.card{background:#FFFFFF;border:1px solid #E3DDD0;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px}
+input[type=range]{width:100%;accent-color:#4A2545}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F4F1EA; min-height: 100vh; display: flex; flex-wrap: wrap;">
+
+<aside style="flex: 1 1 232px; max-width: 100%; background: #2A1A28; color: #FFFFFF; padding: 20px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; align-items: center; gap: 10px; padding: 0 8px;"><svg width="26" height="26" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#EE7A30"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#2A1A28" stroke-width="2.4" stroke-linecap="round"></path></svg><span style="font-weight: 900; font-size: 15px;">Back-office</span></div>
+<nav aria-label="Back-office" style="display: flex; flex-direction: column; gap: 2px;">
+<a href="BOVue.dc.html" class="bnav">Vue d'ensemble</a><a href="BOTickets.dc.html" class="bnav">Tickets</a><a href="BOPrix.dc.html" class="bnav">Prix</a><a href="BOProduits.dc.html" class="bnav">Produits</a><a href="BORecettes.dc.html" class="bnav">Recettes</a><a href="BOUtilisateurs.dc.html" class="bnav">Utilisateurs</a><a href="BOEnseignes.dc.html" class="bnav">Enseignes</a><a href="BOSeo.dc.html" class="bnav">Contenu SEO</a><a href="BOEngagement.dc.html" class="bnav">Engagement</a><a href="BORoles.dc.html" class="bnav">Rôles et journal</a>
+<a href="BOParametres.dc.html" class="bnav" aria-current="page" style="background: #4A2545; color: #FFFFFF;">Paramètres</a>
+</nav>
+</aside>
+
+<main style="flex: 999 1 640px; min-width: 0; padding: 24px clamp(16px, 2.5vw, 36px) 48px; box-sizing: border-box;">
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+<div><h1 class="disp" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.8px;">Paramètres</h1><p style="margin: 2px 0 0; font-size: 14px; color: #625A60; font-weight: 700;">Réservé aux administrateurs · chaque changement est inscrit au journal</p></div>
+<div style="display: flex; align-items: center; gap: 10px;"><span style="{{dirtyStyle}}">{{dirtyLabel}}</span><button type="button" onClick="{{save}}" style="min-height: 42px; padding: 0 18px; border-radius: 10px; border: 0; background: #4A2545; color: #FFFFFF; font: 800 14px Nunito; cursor: pointer;">Enregistrer</button></div>
+</header>
+
+<div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px;">
+<section class="card">
+<h2 style="margin: 0; font-size: 17px; font-weight: 900;">Modération des prix</h2>
+<div><label class="lbl" for="auto" style="display: flex; justify-content: space-between;"><span>VALIDATION AUTOMATIQUE À PARTIR DE</span><span class="num" style="color: #2A1A28;">{{auto}} % de confiance</span></label><input id="auto" type="range" min="80" max="99" value="{{auto}}" onInput="{{onAuto}}"></div>
+<div><label class="lbl" for="ab" style="display: flex; justify-content: space-between;"><span>ALERTE PRIX ABERRANT AU-DELÀ DE</span><span class="num" style="color: #2A1A28;">{{ab}} % d'écart</span></label><input id="ab" type="range" min="20" max="60" value="{{ab}}" onInput="{{onAb}}"></div>
+<p class="num" style="margin: 0; background: #F6F3EC; border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 21px;">Avec ces réglages, environ <strong>{{autoPct}} %</strong> des lignes de ticket seraient validées sans intervention (estimation sur les 30 derniers jours).</p>
+</section>
+
+<section class="card">
+<h2 style="margin: 0; font-size: 17px; font-weight: 900;">Abonnement Premium</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+<div><label class="lbl" for="pm">MENSUEL</label><input id="pm" class="fld" value="4,99 €"></div>
+<div><label class="lbl" for="pa">ANNUEL</label><input id="pa" class="fld" value="39,99 €"></div>
+<div><label class="lbl" for="ess">ESSAI</label><input id="ess" class="fld" value="14 jours"></div>
+</div>
+<p style="margin: 0; font-size: 13px; color: #625A60;">Les prix sont synchronisés avec Stripe. Un changement ne touche pas les abonnés en cours.</p>
+</section>
+
+<section class="card">
+<h2 style="margin: 0; font-size: 17px; font-weight: 900;">Rendez-vous et rétention</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+<div><label class="lbl" for="jr">PLAN PRÊT</label><select id="jr" class="fld"><option>Jeudi</option><option>Vendredi</option></select></div>
+<div><label class="lbl" for="hr">HEURE</label><input id="hr" class="fld" value="19:00"></div>
+<div><label class="lbl" for="jk">JOKERS / MOIS</label><input id="jk" class="fld" value="1"></div>
+</div>
+<div><label class="lbl" for="nb" style="display: flex; justify-content: space-between;"><span>NOTIFICATIONS MAX PAR SEMAINE</span><span class="num" style="color: #2A1A28;">{{nb}}</span></label><input id="nb" type="range" min="1" max="5" value="{{nb}}" onInput="{{onNb}}"></div>
+</section>
+
+<section class="card">
+<h2 style="margin: 0; font-size: 17px; font-weight: 900;">Pays</h2>
+<sc-for list="{{countries}}" as="c" hint-placeholder-count="4">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 48px; border-top: 1px solid #EFEAE0;"><span><span style="display: block; font-weight: 900;">{{c.n}}</span><span style="font-size: 13px; color: #625A60; font-weight: 700;">{{c.d}}</span></span><button type="button" role="switch" aria-checked="{{c.on}}" aria-label="{{c.n}}" onClick="{{c.toggle}}" style="{{c.track}}"><span style="width: 22px; height: 22px; border-radius: 99px; background: #FFFFFF; display: block;"></span></button></div>
+</sc-for>
+</section>
+
+<section class="card" style="grid-column: 1 / -1;">
+<h2 style="margin: 0; font-size: 17px; font-weight: 900;">Fonctions en test</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px;">
+<sc-for list="{{flags}}" as="f" hint-placeholder-count="4">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px; border: 1px solid #E3DDD0; border-radius: 14px;"><span><span style="display: block; font-weight: 900;">{{f.n}}</span><span style="font-size: 13px; color: #625A60; font-weight: 700;">{{f.d}}</span></span><button type="button" role="switch" aria-checked="{{f.on}}" aria-label="{{f.n}}" onClick="{{f.toggle}}" style="{{f.track}}"><span style="width: 22px; height: 22px; border-radius: 99px; background: #FFFFFF; display: block;"></span></button></div>
+</sc-for>
+</div>
+</section>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { auto: 95, ab: 40, nb: 2, c: { 0: true }, f: { 2: true }, dirty: false }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var set = function (o) { o.dirty = true; self.setState(o); };
+    var track = function (on) { return 'width:48px;height:28px;flex:none;border-radius:99px;border:0;padding:3px;cursor:pointer;display:flex;' + (on ? 'background:#4A2545;justify-content:flex-end' : 'background:#D9D2DA;justify-content:flex-start'); };
+    var C = [['France', 'EUR · 6 enseignes · actif'], ['Belgique', 'EUR · à préparer'], ['Suisse', 'CHF · à préparer'], ['Canada', 'CAD · à préparer']];
+    var countries = C.map(function (c, i) { var on = !!s.c[i]; return { n: c[0], d: c[1], on: on ? 'true' : 'false', track: track(on), toggle: function () { var o = Object.assign({}, s.c); o[i] = !on; set({ c: o }); } }; });
+    var F = [['Affiliation drive', 'Lien suivi vers le drive de l’enseigne'], ['Scan natif', 'Pour les applis mobiles, phase 3'], ['Partage famille', 'Liste en temps réel'], ['Parrainage', '1 mois offert par ami abonné']];
+    var flags = F.map(function (f, i) { var on = !!s.f[i]; return { n: f[0], d: f[1], on: on ? 'true' : 'false', track: track(on), toggle: function () { var o = Object.assign({}, s.f); o[i] = !on; set({ f: o }); } }; });
+    var autoPct = Math.round(88 - (s.auto - 80) * 2.4);
+    return { auto: s.auto, ab: s.ab, nb: s.nb, autoPct: autoPct, countries: countries, flags: flags,
+      onAuto: function (e) { set({ auto: Number(e.target.value) }); }, onAb: function (e) { set({ ab: Number(e.target.value) }); }, onNb: function (e) { set({ nb: Number(e.target.value) }); },
+      dirtyLabel: s.dirty ? 'Modifications non enregistrées' : 'Tout est enregistré',
+      dirtyStyle: 'font-size:13px;font-weight:900;padding:4px 10px;border-radius:99px;' + (s.dirty ? 'background:#F6E7C8;color:#6B4A0E' : 'background:#E3F0DF;color:#2F6B2A'),
+      save: function () { self.setState({ dirty: false }); } };
+  }
+}
+</script>
+</body>
+</html>

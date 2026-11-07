@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mobile — liste de courses</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F3EC; font-family: 'Nunito', sans-serif; color: #2A1A28;">
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 84px; overflow-y: auto; padding: 22px 18px 28px; box-sizing: border-box;">
+<header style="display: flex; align-items: center; gap: 14px;">
+<svg width="74" height="74" viewBox="0 0 120 120" role="img" aria-label="{{ringLabel}}"><circle cx="60" cy="60" r="50" fill="none" stroke="#E3DDD0" stroke-width="14"></circle><circle cx="60" cy="60" r="50" fill="none" stroke="#4A2545" stroke-width="14" stroke-linecap="round" stroke-dasharray="{{dash}}" transform="rotate(-90 60 60)"></circle><text x="60" y="70" text-anchor="middle" font-family="Bricolage Grotesque, Nunito" font-size="30" font-weight="800" fill="#2A1A28">{{pct}}</text></svg>
+<div style="flex: 1;"><h1 class="disp" style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.8px;">Ma liste</h1><p class="num" style="margin: 2px 0 0; font-size: 14px; font-weight: 800; color: #625A60;">Reste <span style="color: #2A1A28;">{{left}}</span> · {{doneN}}/{{totalN}} articles</p></div>
+</header>
+<div style="margin-top: 14px; display: flex; gap: 8px;">
+<button type="button" style="flex: 1; min-height: 44px; border-radius: 999px; border: 2px solid #E3DDD0; background: #FFFFFF; font: 800 14px Nunito; color: #2A1A28;">Partager</button>
+<a href="#drive" style="flex: 1.4; min-height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: #4A2545; color: #FFFFFF; font-weight: 900; font-size: 14px; text-decoration: none;">Ouvrir le drive Auchan</a>
+</div>
+<p style="margin: 12px 0 0; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: #625A60;"><span style="width: 26px; height: 26px; border-radius: 99px; background: #EE7A30; color: #2A1A28; display: grid; place-items: center; font-size: 10px; font-weight: 900;">LD</span>Léa fait les courses avec toi</p>
+
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<section style="margin-top: 14px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 20px; overflow: hidden;">
+<h2 style="margin: 0; padding: 10px 14px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 900; letter-spacing: 0.8px; background: {{g.tint}};"><span>{{g.n}}</span><span class="num">{{g.c}}</span></h2>
+<ul style="list-style: none; margin: 0; padding: 0;">
+<sc-for list="{{g.items}}" as="it" hint-placeholder-count="3">
+<li style="border-top: 1px solid #EFEAE0;"><label style="display: flex; align-items: center; gap: 12px; min-height: 54px; padding: 0 14px; cursor: pointer;"><input type="checkbox" checked="{{it.done}}" onChange="{{it.toggle}}" style="width: 24px; height: 24px; accent-color: #4A2545;"><span style="flex: 1; font-size: 15px; font-weight: 700; {{it.txt}}">{{it.n}} <span style="color: #625A60; font-weight: 600;">· {{it.q}}</span></span><span class="num" style="font-size: 14px; font-weight: 800; {{it.txt}}">{{it.p}}</span></label></li>
+</sc-for>
+</ul>
+</section>
+</sc-for>
+
+<a href="MTicket.dc.html" style="margin-top: 16px; display: flex; gap: 12px; align-items: center; background: #FCE3D3; border-radius: 20px; padding: 14px 16px; text-decoration: none; color: #2A1A28;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9A420E" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="4"></circle></svg><span style="flex: 1;"><strong style="display: block;">Courses finies ?</strong><span style="font-size: 13px; color: #5A2A0B;">Photographie ton ticket : +3 jours Premium</span></span><span aria-hidden="true" style="font-weight: 900;">›</span></a>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0;"><dc-import name="MTabBar" active="liste" hint-size="390px,84px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { done: { f0: true, f1: true } }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var fmt = function (v) { return v.toFixed(2).replace('.', ',') + ' €'; };
+    var G = [['f', 'FRUITS ET LÉGUMES', '#E8F0DF', [['Potimarron', '1 kg', 1.82], ['Oignons', '1 kg', 1.49], ['Poireaux', '3 pièces', 2.29], ['Pommes', '1,5 kg', 2.95]]], ['e', 'ÉPICERIE', '#F5E9DC', [['Pois chiches', '2 boîtes', 1.58], ['Lait de coco', '40 cl', 1.35], ['Lentilles vertes', '500 g', 1.65]]], ['c', 'CRÈMERIE', '#E3ECF6', [['Feta', '200 g', 2.15], ['Crème fraîche', '20 cl', 1.08], ['Œufs', '× 12', 3.29]]]];
+    var left = 0, d = 0, n = 0;
+    var groups = G.map(function (g) {
+      var c = 0;
+      var items = g[3].map(function (it, i) {
+        var k = g[0] + i, on = !!s.done[k]; n++; if (on) { d++; c++; } else left += it[2];
+        return { n: it[0], q: it[1], p: fmt(it[2]), done: on, txt: on ? 'text-decoration:line-through;color:#8A8088;' : '', toggle: function () { var o = Object.assign({}, s.done); o[k] = !on; self.setState({ done: o }); } };
+      });
+      return { n: g[1], tint: g[2], items: items, c: c + '/' + items.length };
+    });
+    var r = d / n, C = 314.2;
+    return { groups: groups, left: fmt(left), doneN: d, totalN: n, pct: Math.round(r * 100) + '%', dash: (C * r).toFixed(1) + ' ' + C, ringLabel: Math.round(r * 100) + ' % des articles pris' };
+  }
+}
+</script>
+</body>
+</html>

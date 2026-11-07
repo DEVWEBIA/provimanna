@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Onboarding — foyer et enseigne</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F3EC; color: #2A1A28; font-family: 'Nunito', system-ui, sans-serif; display: flex; flex-direction: column; padding: 24px 20px 28px; gap: 18px; overflow: hidden;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="flex-grow: 1; display: flex; gap: 6px;">
+<span style="flex: 1; height: 6px; border-radius: 3px; background: #4A2545;"></span>
+<span style="flex: 1; height: 6px; border-radius: 3px; background: #4A2545;"></span>
+<span style="flex: 1; height: 6px; border-radius: 3px; background: #4A2545;"></span>
+<span style="flex: 1; height: 6px; border-radius: 3px; background: #E3DDD0;"></span>
+</div>
+<span style="font-size: 13px; font-weight: 800; color: #625A60;">3 / 4</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<h1 style="margin: 0; font-size: 30px; line-height: 1.12; font-weight: 900; letter-spacing: -0.6px;">Parle-nous de ta tablée</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.5; color: #625A60;">On ajuste les quantités et le budget à ton foyer.</p>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 22px; padding: 6px 16px;">
+<sc-for list="{{people}}" as="p" hint-placeholder-count="2">
+<div style="{{p.row}}">
+<span style="flex-grow: 1; display: flex; flex-direction: column;">
+<span style="font-size: 16px; font-weight: 800;">{{p.label}}</span>
+<span style="font-size: 13px; color: #625A60; font-weight: 600;">{{p.hint}}</span>
+</span>
+<button onClick="{{p.dec}}" aria-label="{{p.decLabel}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #E3DDD0; background: #F6F3EC; color: #2A1A28; font-family: inherit; font-size: 22px; font-weight: 800; cursor: pointer;">−</button>
+<span style="width: 36px; text-align: center; font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums;">{{p.n}}</span>
+<button onClick="{{p.inc}}" aria-label="{{p.incLabel}}" style="width: 44px; height: 44px; border-radius: 22px; border: none; background: #4A2545; color: #FFFFFF; font-family: inherit; font-size: 22px; font-weight: 800; cursor: pointer;">+</button>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<h2 style="margin: 0; font-size: 18px; font-weight: 900;">Ton enseigne habituelle</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+<sc-for list="{{stores}}" as="s" hint-placeholder-count="6">
+<button onClick="{{s.pick}}" aria-pressed="{{s.on}}" style="{{s.card}}">
+<span style="{{s.dot}}">{{s.short}}</span>
+<span style="font-size: 13px; font-weight: 800;">{{s.name}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; gap: 10px; align-items: flex-start; background: #EFE3EC; border-radius: 16px; padding: 12px 14px;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;" aria-hidden="true"><path d="M7 7h10v10H7z"></path><path d="M4 12h3M17 12h3M12 4v3M12 17v3"></path></svg>
+<span style="font-size: 14px; line-height: 1.45; color: #4A2545; font-weight: 700;">On te montrera quand même le prix chez les autres. Tu restes libre de changer, à chaque plan.</span>
+</div>
+<div style="flex-grow: 1;"></div>
+<button onClick="{{next}}" style="height: 58px; border-radius: 29px; border: none; background: #4A2545; color: #FFFFFF; font-family: inherit; font-size: 17px; font-weight: 900; cursor: pointer; box-shadow: 0 8px 20px rgba(74, 37, 69, 0.28);">Créer mon premier plan</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { adults: 2, kids: 2, sel: "auchan" }; }
+  renderVals() {
+    var self = this, g = this.props.go, st = this.state;
+    function bump(k, d) { return function () { var o = {}; o[k] = Math.max(k === "adults" ? 1 : 0, Math.min(8, st[k] + d)); self.setState(o); }; }
+    var people = [
+      { k: "adults", label: "Adultes", hint: "13 ans et plus", n: st.adults },
+      { k: "kids", label: "Enfants", hint: "Portions ajustées", n: st.kids }
+    ].map(function (p, i) {
+      return { label: p.label, hint: p.hint, n: p.n, dec: bump(p.k, -1), inc: bump(p.k, 1), decLabel: "Retirer : " + p.label, incLabel: "Ajouter : " + p.label,
+        row: "display: flex; align-items: center; gap: 8px; min-height: 68px;" + (i === 0 ? " border-bottom: 1px solid #F1EEE8;" : "") };
+    });
+    var list = [
+      ["lidl", "Lidl", "Li", "#E3EDF8", "#1E4570"], ["aldi", "Aldi", "Al", "#EEE7F7", "#4B2F75"], ["leclerc", "E.Leclerc", "Le", "#E2F1EC", "#1C5A45"],
+      ["inter", "Intermarché", "In", "#FBE9E4", "#8A2E1C"], ["auchan", "Auchan", "Au", "#FDF0DC", "#7A4A0E"], ["carrefour", "Carrefour", "Ca", "#E6ECF5", "#2B3F66"]
+    ];
+    var stores = list.map(function (s) {
+      var on = st.sel === s[0];
+      return { name: s[1], short: s[2], on: on, pick: function () { self.setState({ sel: s[0] }); },
+        card: "display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 4px; border-radius: 18px; cursor: pointer; font-family: inherit; color: #2A1A28; background: #FFFFFF; border: 2px solid " + (on ? "#4A2545" : "#E3DDD0") + ";" + (on ? " box-shadow: 0 4px 12px rgba(74, 37, 69, 0.15);" : ""),
+        dot: "width: 38px; height: 38px; border-radius: 19px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; background: " + s[3] + "; color: " + s[4] + ";" };
+    });
+    return { people: people, stores: stores, next: function () { if (g) g("vide"); } };
+  }
+}
+</script>
+</body>
+</html>

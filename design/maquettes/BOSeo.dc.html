@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Back-office — contenu SEO</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F1EA}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.bnav{display:flex;align-items:center;gap:12px;min-height:40px;padding:0 12px;border-radius:10px;text-decoration:none;color:#D9CCD6;font-weight:700;font-size:14px}
+.bnav:hover{background:rgba(255,255,255,0.06);color:#FFFFFF}
+.tr:hover{background:#FBF9F4}
+th,td{text-align:left}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F4F1EA; min-height: 100vh; display: flex; flex-wrap: wrap;">
+
+<aside style="flex: 1 1 232px; max-width: 100%; background: #2A1A28; color: #FFFFFF; padding: 20px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; align-items: center; gap: 10px; padding: 0 8px;"><svg width="26" height="26" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#EE7A30"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#2A1A28" stroke-width="2.4" stroke-linecap="round"></path></svg><span style="font-weight: 900; font-size: 15px;">Back-office</span></div>
+<nav aria-label="Back-office" style="display: flex; flex-direction: column; gap: 2px;">
+<a href="BOVue.dc.html" class="bnav">Vue d'ensemble</a><a href="BOTickets.dc.html" class="bnav">Tickets</a><a href="BOPrix.dc.html" class="bnav">Prix</a><a href="BOProduits.dc.html" class="bnav">Produits</a><a href="BORecettes.dc.html" class="bnav">Recettes</a><a href="BOUtilisateurs.dc.html" class="bnav">Utilisateurs</a><a href="BOEnseignes.dc.html" class="bnav">Enseignes</a>
+<a href="BOSeo.dc.html" class="bnav" aria-current="page" style="background: #4A2545; color: #FFFFFF;">Contenu SEO</a>
+<a href="BOEngagement.dc.html" class="bnav">Engagement</a><a href="BORoles.dc.html" class="bnav">Rôles et journal</a><a href="BOParametres.dc.html" class="bnav">Paramètres</a>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px 8px; border-top: 1px solid #3A2D37;"><span style="width: 32px; height: 32px; border-radius: 99px; background: #4A2545; display: grid; place-items: center; font-size: 12px; font-weight: 900;">JR</span><span style="font-size: 13px;"><strong style="display: block;">Jules</strong><span style="color: #B9ADB6;">Éditeur</span></span></div>
+</aside>
+
+<main style="flex: 999 1 640px; min-width: 0; padding: 24px clamp(16px, 2.5vw, 36px) 48px; box-sizing: border-box;">
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+<div><h1 class="disp" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.8px;">Contenu SEO</h1><p style="margin: 2px 0 0; font-size: 14px; color: #625A60; font-weight: 700;">Pages publiques, référencement Google et moteurs IA <span style="margin-left: 8px; background: #EFE3EC; color: #4A2545; font-size: 12px; font-weight: 900; padding: 2px 8px; border-radius: 99px;">Données d'exemple</span></p></div>
+<div style="display: flex; gap: 8px;"><button type="button" style="min-height: 42px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3DDD0; background: #FFFFFF; font: 800 14px Nunito; color: #2A1A28; cursor: pointer;">Préparer l'observatoire de décembre</button><button type="button" style="min-height: 42px; padding: 0 16px; border-radius: 10px; border: 0; background: #4A2545; color: #FFFFFF; font: 800 14px Nunito; cursor: pointer;">Nouvelle page</button></div>
+</header>
+
+<section aria-label="Indicateurs" style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px;">
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 16px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.8px; color: #625A60;">PAGES INDEXÉES</p><p class="disp num" style="margin: 6px 0 0; font-size: 28px; font-weight: 800;">312 <span style="font-size: 16px; color: #625A60;">/ 340</span></p><div style="margin-top: 8px; height: 6px; border-radius: 9px; background: #F1ECE2;"><div style="width: 92%; height: 6px; border-radius: 9px; background: #4A2545;"></div></div></div>
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 16px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.8px; color: #625A60;">CLICS GOOGLE · 28 J</p><p class="disp num" style="margin: 6px 0 0; font-size: 28px; font-weight: 800;">4 870</p><p style="margin: 2px 0 0; font-size: 13px; font-weight: 800; color: #2F6B2A;">+38 % vs période précédente</p></div>
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 16px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.8px; color: #625A60;">VISITES VENUES D'UNE IA</p><p class="disp num" style="margin: 6px 0 0; font-size: 28px; font-weight: 800;">612</p><p style="margin: 2px 0 0; font-size: 13px; font-weight: 800; color: #625A60;">référents ChatGPT, Perplexity…</p></div>
+<div style="background: #FCE3D3; border-radius: 16px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.8px; color: #9A420E;">À CORRIGER</p><p class="disp num" style="margin: 6px 0 0; font-size: 28px; font-weight: 800;">28 pages</p><p style="margin: 2px 0 0; font-size: 13px; font-weight: 800; color: #9A420E;">prix de plus de 30 jours</p></div>
+</section>
+
+<div role="tablist" aria-label="Type de page" style="margin-top: 20px; display: inline-flex; flex-wrap: wrap; gap: 2px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 12px; padding: 4px;">
+<sc-for list="{{types}}" as="t" hint-placeholder-count="5"><button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.l}}</button></sc-for>
+</div>
+
+<div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+<section style="flex: 2 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; overflow: hidden;">
+<div style="overflow-x: auto;">
+<table class="num" style="width: 100%; min-width: 720px; border-collapse: collapse; font-size: 14px;">
+<thead style="background: #FBF9F4;"><tr style="font-size: 12px; letter-spacing: 0.6px; color: #625A60;"><th scope="col" style="padding: 12px 14px; font-weight: 900;">PAGE</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">TYPE</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">STATUT</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">GOOGLE</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">SCORE</th><th scope="col" style="padding: 12px 14px; font-weight: 900;">MIS À JOUR</th></tr></thead>
+<tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="7">
+<tr class="tr" style="{{r.trStyle}}">
+<th scope="row" style="padding: 8px 14px;"><button type="button" onClick="{{r.select}}" style="background: transparent; border: 0; padding: 4px 0; text-align: left; cursor: pointer; font-family: Nunito; color: #2A1A28;"><span style="display: block; font-weight: 900;">{{r.t}}</span><span style="font-size: 12px; color: #625A60; font-weight: 700;">{{r.u}}</span></button></th>
+<td style="padding: 8px; font-weight: 700; color: #625A60;">{{r.type}}</td>
+<td style="padding: 8px;"><span style="{{r.stStyle}}">{{r.st}}</span></td>
+<td style="padding: 8px; font-weight: 800;">{{r.idx}}</td>
+<td style="padding: 8px;"><span style="{{r.scStyle}}">{{r.sc}}</span></td>
+<td style="padding: 8px 14px; color: #625A60; font-weight: 700;">{{r.d}}</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</section>
+
+<aside style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
+<section style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 20px;">
+<p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.6px; color: #625A60;">CHECKLIST GEO</p>
+<h2 class="disp" style="margin: 4px 0 4px; font-size: 21px; font-weight: 800;">{{sel.t}}</h2>
+<p class="num" style="margin: 0 0 12px; font-size: 13px; font-weight: 800; color: #625A60;">{{doneN}} critères sur 6</p>
+<ul style="list-style: none; margin: 0; padding: 0;">
+<sc-for list="{{checks}}" as="c" hint-placeholder-count="6">
+<li style="border-top: 1px solid #EFEAE0;"><label style="display: flex; gap: 12px; align-items: center; min-height: 48px; cursor: pointer;"><input type="checkbox" checked="{{c.on}}" onChange="{{c.toggle}}" style="width: 20px; height: 20px; accent-color: #4A2545;"><span><span style="display: block; font-weight: 800; font-size: 14px;">{{c.l}}</span><span style="font-size: 12px; color: #625A60;">{{c.d}}</span></span></label></li>
+</sc-for>
+</ul>
+</section>
+<section style="background: #2A1A28; color: #FFFFFF; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 14px;">
+<p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.6px; color: #D9CCD6;">FICHIERS POUR LES ROBOTS</p>
+<p style="margin: 0; display: flex; justify-content: space-between; gap: 8px;"><span style="font-weight: 800;">sitemap.xml</span><span style="color: #B7DDB0; font-weight: 800;">340 URL · à jour</span></p>
+<p style="margin: 0; display: flex; justify-content: space-between; gap: 8px;"><span style="font-weight: 800;">llms.txt</span><span style="color: #B7DDB0; font-weight: 800;">42 pages clés</span></p>
+<p style="margin: 0; display: flex; justify-content: space-between; gap: 8px;"><span style="font-weight: 800;">robots.txt</span><span style="color: #F6B98F; font-weight: 800;">à relire</span></p>
+<p style="margin: 0; color: #D9CCD6; line-height: 20px;">Autorisés : Googlebot, Bingbot, OAI-SearchBot, PerplexityBot, ClaudeBot.</p>
+</section>
+</aside>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { t: 'all', sel: 0, ck: { 0: { 0: true, 1: true, 2: true, 3: true, 5: true } } }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var R = [
+      ['Supermarché le moins cher en novembre 2026', '/observatoire/2026-11', 'obs', 'Observatoire', 'pub', 'Indexée', 94, '14/11'],
+      ['Velouté de potimarron et châtaigne', '/recettes/veloute-potimarron-chataigne', 'rec', 'Recette', 'pub', 'Indexée', 88, '14/11'],
+      ['La semaine à moins de 70 €', '/menus/semaine-moins-de-70-euros', 'men', 'Menu', 'pub', 'Indexée', 82, '13/11'],
+      ['Lidl ou E.Leclerc : lequel est le moins cher ?', '/comparatif/lidl-vs-leclerc', 'cmp', 'Comparatif', 'pub', 'Découverte', 76, '12/11'],
+      ['Curry de pois chiches', '/recettes/curry-pois-chiches', 'rec', 'Recette', 'pub', 'Indexée', 61, '08/10'],
+      ['Batch cooking : 5 repas en 2 heures', '/guides/batch-cooking', 'gui', 'Guide', 'plan', '—', 72, 'publ. 18/11'],
+      ['Menu végé de saison, décembre', '/menus/vege-saison-decembre', 'men', 'Menu', 'brou', '—', 48, '10/11']
+    ];
+    var stl = { pub: ['Publiée', 'background:#E3F0DF;color:#2F6B2A'], plan: ['Planifiée', 'background:#E3ECF6;color:#22406B'], brou: ['Brouillon', 'background:#F6E7C8;color:#6B4A0E'] };
+    var types = [['all', 'Tout · 340'], ['rec', 'Recettes'], ['men', 'Menus'], ['cmp', 'Comparatifs'], ['gui', 'Guides'], ['obs', 'Observatoire']].map(function (t) {
+      var on = s.t === t[0];
+      return { l: t[1], on: on ? 'true' : 'false', pick: function () { self.setState({ t: t[0] }); },
+        style: 'min-height:36px;padding:0 14px;border-radius:9px;border:0;font:800 14px Nunito;cursor:pointer;' + (on ? 'background:#2A1A28;color:#FFFFFF' : 'background:transparent;color:#2A1A28') };
+    });
+    var rows = [];
+    R.forEach(function (r, i) {
+      if (s.t !== 'all' && r[2] !== s.t) return;
+      rows.push({ t: r[0], u: r[1], type: r[3], st: stl[r[4]][0], stStyle: 'font-size:12px;font-weight:900;padding:3px 9px;border-radius:99px;' + stl[r[4]][1],
+        idx: r[5], sc: r[6] + ' / 100', scStyle: 'font-size:13px;font-weight:900;padding:3px 9px;border-radius:8px;' + (r[6] >= 80 ? 'background:#E3F0DF;color:#2F6B2A' : (r[6] >= 60 ? 'background:#F6E7C8;color:#6B4A0E' : 'background:#FBE4E1;color:#B42318')),
+        d: r[7], trStyle: 'border-top:1px solid #EFEAE0;' + (s.sel === i ? 'background:#F7F0F5;box-shadow:inset 3px 0 0 #4A2545' : ''),
+        select: function () { self.setState({ sel: i }); } });
+    });
+    var C = [['Réponse directe chiffrée en tête', '2 phrases avec un prix et une date'], ['FAQ en questions réelles', 'Réponses courtes et autonomes'], ['Données structurées valides', 'Recipe, Article, Dataset ou FAQPage'], ['Date de mise à jour visible', 'Et dateModified dans le JSON-LD'], ['Sources des prix citées', 'Open Prices, tickets, lien méthodologie'], ['3 liens internes ou plus', 'Recette, menu, comparatif, inscription']];
+    var mine = s.ck[s.sel] || {}, n = 0;
+    var checks = C.map(function (c, k) {
+      var on = !!mine[k]; if (on) n++;
+      return { l: c[0], d: c[1], on: on, toggle: function () { var all = Object.assign({}, s.ck), m = Object.assign({}, mine); m[k] = !on; all[s.sel] = m; self.setState({ ck: all }); } };
+    });
+    return { types: types, rows: rows, checks: checks, doneN: n, sel: { t: R[s.sel][0] } };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+/* Appli repas — tokens Aubergine & orange (généré depuis tokens.json) */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root, [data-theme="light"] {
+  --surface-0: #ffffff;
+  --surface-50: #f6f3ec;
+  --line: #e3ddd0;
+  --ink: #2a1a28;
+  --ink-muted: #625a60;
+  --brand: #4a2545;
+  --on-brand: #ffffff;
+  --brand-soft: #efe3ec;
+  --brand-soft-ink: #4a2545;
+  --saving: #ee7a30;
+  --saving-soft: #fce3d3;
+  --saving-ink: #9a420e;
+  --danger: #b42318;
+  --shadow-float: 0 6px 24px rgba(42, 26, 40, 0.12);
+}
+
+[data-theme="dark"] {
+  --surface-0: #221820;
+  --surface-50: #160f15;
+  --line: #3a2d37;
+  --ink: #f3edf1;
+  --ink-muted: #b9adb6;
+  --brand: #c9a3c2;
+  --on-brand: #1e121c;
+  --brand-soft: #33212f;
+  --brand-soft-ink: #e3cde0;
+  --saving: #f08a47;
+  --saving-soft: #3d2418;
+  --saving-ink: #f6b98f;
+  --danger: #f97066;
+  --shadow-float: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --font-display: "Bricolage Grotesque", "Nunito", system-ui, sans-serif;
+  --font-sans: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.price-xl { font-family: var(--font-sans); font-size: 40px; line-height: 44px; font-weight: 800; letter-spacing: -1px; }
+.display { font-family: var(--font-sans); font-size: 30px; line-height: 35px; font-weight: 800; letter-spacing: -0.5px; }
+.title { font-family: var(--font-sans); font-size: 26px; line-height: 31px; font-weight: 800; letter-spacing: -0.5px; }
+.heading { font-family: var(--font-sans); font-size: 18px; line-height: 24px; font-weight: 800; }
+.body { font-family: var(--font-sans); font-size: 16px; line-height: 24px; font-weight: 400; }
+.body-strong { font-family: var(--font-sans); font-size: 15px; line-height: 21px; font-weight: 700; }
+.label { font-family: var(--font-sans); font-size: 13px; line-height: 18px; font-weight: 700; }
+.overline { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 800; letter-spacing: 0.6px; }

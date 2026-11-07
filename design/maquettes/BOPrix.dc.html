@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Back-office — prix</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F1EA}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.bnav{display:flex;align-items:center;gap:12px;min-height:40px;padding:0 12px;border-radius:10px;text-decoration:none;color:#D9CCD6;font-weight:700;font-size:14px}
+.bnav:hover{background:rgba(255,255,255,0.06);color:#FFFFFF}
+.tr:hover{background:#FBF9F4}
+th,td{text-align:left}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F4F1EA; min-height: 100vh; display: flex; flex-wrap: wrap;">
+
+<aside style="flex: 1 1 232px; max-width: 100%; background: #2A1A28; color: #FFFFFF; padding: 20px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; align-items: center; gap: 10px; padding: 0 8px;"><svg width="26" height="26" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#EE7A30"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#2A1A28" stroke-width="2.4" stroke-linecap="round"></path></svg><span style="font-weight: 900; font-size: 15px;">Back-office</span></div>
+<button type="button" style="display: flex; align-items: center; justify-content: space-between; min-height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid #4A3A47; background: transparent; color: #B9ADB6; font: 700 13px Nunito; cursor: pointer;"><span>Rechercher…</span><span style="font-size: 12px; border: 1px solid #4A3A47; border-radius: 6px; padding: 1px 6px;">⌘K</span></button>
+<nav aria-label="Back-office" style="display: flex; flex-direction: column; gap: 2px;">
+<a href="BOVue.dc.html" class="bnav">Vue d'ensemble</a>
+<a href="BOTickets.dc.html" class="bnav" style="justify-content: space-between;">Tickets <span style="background: #4A3A47; color: #FFFFFF; font-size: 12px; font-weight: 900; padding: 1px 8px; border-radius: 99px;">128</span></a>
+<a href="BOPrix.dc.html" class="bnav" aria-current="page" style="background: #4A2545; color: #FFFFFF; justify-content: space-between;">Prix <span style="background: #EE7A30; color: #2A1A28; font-size: 12px; font-weight: 900; padding: 1px 8px; border-radius: 99px;">23</span></a>
+<a href="BOProduits.dc.html" class="bnav">Produits</a>
+<a href="BORecettes.dc.html" class="bnav">Recettes</a>
+<a href="BOUtilisateurs.dc.html" class="bnav">Utilisateurs</a>
+<a href="BOEnseignes.dc.html" class="bnav">Enseignes</a>
+<a href="BOSeo.dc.html" class="bnav">Contenu SEO</a>
+<a href="BOEngagement.dc.html" class="bnav">Engagement</a>
+<a href="BORoles.dc.html" class="bnav">Rôles et journal</a><a href="BOParametres.dc.html" class="bnav">Paramètres</a>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px 8px; border-top: 1px solid #3A2D37;"><span style="width: 32px; height: 32px; border-radius: 99px; background: #4A2545; display: grid; place-items: center; font-size: 12px; font-weight: 900;">CM</span><span style="font-size: 13px;"><strong style="display: block;">Camille</strong><span style="color: #B9ADB6;">Modératrice prix</span></span></div>
+</aside>
+
+<main style="flex: 999 1 640px; min-width: 0; padding: 24px clamp(16px, 2.5vw, 36px) 48px; box-sizing: border-box;">
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+<div><h1 class="disp" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.8px;">Prix</h1><p style="margin: 2px 0 0; font-size: 14px; color: #625A60; font-weight: 700;">France · semaine 46 <span style="margin-left: 8px; background: #EFE3EC; color: #4A2545; font-size: 12px; font-weight: 900; padding: 2px 8px; border-radius: 99px;">Données d'exemple</span></p></div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap;"><button type="button" style="min-height: 42px; padding: 0 16px; border-radius: 10px; border: 1px solid #E3DDD0; background: #FFFFFF; font: 800 14px Nunito; color: #2A1A28; cursor: pointer;">Exporter CSV</button><button type="button" style="min-height: 42px; padding: 0 16px; border-radius: 10px; border: 0; background: #4A2545; color: #FFFFFF; font: 800 14px Nunito; cursor: pointer;">Lancer un import Open Prices</button></div>
+</header>
+
+<section aria-label="Indicateurs" style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px;">
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 16px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.8px; color: #625A60;">RELEVÉS · 7 JOURS</p><p class="disp num" style="margin: 6px 0 0; font-size: 28px; font-weight: 800;">18 420</p><p style="margin: 2px 0 0; font-size: 13px; font-weight: 800; color: #2F6B2A;">+12 % vs S45</p></div>
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 16px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.8px; color: #625A60;">COUVERTURE &lt; 7 J</p><p class="disp num" style="margin: 6px 0 0; font-size: 28px; font-weight: 800;">71 %</p><div style="margin-top: 8px; height: 6px; border-radius: 9px; background: #F1ECE2;"><div style="width: 71%; height: 6px; border-radius: 9px; background: #4A2545;"></div></div></div>
+<div style="background: #FCE3D3; border-radius: 16px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.8px; color: #9A420E;">ALERTES ABERRANTES</p><p class="disp num" style="margin: 6px 0 0; font-size: 28px; font-weight: 800;">{{openCount}}</p><p style="margin: 2px 0 0; font-size: 13px; font-weight: 800; color: #9A420E;">écart &gt; 40 % de la médiane</p></div>
+<div style="background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 16px; padding: 16px;"><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.8px; color: #625A60;">DERNIER IMPORT</p><p class="disp" style="margin: 6px 0 0; font-size: 28px; font-weight: 800;">il y a 2 h</p><p style="margin: 2px 0 0; font-size: 13px; font-weight: 800; color: #2F6B2A;">2 914 prix · 0 erreur</p></div>
+</section>
+
+<div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;">
+<div role="tablist" style="display: inline-flex; gap: 2px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 12px; padding: 4px;">
+<button type="button" role="tab" aria-selected="true" style="min-height: 36px; padding: 0 14px; border-radius: 9px; border: 0; background: #2A1A28; color: #FFFFFF; font: 800 14px Nunito;">Alertes</button>
+<button type="button" role="tab" aria-selected="false" style="min-height: 36px; padding: 0 14px; border-radius: 9px; border: 0; background: transparent; color: #2A1A28; font: 800 14px Nunito;">Tous les prix</button>
+<a href="BOImports.dc.html" style="min-height: 36px; display: inline-flex; align-items: center; padding: 0 14px; border-radius: 9px; color: #2A1A28; font: 800 14px Nunito; text-decoration: none;">Imports</a>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap;"><label for="f-ens" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Enseigne</label><select id="f-ens" style="min-height: 40px; border-radius: 10px; border: 1px solid #E3DDD0; padding: 0 10px; font: 700 14px Nunito; background: #FFFFFF; color: #2A1A28;"><option>Toutes les enseignes</option><option>Lidl</option><option>Auchan</option></select><label for="f-src" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Source</label><select id="f-src" style="min-height: 40px; border-radius: 10px; border: 1px solid #E3DDD0; padding: 0 10px; font: 700 14px Nunito; background: #FFFFFF; color: #2A1A28;"><option>Toutes les sources</option><option>Tickets</option><option>Open Prices</option></select></div>
+</div>
+
+<div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+<section style="flex: 2 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; overflow: hidden;">
+<div style="overflow-x: auto;">
+<table class="num" style="width: 100%; min-width: 720px; border-collapse: collapse; font-size: 14px;">
+<thead style="background: #FBF9F4;"><tr style="font-size: 12px; letter-spacing: 0.6px; color: #625A60;"><th scope="col" style="padding: 12px 14px; font-weight: 900;">PRODUIT</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">ENSEIGNE</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">RELEVÉ</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">MÉDIANE</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">ÉCART</th><th scope="col" style="padding: 12px 8px; font-weight: 900;">SOURCE</th><th scope="col" style="padding: 12px 14px; font-weight: 900;">ÉTAT</th></tr></thead>
+<tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+<tr class="tr" style="{{r.trStyle}}">
+<th scope="row" style="padding: 10px 14px;"><button type="button" onClick="{{r.select}}" style="background: transparent; border: 0; padding: 4px 0; text-align: left; cursor: pointer; font-family: Nunito; color: #2A1A28;"><span style="display: block; font-weight: 900; font-size: 14px;">{{r.name}}</span><span style="font-size: 12px; color: #625A60; font-weight: 700;">EAN {{r.ean}}</span></button></th>
+<td style="padding: 10px 8px; font-weight: 700;">{{r.store}}</td>
+<td style="padding: 10px 8px; font-weight: 900;">{{r.price}}</td>
+<td style="padding: 10px 8px; color: #625A60; font-weight: 700;">{{r.med}}</td>
+<td style="padding: 10px 8px;"><span style="{{r.gapStyle}}">{{r.gap}}</span></td>
+<td style="padding: 10px 8px; font-weight: 700; color: #625A60;">{{r.src}}</td>
+<td style="padding: 10px 14px;"><span style="{{r.stateStyle}}">{{r.state}}</span></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+<p style="margin: 0; padding: 12px 14px; border-top: 1px solid #EFEAE0; font-size: 13px; color: #625A60; font-weight: 700;">Raccourcis : V valider · R rejeter · J / K suivant / précédent</p>
+</section>
+
+<aside style="flex: 1 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+<div><p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 0.8px; color: #625A60;">{{sel.store}} · {{sel.src}} · 14/11</p><h2 class="disp" style="margin: 4px 0 0; font-size: 24px; font-weight: 800;">{{sel.name}}</h2></div>
+<div style="display: flex; gap: 10px;"><div style="flex: 1; background: #FCE3D3; border-radius: 14px; padding: 12px;"><p style="margin: 0; font-size: 12px; font-weight: 900; color: #9A420E;">RELEVÉ</p><p class="disp num" style="margin: 2px 0 0; font-size: 24px; font-weight: 800;">{{sel.price}}</p></div><div style="flex: 1; background: #F6F3EC; border-radius: 14px; padding: 12px;"><p style="margin: 0; font-size: 12px; font-weight: 900; color: #625A60;">MÉDIANE 30 J</p><p class="disp num" style="margin: 2px 0 0; font-size: 24px; font-weight: 800;">{{sel.med}}</p></div></div>
+<figure style="margin: 0;">
+<svg viewBox="0 0 300 130" width="100%" role="img" aria-label="Historique des prix sur 8 semaines, le dernier relevé s'écarte de la médiane" style="display: block;">
+<line x1="10" x2="290" y1="{{sel.medY}}" y2="{{sel.medY}}" stroke="#4A2545" stroke-width="1.5" stroke-dasharray="4 4"></line>
+<polyline points="{{sel.pts}}" fill="none" stroke="#CFC5CD" stroke-width="2"></polyline>
+<circle cx="290" cy="{{sel.lastY}}" r="6" fill="#EE7A30" stroke="#2A1A28" stroke-width="1.5"></circle>
+<text x="10" y="{{sel.medLabelY}}" font-family="Nunito" font-size="11" font-weight="800" fill="#4A2545">médiane</text>
+</svg>
+<figcaption style="font-size: 12px; color: #625A60; font-weight: 700;">8 dernières semaines, tous relevés de l'enseigne</figcaption>
+</figure>
+<p style="margin: 0; background: #F6F3EC; border-radius: 14px; padding: 12px 14px; font-size: 14px; line-height: 21px;"><strong>Piste :</strong> {{sel.hint}}</p>
+<div style="display: flex; gap: 8px; flex-wrap: wrap;">
+<button type="button" onClick="{{reject}}" style="flex: 1 1 120px; min-height: 44px; border-radius: 10px; border: 1px solid #F3C7C2; background: #FFFFFF; color: #B42318; font: 900 14px Nunito; cursor: pointer;">Rejeter (R)</button>
+<button type="button" onClick="{{validate}}" style="flex: 1 1 120px; min-height: 44px; border-radius: 10px; border: 0; background: #4A2545; color: #FFFFFF; font: 900 14px Nunito; cursor: pointer;">Valider (V)</button>
+</div>
+<button type="button" style="min-height: 40px; border-radius: 10px; border: 0; background: transparent; color: #4A2545; font: 800 14px Nunito; cursor: pointer;">Marquer comme promo</button>
+</aside>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { sel: 0, dec: {} }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var D = [
+      ['Feta 200 g', '3 760000 00101 2', 'Lidl', 3.29, 2.25, 'Ticket', 'promo terminée ou format 250 g ? Le ticket indique « FETA AOP ».', [2.2, 2.25, 2.3, 2.2, 2.25, 2.3, 2.25, 3.29]],
+      ['Lait de coco 40 cl', '3 760000 00214 9', 'Carrefour', 0.89, 1.35, 'Ticket', 'promo probable : −30 % affichée en magasin cette semaine.', [1.35, 1.32, 1.35, 1.38, 1.35, 1.35, 1.36, 0.89]],
+      ['Potimarron 1 kg', '2 000000 00417 3', 'Intermarché', 3.49, 1.95, 'Open Prices', 'prix au kilo saisi pour une pièce de 1,8 kg ?', [1.9, 1.95, 2.0, 1.95, 1.9, 1.99, 1.95, 3.49]],
+      ['Pâtes penne 1 kg', '3 760000 00532 4', 'Auchan', 0.45, 1.29, 'Ticket', 'erreur de lecture OCR probable (0,45 au lieu de 1,45).', [1.29, 1.29, 1.25, 1.29, 1.3, 1.29, 1.29, 0.45]],
+      ['Œufs × 12', '3 760000 00688 8', 'E.Leclerc', 4.99, 3.15, 'Open Prices', 'produit bio enregistré sous l’EAN standard ?', [3.1, 3.15, 3.2, 3.15, 3.1, 3.15, 3.2, 4.99]],
+      ['Saumon 2 pavés', '3 760000 00745 8', 'Aldi', 2.99, 5.2, 'Ticket', 'remise « anti-gaspi » en fin de journée.', [5.1, 5.2, 5.25, 5.2, 5.15, 5.2, 5.2, 2.99]]
+    ];
+    var fmt = function (v) { return v.toFixed(2).replace('.', ',') + ' €'; };
+    var open = 0;
+    var rows = D.map(function (d, i) {
+      var g = Math.round((d[3] - d[4]) / d[4] * 100), dec = s.dec[i], sel = s.sel === i;
+      if (!dec) open++;
+      return { name: d[0], ean: d[1], store: d[2], price: fmt(d[3]), med: fmt(d[4]), src: d[5], gap: (g > 0 ? '+' : '−') + Math.abs(g) + ' %',
+        gapStyle: 'font-weight:900;padding:3px 9px;border-radius:99px;' + (g > 0 ? 'background:#FCE3D3;color:#9A420E' : 'background:#E3ECF6;color:#22406B'),
+        state: dec === 'v' ? 'Validé' : (dec === 'r' ? 'Rejeté' : 'À vérifier'),
+        stateStyle: 'font-size:12px;font-weight:900;padding:3px 9px;border-radius:99px;' + (dec === 'v' ? 'background:#E3F0DF;color:#2F6B2A' : (dec === 'r' ? 'background:#FBE4E1;color:#B42318' : 'background:#F6F3EC;color:#625A60')),
+        trStyle: 'border-top:1px solid #EFEAE0;' + (sel ? 'background:#F7F0F5;box-shadow:inset 3px 0 0 #4A2545' : ''),
+        select: function () { self.setState({ sel: i }); } };
+    });
+    var d = D[s.sel], h = d[7], lo = Math.min.apply(null, h.concat([d[4]])) * 0.9, hi = Math.max.apply(null, h) * 1.05;
+    var Y = function (v) { return (120 - (v - lo) / (hi - lo) * 105).toFixed(1); };
+    var pts = h.map(function (v, k) { return (10 + k * 40) + ',' + Y(v); }).join(' ');
+    var mark = function (c) { return function () { var o = Object.assign({}, s.dec); o[s.sel] = c; self.setState({ dec: o, sel: Math.min(D.length - 1, s.sel + 1) }); }; };
+    return { rows: rows, openCount: open + 17,
+      sel: { name: d[0], store: d[2].toUpperCase(), src: d[5].toUpperCase(), price: fmt(d[3]), med: fmt(d[4]), hint: d[6], pts: pts, lastY: Y(d[3]), medY: Y(d[4]), medLabelY: (Number(Y(d[4])) - 6).toFixed(1) },
+      validate: mark('v'), reject: mark('r') };
+  }
+}
+</script>
+</body>
+</html>

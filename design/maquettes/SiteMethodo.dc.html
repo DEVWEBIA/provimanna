@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Méthodologie des prix et à propos</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.lnk{text-decoration:none;color:inherit}.lnk:hover{text-decoration:underline}
+th,td{text-align:left}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F6F3EC; min-height: 100vh;">
+
+<header style="background: #FFFFFF; border-bottom: 1px solid #E3DDD0;">
+<nav aria-label="Navigation principale" style="max-width: 1240px; margin: 0 auto; padding: 16px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px;">
+<a href="Main.dc.html" class="lnk" style="display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 18px; color: #4A2545;"><svg width="30" height="30" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#4A2545"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"></path><circle cx="24" cy="23" r="3.2" fill="#EE7A30"></circle></svg>[Nom de l'appli]</a>
+<div style="display: flex; flex-wrap: wrap; gap: 4px 22px; flex: 1 1 auto; font-weight: 700; font-size: 15px;"><a href="SiteRecettes.dc.html" class="lnk">Recettes</a><a href="SiteMenu.dc.html" class="lnk">Menus</a><a href="SiteComparatif.dc.html" class="lnk">Comparatifs</a><a href="SiteTarifs.dc.html" class="lnk">Tarifs</a></div>
+<a href="AppConnexion.dc.html" style="text-decoration: none; background: #4A2545; color: #FFFFFF; font-weight: 900; font-size: 15px; padding: 12px 20px; border-radius: 999px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center;">Créer mon plan gratuit</a>
+</nav>
+</header>
+
+<main style="max-width: 1240px; margin: 0 auto; padding: 24px 24px 80px;">
+<nav aria-label="Fil d'Ariane" style="font-size: 14px; font-weight: 700; color: #625A60;"><a href="Main.dc.html" class="lnk">Accueil</a> › <span style="color: #2A1A28;">Méthodologie</span></nav>
+
+<section style="padding: 40px 0 36px; max-width: 900px;">
+<h1 class="disp" style="margin: 0; font-size: clamp(40px, 5vw, 66px); line-height: 1; font-weight: 800; letter-spacing: -2px;">Comment on calcule les prix</h1>
+<p style="margin: 22px 0 0; font-size: 20px; line-height: 31px;"><strong>Chaque prix affiché est la médiane des relevés de moins de 7 jours pour un produit, dans une enseigne, près de chez toi.</strong> Les relevés viennent de la base ouverte Open Prices et des tickets de caisse envoyés par la communauté, vérifiés avant publication.</p>
+<p style="margin: 14px 0 0; font-size: 14px; font-weight: 700; color: #625A60;">Mis à jour le 14 novembre 2026</p>
+</section>
+
+<!-- Processus -->
+<section aria-label="Les 4 étapes" style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px;">
+<article style="flex: 1 1 220px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 8px;"><span class="disp" style="font-size: 44px; font-weight: 800; color: #4A2545; line-height: 1;">1</span><h2 style="margin: 0; font-size: 19px; font-weight: 900;">Collecte</h2><p style="margin: 0; font-size: 15px; line-height: 23px; color: #4D444B;">Import quotidien d'Open Prices. Tickets de caisse envoyés en photo par les utilisateurs.</p></article>
+<span aria-hidden="true" style="align-self: center; font-size: 28px; color: #C9A3C2; font-weight: 900;">→</span>
+<article style="flex: 1 1 220px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 8px;"><span class="disp" style="font-size: 44px; font-weight: 800; color: #4A2545; line-height: 1;">2</span><h2 style="margin: 0; font-size: 19px; font-weight: 900;">Contrôle</h2><p style="margin: 0; font-size: 15px; line-height: 23px; color: #4D444B;">Tout prix qui s'écarte de plus de 40 % de la médiane est vérifié à la main par notre équipe.</p></article>
+<span aria-hidden="true" style="align-self: center; font-size: 28px; color: #C9A3C2; font-weight: 900;">→</span>
+<article style="flex: 1 1 220px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 8px;"><span class="disp" style="font-size: 44px; font-weight: 800; color: #4A2545; line-height: 1;">3</span><h2 style="margin: 0; font-size: 19px; font-weight: 900;">Calcul</h2><p style="margin: 0; font-size: 15px; line-height: 23px; color: #4D444B;">Médiane des relevés récents, par produit et par enseigne. Repli sur une estimation si aucun relevé.</p></article>
+<span aria-hidden="true" style="align-self: center; font-size: 28px; color: #C9A3C2; font-weight: 900;">→</span>
+<article style="flex: 1 1 220px; background: #4A2545; color: #FFFFFF; border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 8px;"><span class="disp" style="font-size: 44px; font-weight: 800; color: #EE7A30; line-height: 1;">4</span><h2 style="margin: 0; font-size: 19px; font-weight: 900;">Affichage</h2><p style="margin: 0; font-size: 15px; line-height: 23px; color: #E3CDE0;">Chaque total porte sa date et un indice de fiabilité. Les estimations sont signalées par ≈.</p></article>
+</section>
+
+<div style="margin-top: 32px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+<section style="flex: 1 1 420px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 24px;">
+<h2 class="disp" style="margin: 0 0 14px; font-size: 26px; font-weight: 800;">L'indice de fiabilité</h2>
+<div style="display: flex; flex-direction: column; gap: 12px; font-size: 16px; line-height: 24px;">
+<p style="margin: 0; display: flex; gap: 14px;"><span style="color: #2F6B2A; font-weight: 900; min-width: 46px;">●●●</span><span><strong>Élevée.</strong> 90 % des produits relevés il y a moins de 7 jours.</span></p>
+<p style="margin: 0; display: flex; gap: 14px;"><span style="color: #6B4A0E; font-weight: 900; min-width: 46px;">●●○</span><span><strong>Moyenne.</strong> Entre 60 et 90 %.</span></p>
+<p style="margin: 0; display: flex; gap: 14px;"><span style="color: #9A420E; font-weight: 900; min-width: 46px;">●○○</span><span><strong>Faible.</strong> Moins de 60 % : le total est une estimation.</span></p>
+</div>
+</section>
+<section style="flex: 1 1 420px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 24px;">
+<h2 class="disp" style="margin: 0 0 14px; font-size: 26px; font-weight: 800;">Ce que nos prix ne disent pas</h2>
+<ul style="margin: 0; padding: 0 0 0 20px; display: flex; flex-direction: column; gap: 8px; font-size: 16px; line-height: 24px;"><li>Les promos locales et les prix carte de fidélité.</li><li>Les écarts entre deux magasins d'une même enseigne (2 à 4 % en moyenne).</li><li>Les produits de marque : on compare des produits équivalents, souvent en marque distributeur.</li></ul>
+</section>
+</div>
+
+<section style="margin-top: 32px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; padding: 24px;">
+<h2 class="disp" style="margin: 0 0 6px; font-size: 26px; font-weight: 800;">Sources et licences</h2>
+<p style="margin: 0 0 16px; font-size: 16px; color: #625A60;">Nos données agrégées sont réutilisables, sous la même licence que les données d'origine.</p>
+<table style="width: 100%; border-collapse: collapse; font-size: 15px;">
+<thead><tr style="font-size: 12px; letter-spacing: 0.6px; color: #625A60;"><th scope="col" style="padding: 8px 0; font-weight: 900;">SOURCE</th><th scope="col" style="padding: 8px 0; font-weight: 900;">CONTENU</th><th scope="col" style="padding: 8px 0; font-weight: 900;">LICENCE</th></tr></thead>
+<tbody style="font-weight: 700;">
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 0; font-weight: 900;">Open Prices</th><td>Prix relevés par la communauté Open Food Facts</td><td>[à vérifier]</td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 0; font-weight: 900;">Open Food Facts</th><td>Fiches produits, codes EAN</td><td>[à vérifier]</td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 0; font-weight: 900;">Tickets de la communauté</th><td>Prix lus sur les tickets, photos supprimées après lecture</td><td>[à définir]</td></tr>
+</tbody>
+</table>
+<a href="SiteComparatif.dc.html" style="display: inline-block; margin-top: 16px; font-weight: 900;">Télécharger les données de novembre (CSV) →</a>
+</section>
+
+<section id="a-propos" style="margin-top: 48px; display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch;">
+<div style="flex: 2 1 480px; min-width: 0;">
+<h2 class="disp" style="margin: 0 0 14px; font-size: clamp(30px, 3.4vw, 44px); font-weight: 800; letter-spacing: -1.2px;">À propos</h2>
+<p style="margin: 0 0 14px; font-size: 18px; line-height: 29px;">[Nom de l'appli] est né d'une question simple : pourquoi faut-il deux applis, une pour planifier ses repas et une pour comparer les prix ? On a réuni les deux, avec un plan gratuit pour de vrai.</p>
+<p style="margin: 0; font-size: 18px; line-height: 29px;"><strong>Indépendance :</strong> aucune enseigne ne nous paie pour apparaître ou être mieux classée. On vit des abonnements Premium.</p>
+</div>
+<div style="flex: 1 1 300px; min-width: 0; background: #4A2545; color: #FFFFFF; border-radius: 26px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+<span style="width: 64px; height: 64px; border-radius: 99px; background: #EE7A30; color: #2A1A28; display: grid; place-items: center; font-weight: 900;">[P]</span>
+<p style="margin: 0; font-weight: 900; font-size: 19px;">[Prénom Nom]</p>
+<p style="margin: 0; color: #E3CDE0; line-height: 24px;">Fondateur · [courte bio : parcours, pourquoi ce projet]</p>
+<p style="margin: 6px 0 0; font-size: 15px;"><a href="#presse" style="color: #FFFFFF; font-weight: 800;">Contact presse</a> · <a href="#contact" style="color: #FFFFFF; font-weight: 800;">Nous écrire</a></p>
+</div>
+</section>
+
+<section style="margin-top: 40px;">
+<h2 class="disp" style="margin: 0 0 14px; font-size: 26px; font-weight: 800;">Historique de la méthode</h2>
+<table style="width: 100%; max-width: 860px; border-collapse: collapse; font-size: 15px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; overflow: hidden;">
+<tbody style="font-weight: 700;">
+<tr><th scope="row" style="padding: 12px 18px; font-weight: 900; white-space: nowrap;">14 nov. 2026</th><td style="padding: 12px 18px;">Seuil de contrôle manuel abaissé de 50 % à 40 % d'écart.</td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 18px; font-weight: 900; white-space: nowrap;">1er oct. 2026</th><td style="padding: 12px 18px;">Ajout des prix par zone (Île-de-France, reste de la France).</td></tr>
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 12px 18px; font-weight: 900; white-space: nowrap;">1er sept. 2026</th><td style="padding: 12px 18px;">Première version : médiane des relevés de moins de 7 jours.</td></tr>
+</tbody>
+</table>
+</section>
+</main>
+<footer style="background: #2A1A28; color: #B9ADB6; padding: 28px 24px; font-size: 14px; text-align: center;">Données d'exemple · <a href="SiteLegal.dc.html" style="color: #D9CCD6;">Mentions légales</a> · <a href="SiteLegal.dc.html" style="color: #D9CCD6;">Confidentialité</a></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2600}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

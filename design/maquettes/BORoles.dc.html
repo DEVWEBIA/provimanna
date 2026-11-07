@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Back-office — rôles et journal</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F1EA}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.bnav{display:flex;align-items:center;gap:12px;min-height:40px;padding:0 12px;border-radius:10px;text-decoration:none;color:#D9CCD6;font-weight:700;font-size:14px}
+.bnav:hover{background:rgba(255,255,255,0.06);color:#FFFFFF}
+th,td{text-align:left}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F4F1EA; min-height: 100vh; display: flex; flex-wrap: wrap;">
+
+<aside style="flex: 1 1 232px; max-width: 100%; background: #2A1A28; color: #FFFFFF; padding: 20px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; align-items: center; gap: 10px; padding: 0 8px;"><svg width="26" height="26" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#EE7A30"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#2A1A28" stroke-width="2.4" stroke-linecap="round"></path></svg><span style="font-weight: 900; font-size: 15px;">Back-office</span></div>
+<nav aria-label="Back-office" style="display: flex; flex-direction: column; gap: 2px;">
+<a href="BOVue.dc.html" class="bnav">Vue d'ensemble</a><a href="BOTickets.dc.html" class="bnav">Tickets</a><a href="BOPrix.dc.html" class="bnav">Prix</a><a href="BOProduits.dc.html" class="bnav">Produits</a><a href="BORecettes.dc.html" class="bnav">Recettes</a><a href="BOUtilisateurs.dc.html" class="bnav">Utilisateurs</a><a href="BOEnseignes.dc.html" class="bnav">Enseignes</a><a href="BOSeo.dc.html" class="bnav">Contenu SEO</a><a href="BOEngagement.dc.html" class="bnav">Engagement</a>
+<a href="BORoles.dc.html" class="bnav" aria-current="page" style="background: #4A2545; color: #FFFFFF;">Rôles et journal</a>
+<a href="BOParametres.dc.html" class="bnav">Paramètres</a>
+</nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px 8px; border-top: 1px solid #3A2D37;"><span style="width: 32px; height: 32px; border-radius: 99px; background: #4A2545; display: grid; place-items: center; font-size: 12px; font-weight: 900;">AD</span><span style="font-size: 13px;"><strong style="display: block;">Admin</strong><span style="color: #B9ADB6;">Administrateur</span></span></div>
+</aside>
+
+<main style="flex: 999 1 640px; min-width: 0; padding: 24px clamp(16px, 2.5vw, 36px) 48px; box-sizing: border-box;">
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+<div><h1 class="disp" style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.8px;">Rôles et journal</h1><p style="margin: 2px 0 0; font-size: 14px; color: #625A60; font-weight: 700;">4 personnes dans l'équipe · toute action sensible est tracée <span style="margin-left: 8px; background: #EFE3EC; color: #4A2545; font-size: 12px; font-weight: 900; padding: 2px 8px; border-radius: 99px;">Données d'exemple</span></p></div>
+<button type="button" style="min-height: 42px; padding: 0 16px; border-radius: 10px; border: 0; background: #4A2545; color: #FFFFFF; font: 800 14px Nunito; cursor: pointer;">Inviter un membre</button>
+</header>
+
+<div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+<section style="flex: 3 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; overflow: hidden;">
+<h2 style="margin: 0; padding: 16px 18px; font-size: 16px; font-weight: 900;">Droits par rôle</h2>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px;">
+<thead style="background: #FBF9F4;"><tr style="font-size: 12px; letter-spacing: 0.6px; color: #625A60;"><th scope="col" style="padding: 10px 18px; font-weight: 900;">DROIT</th><th scope="col" style="padding: 10px 8px; font-weight: 900; text-align: center;">ADMIN</th><th scope="col" style="padding: 10px 8px; font-weight: 900; text-align: center;">MODÉRATION PRIX</th><th scope="col" style="padding: 10px 8px; font-weight: 900; text-align: center;">ÉDITION</th><th scope="col" style="padding: 10px 18px; font-weight: 900; text-align: center;">SUPPORT</th></tr></thead>
+<tbody>
+<sc-for list="{{perms}}" as="p" hint-placeholder-count="7">
+<tr style="border-top: 1px solid #EFEAE0;"><th scope="row" style="padding: 10px 18px; font-weight: 800;">{{p.l}}</th>
+<sc-for list="{{p.cells}}" as="c" hint-placeholder-count="4"><td style="padding: 8px; text-align: center;"><button type="button" onClick="{{c.toggle}}" aria-pressed="{{c.on}}" aria-label="{{c.label}}" disabled="{{c.locked}}" style="{{c.style}}">{{c.mark}}</button></td></sc-for>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+<p style="margin: 0; padding: 12px 18px; border-top: 1px solid #EFEAE0; font-size: 13px; color: #625A60;">Les droits de l'administrateur ne sont pas modifiables. Chaque changement est inscrit au journal.</p>
+</section>
+
+<section style="flex: 2 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; overflow: hidden;">
+<h2 style="margin: 0; padding: 16px 18px; font-size: 16px; font-weight: 900;">Équipe</h2>
+<sc-for list="{{team}}" as="t" hint-placeholder-count="4">
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-top: 1px solid #EFEAE0;"><span style="width: 36px; height: 36px; border-radius: 99px; background: {{t.bg}}; display: grid; place-items: center; font-size: 12px; font-weight: 900; color: {{t.fg}};">{{t.ini}}</span><span style="flex: 1;"><span style="display: block; font-weight: 900;">{{t.n}}</span><span style="font-size: 12px; color: #625A60; font-weight: 700;">{{t.last}}</span></span><span style="font-size: 12px; font-weight: 900; padding: 3px 9px; border-radius: 99px; background: #F6F3EC;">{{t.r}}</span></div>
+</sc-for>
+</section>
+</div>
+
+<section style="margin-top: 16px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 18px; overflow: hidden;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 18px;"><h2 style="margin: 0; font-size: 16px; font-weight: 900;">Journal d'audit</h2><div style="display: flex; gap: 6px; flex-wrap: wrap;"><sc-for list="{{kinds}}" as="k" hint-placeholder-count="4"><button type="button" onClick="{{k.pick}}" aria-pressed="{{k.on}}" style="{{k.style}}">{{k.l}}</button></sc-for></div></div>
+<div style="overflow-x: auto;">
+<table class="num" style="width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px;">
+<thead style="background: #FBF9F4;"><tr style="font-size: 12px; letter-spacing: 0.6px; color: #625A60;"><th scope="col" style="padding: 10px 18px; font-weight: 900;">QUAND</th><th scope="col" style="padding: 10px 8px; font-weight: 900;">QUI</th><th scope="col" style="padding: 10px 8px; font-weight: 900;">ACTION</th><th scope="col" style="padding: 10px 18px; font-weight: 900;">OBJET</th></tr></thead>
+<tbody>
+<sc-for list="{{log}}" as="l" hint-placeholder-count="7"><tr style="border-top: 1px solid #EFEAE0;"><td style="padding: 11px 18px; color: #625A60; font-weight: 700; white-space: nowrap;">{{l.w}}</td><td style="padding: 11px 8px; font-weight: 900;">{{l.who}}</td><td style="padding: 11px 8px;"><span style="{{l.st}}">{{l.a}}</span></td><td style="padding: 11px 18px; font-weight: 700;">{{l.o}}</td></tr></sc-for>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { m: { '0-1': 1, '1-1': 1, '2-2': 1, '3-2': 1, '4-3': 1, '5-3': 1, '6-1': 1 }, k: 'all' }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var P = ['Valider ou rejeter des prix', 'Modérer les tickets', 'Éditer et publier des recettes', 'Gérer le contenu SEO', 'Voir les fiches utilisateurs', 'Offrir des jours Premium', 'Gérer les produits et EAN'];
+    var R = ['Admin', 'Modération prix', 'Édition', 'Support'];
+    var perms = P.map(function (l, i) {
+      return { l: l, cells: R.map(function (r, j) {
+        var admin = j === 0, on = admin || !!s.m[i + '-' + j];
+        return { on: on ? 'true' : 'false', locked: admin, mark: on ? '✓' : '', label: r + ' : ' + l,
+          toggle: function () { if (admin) return; var o = Object.assign({}, s.m); o[i + '-' + j] = on ? 0 : 1; self.setState({ m: o }); },
+          style: 'width:34px;height:34px;border-radius:9px;font:900 15px Nunito;cursor:' + (admin ? 'default' : 'pointer') + ';' + (on ? (admin ? 'background:#E3DDD0;color:#625A60;border:0' : 'background:#4A2545;color:#FFFFFF;border:0') : 'background:#FFFFFF;border:1px solid #E3DDD0;color:#2A1A28') };
+      }) };
+    });
+    var team = [['AD', 'Admin (toi)', 'Admin', 'connecté', '#4A2545', '#FFFFFF'], ['CM', 'Camille', 'Modération prix', 'a validé 42 lignes aujourd’hui', '#FCE3D3', '#9A420E'], ['JR', 'Jules', 'Édition', 'a modifié une recette il y a 2 h', '#E8F0DF', '#34561C'], ['SB', 'Sam', 'Support', 'actif hier', '#E3ECF6', '#22406B']].map(function (t) { return { ini: t[0], n: t[1], r: t[2], last: t[3], bg: t[4], fg: t[5] }; });
+    var L = [['14/11 18:52', 'Camille', 'Prix rejeté', 'prix', 'Pâtes penne 1 kg · Auchan · 0,45 €'], ['14/11 18:40', 'Camille', 'Ticket publié', 'prix', 'Ticket Auchan Lyon 3e · 24 lignes'], ['14/11 16:12', 'Jules', 'Recette publiée', 'contenu', 'Velouté de potimarron et châtaigne'], ['14/11 11:03', 'Sam', 'Premium offert', 'utilisateurs', 'Marion D. · 7 jours'], ['13/11 09:30', 'Admin', 'Droit modifié', 'acces', 'Support : voir les fiches utilisateurs'], ['12/11 17:45', 'Sam', 'Export RGPD', 'utilisateurs', 'Antoine R.'], ['12/11 10:02', 'Jules', 'Page SEO modifiée', 'contenu', '/menus/semaine-moins-de-70-euros']];
+    var col = { prix: 'background:#FCE3D3;color:#9A420E', contenu: 'background:#E8F0DF;color:#34561C', utilisateurs: 'background:#E3ECF6;color:#22406B', acces: 'background:#EFE3EC;color:#4A2545' };
+    var log = L.filter(function (l) { return s.k === 'all' || l[3] === s.k; }).map(function (l) { return { w: l[0], who: l[1], a: l[2], o: l[4], st: 'font-size:12px;font-weight:900;padding:3px 9px;border-radius:99px;' + col[l[3]] }; });
+    var kinds = [['all', 'Tout'], ['prix', 'Prix'], ['contenu', 'Contenu'], ['utilisateurs', 'Utilisateurs'], ['acces', 'Accès']].map(function (k) {
+      var on = s.k === k[0];
+      return { l: k[1], on: on ? 'true' : 'false', pick: function () { self.setState({ k: k[0] }); },
+        style: 'min-height:34px;padding:0 12px;border-radius:9px;font:800 13px Nunito;cursor:pointer;' + (on ? 'background:#2A1A28;color:#FFFFFF;border:0' : 'background:#FFFFFF;color:#2A1A28;border:1px solid #E3DDD0') };
+    });
+    return { perms: perms, team: team, log: log, kinds: kinds };
+  }
+}
+</script>
+</body>
+</html>

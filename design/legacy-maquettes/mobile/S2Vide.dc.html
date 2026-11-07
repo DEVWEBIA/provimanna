@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>État vide — aucun plan</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F3EC; color: #2A1A28; font-family: 'Nunito', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
+<div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px 32px; text-align: center;">
+<div style="width: 220px; height: 220px; border-radius: 110px; background: #EFE3EC; display: flex; align-items: center; justify-content: center; position: relative;">
+<svg width="150" height="150" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="#FFFFFF"></circle><circle cx="60" cy="60" r="50" fill="none" stroke="#E3DDD0" stroke-width="2"></circle><circle cx="60" cy="60" r="36" fill="none" stroke="#F1EEE8" stroke-width="2" stroke-dasharray="4 6"></circle><path d="M14 30v24M10 30v10M18 30v10M14 54v40" stroke="#4A2545" stroke-width="3" stroke-linecap="round"></path><path d="M106 30c-6 4-8 14-8 22h8v42" stroke="#4A2545" stroke-width="3" stroke-linecap="round" fill="none"></path></svg>
+<span style="position: absolute; right: 14px; top: 22px; width: 44px; height: 44px; border-radius: 22px; background: #EE7A30; display: flex; align-items: center; justify-content: center; color: #2A1A28;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2"></path></svg>
+</span>
+</div>
+<h1 style="margin: 0; font-size: 26px; line-height: 1.15; font-weight: 900; letter-spacing: -0.5px;">Ta semaine est encore vide</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.5; color: #625A60;">En 10 secondes, on te propose 14 repas pour 4 personnes, avec le prix dans 6 enseignes.</p>
+<button onClick="{{gen}}" style="margin-top: 6px; height: 58px; align-self: stretch; border-radius: 29px; border: none; background: #4A2545; color: #FFFFFF; font-family: inherit; font-size: 17px; font-weight: 900; cursor: pointer; box-shadow: 0 8px 20px rgba(74, 37, 69, 0.28); display: flex; align-items: center; justify-content: center; gap: 10px;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"></path></svg>Générer mon plan</button>
+<button style="min-height: 44px; border: none; background: transparent; color: #4A2545; font-family: inherit; font-size: 15px; font-weight: 800; text-decoration: underline; cursor: pointer;">Choisir mes recettes moi-même</button>
+</div>
+<dc-import name="S2TabBar" active="accueil" go="{{go}}" hint-size="390px,80px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var g = this.props.go;
+    return { go: g, gen: function () { if (g) g("accueil"); } };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Prototype — parcours complet</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+@keyframes v2in { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes v2up { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+.scr { animation: v2in 320ms cubic-bezier(.2, .8, .2, 1); }
+.scr-up { animation: v2up 360ms cubic-bezier(.2, .8, .2, 1); }
+@media (prefers-reduced-motion: reduce) { .scr, .scr-up { animation: none; } }
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; overflow: hidden; position: relative; background: #F6F3EC; font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28;">
+<sc-if value="{{is.onboarding}}" hint-placeholder-val="{{true}}"><div class="scr"><dc-import name="S2Onboarding" go="{{go}}" hint-size="390px,844px"></dc-import></div></sc-if>
+<sc-if value="{{is.vide}}" hint-placeholder-val="{{false}}"><div class="scr"><dc-import name="S2Vide" go="{{go}}" hint-size="390px,844px"></dc-import></div></sc-if>
+<sc-if value="{{is.accueil}}" hint-placeholder-val="{{false}}"><div class="scr"><dc-import name="S2Accueil" go="{{go}}" hint-size="390px,844px"></dc-import></div></sc-if>
+<sc-if value="{{is.plan}}" hint-placeholder-val="{{false}}"><div class="scr"><dc-import name="S2Plan" go="{{go}}" hint-size="390px,844px"></dc-import></div></sc-if>
+<sc-if value="{{is.recette}}" hint-placeholder-val="{{false}}"><div class="scr-up"><dc-import name="S2Recette" go="{{go}}" hint-size="390px,844px"></dc-import></div></sc-if>
+<sc-if value="{{is.comparateur}}" hint-placeholder-val="{{false}}"><div class="scr"><dc-import name="S2Comparateur" go="{{go}}" hint-size="390px,844px"></dc-import></div></sc-if>
+<sc-if value="{{is.detail}}" hint-placeholder-val="{{false}}"><div class="scr"><dc-import name="S2Detail" go="{{go}}" hint-size="390px,844px"></dc-import></div></sc-if>
+<sc-if value="{{is.liste}}" hint-placeholder-val="{{false}}"><div class="scr"><dc-import name="S2Liste" go="{{go}}" hint-size="390px,844px"></dc-import></div></sc-if>
+<sc-if value="{{is.scan}}" hint-placeholder-val="{{false}}"><div class="scr-up"><dc-import name="S2Scan" go="{{go}}" hint-size="390px,844px"></dc-import></div></sc-if>
+<sc-if value="{{is.paywall}}" hint-placeholder-val="{{false}}"><div class="scr-up"><dc-import name="S2Paywall" go="{{go}}" hint-size="390px,844px"></dc-import></div></sc-if>
+<sc-if value="{{is.profil}}" hint-placeholder-val="{{false}}"><div class="scr"><dc-import name="S2Profil" go="{{go}}" hint-size="390px,844px"></dc-import></div></sc-if>
+<sc-if value="{{is.erreur}}" hint-placeholder-val="{{false}}"><div class="scr"><dc-import name="S2Erreur" go="{{go}}" hint-size="390px,844px"></dc-import></div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"start":{"editor":"enum","options":["onboarding","vide","accueil","plan","recette","comparateur","detail","liste","scan","paywall","profil","erreur"],"default":"onboarding"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { screen: null }; }
+  renderVals() {
+    var self = this;
+    var s = this.state.screen || this.props.start || "onboarding";
+    var ids = ["onboarding", "vide", "accueil", "plan", "recette", "comparateur", "detail", "liste", "scan", "paywall", "profil", "erreur"];
+    var is = {};
+    ids.forEach(function (k) { is[k] = k === s; });
+    return { is: is, go: function (next) { self.setState({ screen: next }); } };
+  }
+}
+</script>
+</body>
+</html>

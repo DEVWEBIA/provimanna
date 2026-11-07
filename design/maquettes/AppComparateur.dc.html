@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Web app — comparateur et détail Premium</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F3EC}
+a{color:#4A2545}a:hover{color:#2A1A28}
+.disp{font-family:'Bricolage Grotesque','Nunito',sans-serif}
+.num{font-variant-numeric:tabular-nums}
+.nav{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border-radius:14px;text-decoration:none;color:#2A1A28;font-weight:800;font-size:15px}
+.nav:hover{background:#F6F3EC;color:#2A1A28}
+.bar:hover{border-color:#4A2545}
+th,td{text-align:left}
+</style>
+</helmet>
+<div style="font-family: 'Nunito', system-ui, sans-serif; color: #2A1A28; background: #F6F3EC; min-height: 100vh; display: flex; flex-wrap: wrap;">
+
+<aside style="flex: 1 1 240px; max-width: 100%; background: #FFFFFF; border-right: 1px solid #E3DDD0; padding: 24px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px;">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; color: #4A2545; font-weight: 900; font-size: 17px; text-decoration: none; padding: 0 8px;"><svg width="28" height="28" viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="3" width="24" height="28" rx="5" fill="#4A2545"></rect><path d="M10 11h14M10 16h10M10 21h7" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"></path><circle cx="24" cy="23" r="3.2" fill="#EE7A30"></circle></svg>[Nom de l'appli]</a>
+<nav aria-label="Web app" style="display: flex; flex-direction: column; gap: 2px;">
+<a href="AppDashboard.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 11 12 4l9 7v9H3z"></path></svg>Accueil</a>
+<a href="AppPlan.dc.html" class="nav" aria-current="page" style="background: #EFE3EC; color: #4A2545;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"></rect><path d="M3 9h18M8 2v4M16 2v4"></path></svg>Mon plan</a>
+<a href="AppListe.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>Liste de courses</a>
+<a href="AppRecettes.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle></svg>Recettes</a>
+<a href="AppEconomies.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Mes économies</a>
+<a href="AppFamille.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M2 20c1-3.5 3.6-5 7-5s6 1.5 7 5M15 15c3 0 5 1.5 6 4"></path></svg>Famille</a>
+<a href="AppNotifs.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"></path></svg>Notifications<span style="margin-left: auto; background: #EE7A30; color: #2A1A28; font-size: 12px; font-weight: 900; padding: 1px 8px; border-radius: 99px;">3</span></a>
+<a href="AppAbonnement.dc.html" class="nav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4-6 8-6s7 2 8 6"></path></svg>Profil</a>
+</nav>
+</aside>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 28px clamp(20px, 3vw, 44px) 64px; box-sizing: border-box;">
+<a href="AppPlan.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; font-weight: 800; text-decoration: none;">← Semaine 47</a>
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-top: 4px;">
+<h1 class="disp" style="margin: 0; font-size: clamp(34px, 3.4vw, 50px); line-height: 1; font-weight: 800; letter-spacing: -1.6px;">Où ta semaine coûte le moins</h1>
+<div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px dashed #CFC5CD; border-radius: 12px;"><span style="font-size: 12px; font-weight: 900; color: #625A60;">VUE</span><sc-for list="{{views}}" as="v" hint-placeholder-count="2"><button type="button" onClick="{{v.pick}}" aria-pressed="{{v.on}}" style="{{v.style}}">{{v.l}}</button></sc-for></div>
+</header>
+<p style="margin: 8px 0 0; font-size: 15px; font-weight: 700; color: #625A60;">14 repas · 4 personnes · 31 produits · prix médians relevés il y a 3 jours en moyenne, autour de 69003</p>
+
+<!-- Barres -->
+<section aria-label="Total par enseigne" style="margin-top: 24px; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 28px; padding: clamp(18px, 2.5vw, 30px); display: flex; flex-direction: column; gap: 10px;">
+<sc-for list="{{stores}}" as="s" hint-placeholder-count="6">
+<button type="button" class="bar" onClick="{{s.pick}}" aria-pressed="{{s.on}}" style="{{s.style}}">
+<span style="width: 40px; height: 40px; flex: none; border-radius: 11px; display: grid; place-items: center; font-size: 13px; font-weight: 900; background: {{s.bg}};">{{s.k}}</span>
+<span style="width: 150px; flex: none; text-align: left;"><span style="display: block; font-weight: 900; font-size: 16px;">{{s.n}}</span><span style="{{s.tagStyle}}">{{s.tag}}</span></span>
+<span style="flex: 1; min-width: 80px; height: 18px; border-radius: 9px; background: #F1ECE2;"><span style="display: block; height: 18px; border-radius: 9px; width: {{s.w}}; background: {{s.bar}};"></span></span>
+<span class="disp num" style="width: 110px; text-align: right; font-size: 24px; font-weight: 800;">{{s.t}}</span>
+<span class="num" style="width: 82px; text-align: right; font-size: 14px; font-weight: 900; color: {{s.dc}};">{{s.d}}</span>
+</button>
+</sc-for>
+</section>
+
+<!-- Détail -->
+<section style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+<div style="flex: 2 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 26px; overflow: hidden; position: relative;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 18px 22px;"><h2 class="disp" style="margin: 0; font-size: 24px; font-weight: 800;">Produit par produit · Auchan vs {{other}}</h2><span style="background: #4A2545; color: #FFFFFF; font-size: 11px; font-weight: 900; padding: 3px 9px; border-radius: 99px;">PREMIUM</span></div>
+<div style="overflow-x: auto;">
+<table class="num" style="width: 100%; min-width: 560px; border-collapse: collapse; font-size: 15px;">
+<thead style="background: #FBF9F4;"><tr style="font-size: 12px; letter-spacing: 0.6px; color: #625A60;"><th scope="col" style="padding: 10px 22px; font-weight: 900;">PRODUIT</th><th scope="col" style="padding: 10px 8px; font-weight: 900;">AUCHAN</th><th scope="col" style="padding: 10px 8px; font-weight: 900;">{{otherUp}}</th><th scope="col" style="padding: 10px 22px; font-weight: 900;">ÉCART</th></tr></thead>
+<tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="10">
+<tr style="{{r.trStyle}}"><th scope="row" style="padding: 12px 22px; font-weight: 800;">{{r.n}} <span style="font-weight: 600; color: #625A60;">· {{r.q}}</span></th><td style="padding: 12px 8px; font-weight: 700;">{{r.a}}</td><td style="padding: 12px 8px; font-weight: 900;">{{r.o}}</td><td style="padding: 12px 22px;"><span style="{{r.dStyle}}">{{r.d}}</span></td></tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+<sc-if value="{{locked}}" hint-placeholder-val="{{false}}">
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 62%; background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 30%, #FFFFFF 60%); display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 12px; padding: 0 24px 28px; text-align: center;">
+<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4A2545" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+<p class="disp" style="margin: 0; font-size: 24px; font-weight: 800;">28 autres produits à comparer</p>
+<p style="margin: 0; font-size: 15px; color: #625A60; max-width: 420px;">Vois exactement où se cache l'écart, et bascule ta liste chez {{other}} en un clic.</p>
+<a href="AppAbonnement.dc.html" style="min-height: 52px; display: inline-flex; align-items: center; padding: 0 26px; border-radius: 999px; background: #4A2545; color: #FFFFFF; font-weight: 900; text-decoration: none;">Essayer Premium 14 jours, sans carte</a>
+</div>
+</sc-if>
+</div>
+
+<aside style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
+<div style="background: #2A1A28; color: #FFFFFF; border-radius: 26px; padding: 22px;">
+<p style="margin: 0; font-size: 12px; font-weight: 900; letter-spacing: 1px; color: #D9CCD6;">EN PASSANT CHEZ {{otherUp}}</p>
+<p class="disp num" style="margin: 6px 0 4px; font-size: 44px; font-weight: 800; letter-spacing: -1.4px; color: #F6B98F;">{{save}}</p>
+<p style="margin: 0; font-size: 14px; color: #D9CCD6;">{{summary}}</p>
+<a href="AppListe.dc.html" style="margin-top: 18px; display: flex; align-items: center; justify-content: center; min-height: 50px; border-radius: 999px; background: #FFFFFF; color: #2A1A28; font-weight: 900; text-decoration: none; text-align: center; padding: 0 14px;">Basculer ma liste chez {{other}}</a>
+<a href="AppListe.dc.html" style="margin-top: 8px; display: flex; align-items: center; justify-content: center; min-height: 44px; color: #FFFFFF; font-weight: 800;">Garder Auchan</a>
+</div>
+<p style="margin: 0; padding: 0 6px; font-size: 14px; line-height: 21px; color: #625A60;">Le prix est un repère : c'est toi qui choisis. Distance, habitudes, promos locales comptent aussi.</p>
+</aside>
+</section>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { other: 'Lidl', view: 'premium' }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var fmt = function (v) { return v.toFixed(2).replace('.', ',') + ' €'; };
+    var S = [['LI', 'Lidl', 60.1, '#E3ECF6', 0.84], ['AL', 'Aldi', 61.4, '#E7EFE2', 0.857], ['EL', 'E.Leclerc', 64.2, '#ECE6F5', 0.897], ['IN', 'Intermarché', 68.9, '#F5E9DC', 0.962], ['CA', 'Carrefour', 70.3, '#E2EFEF', 0.982], ['AU', 'Auchan', 71.6, '#F4E3E6', 1]];
+    var stores = S.map(function (x, i) {
+      var on = s.other === x[1], mine = x[1] === 'Auchan', cheap = i === 0;
+      return { k: x[0], n: x[1], bg: x[3], t: fmt(x[2]), w: Math.round(x[2] / 71.6 * 100) + '%',
+        bar: cheap ? '#EE7A30' : (mine ? '#4A2545' : (on ? '#C9A3C2' : '#D9CFDA')),
+        d: mine ? 'ton choix' : '−' + fmt(71.6 - x[2]), dc: mine ? '#4A2545' : '#9A420E',
+        tag: cheap ? 'Le moins cher' : (mine ? 'Ton enseigne' : ''),
+        tagStyle: cheap ? 'background:#FCE3D3;color:#9A420E;font-size:11px;font-weight:900;padding:2px 7px;border-radius:999px' : (mine ? 'background:#EFE3EC;color:#4A2545;font-size:11px;font-weight:900;padding:2px 7px;border-radius:999px' : 'display:none'),
+        on: on ? 'true' : 'false', pick: function () { if (!mine) self.setState({ other: x[1] }); },
+        style: 'display:flex;align-items:center;gap:14px;flex-wrap:wrap;min-height:64px;padding:8px 14px;border-radius:18px;background:#FFFFFF;cursor:pointer;font-family:Nunito;color:#2A1A28;' + (on ? 'border:2px solid #4A2545;box-shadow:0 0 0 3px #EFE3EC' : 'border:2px solid #EFEAE0') };
+    });
+    var cur = S.filter(function (x) { return x[1] === s.other; })[0], f = cur[4];
+    var P = [['Filets de poulet', '600 g', 6.90, 0.80], ['Saumon', '2 pavés', 5.49, 0.86], ['Œufs', '× 12', 3.29, 0.88], ['Feta', '200 g', 2.75, 0.82], ['Potimarron', '1 kg', 1.82, 0.82], ['Châtaignes cuites', '200 g', 2.19, 0.82], ['Lait de coco', '40 cl', 1.35, 0.88], ['Pâtes penne', '1 kg', 1.29, 1.04], ['Lentilles vertes', '500 g', 1.65, 0.85], ['Crème fraîche', '20 cl', 1.08, 1.06]];
+    var locked = s.view === 'free';
+    var rows = P.map(function (p, i) {
+      var o = p[2] * (1 - (1 - p[3]) * ((1 - f) / 0.16)), d = o - p[2], blur = locked && i >= 2;
+      return { n: p[0], q: p[1], a: fmt(p[2]), o: fmt(o), d: (d < 0 ? '−' : '+') + fmt(Math.abs(d)),
+        dStyle: 'font-weight:900;padding:3px 9px;border-radius:99px;' + (d < 0 ? 'background:#FCE3D3;color:#9A420E' : 'background:#F1ECE2;color:#625A60'),
+        trStyle: 'border-top:1px solid #EFEAE0;' + (blur ? 'filter:blur(5px);' : '') };
+    });
+    var views = [['free', 'Gratuit'], ['premium', 'Premium']].map(function (v) {
+      var on = s.view === v[0];
+      return { l: v[1], on: on ? 'true' : 'false', pick: function () { self.setState({ view: v[0] }); },
+        style: 'min-height:34px;padding:0 12px;border-radius:999px;font:800 13px Nunito;cursor:pointer;' + (on ? 'background:#2A1A28;color:#FFFFFF;border:0' : 'background:#FFFFFF;color:#2A1A28;border:1px solid #E3DDD0') };
+    });
+    var cheaper = Math.round(29 * (1 - f) / 0.16);
+    return { stores: stores, rows: rows, views: views, locked: locked, other: s.other, otherUp: s.other.toUpperCase(),
+      save: '−' + fmt(71.6 - cur[2]), summary: cheaper + ' produits moins chers, 2 plus chers, le reste à prix égal.' };
+  }
+}
+</script>
+</body>
+</html>

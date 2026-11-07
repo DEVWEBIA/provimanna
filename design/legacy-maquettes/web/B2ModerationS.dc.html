@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>[S] Back-office — modération des tickets</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#4A2545}a:hover{color:#4A2545}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 960px; background: #F4F1EC; color: #2A1A28; font-family: 'Nunito', system-ui, sans-serif; display: flex; flex-wrap: wrap;">
+<aside style="flex: 1 1 232px; max-width: 100%; box-sizing: border-box; background: #2A1A28; color: #FFFFFF; padding: 22px 14px; display: flex; flex-direction: column; gap: 4px;">
+<div style="display: flex; align-items: center; gap: 10px; padding: 0 8px 18px;">
+<span style="width: 34px; height: 34px; border-radius: 11px; background: #4A2545; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"></path><path d="M5 19l7-7"></path></svg></span>
+<span style="display: flex; flex-direction: column;"><span style="font-size: 15px; font-weight: 900;">Back-office</span><span style="font-size: 11px; color: #C3BFC3; font-weight: 700;">[Nom de l'appli]</span></span>
+</div>
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="9">
+<a href="{{n.href}}" aria-current="{{n.cur}}" style="{{n.style}}">{{n.label}}<sc-if value="{{n.badge}}" hint-placeholder-val="{{false}}"><span style="margin-left: auto; font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 8px; background: #EE7A30; color: #2A1A28;">{{n.badge}}</span></sc-if></a>
+</sc-for>
+</aside>
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 24px max(16px, 2vw) 36px; display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;">
+<h1 style="margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -0.5px;">Tickets à valider</h1>
+<span style="font-size: 13px; color: #625A60; font-weight: 700;">128 en attente · délai moyen 3 h 40</span>
+</div>
+<span style="font-size: 12px; font-weight: 900; color: #4A2545; background: #EFE3EC; padding: 5px 12px; border-radius: 12px;">Données d'exemple</span>
+<button style="min-height: 42px; padding: 0 16px; border-radius: 21px; border: 1px solid #E3DDD0; background: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 900; color: #2A1A28; cursor: pointer;">Toutes les enseignes</button>
+<button style="min-height: 42px; padding: 0 16px; border-radius: 21px; border: none; background: #2A1A28; font-family: inherit; font-size: 14px; font-weight: 900; color: #FFFFFF; cursor: pointer;">Valider auto. si confiance ≥ 95 %</button>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+<div style="flex: 1 1 260px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 22px; padding: 10px; display: flex; flex-direction: column; gap: 6px;">
+<sc-for list="{{queue}}" as="q" hint-placeholder-count="7">
+<button onClick="{{q.pick}}" aria-pressed="{{q.on}}" style="{{q.s}}">
+<span style="{{q.dot}}">{{q.short}}</span>
+<span style="flex-grow: 1; display: flex; flex-direction: column; min-width: 0; text-align: left;">
+<span style="font-size: 14px; font-weight: 900;">{{q.store}} · {{q.city}}</span>
+<span style="font-size: 12px; color: #625A60; font-weight: 700;">{{q.meta}}</span>
+</span>
+<span style="{{q.cs}}">{{q.conf}}</span>
+</button>
+</sc-for>
+</div>
+<div style="flex: 1 1 240px; min-width: 0; background: #3F313E; border-radius: 22px; padding: 22px; display: flex; justify-content: center; align-items: flex-start; min-height: 560px; box-sizing: border-box;">
+<div style="width: 210px; background: #F7F1EA; border-radius: 4px; padding: 18px 16px; display: flex; flex-direction: column; gap: 7px; transform: rotate(-1.5deg); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35); font-family: ui-monospace, Menlo, monospace; font-size: 10px; color: #4B4339;">
+<span style="align-self: center; font-weight: 700; letter-spacing: 2px; font-size: 13px;">{{t.storeUp}}</span>
+<span style="align-self: center;">{{t.city}} · 14/11/2026 18:42</span>
+<span style="height: 1px; background: #CFC6B8; margin: 4px 0;"></span>
+<sc-for list="{{lines}}" as="l" hint-placeholder-count="8">
+<span style="{{l.rs}}"><span>{{l.raw}}</span><span>{{l.p}}</span></span>
+</sc-for>
+<span style="height: 1px; background: #CFC6B8; margin: 4px 0;"></span>
+<span style="display: flex; justify-content: space-between; font-weight: 700; font-size: 12px;"><span>TOTAL</span><span>{{t.total}}</span></span>
+</div>
+</div>
+<div style="flex: 2 1 460px; min-width: 0; background: #FFFFFF; border: 1px solid #E3DDD0; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+<span style="font-size: 16px; font-weight: 900;">Lignes lues · {{t.store}}</span>
+<span style="font-size: 13px; font-weight: 800; color: #625A60;">{{doneLabel}}</span>
+</div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; min-width: 520px; border-collapse: collapse; font-size: 14px;">
+<thead><tr style="text-align: left; color: #625A60; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;"><th style="padding: 8px 6px; font-weight: 900;">Produit reconnu</th><th style="padding: 8px 6px; font-weight: 900; text-align: right;">Prix</th><th style="padding: 8px 6px; font-weight: 900; text-align: right;">Médiane</th><th style="padding: 8px 6px; font-weight: 900;">Confiance</th><th style="padding: 8px 6px; font-weight: 900; text-align: right;">Décision</th></tr></thead>
+<tbody>
+<sc-for list="{{lines}}" as="l" hint-placeholder-count="8">
+<tr style="{{l.trs}}">
+<td style="padding: 9px 6px;"><span style="display: flex; flex-direction: column;"><span style="font-weight: 900;">{{l.name}}</span><span style="font-size: 12px; color: #625A60; font-weight: 700;">EAN {{l.ean}}</span></span></td>
+<td style="padding: 9px 6px; text-align: right; font-weight: 900; font-variant-numeric: tabular-nums;">{{l.p}}</td>
+<td style="padding: 9px 6px; text-align: right; color: #625A60; font-weight: 700; font-variant-numeric: tabular-nums;">{{l.med}}</td>
+<td style="padding: 9px 6px;"><span style="{{l.cfs}}">{{l.cf}}</span></td>
+<td style="padding: 9px 6px; text-align: right; white-space: nowrap;">
+<button onClick="{{l.ok}}" aria-label="{{l.okLabel}}" aria-pressed="{{l.isOk}}" style="{{l.okS}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></button>
+<button onClick="{{l.no}}" aria-label="{{l.noLabel}}" aria-pressed="{{l.isNo}}" style="{{l.noS}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+<div style="display: flex; gap: 10px; align-items: flex-start; background: #FCE3D3; border-radius: 14px; padding: 10px 12px;">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A420E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;" aria-hidden="true"><path d="M12 3l9 16H3z"></path><path d="M12 10v4M12 17v.5"></path></svg>
+<span style="font-size: 13px; line-height: 1.4; color: #9A420E; font-weight: 700;">« Feta 200 g » s'écarte de 46 % de la médiane : vérifie qu'il ne s'agit pas d'une promo ou d'un autre format.</span>
+</div>
+<div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+<button style="min-height: 46px; padding: 0 18px; border-radius: 23px; border: 1px solid #E3DDD0; background: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 900; color: #2A1A28; cursor: pointer;">Rejeter le ticket</button>
+<button style="min-height: 46px; padding: 0 20px; border-radius: 23px; border: none; background: #4A2545; font-family: inherit; font-size: 14px; font-weight: 900; color: #FFFFFF; cursor: pointer;">Publier et ticket suivant</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { sel: 0, dec: { 0: "ok", 1: "ok", 2: "ok" } }; }
+  renderVals() {
+    var self = this;
+    var items = [["Vue d'ensemble", "B1DashboardS.dc.html", false, ""], ["Tickets", "B2ModerationS.dc.html", true, "128"], ["Prix", "B2ModerationS.dc.html", false, "6"], ["Produits", "B1DashboardS.dc.html", false, ""], ["Recettes", "B1DashboardS.dc.html", false, ""], ["Enseignes", "B1DashboardS.dc.html", false, ""], ["Utilisateurs", "B1DashboardS.dc.html", false, ""], ["Engagement", "B1DashboardS.dc.html", false, ""], ["Réglages", "B1DashboardS.dc.html", false, ""]];
+    var nav = items.map(function (n) { return { label: n[0], href: n[1], cur: n[2] ? "page" : "false", badge: n[3],
+      style: "display: flex; align-items: center; min-height: 42px; padding: 0 12px; border-radius: 12px; text-decoration: none; font-size: 14px; font-weight: " + (n[2] ? 900 : 700) + "; color: " + (n[2] ? "#FFFFFF" : "#DFDDDF") + "; background: " + (n[2] ? "#4A2545" : "transparent") + ";" }; });
+    var Q = [["Lidl", "Li", "#E3EDF8", "#1E4570", "Rennes", "23 lignes · il y a 6 h", 91, "32,48 €"], ["Carrefour", "Ca", "#E6ECF5", "#2B3F66", "Lyon 3e", "17 lignes · il y a 5 h", 97, "41,20 €"], ["Auchan", "Au", "#FDF0DC", "#7A4A0E", "Lille", "31 lignes · il y a 5 h", 74, "58,96 €"], ["Intermarché", "In", "#FBE9E4", "#8A2E1C", "Nantes", "12 lignes · il y a 4 h", 88, "19,75 €"], ["Aldi", "Al", "#EEE7F7", "#4B2F75", "Toulouse", "26 lignes · il y a 3 h", 95, "36,02 €"], ["E.Leclerc", "Le", "#E2F1EC", "#1C5A45", "Bordeaux", "40 lignes · il y a 2 h", 62, "77,31 €"], ["Lidl", "Li", "#E3EDF8", "#1E4570", "Paris 11e", "9 lignes · il y a 1 h", 99, "14,60 €"]];
+    function confStyle(c) { return "font-size: 12px; font-weight: 900; padding: 3px 8px; border-radius: 8px; " + (c >= 90 ? "background: #E5F2E8; color: #1E5A31;" : (c >= 75 ? "background: #FCE3D3; color: #9A420E;" : "background: #FDE8E6; color: #9A1F15;")); }
+    var queue = Q.map(function (q, i) { var on = self.state.sel === i;
+      return { store: q[0], short: q[1], city: q[4], meta: q[5], conf: q[6] + " %", on: on, pick: function () { self.setState({ sel: i, dec: {} }); },
+        s: "display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 8px 10px; border-radius: 14px; cursor: pointer; font-family: inherit; color: #2A1A28; background: " + (on ? "#EFE3EC" : "transparent") + "; border: 2px solid " + (on ? "#4A2545" : "transparent") + ";",
+        dot: "width: 34px; height: 34px; flex-shrink: 0; border-radius: 17px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; background: " + q[2] + "; color: " + q[3] + ";", cs: confStyle(q[6]) }; });
+    var t = Q[self.state.sel];
+    var L = [["PCHICHES 400G", "Pois chiches 400 g", "3250390000412", 0.63, 0.65, 98], ["LAIT COCO 40CL", "Lait de coco 40 cl", "3250391110046", 1.09, 1.12, 97], ["RIZ BASMATI 1KG", "Riz basmati 1 kg", "4056489012345", 1.89, 1.95, 96], ["EPINARDS 400G", "Épinards hachés 400 g", "4056489667788", 2.29, 2.31, 92], ["YAOURT NAT X8", "Yaourt nature x8", "4056489223344", 1.45, 1.49, 94], ["FETA 200G", "Feta AOP 200 g", "4056489556677", 3.19, 2.19, 71], ["OIGNONS 1KG", "Oignons jaunes 1 kg", "2000000012340", 1.29, 1.25, 88], ["POTIMARRON", "Potimarron pièce", "2000000098765", 2.20, 2.05, 69]];
+    function eur(n) { return n.toFixed(2).replace(".", ","); }
+    var done = 0;
+    var lines = L.map(function (l, i) {
+      var d = self.state.dec[i]; if (d) done++;
+      function set(v) { return function () { var n = Object.assign({}, self.state.dec); n[i] = n[i] === v ? undefined : v; self.setState({ dec: n }); }; }
+      var warn = Math.abs(l[3] - l[4]) / l[4] > 0.4;
+      return { raw: l[0], name: l[1], ean: l[2], p: eur(l[3]) + " €", med: eur(l[4]) + " €", cf: l[5] + " %", cfs: confStyle(l[5]),
+        rs: "display: flex; justify-content: space-between; gap: 8px;" + (warn ? " background: #F7C3A2; margin: 0 -4px; padding: 0 4px;" : ""),
+        trs: "border-top: 1px solid #F1EEE8;" + (warn ? " background: #FDF2EA;" : "") + (d === "no" ? " opacity: 0.5;" : ""),
+        ok: set("ok"), no: set("no"), isOk: d === "ok", isNo: d === "no", okLabel: "Valider " + l[1], noLabel: "Rejeter " + l[1],
+        okS: "width: 36px; height: 36px; border-radius: 18px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin-left: 6px; border: 1.5px solid " + (d === "ok" ? "#1E5A31" : "#D7E9DC") + "; background: " + (d === "ok" ? "#1E5A31" : "#FFFFFF") + "; color: " + (d === "ok" ? "#FFFFFF" : "#1E5A31") + ";",
+        noS: "width: 36px; height: 36px; border-radius: 18px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin-left: 6px; border: 1.5px solid " + (d === "no" ? "#9A1F15" : "#F3D3CF") + "; background: " + (d === "no" ? "#9A1F15" : "#FFFFFF") + "; color: " + (d === "no" ? "#FFFFFF" : "#9A1F15") + ";" };
+    });
+    return { nav: nav, queue: queue, lines: lines, t: { store: t[0], storeUp: t[0].toUpperCase(), city: t[4], total: t[7] }, doneLabel: done + " / " + L.length + " décidées" };
+  }
+}
+</script>
+</body>
+</html>
