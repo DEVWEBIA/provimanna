@@ -53,7 +53,7 @@ SoftwareApplication, FAQPage), opengraph-image, robots.ts, sitemap.ts segmenté,
 Objectif Lighthouse ≥ 95 partout sur mobile. Donne-moi le score à la fin.
 ```
 
-## Lot 4 — Connexion et onboarding  ☐
+## Lot 4 — Connexion et onboarding  ☑
 
 ```
 Maquettes : AppConnexion, MConnexion, AppOnboarding, MOnboarding.

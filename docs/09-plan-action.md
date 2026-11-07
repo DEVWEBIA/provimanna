@@ -85,9 +85,15 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - **07/11 — Lot 3 : formulaires email de la landing.** « Créer mon plan gratuit » et « Rejoindre la liste » envoient vers `/connexion?email=…` (inscription par lien magique au lot 4). À trancher : liste d'attente avant lancement ou inscription directe ? (voir les questions ouvertes).
 - **07/11 — Textes en français écrits dans les composants.** `next-intl` est installé et gère la locale (fr-FR) et le fuseau ; l'extraction des textes en fichiers de messages se fera à l'arrivée d'un 2ᵉ marché (BE/CH/CA sont francophones, la différence portera surtout sur les devises et les prix).
 
+- **07/11 — Lot 4 : inscription directe** (pas de liste d'attente pour l'instant) : tous les CTA de la landing mènent à `/connexion`, qui crée le compte si besoin (comme l'indique la maquette mobile : « Pas encore de compte ? Il sera créé. »). L'acceptation des CGU est enregistrée dans les métadonnées du compte.
+- **07/11 — Lot 4 : migration `0004_household_cooking_time.sql`.** L'étape « Tes préférences » demande le temps de cuisine en semaine, mais aucune colonne ne le stockait. Ajout d'une colonne (valeur par défaut « peu importe »), sans impact sur l'existant.
+- **07/11 — Lot 4 : régimes multiples.** La maquette permet plusieurs choix, le schéma n'a qu'un régime principal : `diet` garde le plus structurant (végétarien > halal > sans porc), les autres choix vont dans `exclusions`. La conversion, dans les deux sens, est dans `core` et testée.
+- **07/11 — Lot 4 : étape 4 provisoire.** Tant que la génération du plan n'existe pas (lot 5), l'étape 4 affiche « Foyer enregistré · Tout est prêt pour ta première semaine » et un total **estimé** (≈), au lieu de « Plan généré · Ta semaine 47 est prête ». Le texte de la maquette reviendra au lot 5.
+- **07/11 — Lot 4 : Google et Apple** sont prêts dans le code mais désactivés dans `supabase/config.toml` en attendant vos identifiants ; les boutons affichent alors un message clair.
+
 ## Questions ouvertes (à trancher par vous)
 
-1. **Liste d'attente ou inscription directe ?** La landing affiche « Rejoindre la liste » (bouton du haut, CTA final) et « Créer mon plan gratuit » (hero). Aujourd'hui, les deux mènent à l'inscription. Si vous voulez une vraie liste d'attente avant le lancement, il faut une table dédiée (et sa migration).
+1. ~~Liste d'attente ou inscription directe ?~~ → inscription directe (07/11). Une liste d'attente peut s'ajouter plus tard si besoin.
 
 ## Avancement
 
@@ -95,7 +101,7 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - [x] Lot 1 — Supabase (Postgres 17, ports 553xx, migration `0003_privileges.sql`, 16 tests RLS pgTAP : `pnpm db:test`)
 - [x] Lot 2 — Design system (19 composants dans `packages/ui`, 16 tests de rendu, catalogue `/dev/ui` clair + sombre, script de captures `apps/web/scripts/screenshots.mjs`)
 - [x] Lot 3 — Landing et socle SEO (Lighthouse mobile 100/100/100/100, desktop 100/100/96/100 : les 4 points = préchargement des pages du lot 8 pas encore créées)
-- [ ] Lot 4 — Connexion et onboarding
+- [x] Lot 4 — Connexion et onboarding (lien magique + code 6 chiffres, onboarding 4 étapes, 6 tests Playwright desktop + mobile : `pnpm --filter @repas/web test:e2e`)
 - [ ] Lot 5 — Génération du plan
 - [ ] Lot 6 — Comparateur et liste
 - [ ] Lot 7 — Paiement

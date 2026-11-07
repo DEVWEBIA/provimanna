@@ -21,7 +21,7 @@ port = 55324   # boîte mail locale : les liens magiques arrivent ici
 
 [auth]
 site_url = "http://localhost:3000"
-additional_redirect_urls = ["http://localhost:3000/auth/callback", "http://localhost:3001/auth/callback"]
+additional_redirect_urls = ["http://localhost:3000/auth/callback**", "http://localhost:3001/auth/callback**"]
 enable_signup = true
 
 [auth.email]
@@ -30,9 +30,30 @@ double_confirm_changes = true
 enable_confirmations = false
 otp_length = 6
 otp_expiry = 900   # 15 minutes, comme dans les maquettes
+max_frequency = "30s"   # « renvoie le lien dans 30 secondes »
+
+[auth.email.template.magic_link]
+subject = "Ton lien de connexion"
+content_path = "./supabase/templates/magic_link.html"
+
+[auth.email.template.confirmation]
+subject = "Ton lien de connexion"
+content_path = "./supabase/templates/magic_link.html"
 
 [analytics]
 port = 55327
+
+# Connexion Google / Apple : renseigner les identifiants (console Google Cloud, compte Apple Developer)
+# puis passer enabled = true. Tant que c'est désactivé, les boutons affichent un message d'indisponibilité.
+[auth.external.google]
+enabled = false
+client_id = "env(SUPABASE_AUTH_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_GOOGLE_SECRET)"
+
+[auth.external.apple]
+enabled = false
+client_id = "env(SUPABASE_AUTH_APPLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_APPLE_SECRET)"
 
 [storage]
 file_size_limit = "10MiB"

@@ -128,6 +128,7 @@ export type Database = {
         Row: {
           adults: number
           children: number
+          cooking_time: Database["public"]["Enums"]["cooking_time"]
           created_at: string
           diet: Database["public"]["Enums"]["diet"]
           exclusions: string[]
@@ -140,6 +141,7 @@ export type Database = {
         Insert: {
           adults?: number
           children?: number
+          cooking_time?: Database["public"]["Enums"]["cooking_time"]
           created_at?: string
           diet?: Database["public"]["Enums"]["diet"]
           exclusions?: string[]
@@ -152,6 +154,7 @@ export type Database = {
         Update: {
           adults?: number
           children?: number
+          cooking_time?: Database["public"]["Enums"]["cooking_time"]
           created_at?: string
           diet?: Database["public"]["Enums"]["diet"]
           exclusions?: string[]
@@ -1058,6 +1061,7 @@ export type Database = {
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
+      cooking_time: "moins_30" | "30_45" | "peu_importe"
       diet:
         | "omnivore"
         | "sans_porc"
@@ -1201,6 +1205,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      cooking_time: ["moins_30", "30_45", "peu_importe"],
       diet: [
         "omnivore",
         "sans_porc",
