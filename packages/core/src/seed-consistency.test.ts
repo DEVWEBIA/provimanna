@@ -1,13 +1,20 @@
 // Verrouille les chiffres affichés dans les maquettes sur les données de supabase/seed.sql.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildShoppingLines, compareStores, formatEuro, type PriceObservation, type Recipe } from './pricing.ts';
+import {
+  buildShoppingLines,
+  compareStores,
+  formatEuro,
+  type PriceObservation,
+  type Recipe,
+} from './pricing.ts';
 
 const NOW = new Date('2026-11-14T12:00:00Z');
 const d = (n: number) => new Date(NOW.getTime() - n * 86_400_000).toISOString();
 
 const veloute: Recipe = {
-  id: 'veloute-potimarron', servings: 4,
+  id: 'veloute-potimarron',
+  servings: 4,
   ingredients: [
     { productId: 'potimarron', units: 1 },
     { productId: 'oignons', units: 0.25 },
@@ -19,8 +26,12 @@ const veloute: Recipe = {
 };
 
 const P: Array<[string, number, number]> = [
-  ['potimarron', 199, 249], ['oignons', 120, 159], ['creme', 89, 109],
-  ['bouillon', 99, 129], ['huile', 399, 499], ['pain', 70, 75],
+  ['potimarron', 199, 249],
+  ['oignons', 120, 159],
+  ['creme', 89, 109],
+  ['bouillon', 99, 129],
+  ['huile', 399, 499],
+  ['pain', 70, 75],
 ];
 const obs: PriceObservation[] = P.flatMap(([productId, lidl, auchan]) => [
   { productId, storeId: 'lidl', cents: lidl, observedAt: d(1), source: 'open_prices' },

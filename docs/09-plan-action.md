@@ -81,12 +81,20 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 
 - **07/11 — Lot 2 : preset Tailwind complété.** Les pastilles d'enseigne `chip.1..6` reprennent les couleurs réellement utilisées par les maquettes (trois valeurs de l'ancien preset n'apparaissaient sur aucun écran). Ajout de tokens pour les couleurs secondaires des maquettes (avertissement, fond d'erreur, squelette, désactivé), pour qu'aucun composant n'écrive de couleur en dur. Polices servies par `next/font` (auto-hébergées) : l'import Google Fonts de `tokens.css` est retiré (meilleur pour Lighthouse et le RGPD).
 
+- **07/11 — Lot 3 : « 16 % » remplacé par une valeur calculée (19 %).** La maquette dit « Le même panier peut coûter 16 % de plus », or 71,60 € face à 60,10 €, c'est **19 % de plus** (16 % correspond à l'écart rapporté au prix le plus cher, ce qui ne colle pas à la formulation). Le chiffre est maintenant calculé par `priceSpread()` dans `core`, donc toujours juste quand les prix changent.
+- **07/11 — Lot 3 : formulaires email de la landing.** « Créer mon plan gratuit » et « Rejoindre la liste » envoient vers `/connexion?email=…` (inscription par lien magique au lot 4). À trancher : liste d'attente avant lancement ou inscription directe ? (voir les questions ouvertes).
+- **07/11 — Textes en français écrits dans les composants.** `next-intl` est installé et gère la locale (fr-FR) et le fuseau ; l'extraction des textes en fichiers de messages se fera à l'arrivée d'un 2ᵉ marché (BE/CH/CA sont francophones, la différence portera surtout sur les devises et les prix).
+
+## Questions ouvertes (à trancher par vous)
+
+1. **Liste d'attente ou inscription directe ?** La landing affiche « Rejoindre la liste » (bouton du haut, CTA final) et « Créer mon plan gratuit » (hero). Aujourd'hui, les deux mènent à l'inscription. Si vous voulez une vraie liste d'attente avant le lancement, il faut une table dédiée (et sa migration).
+
 ## Avancement
 
 - [x] Lot 0 — Monorepo (Next.js 16, Tailwind 3.4 pour garder le preset JS tel quel, next-intl sans segment de locale, polices via next/font)
 - [x] Lot 1 — Supabase (Postgres 17, ports 553xx, migration `0003_privileges.sql`, 16 tests RLS pgTAP : `pnpm db:test`)
 - [x] Lot 2 — Design system (19 composants dans `packages/ui`, 16 tests de rendu, catalogue `/dev/ui` clair + sombre, script de captures `apps/web/scripts/screenshots.mjs`)
-- [ ] Lot 3 — Landing et socle SEO
+- [x] Lot 3 — Landing et socle SEO (Lighthouse mobile 100/100/100/100, desktop 100/100/96/100 : les 4 points = préchargement des pages du lot 8 pas encore créées)
 - [ ] Lot 4 — Connexion et onboarding
 - [ ] Lot 5 — Génération du plan
 - [ ] Lot 6 — Comparateur et liste

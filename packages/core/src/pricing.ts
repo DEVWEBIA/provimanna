@@ -81,7 +81,10 @@ export function resolvePrice(
   const ageDays = (o: PriceObservation) => (now.getTime() - Date.parse(o.observedAt)) / DAY_MS;
   const pick = (maxAge: number) => mine.filter((o) => ageDays(o) >= 0 && ageDays(o) <= maxAge);
 
-  for (const [maxAge, fresh] of [[freshDays, true], [fallbackDays, false]] as const) {
+  for (const [maxAge, fresh] of [
+    [freshDays, true],
+    [fallbackDays, false],
+  ] as const) {
     const window = pick(maxAge);
     if (window.length > 0) {
       const latest = window.reduce((a, b) => (Date.parse(a.observedAt) > Date.parse(b.observedAt) ? a : b));
@@ -92,7 +95,11 @@ export function resolvePrice(
 }
 
 /** Un prix relevé est « aberrant » s'il s'écarte de plus de `threshold` (40 %) de la médiane. */
-export function isAberrant(cents: number, median: number, threshold: number = DEFAULTS.aberrantThreshold): boolean {
+export function isAberrant(
+  cents: number,
+  median: number,
+  threshold: number = DEFAULTS.aberrantThreshold,
+): boolean {
   if (median <= 0) return false;
   return Math.abs(cents - median) / median > threshold;
 }
@@ -156,7 +163,13 @@ export function planCostInStore(
     if (p.fresh) fresh += 1;
   }
   const freshRatio = lines.length === 0 ? 1 : fresh / lines.length;
-  return { storeId, cents: Math.round(cents), reliability: reliabilityFromRatio(freshRatio), freshRatio, missing };
+  return {
+    storeId,
+    cents: Math.round(cents),
+    reliability: reliabilityFromRatio(freshRatio),
+    freshRatio,
+    missing,
+  };
 }
 
 export interface Comparison {
@@ -181,7 +194,12 @@ export function compareStores(
   const reference = totals.find((t) => t.storeId === referenceStore);
   if (!reference) throw new Error(`Enseigne de référence absente : ${referenceStore}`);
   const cheapest = totals[0]!;
-  return { totals, cheapest: cheapest.storeId, reference, savingCents: Math.max(0, reference.cents - cheapest.cents) };
+  return {
+    totals,
+    cheapest: cheapest.storeId,
+    reference,
+    savingCents: Math.max(0, reference.cents - cheapest.cents),
+  };
 }
 
 export function costPerServing(totalCents: number, servings: number): number {
@@ -194,4 +212,32 @@ export function formatEuro(cents: number): string {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' })
     .format(cents / 100)
     .replace(/[\u202f\u00a0]/g, '\u00a0');
+}
+
+/** Met un montant à l'échelle (ex. panier d'exemple ajusté à la taille du foyer), arrondi au centime. */
+export function scaleCents(cents: number, factor: number): number {
+  if (factor < 0) throw new Error('factor doit être ≥ 0');
+  return Math.round(cents * factor);
+}
+
+export interface PriceSpread {
+  minCents: number;
+  maxCents: number;
+  /** Écart entre le plus cher et le moins cher. */
+  gapCents: number;
+  /** Surcoût du plus cher par rapport au moins cher, en pourcentage entier (71,60 vs 60,10 → 19). */
+  overPercent: number;
+}
+
+/** Écart entre les totaux de plusieurs enseignes. */
+export function priceSpread(totalsCents: number[]): PriceSpread {
+  if (totalsCents.length === 0) throw new Error('priceSpread: liste vide');
+  const minCents = Math.min(...totalsCents);
+  const maxCents = Math.max(...totalsCents);
+  return {
+    minCents,
+    maxCents,
+    gapCents: maxCents - minCents,
+    overPercent: minCents === 0 ? 0 : Math.round(((maxCents - minCents) / minCents) * 100),
+  };
 }

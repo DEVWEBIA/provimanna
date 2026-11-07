@@ -44,7 +44,7 @@ Plat (12 variantes SVG, prop variant + size), TabBar, AppShell (nav 8 entrées),
 Ajoute une page /dev/ui dans apps/web (désactivée en production) qui les montre tous, clair et sombre.
 ```
 
-## Lot 3 — Landing et socle SEO  ☐
+## Lot 3 — Landing et socle SEO  ☑
 
 ```
 Reproduis design/maquettes/Main.dc.html sur la route / (et MSite pour le mobile), en Server Components.

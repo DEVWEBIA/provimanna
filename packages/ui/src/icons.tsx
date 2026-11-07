@@ -48,6 +48,9 @@ const PATHS = {
     <path d="M12 21s-7-4.4-9.3-9C1.2 8.8 3.3 5 7 5c2 0 3.5 1.2 5 3 1.5-1.8 3-3 5-3 3.7 0 5.8 3.8 4.3 7-2.3 4.6-9.3 9-9.3 9z" />
   ),
   telecharger: <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />,
+  boite: <path d="M4 7h16v12H4zM4 7l2-3h12l2 3M9 12h6" />,
+  check: <path d="M20 6 9 17l-5-5" />,
+  menu: <path d="M4 7h16M4 12h16M4 17h16" />,
   verrou: (
     <>
       <rect x="5" y="11" width="14" height="10" rx="2" />

@@ -1,9 +1,17 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  medianCents, resolvePrice, isAberrant, reliabilityFromRatio, buildShoppingLines,
-  planCostInStore, compareStores, costPerServing, formatEuro,
-  type PriceObservation, type Recipe,
+  medianCents,
+  resolvePrice,
+  isAberrant,
+  reliabilityFromRatio,
+  buildShoppingLines,
+  planCostInStore,
+  compareStores,
+  costPerServing,
+  formatEuro,
+  type PriceObservation,
+  type Recipe,
 } from './pricing.ts';
 
 const NOW = new Date('2026-11-14T12:00:00Z');
@@ -22,15 +30,23 @@ test('resolvePrice : médiane fraîche, repli estimation, puis null', () => {
     { productId: 'feta', storeId: 'lidl', cents: 400, observedAt: daysAgo(20), source: 'ticket' },
     { productId: 'feta', storeId: 'auchan', cents: 275, observedAt: daysAgo(15), source: 'ticket' },
   ];
-  assert.deepEqual(resolvePrice(obs, 'feta', 'lidl', NOW), { cents: 227, fresh: true, observedAt: daysAgo(1) });
-  assert.deepEqual(resolvePrice(obs, 'feta', 'auchan', NOW), { cents: 275, fresh: false, observedAt: daysAgo(15) });
+  assert.deepEqual(resolvePrice(obs, 'feta', 'lidl', NOW), {
+    cents: 227,
+    fresh: true,
+    observedAt: daysAgo(1),
+  });
+  assert.deepEqual(resolvePrice(obs, 'feta', 'auchan', NOW), {
+    cents: 275,
+    fresh: false,
+    observedAt: daysAgo(15),
+  });
   assert.equal(resolvePrice(obs, 'feta', 'aldi', NOW), null);
 });
 
 test('isAberrant : seuil de 40 %', () => {
-  assert.equal(isAberrant(329, 225), true);   // +46 % (cas de la maquette BO Prix)
-  assert.equal(isAberrant(289, 225), false);  // +28 %
-  assert.equal(isAberrant(45, 129), true);    // −65 %
+  assert.equal(isAberrant(329, 225), true); // +46 % (cas de la maquette BO Prix)
+  assert.equal(isAberrant(289, 225), false); // +28 %
+  assert.equal(isAberrant(45, 129), true); // −65 %
 });
 
 test('reliabilityFromRatio', () => {
@@ -40,7 +56,8 @@ test('reliabilityFromRatio', () => {
 });
 
 const veloute: Recipe = {
-  id: 'veloute', servings: 4,
+  id: 'veloute',
+  servings: 4,
   ingredients: [
     { productId: 'potimarron', units: 1 },
     { productId: 'oignons', units: 0.15 },
@@ -50,7 +67,13 @@ const veloute: Recipe = {
 const recipes = new Map([[veloute.id, veloute]]);
 
 test('buildShoppingLines : agrège et met à l’échelle', () => {
-  const lines = buildShoppingLines([{ recipeId: 'veloute', servings: 4 }, { recipeId: 'veloute', servings: 2 }], recipes);
+  const lines = buildShoppingLines(
+    [
+      { recipeId: 'veloute', servings: 4 },
+      { recipeId: 'veloute', servings: 2 },
+    ],
+    recipes,
+  );
   const poti = lines.find((l) => l.productId === 'potimarron')!;
   assert.equal(poti.units, 1.5);
   assert.equal(lines.find((l) => l.productId === 'huile')!.pantry, true);

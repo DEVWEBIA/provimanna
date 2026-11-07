@@ -36,6 +36,25 @@ const preset: Partial<Config> = {
         skeleton: { DEFAULT: '#EFEAE0', shine: '#F8F5EF' },
         disabled: { DEFAULT: '#E3DDD0', ink: '#8A8088' },
         toggle: { off: '#D9D2DA' },
+        // Site public (design/maquettes/Main.dc.html) : textes clairs sur aubergine / encre, barres du comparatif.
+        site: {
+          'on-brand': '#F3E6EF',
+          'on-brand-muted': '#EBDDE7',
+          'on-brand-faint': '#D9C6D4',
+          lilac: '#E3CDE0',
+          'on-ink': '#D9CCD6',
+          'on-ink-faint': '#B9ADB6',
+          'ink-line': '#3A2D37',
+          'brand-light': '#C9A3C2',
+          bar: '#D9CFDA',
+          track: '#F1ECE2',
+          highlight: '#FFF6EF',
+          hover: '#FBF9F4',
+          answer: '#4D444B',
+          mint: '#E8F0DF',
+        },
+        // Couleurs des plats (mini-calendrier de la landing), reprises des illustrations Plat.
+        food: { curry: '#E9A23B', salade: '#7DB043', soupe: '#E98A2E', pates: '#F4CF6A', tomate: '#C8382B' },
         // Pastilles d'enseignes : fonds pastel neutres, sans lien avec les couleurs officielles.
         // Valeurs de design/maquettes/Composants.dc.html, dans l'ordre des enseignes du seed :
         // 1 Lidl · 2 Aldi · 3 E.Leclerc · 4 Intermarché · 5 Carrefour · 6 Auchan.
