@@ -74,10 +74,15 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - Je m'arrête et je vous demande dès qu'il faut : un compte ou une clé, une décision produit des « points ouverts », ou une modification du schéma SQL validé.
 - Les maquettes `design/maquettes/*.dc.html` font foi pour les textes, couleurs et espacements.
 
+## Journal des décisions techniques
+
+- **07/11 — Lot 1 : migration `0003_privileges.sql`.** Supabase n'accorde plus de droits par défaut aux rôles `anon`/`authenticated` : sans `GRANT` explicites, l'appli ne pouvait rien lire. Les droits sont accordés au plus juste, colonne par colonne pour les écritures sensibles. Cela **ferme une faille réelle** (vérifiée) : avec les anciens droits par défaut, un utilisateur pouvait modifier `profiles.household_id`, rejoindre le foyer d'un autre et lire ses plans et listes. De même, il ne peut plus se déclarer parrainé ni fixer ses jours bonus sur un ticket. Les migrations 0001 et 0002 n'ont pas été modifiées. Le journal d'audit prévu au lot 9 deviendra `0004_audit.sql`.
+- **07/11 — Supabase local en Postgres 17** (version des nouveaux projets Supabase en production) et sur les **ports 553xx**, pour cohabiter avec une autre stack Supabase locale.
+
 ## Avancement
 
 - [x] Lot 0 — Monorepo (Next.js 16, Tailwind 3.4 pour garder le preset JS tel quel, next-intl sans segment de locale, polices via next/font)
-- [ ] Lot 1 — Supabase
+- [x] Lot 1 — Supabase (Postgres 17, ports 553xx, migration `0003_privileges.sql`, 16 tests RLS pgTAP : `pnpm db:test`)
 - [ ] Lot 2 — Design system
 - [ ] Lot 3 — Landing et socle SEO
 - [ ] Lot 4 — Connexion et onboarding

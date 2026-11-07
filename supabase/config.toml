@@ -1,18 +1,23 @@
 # Configuration locale minimale. `supabase init` peut la régénérer : garde ces réglages.
 project_id = "appli-repas"
+# Ports en 553xx : une autre stack Supabase locale peut occuper la plage par défaut 543xx.
 
 [api]
-port = 54321
+port = 55321
 
 [db]
-port = 54322
-major_version = 15
+port = 55322
+shadow_port = 55320
+major_version = 17
+
+[db.pooler]
+port = 55329
 
 [studio]
-port = 54323
+port = 55323
 
 [inbucket]
-port = 54324   # boîte mail locale : les liens magiques arrivent ici
+port = 55324   # boîte mail locale : les liens magiques arrivent ici
 
 [auth]
 site_url = "http://localhost:3000"
@@ -25,6 +30,9 @@ double_confirm_changes = true
 enable_confirmations = false
 otp_length = 6
 otp_expiry = 900   # 15 minutes, comme dans les maquettes
+
+[analytics]
+port = 55327
 
 [storage]
 file_size_limit = "10MiB"

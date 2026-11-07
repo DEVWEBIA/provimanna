@@ -20,7 +20,7 @@ Lis CLAUDE.md. Crée le monorepo Turborepo + pnpm à partir des fichiers racine 
 Vérifie que `pnpm dev` démarre les deux apps et que `pnpm test` exécute les tests de core.
 ```
 
-## Lot 1 — Supabase  ☐
+## Lot 1 — Supabase  ☑
 
 ```
 Lis supabase/migrations/*.sql et supabase/seed.sql (déjà validés sur Postgres).
@@ -108,7 +108,7 @@ sous 30 relevés récents (renvoie notFound()). Mode cuisine : Wake Lock, minute
 ```
 apps/admin. Maquettes BO*. Auth staff via la table roles (has_role), garde par rôle sur chaque route
 (cf. docs/07). Commence par BOVue, BOPrix, BOTickets, BORecettes (coût en direct via core),
-puis le reste. Journalise chaque action de modération (ajoute une migration 0003_audit.sql, propose-la d'abord).
+puis le reste. Journalise chaque action de modération (ajoute une migration 0004_audit.sql, propose-la d'abord).
 ```
 
 ## Lot 10 — Tickets de caisse et prix  ☐

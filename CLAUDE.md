@@ -84,7 +84,9 @@ Voir `docs/06-seo-geo.md`. Points clés : SSG/ISR, metadata API, JSON-LD par typ
 pnpm install
 pnpm dev                 # web + admin
 pnpm --filter @repas/core test  # tests du moteur de prix
-supabase start && supabase db reset   # schéma + seed en local
+supabase start && supabase db reset   # schéma + seed en local (API sur :55321, Studio :55323, mails :55324)
+pnpm db:test             # tests RLS (pgTAP)
+pnpm db:types            # régénère packages/core/src/database.types.ts
 ```
 
 En attendant le monorepo, le moteur de prix se teste seul : `node --test packages/core/src/*.test.ts` (Node ≥ 22.18).
