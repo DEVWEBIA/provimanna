@@ -99,6 +99,8 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 
 - **07/11 — Effets et aération (inspiration planivore.eu, demande d'Emmanuel).** Seuls les principes sont repris, sans le contenu ni la mise en page de ce site concurrent : en-tête flottant en verre dépoli, apparition des blocs au défilement (`<Reveal>`, désactivée si l'utilisateur réduit les animations, contenu visible sans JavaScript), environ 130 px entre les sections, en-têtes centrés avec une étiquette, halos de couleur flous, cartes douces, bandeau défilant des 6 enseignes (pastilles neutres, sans logo), grille de recettes en photos avec le prix en surimpression. Lighthouse : 100 partout, mobile et desktop.
 
+- **07/11 — Hero enrichi et nouveau menu (demande d'Emmanuel).** Entrée animée au chargement (lignes du titre dévoilées, trait orange dessiné sous « Tu choisis. », ticket qui arrive en pivotant puis flotte), deux étiquettes flottantes, barres du comparateur animées. Le fond est désormais un plat coloré (buddha bowl vu de dessus, détouré en cercle) qui sort par la droite et tourne lentement derrière le ticket : le plat est bien visible sans passer devant les éléments principaux. Menu : large et transparent en haut, il se rétracte en pastille de verre au défilement, surligne la section visible, et n'affiche « Créer mon plan » qu'une fois le hero dépassé (un seul bouton plein à l'écran). Panneau déroulant sur mobile. Lighthouse : desktop 100 ; mobile 94-95 (le bol est l'élément le plus lourd à afficher en 4G lente simulée).
+
 ## Questions ouvertes (à trancher par vous)
 
 1. ~~Liste d'attente ou inscription directe ?~~ → inscription directe (07/11). Une liste d'attente peut s'ajouter plus tard si besoin.

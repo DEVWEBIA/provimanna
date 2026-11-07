@@ -11,7 +11,11 @@ export function Faq({
   eyebrow?: string;
 }) {
   return (
-    <section aria-labelledby="faq-titre" className="mx-auto max-w-[760px] px-6 pb-24 md:pb-32">
+    <section
+      id="faq"
+      aria-labelledby="faq-titre"
+      className="mx-auto max-w-[760px] scroll-mt-24 px-6 pb-24 md:pb-32"
+    >
       <SectionHeading id="faq-titre" eyebrow={eyebrow} title={title} />
       <div className="mt-12 flex flex-col gap-3">
         {items.map((item, i) => (

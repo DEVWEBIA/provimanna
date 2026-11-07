@@ -94,7 +94,7 @@ export function HeroTicket({ stores, myStore, households, weekLabel, edge = 'sur
                 <span className="bg-site-track mt-1.5 block h-1.5 rounded-[9px]" aria-hidden="true">
                   <span
                     className={cx(
-                      'block h-1.5 rounded-[9px]',
+                      'block h-1.5 rounded-[9px] transition-[width] duration-700 ease-out motion-reduce:transition-none',
                       cheap ? 'bg-saving' : isMine ? 'bg-brand' : 'bg-site-bar',
                     )}
                     style={{ width: `${Math.round((r.total / spread.maxCents) * 100)}%` }}

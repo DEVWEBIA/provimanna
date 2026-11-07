@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import type React from 'react';
 import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
 import { costPerServing, formatEuro } from '@repas/core';
@@ -7,7 +8,7 @@ import couscousLegumes from '@/assets/photos/couscous-legumes.jpg';
 import curryPoisChiches from '@/assets/photos/curry-pois-chiches-courge.jpg';
 import familleCuisine from '@/assets/photos/famille-cuisine.jpg';
 import legumesRotis from '@/assets/photos/legumes-rotis.jpg';
-import potironsAutomne from '@/assets/photos/potirons-automne.jpg';
+import bowlColore from '@/assets/photos/bowl-colore.jpg';
 import veloutePotimarron from '@/assets/photos/veloute-potimarron.jpg';
 import { Faq } from '@/components/site/faq';
 import { HeroTicket } from '@/components/site/hero-ticket';
@@ -112,54 +113,144 @@ export default function HomePage() {
       <SiteHeader />
 
       <main>
-        {/* HERO : photo de fond sous un voile sable, en-tête flottant par-dessus. */}
-        <section className="relative isolate -mt-[76px] overflow-hidden pt-[76px]">
-          <Image
-            src={potironsAutomne}
-            alt=""
-            fill
-            priority
-            placeholder="blur"
-            sizes="100vw"
-            className="-z-20 object-cover object-bottom md:object-[center_78%]"
-          />
-          <div
-            aria-hidden="true"
-            className="from-raw-sable/95 via-raw-sable/90 to-raw-sable/30 md:from-raw-sable md:via-raw-sable/85 md:to-raw-sable/10 absolute inset-0 -z-10 bg-gradient-to-b via-55% md:bg-gradient-to-r"
-          />
-          <div className="mx-auto flex max-w-[1080px] flex-wrap items-center gap-x-12 gap-y-14 px-6 pb-28 pt-16">
+        {/* HERO : fond sable, plat coloré détouré qui sort par la droite, ticket au premier plan. */}
+        <section className="bg-surface-50 relative isolate -mt-[84px] overflow-hidden pt-[84px]">
+          <Glow className="bg-raw-aubergine-clair -left-24 top-32 h-80 w-80" />
+          <Glow className="bg-raw-peche right-0 top-1/3 h-[28rem] w-[28rem]" />
+
+          <div className="mx-auto flex max-w-[1080px] flex-wrap items-center gap-x-12 gap-y-16 px-6 pb-32 pt-16">
             <div className="min-w-0 flex-[1_1_420px]">
-              <p className="rounded-pill text-ink inline-flex items-center gap-2 border border-white/70 bg-white/60 px-3.5 py-1.5 text-[13px] font-extrabold backdrop-blur">
-                <span className="rounded-pill bg-saving h-2 w-2" aria-hidden="true" />
+              <p
+                className="anim-rise rounded-pill text-ink inline-flex items-center gap-2 border border-white/70 bg-white/60 px-3.5 py-1.5 text-[13px] font-extrabold shadow-[0_4px_16px_rgba(42,26,40,0.06)] backdrop-blur"
+                style={{ '--d': '0ms' } as React.CSSProperties}
+              >
+                <span className="relative flex h-2 w-2" aria-hidden="true">
+                  <span className="rounded-pill bg-saving absolute inline-flex h-full w-full animate-ping opacity-60 motion-reduce:animate-none" />
+                  <span className="rounded-pill bg-saving relative inline-flex h-2 w-2" />
+                </span>
                 Menus d’automne : potimarron, poireau, châtaigne
               </p>
-              <h1 className="font-display mt-6 text-[clamp(44px,6vw,72px)] font-extrabold leading-[0.98] tracking-[-2px]">
-                Le même menu.
-                <br />
-                Six prix.
-                <br />
-                <span className="text-saving-ink">Tu choisis.</span>
+              <h1 className="font-display mt-6 text-[clamp(44px,6vw,76px)] font-extrabold leading-[0.98] tracking-[-2px]">
+                <span className="anim-line">
+                  <span style={{ '--d': '120ms' } as React.CSSProperties}>Le même menu.</span>
+                </span>
+                <span className="anim-line">
+                  <span style={{ '--d': '220ms' } as React.CSSProperties}>Six prix.</span>
+                </span>
+                <span className="anim-line">
+                  <span
+                    className="text-saving-ink relative"
+                    style={{ '--d': '320ms' } as React.CSSProperties}
+                  >
+                    Tu choisis.
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 300 20"
+                      preserveAspectRatio="none"
+                      className="anim-draw text-saving absolute -bottom-1 left-0 h-[0.22em] w-full"
+                    >
+                      <path
+                        d="M3 14 C 60 4, 140 4, 297 10"
+                        pathLength={1}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="6"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </span>
+                </span>
               </h1>
-              <p className="text-ink-muted mt-6 max-w-[440px] text-[19px] leading-[29px]">
+              <p
+                className="anim-rise text-ink-muted mt-7 max-w-[440px] text-[19px] leading-[29px]"
+                style={{ '--d': '450ms' } as React.CSSProperties}
+              >
                 On planifie tes repas de la semaine et on te montre ce que coûte ta liste de courses dans 6
                 enseignes.
               </p>
-              <div className="mt-9">
+              <div
+                className="anim-rise mt-9 flex flex-wrap items-center gap-5"
+                style={{ '--d': '560ms' } as React.CSSProperties}
+              >
                 <PrimaryCta />
+                <a
+                  href="#comment"
+                  className="text-brand text-[15px] font-extrabold underline-offset-4 hover:underline"
+                >
+                  Voir comment ça marche
+                </a>
               </div>
-              <p className="text-ink-muted mt-4 text-[14px] font-bold">
-                Gratuit · sans carte bancaire · prêt en 2 minutes
-              </p>
+              <ul
+                className="anim-rise text-ink-muted mt-8 flex flex-wrap gap-x-5 gap-y-2 text-[14px] font-bold"
+                style={{ '--d': '680ms' } as React.CSSProperties}
+              >
+                {['Gratuit', 'Sans carte bancaire', 'Prêt en 2 minutes'].map((t) => (
+                  <li key={t} className="flex items-center gap-1.5">
+                    <Icon name="check" size={16} strokeWidth={2.6} className="text-success" />
+                    {t}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="flex min-w-0 flex-[1_1_380px] justify-center">
-              <div className="drop-shadow-[0_24px_40px_rgba(42,26,40,0.22)]">
-                <HeroTicket
-                  stores={EXAMPLE_STORES}
-                  myStore={EXAMPLE_MY_STORE}
-                  households={HOUSEHOLD_FACTORS}
-                  weekLabel={EXAMPLE_WEEK.label}
-                  edge="cutout"
-                />
+
+            <div className="relative flex min-w-0 flex-[1_1_380px] justify-center pt-24 sm:pt-0 lg:justify-start">
+              {/* Le plat : visible et vif, mais derrière le ticket. */}
+              <div
+                aria-hidden="true"
+                className="absolute -right-16 -top-4 w-[220px] sm:-right-48 sm:top-1/2 sm:w-[560px] sm:-translate-y-1/2 lg:-right-[24rem] lg:w-[700px]"
+              >
+                <div>
+                  <div className="anim-spin aspect-square overflow-hidden rounded-full shadow-[0_40px_80px_rgba(42,26,40,0.25)] ring-8 ring-white/60">
+                    <Image
+                      src={bowlColore}
+                      alt=""
+                      priority
+                      placeholder="blur"
+                      sizes="(min-width: 1024px) 700px, (min-width: 640px) 560px, 220px"
+                      className="h-full w-full scale-105 object-cover"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="anim-ticket relative z-10">
+                <div className="anim-float drop-shadow-[0_28px_44px_rgba(42,26,40,0.28)]">
+                  <HeroTicket
+                    stores={EXAMPLE_STORES}
+                    myStore={EXAMPLE_MY_STORE}
+                    households={HOUSEHOLD_FACTORS}
+                    weekLabel={EXAMPLE_WEEK.label}
+                    edge="cutout"
+                  />
+                </div>
+              </div>
+              {/* Étiquettes flottantes (décoratives, desktop) */}
+              <div
+                aria-hidden="true"
+                className="anim-rise absolute -top-9 right-2 z-20 hidden lg:block"
+                style={{ '--d': '1100ms' } as React.CSSProperties}
+              >
+                <div className="anim-float flex items-center gap-2.5 rounded-[18px] border border-white/70 bg-white/95 px-3.5 py-2.5 shadow-[0_12px_30px_rgba(42,26,40,0.14)] backdrop-blur-xl [animation-delay:2s]">
+                  <span className="text-success text-[15px] font-black">●●●</span>
+                  <span className="text-[13px] font-extrabold leading-tight">
+                    Prix relevés
+                    <br />
+                    <span className="text-ink-muted">il y a 2 jours</span>
+                  </span>
+                </div>
+              </div>
+              <div
+                aria-hidden="true"
+                className="anim-rise absolute -bottom-10 -left-4 z-20 hidden lg:block"
+                style={{ '--d': '1300ms' } as React.CSSProperties}
+              >
+                <div className="anim-float flex items-center gap-2.5 rounded-[18px] border border-white/70 bg-white/95 px-3 py-2 shadow-[0_12px_30px_rgba(42,26,40,0.14)] backdrop-blur-xl [animation-delay:3s]">
+                  <Plat variant="soupe" size={40} decorative />
+                  <span className="text-[13px] font-extrabold leading-tight">
+                    14 repas
+                    <br />
+                    <span className="text-ink-muted">de saison</span>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -241,7 +332,11 @@ export default function HomePage() {
         </section>
 
         {/* RECETTES */}
-        <section aria-labelledby="recettes-titre" className="relative isolate px-6 pb-24 md:pb-32">
+        <section
+          id="recettes"
+          aria-labelledby="recettes-titre"
+          className="relative isolate scroll-mt-24 px-6 pb-24 md:pb-32"
+        >
           <Glow className="bg-raw-peche right-[10%] top-40 h-72 w-72" />
           <Reveal>
             <SectionHeading
