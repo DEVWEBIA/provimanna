@@ -23,7 +23,10 @@ export function SplitHeadline({ lines, className }: { lines: HeadlineLine[]; cla
             {line.text.split(' ').map((word, wi) => {
               const k = index++;
               return (
-                <span key={wi} className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+                <span
+                  key={wi}
+                  className="-mr-[0.08em] inline-block overflow-hidden pb-[0.08em] pr-[0.08em] align-bottom"
+                >
                   <motion.span
                     className="inline-block"
                     initial={{ y: '110%', rotate: 6, opacity: 0 }}

@@ -10,6 +10,22 @@
 :root {
   --font-display: var(--font-bricolage), var(--font-nunito), system-ui, sans-serif;
   --font-sans: var(--font-nunito), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-accent: var(--font-instrument-serif), Georgia, 'Times New Roman', serif;
+}
+
+/*
+ * Accent raffiné des grands titres : un ou deux mots en serif italique au milieu de Bricolage Grotesque.
+ * Jamais pour les prix (tabular-nums en Bricolage) ni pour l'interface de l'appli.
+ */
+@layer components {
+  .font-accent {
+    font-family: var(--font-accent);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    font-size: 1.1em;
+    line-height: 0.9;
+  }
 }
 
 @layer base {

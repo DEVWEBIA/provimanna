@@ -56,7 +56,7 @@ docs/         brief, plan d'action, SEO/GEO, écrans → routes, roadmap
 ## Règles de design (non négociables)
 
 - Couleurs uniquement via tokens. Aubergine `#6B3868` = marque/actions (éclaircie le 07/11/2026 à la demande du propriétaire ; ancienne valeur `#4A2545`, encore présente dans les maquettes). **Orange `#EE7A30` réservé aux économies, toujours avec texte foncé `#2A1A28`** (jamais de blanc sur orange). Sable `#F6F3EC` = fond.
-- Polices : Bricolage Grotesque (titres site + grands chiffres), Nunito (interface). Chiffres de prix en `tabular-nums`.
+- Polices : Bricolage Grotesque (titres site + grands chiffres), Nunito (interface). Chiffres de prix en `tabular-nums`. Accent raffiné (demande du propriétaire, 08/11/2026) : **Instrument Serif italique**, classe `.font-accent`, réservée à un ou deux mots des grands titres du site public (jamais pour les prix ni l'interface de l'appli).
 - **Enseignes : vrais logos en couleur** (décision du propriétaire, 08/11/2026, qui remplace celle du 07/11) dans le bandeau « enseignes comparées » de la landing, l'espace client (composant `apps/web/src/components/store-logo.tsx`, vignette blanche) et le back-office (`apps/admin/src/components/store-logo.tsx`), avec la mention « Marques et logos © leurs propriétaires respectifs » sur le site (sources : `apps/web/src/assets/logos/SOURCES.md`). Pages éditoriales publiques (observatoire, enseignes, menus, recettes) : pastille neutre 2 lettres sur fond pastel + nom en clair, tant que le propriétaire n'en décide pas autrement.
 - Signature : carte « ticket de caisse » à bord dentelé (radial-gradient), voir `Main.dc.html` classe `.edge`.
 - Un seul bouton plein par écran. Cibles tactiles ≥ 44 px. Contraste AA. `prefers-reduced-motion` respecté.

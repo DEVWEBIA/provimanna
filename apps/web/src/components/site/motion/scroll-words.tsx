@@ -20,7 +20,7 @@ function Word({
   return (
     <motion.span
       style={{ opacity, y }}
-      className={cx('inline-block motion-reduce:!opacity-100', accent && 'text-saving-ink')}
+      className={cx('inline-block motion-reduce:!opacity-100', accent && 'font-accent text-saving-ink')}
     >
       {word}
       {' '}

@@ -144,7 +144,7 @@ export default function HomePage() {
                   lines={[
                     { text: 'Le même menu.' },
                     { text: 'Douze prix.' },
-                    { text: 'Tu choisis.', className: 'text-saving-ink', underline: true },
+                    { text: 'Tu choisis.', className: 'text-saving-ink font-accent', underline: true },
                   ]}
                 />
                 <p
@@ -258,7 +258,12 @@ export default function HomePage() {
               <SectionHeading
                 id="comment-titre"
                 eyebrow="Comment ça marche"
-                title="Tu règles ton foyer une fois. Le reste suit."
+                title={
+                  <>
+                    Tu règles ton foyer une fois.{' '}
+                    <em className="font-accent text-brand whitespace-nowrap">Le reste suit.</em>
+                  </>
+                }
                 lead="Chaque jeudi soir, la semaine suivante t’attend, prix compris."
               />
             </FadeUp>
@@ -315,7 +320,7 @@ export default function HomePage() {
                     id="confiance-titre"
                     className="font-display mt-4 text-[clamp(28px,3.2vw,40px)] font-extrabold leading-[1.1] tracking-[-1px]"
                   >
-                    Le prix est un repère, jamais une obligation.
+                    Le prix est un repère, <em className="font-accent text-brand">jamais une obligation.</em>
                   </h2>
                   <ul className="mt-8 flex flex-col gap-5">
                     {FACTS.map((f) => (
@@ -346,7 +351,11 @@ export default function HomePage() {
               <SectionHeading
                 id="recettes-titre"
                 eyebrow="De saison"
-                title="Des repas simples, prix compris."
+                title={
+                  <>
+                    Des repas simples, <em className="font-accent text-brand">prix compris.</em>
+                  </>
+                }
                 lead="Chaque recette affiche son coût par part dans ton enseigne."
               />
             </FadeUp>
@@ -398,7 +407,7 @@ export default function HomePage() {
                 <Glow className="-left-16 -top-24 h-72 w-72 bg-white/20" />
                 <div className="flex-[1_1_380px]">
                   <h2 className="font-display text-[clamp(32px,4vw,48px)] font-extrabold leading-none tracking-[-1.4px]">
-                    Ton menu de jeudi prochain t’attend.
+                    Ton menu de jeudi prochain <em className="font-accent">t’attend.</em>
                   </h2>
                   <p className="text-site-lilac mt-3 text-[17px]">
                     14 jours de Premium offerts, puis gratuit à vie.
