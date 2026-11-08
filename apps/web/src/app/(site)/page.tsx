@@ -124,7 +124,7 @@ export default function HomePage() {
                   <span style={{ '--d': '120ms' } as React.CSSProperties}>Le même menu.</span>
                 </span>
                 <span className="anim-line">
-                  <span style={{ '--d': '220ms' } as React.CSSProperties}>Six prix.</span>
+                  <span style={{ '--d': '220ms' } as React.CSSProperties}>Douze prix.</span>
                 </span>
                 <span className="anim-line">
                   <span
@@ -154,8 +154,8 @@ export default function HomePage() {
                 className="anim-rise text-ink-muted mt-7 max-w-[440px] text-[19px] leading-[29px]"
                 style={{ '--d': '450ms' } as React.CSSProperties}
               >
-                On planifie tes repas de la semaine et on te montre ce que coûte ta liste de courses dans 6
-                enseignes.
+                On planifie tes repas de la semaine et on te montre ce que coûte ta liste de courses dans{' '}
+                {STORE_COUNT} enseignes.
               </p>
               <div
                 className="anim-rise mt-9 flex flex-wrap items-center gap-5"

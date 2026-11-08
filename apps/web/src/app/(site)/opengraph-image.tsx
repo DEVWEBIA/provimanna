@@ -3,7 +3,7 @@ import { formatEuro, priceSpread } from '@repas/core';
 import { APP_NAME } from '@repas/ui';
 import { EXAMPLE_WEEK, HERO_STORES } from '@/lib/landing-data';
 
-export const alt = 'Le même menu. Douze enseignes. Tu choisis.';
+export const alt = 'Le même menu. Douze prix. Tu choisis.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
