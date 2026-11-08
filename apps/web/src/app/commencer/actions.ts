@@ -45,13 +45,21 @@ export async function startSignup(_prev: AuthFormState, fd: FormData): Promise<A
     };
   }
 
+  // Code de parrainage (lien /commencer?parrain=…), relié au compte à la première ouverture.
+  const rawReferral = String(fd.get('parrain') ?? '');
+  const referral = /^[a-f0-9]{8}$/.test(rawReferral) ? rawReferral : null;
+
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     email: parsedEmail.data,
     options: {
       emailRedirectTo: `${SITE_URL}/auth/callback?suite=${encodeURIComponent('/app')}`,
       shouldCreateUser: true,
-      data: { cgu_accepted_at: new Date().toISOString(), onboarding: draft as Record<string, unknown> },
+      data: {
+        cgu_accepted_at: new Date().toISOString(),
+        onboarding: draft as Record<string, unknown>,
+        ...(referral ? { parrain: referral } : {}),
+      },
     },
   });
   if (error) {

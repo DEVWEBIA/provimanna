@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { trialDaysLeft } from '@repas/core';
 import { AppShellClient } from '@/components/app-shell-client';
 import { getAccount, isOnboarded } from '@/lib/household';
+import { dataTheme, themeChoice } from '@/lib/theme';
 
 const TRIAL_DAYS = 14;
 
@@ -17,5 +18,9 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       : 0;
   const trial = daysLeft > 0 ? { daysLeft, elapsed: Math.max(0, 1 - daysLeft / TRIAL_DAYS) } : null;
 
-  return <AppShellClient trial={trial}>{children}</AppShellClient>;
+  return (
+    <AppShellClient trial={trial} theme={dataTheme(await themeChoice())}>
+      {children}
+    </AppShellClient>
+  );
 }

@@ -3,6 +3,7 @@ import { cache } from 'react';
 import { redirect } from 'next/navigation';
 import type { Database } from '@repas/core/database.types';
 import { householdUpdateFromDraft } from './onboarding';
+import { createAdminClient } from './supabase/admin';
 import { createClient } from './supabase/server';
 
 export type Household = Database['public']['Tables']['households']['Row'];
@@ -47,6 +48,18 @@ export const getAccount = cache(async (next = '/app') => {
         .select()
         .single();
       if (updated) household = updated;
+    }
+    // Parrainage : referred_by n'est modifiable que par le serveur (migration 0003).
+    const code = user.user_metadata?.parrain;
+    if (typeof code === 'string' && /^[a-f0-9]{8}$/.test(code) && !profile.referred_by) {
+      const admin = createAdminClient();
+      const { data: sponsor } = await admin
+        .from('profiles')
+        .select('id')
+        .eq('referral_code', code)
+        .maybeSingle();
+      if (sponsor && sponsor.id !== user.id)
+        await admin.from('profiles').update({ referred_by: sponsor.id }).eq('id', user.id);
     }
   }
 

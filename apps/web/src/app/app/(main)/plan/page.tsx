@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { formatEuro, weekRangeLabel, weekStartOf, zonedDate } from '@repas/core';
 import { animDelay, EmptyState, PageHeader, Plat } from '@repas/ui';
 import { DemoNotice } from '@/components/plan/demo-notice';
+import { StalePrices } from '@/components/plan/stale-prices';
 import { PlanBoard } from '@/components/plan/plan-board';
 import { PlanControls } from '@/components/plan/plan-controls';
 import { StoreTotals } from '@/components/plan/store-totals';
@@ -34,6 +35,7 @@ export default async function PlanPage() {
         <PlanControls planId={view.id} />
       </div>
       {view.demoPrices ? <DemoNotice /> : null}
+      <StalePrices view={view} storeName={name(view.myStore)} />
       <div className="grid items-start gap-6 2xl:grid-cols-[minmax(0,1fr)_340px]">
         <PlanBoard planId={view.id} weekStart={view.weekStart} today={today} meals={view.meals} />
         <div className="anim-rise max-2xl:max-w-[560px] 2xl:sticky 2xl:top-8" style={animDelay(400)}>

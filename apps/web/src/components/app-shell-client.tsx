@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { APP_NAV, AppShell, type AppSection, type TrialInfo } from '@repas/ui';
 import { AppLink } from './app-link';
+import { OfflineBanner } from './offline-banner';
 
 /** Section active de la navigation, d'après l'adresse (la plus longue entrée qui correspond). */
 export function sectionFor(pathname: string): AppSection {
@@ -15,9 +16,18 @@ export function sectionFor(pathname: string): AppSection {
   return match?.id ?? 'accueil';
 }
 
-export function AppShellClient({ children, trial }: { children: ReactNode; trial: TrialInfo | null }) {
+export function AppShellClient({
+  children,
+  trial,
+  theme,
+}: {
+  children: ReactNode;
+  trial: TrialInfo | null;
+  theme: 'light' | 'dark' | 'system';
+}) {
   return (
-    <AppShell active={sectionFor(usePathname())} trial={trial} Link={AppLink}>
+    <AppShell active={sectionFor(usePathname())} trial={trial} theme={theme} Link={AppLink}>
+      <OfflineBanner />
       {children}
     </AppShell>
   );

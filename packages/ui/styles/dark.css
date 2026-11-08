@@ -1,0 +1,225 @@
+/*
+ * Mode sombre de l'espace client (maquette AppSombre). Généré : voir docs/09 (lot 12).
+ * L'attribut data-theme est posé sur le gabarit de l'espace client (AppShell) : light, dark ou system.
+ * « system » suit le réglage du téléphone (prefers-color-scheme). Le site public reste clair.
+ * Les fonds clairs translucides (bg-white/70…) et les teintes pastel utilisés par les écrans sont
+ * remplacés par leurs équivalents sombres, pour garder un contraste AA.
+ */
+
+@media (prefers-color-scheme: dark) {
+  [data-theme='system'] {
+    --surface-0: #221820;
+    --surface-50: #160f15;
+    --line: #3a2d37;
+    --ink: #f3edf1;
+    --ink-muted: #b9adb6;
+    --brand: #c9a3c2;
+    --on-brand: #1e121c;
+    --brand-soft: #33212f;
+    --brand-soft-ink: #e3cde0;
+    --saving: #f08a47;
+    --saving-soft: #3d2418;
+    --saving-ink: #f6b98f;
+    --danger: #f97066;
+    --shadow-float: 0 6px 24px rgba(0, 0, 0, 0.5);
+  }
+  [data-theme='system'] .bg-white {
+    background-color: var(--surface-0);
+  }
+  [data-theme='system'] .bg-white\/60 {
+    background-color: rgb(34 24 32 / 0.6);
+  }
+  [data-theme='system'] .bg-white\/70 {
+    background-color: rgb(34 24 32 / 0.7);
+  }
+  [data-theme='system'] .bg-white\/75 {
+    background-color: rgb(34 24 32 / 0.75);
+  }
+  [data-theme='system'] .bg-white\/80 {
+    background-color: rgb(34 24 32 / 0.8);
+  }
+  [data-theme='system'] .bg-white\/85 {
+    background-color: rgb(34 24 32 / 0.85);
+  }
+  [data-theme='system'] .hover\:bg-white\/80:hover {
+    background-color: rgb(46 34 43 / 0.9);
+  }
+  [data-theme='system'] .border-white\/70 {
+    border-color: var(--line);
+  }
+  [data-theme='system'] .bg-site-mint {
+    background-color: #1f2a1c;
+  }
+  [data-theme='system'] .bg-site-track {
+    background-color: #2c2129;
+  }
+  [data-theme='system'] .bg-site-hover,
+  [data-theme='system'] .hover\:bg-site-hover:hover {
+    background-color: #2a1f27;
+  }
+  [data-theme='system'] .bg-site-highlight {
+    background-color: #2b1d18;
+  }
+  [data-theme='system'] .bg-warning-soft {
+    background-color: #3a2e14;
+  }
+  [data-theme='system'] .bg-success-soft {
+    background-color: #1d2c1a;
+  }
+  [data-theme='system'] .bg-danger-soft {
+    background-color: #3a1a17;
+  }
+  [data-theme='system'] .bg-chip-1 {
+    background-color: #1d2633;
+  }
+  [data-theme='system'] .bg-chip-2 {
+    background-color: #1f2a1c;
+  }
+  [data-theme='system'] .bg-chip-3 {
+    background-color: #2a2236;
+  }
+  [data-theme='system'] .bg-chip-4 {
+    background-color: #33261a;
+  }
+  [data-theme='system'] .bg-chip-5 {
+    background-color: #1b2c2c;
+  }
+  [data-theme='system'] .bg-chip-6 {
+    background-color: #33201f;
+  }
+  [data-theme='system'] .bg-raw-peche {
+    background-color: #3d2418;
+  }
+  [data-theme='system'] .bg-raw-aubergine-clair {
+    background-color: #33212f;
+  }
+  [data-theme='system'] .text-success {
+    color: #b7ddb0;
+  }
+  [data-theme='system'] .text-warning {
+    color: #e9c77b;
+  }
+  [data-theme='system'] .text-danger-ink {
+    color: #f7b4ad;
+  }
+  [data-theme='system'] .text-notice-ink {
+    color: #f6b98f;
+  }
+  [data-theme='system'] .text-site-answer {
+    color: var(--ink-muted);
+  }
+  [data-theme='system'] .text-raw-encre {
+    color: #2a1a28;
+  }
+  [data-theme='system'] .border-line {
+    border-color: var(--line);
+  }
+  /* Cartes de marque : l'aubergine s'éclaircit en sombre, leurs textes clairs passent en foncé. */
+  [data-theme='system'] .bg-brand .text-site-lilac,
+  [data-theme='system'] .bg-brand .text-site-on-brand-muted,
+  [data-theme='system'] .bg-brand .text-site-on-brand-faint,
+  [data-theme='system'] .bg-brand .text-white,
+  [data-theme='system'] .bg-brand.text-white {
+    color: var(--on-brand);
+  }
+}
+
+[data-theme='dark'] .bg-white {
+  background-color: var(--surface-0);
+}
+[data-theme='dark'] .bg-white\/60 {
+  background-color: rgb(34 24 32 / 0.6);
+}
+[data-theme='dark'] .bg-white\/70 {
+  background-color: rgb(34 24 32 / 0.7);
+}
+[data-theme='dark'] .bg-white\/75 {
+  background-color: rgb(34 24 32 / 0.75);
+}
+[data-theme='dark'] .bg-white\/80 {
+  background-color: rgb(34 24 32 / 0.8);
+}
+[data-theme='dark'] .bg-white\/85 {
+  background-color: rgb(34 24 32 / 0.85);
+}
+[data-theme='dark'] .hover\:bg-white\/80:hover {
+  background-color: rgb(46 34 43 / 0.9);
+}
+[data-theme='dark'] .border-white\/70 {
+  border-color: var(--line);
+}
+[data-theme='dark'] .bg-site-mint {
+  background-color: #1f2a1c;
+}
+[data-theme='dark'] .bg-site-track {
+  background-color: #2c2129;
+}
+[data-theme='dark'] .bg-site-hover,
+[data-theme='dark'] .hover\:bg-site-hover:hover {
+  background-color: #2a1f27;
+}
+[data-theme='dark'] .bg-site-highlight {
+  background-color: #2b1d18;
+}
+[data-theme='dark'] .bg-warning-soft {
+  background-color: #3a2e14;
+}
+[data-theme='dark'] .bg-success-soft {
+  background-color: #1d2c1a;
+}
+[data-theme='dark'] .bg-danger-soft {
+  background-color: #3a1a17;
+}
+[data-theme='dark'] .bg-chip-1 {
+  background-color: #1d2633;
+}
+[data-theme='dark'] .bg-chip-2 {
+  background-color: #1f2a1c;
+}
+[data-theme='dark'] .bg-chip-3 {
+  background-color: #2a2236;
+}
+[data-theme='dark'] .bg-chip-4 {
+  background-color: #33261a;
+}
+[data-theme='dark'] .bg-chip-5 {
+  background-color: #1b2c2c;
+}
+[data-theme='dark'] .bg-chip-6 {
+  background-color: #33201f;
+}
+[data-theme='dark'] .bg-raw-peche {
+  background-color: #3d2418;
+}
+[data-theme='dark'] .bg-raw-aubergine-clair {
+  background-color: #33212f;
+}
+[data-theme='dark'] .text-success {
+  color: #b7ddb0;
+}
+[data-theme='dark'] .text-warning {
+  color: #e9c77b;
+}
+[data-theme='dark'] .text-danger-ink {
+  color: #f7b4ad;
+}
+[data-theme='dark'] .text-notice-ink {
+  color: #f6b98f;
+}
+[data-theme='dark'] .text-site-answer {
+  color: var(--ink-muted);
+}
+[data-theme='dark'] .text-raw-encre {
+  color: #2a1a28;
+}
+[data-theme='dark'] .border-line {
+  border-color: var(--line);
+}
+/* Cartes de marque : l'aubergine s'éclaircit en sombre, leurs textes clairs passent en foncé. */
+[data-theme='dark'] .bg-brand .text-site-lilac,
+[data-theme='dark'] .bg-brand .text-site-on-brand-muted,
+[data-theme='dark'] .bg-brand .text-site-on-brand-faint,
+[data-theme='dark'] .bg-brand .text-white,
+[data-theme='dark'] .bg-brand.text-white {
+  color: var(--on-brand);
+}

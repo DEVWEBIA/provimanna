@@ -2,7 +2,7 @@
 -- Marion = utilisatrice du seed. Bob = second foyer créé ici. Tout est annulé en fin de transaction.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(31);
+select plan(32);
 
 -- ─── Préparation (superutilisateur) ─────────────────────────────────────────
 insert into auth.users (instance_id, id, aud, role, email, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
@@ -94,6 +94,12 @@ select lives_ok($$ delete from shopping_list_items where list_id = current_setti
   'Marion vide sa liste');
 select is((select count(*)::int from shopping_list_items where list_id = current_setting('test.list')::uuid), 1,
   'Seuls les articles ajoutés à la main sont retirés (ceux du plan restent)');
+
+-- Lot 12 : on n'invite que dans son propre foyer.
+select throws_ok(
+  $$ insert into household_invites (household_id, email, invited_by)
+     values (current_setting('test.bob_household')::uuid, 'x@example.com', current_setting('test.marion')::uuid) $$,
+  '42501', null, 'Marion ne peut pas inviter dans le foyer de Bob');
 
 -- Lot 9 : journal d'audit réservé au staff.
 select throws_ok($$ select log_action('prix.valider', 'prices', '1') $$, '42501', null,

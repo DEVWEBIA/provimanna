@@ -20,6 +20,8 @@ export interface AppShellProps {
   trial?: TrialInfo | null;
   Link?: LinkComponent;
   homeHref?: string;
+  /** Thème de l'espace client : clair, sombre, ou celui du téléphone (system). */
+  theme?: 'light' | 'dark' | 'system';
 }
 
 /** Gabarit de la web app : barre latérale 8 entrées (desktop), barre d'onglets 5 entrées (mobile). */
@@ -30,9 +32,13 @@ export function AppShell({
   trial,
   Link = DefaultLink,
   homeHref = '/',
+  theme = 'light',
 }: AppShellProps) {
   return (
-    <div className="bg-surface-50 text-ink relative isolate flex min-h-screen overflow-x-clip font-sans">
+    <div
+      data-theme={theme}
+      className="bg-surface-50 text-ink relative isolate flex min-h-screen overflow-x-clip font-sans"
+    >
       {/* Halos de la page d'accueil, discrets derrière le contenu. */}
       <Glow className="bg-raw-aubergine-clair -top-24 left-[30%] h-96 w-96" />
       <Glow className="bg-raw-peche right-0 top-[40vh] h-80 w-80 opacity-60" />

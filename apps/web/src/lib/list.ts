@@ -1,5 +1,5 @@
 import 'server-only';
-import { compareStores, listItems, sumCents, type StoreId } from '@repas/core';
+import { compareStores, listItems, nextStreak, sumCents, type StoreId } from '@repas/core';
 import type { Household } from './household';
 import { planLines, STORES, type PlanData, type PlanRow } from './plan';
 import type { AdminClient } from './supabase/admin';
@@ -76,6 +76,18 @@ export async function validatePlan(
     })
     .eq('id', plan.id);
   if (error) throw new Error(`Validation impossible : ${error.message}`);
+
+  // Série de semaines validées (écrite par le serveur uniquement).
+  const { data: streak } = await admin
+    .from('streaks')
+    .select('current_weeks, best_weeks, last_validated_week')
+    .eq('household_id', household.id)
+    .maybeSingle();
+  const next = nextStreak(
+    streak ?? { current_weeks: 0, best_weeks: 0, last_validated_week: null },
+    plan.week_start,
+  );
+  await admin.from('streaks').upsert({ household_id: household.id, ...next });
 }
 
 const quantityLabel = (packs: number, quantity: string | null) =>

@@ -19,6 +19,7 @@ import {
 import { DAY_SHORT, PLAT_TINT, SLOT_LABEL } from '@/components/plan/labels';
 import { DemoNotice } from '@/components/plan/demo-notice';
 import { pricesAtLabel } from '@/components/plan/totals';
+import { getEngagement } from '@/lib/engagement';
 import { currentPlan } from '@/lib/plan';
 import { href } from '@/lib/site';
 
@@ -62,6 +63,8 @@ export default async function DashboardPage() {
   const todayMeals = view.meals.filter((m) => m.day === (isCurrent ? weekday : 1));
   const featured = [...new Set(view.meals.map((m) => m.recipe.illustration))].slice(0, 3);
   const pricesAt = pricesAtLabel(view);
+  const engagement = await getEngagement();
+  const challenge = engagement.challenges.find((c) => !c.progress.completed);
 
   return (
     <>
@@ -154,6 +157,56 @@ export default async function DashboardPage() {
       </div>
 
       {view.demoPrices ? <DemoNotice /> : null}
+
+      {/* Rituels : série, économies réalisées, défi en cours (maquette AppDashboard). */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Reveal className={`${glassClasses} p-5`}>
+          <p className="text-ink-muted text-[12px] font-black tracking-[1.2px]">TA SÉRIE</p>
+          <p className="font-display mt-1 text-[34px] font-extrabold">
+            {engagement.streak} semaine{engagement.streak > 1 ? 's' : ''}
+          </p>
+          <div className="mt-2 flex gap-1" aria-hidden="true">
+            {Array.from({ length: 8 }, (_, i) => (
+              <span
+                key={i}
+                className={`h-2 flex-1 rounded-full ${i < engagement.streak ? 'bg-brand' : 'bg-site-track'}`}
+              />
+            ))}
+          </div>
+          <p className="text-ink-muted mt-2 text-[14px] font-bold">
+            {view.validated
+              ? 'Semaine validée, bravo.'
+              : `Choisis ton enseigne avant dimanche pour passer à ${engagement.streak + 1}.`}
+          </p>
+        </Reveal>
+        <Reveal delay={80} className={`${glassClasses} p-5`}>
+          <p className="text-ink-muted text-[12px] font-black tracking-[1.2px]">TES ÉCONOMIES</p>
+          <p className="font-display mt-1 text-[34px] font-extrabold tabular-nums">
+            {formatEuro(engagement.saved)}
+          </p>
+          <Link
+            href={href('/app/economies')}
+            className="text-brand min-h-tap mt-2 inline-flex items-center text-[14px] font-black"
+          >
+            Voir le détail →
+          </Link>
+        </Reveal>
+        {challenge ? (
+          <Reveal delay={160} className={`${glassClasses} p-5`}>
+            <p className="text-ink-muted text-[12px] font-black tracking-[1.2px]">DÉFI EN COURS</p>
+            <p className="mt-1 text-[18px] font-black">{challenge.title}</p>
+            <span className="bg-site-track mt-3 block h-2.5 overflow-hidden rounded-[9px]">
+              <span
+                className="bg-brand block h-full rounded-[9px]"
+                style={{ width: `${(challenge.progress.done / challenge.progress.target) * 100}%` }}
+              />
+            </span>
+            <p className="text-ink-muted mt-2 text-[14px] font-bold tabular-nums">
+              {challenge.progress.done} sur {challenge.progress.target}
+            </p>
+          </Reveal>
+        ) : null}
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <Reveal as="section" className={`${glassClasses} p-6`}>

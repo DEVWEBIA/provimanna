@@ -1,5 +1,6 @@
 @import '../../../../design/tokens.css';
 @import '../../../../packages/ui/styles/motion.css';
+@import '../../../../packages/ui/styles/dark.css';
 
 @tailwind base;
 @tailwind components;

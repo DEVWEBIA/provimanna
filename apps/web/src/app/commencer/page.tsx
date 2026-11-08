@@ -12,7 +12,10 @@ export const metadata: Metadata = {
 };
 
 /** Questionnaire sans compte : le compte est créé à la fin, avec l'email (lien magique). */
-export default async function CommencerPage() {
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+export default async function CommencerPage({ searchParams }: { searchParams: SearchParams }) {
+  const parrain = (await searchParams).parrain;
   const supabase = await createClient();
   const {
     data: { user },
@@ -22,6 +25,7 @@ export default async function CommencerPage() {
   return (
     <OnboardingWizard
       mode="guest"
+      referral={typeof parrain === 'string' ? parrain : undefined}
       stores={await listStores(supabase)}
       initial={{
         adults: 2,

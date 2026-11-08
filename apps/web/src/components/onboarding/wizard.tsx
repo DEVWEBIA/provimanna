@@ -49,6 +49,8 @@ export interface OnboardingWizardProps {
   mode: 'guest' | 'account';
   stores: { id: StoreId; name: string; initials: string }[];
   initial: WizardDraft;
+  /** Code de parrainage reçu dans le lien (/commencer?parrain=…). */
+  referral?: string;
 }
 
 const STEPS = [
@@ -203,7 +205,7 @@ function Alert({ children, id }: { children: ReactNode; id?: string }) {
 }
 
 /** Questionnaire d'onboarding (maquettes AppOnboarding / MOnboarding), avec ou sans compte. */
-export function OnboardingWizard({ mode, stores, initial }: OnboardingWizardProps) {
+export function OnboardingWizard({ mode, stores, initial, referral }: OnboardingWizardProps) {
   const [step, setStep] = useState(1);
   const [d, setD] = useState<WizardDraft>(initial);
   const [errors, setErrors] = useState<{ store?: string; postal_code?: string; global?: string }>({});
@@ -606,6 +608,7 @@ export function OnboardingWizard({ mode, stores, initial }: OnboardingWizardProp
                   className="anim-rise mt-12 max-w-[480px]"
                   style={animDelay(700)}
                 >
+                  {referral ? <input type="hidden" name="parrain" value={referral} /> : null}
                   <h2 className="text-[22px] font-black">Où t’envoie-t-on ta semaine ?</h2>
                   <p className="text-ink-muted mb-5 mt-1 text-[16px]">
                     On t’envoie un lien de connexion : tes réponses sont enregistrées dans ton compte. Pas de

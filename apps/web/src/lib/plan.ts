@@ -75,6 +75,8 @@ export interface PlanView {
   cheaperProducts: number;
   /** Date du relevé le plus récent utilisé, toutes enseignes confondues. */
   pricesAt: string | null;
+  /** Nombre de produits de la liste (pour « 9 produits sur 31 sans relevé récent »). */
+  lineCount: number;
   /** Des prix de démonstration (catalogue de départ) entrent dans les totaux. */
   demoPrices: boolean;
 }
@@ -360,6 +362,7 @@ export function planView(plan: PlanRow, household: Household, data: PlanData): P
     comparison,
     cheaperProducts: cheaperProductCount(lines, comparison.cheapest, myStore, data.observations, data.now),
     pricesAt: dates.length ? dates.reduce((a, b) => (Date.parse(a) > Date.parse(b) ? a : b)) : null,
+    lineCount: lines.length,
     demoPrices: used.some((o) => o.source === 'manual'),
   };
 }
