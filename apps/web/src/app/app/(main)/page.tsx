@@ -121,7 +121,7 @@ export default async function DashboardPage() {
                 Ouvrir mon plan <span aria-hidden="true">→</span>
               </Link>
               <Link
-                href={href('/app/plan#comparateur')}
+                href={href('/app/comparateur')}
                 className="text-[15px] font-extrabold text-white underline-offset-4 hover:underline"
               >
                 Comparer les enseignes

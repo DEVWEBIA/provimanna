@@ -64,6 +64,10 @@ export interface PlanView {
   weekNumber: number;
   people: number;
   myStore: StoreId;
+  /** Enseigne choisie pour cette semaine (celle de la liste). */
+  planStore: StoreId;
+  /** Semaine validée (enseigne choisie) : ses totaux sont figés côté serveur. */
+  validated: boolean;
   meals: PlanMealView[];
   comparison: Comparison;
   /** Produits moins chers dans l'enseigne la moins chère que dans celle du foyer (encart Premium). */
@@ -74,7 +78,9 @@ export interface PlanView {
   demoPrices: boolean;
 }
 
-const STORES: StoreId[] = ['lidl', 'aldi', 'leclerc', 'intermarche', 'carrefour', 'auchan'];
+export const STORES: StoreId[] = ['lidl', 'aldi', 'leclerc', 'intermarche', 'carrefour', 'auchan'];
+const PLAN_COLUMNS = 'id, week_start, store_id, validated_at';
+const ITEM_COLUMNS = 'id, day, slot, recipe_id, servings, locked';
 const isPlat = (v: string | null): v is PlatVariant => PLAT_VARIANTS.includes(v as PlatVariant);
 
 /** Recettes publiées et leurs ingrédients reliés à un produit. */
@@ -129,7 +135,7 @@ export async function loadObservations(supabase: Client, now: Date): Promise<Pri
   return rows;
 }
 
-const toRecipe = (r: CatalogueRecipe): Recipe => ({
+export const toRecipe = (r: CatalogueRecipe): Recipe => ({
   id: r.id,
   servings: r.servings,
   ingredients: r.ingredients,
@@ -171,10 +177,11 @@ export async function loadPlanData(supabase: Client, now = new Date()): Promise<
   return { catalogue, observations, now };
 }
 
-type PlanRow = {
+export type PlanRow = {
   id: string;
   week_start: string;
   store_id: string;
+  validated_at: string | null;
   meal_plan_items: {
     id: string;
     day: number;
@@ -192,7 +199,7 @@ export async function getWeekPlan(
 ): Promise<PlanRow | null> {
   const { data } = await supabase
     .from('meal_plans')
-    .select('id, week_start, store_id, meal_plan_items(id, day, slot, recipe_id, servings, locked)')
+    .select(`${PLAN_COLUMNS}, meal_plan_items(${ITEM_COLUMNS})`)
     .eq('household_id', householdId)
     .eq('week_start', weekStart)
     .maybeSingle();
@@ -229,8 +236,6 @@ export async function composeMeals({ supabase, household, data, weekStart, locke
   );
 }
 
-const ITEM_COLUMNS = 'id, day, slot, recipe_id, servings, locked';
-
 /**
  * Plan de la semaine en cours : le crée s'il n'existe pas encore (premier accès, onboarding).
  * Deux créations simultanées sont départagées par la contrainte unique (foyer, semaine).
@@ -256,7 +261,12 @@ export async function ensureWeekPlan(
   }
 
   let plan = existing
-    ? { id: existing.id, week_start: existing.week_start, store_id: existing.store_id }
+    ? {
+        id: existing.id,
+        week_start: existing.week_start,
+        store_id: existing.store_id,
+        validated_at: existing.validated_at,
+      }
     : null;
   if (!plan) {
     const { data: created, error } = await supabase
@@ -266,13 +276,13 @@ export async function ensureWeekPlan(
         week_start: weekStart,
         store_id: household.preferred_store_id ?? 'lidl',
       })
-      .select('id, week_start, store_id')
+      .select(PLAN_COLUMNS)
       .single();
     if (error) {
       // Créé entre-temps par une autre requête : on lit ce plan-là (requête différente, non mémorisée).
       const { data: other } = await supabase
         .from('meal_plans')
-        .select(`id, week_start, store_id, meal_plan_items(${ITEM_COLUMNS})`)
+        .select(`${PLAN_COLUMNS}, meal_plan_items(${ITEM_COLUMNS})`)
         .eq('week_start', weekStart)
         .eq('household_id', household.id)
         .limit(1);
@@ -305,16 +315,23 @@ export async function ensureWeekPlan(
   return { ...plan, meal_plan_items: items };
 }
 
+/** Lignes de courses agrégées du plan (quantités à l'échelle des parts), via core. */
+export function planLines(plan: PlanRow, data: PlanData) {
+  const recipes = new Map(data.catalogue.map((r) => [r.id, toRecipe(r)]));
+  return buildShoppingLines(
+    plan.meal_plan_items
+      .filter((i) => recipes.has(i.recipe_id))
+      .map((i) => ({ recipeId: i.recipe_id, servings: i.servings })),
+    recipes,
+  );
+}
+
 /** Tout ce qu'affichent le tableau de bord et l'écran du plan. Tous les calculs passent par core. */
 export function planView(plan: PlanRow, household: Household, data: PlanData): PlanView {
   const byId = new Map(data.catalogue.map((r) => [r.id, r]));
   const myStore = (household.preferred_store_id ?? plan.store_id) as StoreId;
   const items = sortMeals(plan.meal_plan_items.filter((i) => byId.has(i.recipe_id)));
-  const recipes = new Map(data.catalogue.map((r) => [r.id, toRecipe(r)]));
-  const lines = buildShoppingLines(
-    items.map((i) => ({ recipeId: i.recipe_id, servings: i.servings })),
-    recipes,
-  );
+  const lines = planLines(plan, data);
   const comparison = compareStores(lines, STORES, myStore, data.observations, data.now);
   const usedProducts = new Set(lines.map((l) => l.productId));
   const used = data.observations.filter((o) => usedProducts.has(o.productId));
@@ -325,6 +342,8 @@ export function planView(plan: PlanRow, household: Household, data: PlanData): P
     weekNumber: isoWeek(plan.week_start),
     people: household.adults + household.children,
     myStore,
+    planStore: plan.store_id as StoreId,
+    validated: plan.validated_at !== null,
     meals: items.map((i) => {
       const r = byId.get(i.recipe_id)!;
       return {
@@ -355,5 +374,5 @@ export const currentPlan = cache(async () => {
     ensureWeekPlan(account.supabase, account.household, data),
     listStores(account.supabase),
   ]);
-  return { ...account, data, stores, view: plan ? planView(plan, account.household, data) : null };
+  return { ...account, data, stores, plan, view: plan ? planView(plan, account.household, data) : null };
 });

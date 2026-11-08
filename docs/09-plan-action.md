@@ -112,7 +112,12 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - **08/11 — Lot 5 : règles Gratuit / Premium appliquées côté serveur** (`is_premium`) : « Varier la semaine » et « Remplacer » sont réservés à Premium et à l'essai ; verrouiller et déplacer restent ouverts à tous. Le plan de la semaine est créé automatiquement au premier accès (et dès l'étape 3 du questionnaire pour un compte connecté : « Plan généré · Ta semaine NN est prête », texte de la maquette rétabli).
 - **08/11 — Filtres « Enfants » et « Batch cooking »** : appliqués seulement s'ils laissent au moins 7 recettes, sinon ignorés (pour garder une semaine variée).
 - **08/11 — Correctif du seed** : l'utilisatrice de démo Marion ne pouvait pas se connecter (colonnes de jetons à NULL dans `auth.users`, GoTrue renvoyait « Database error finding user »). Le test RLS « prix visibles » ne compte plus un nombre fixe de prix.
-- **À traiter au lot 6/12 (sécurité)** : un utilisateur peut écrire lui-même `meal_plans.total_cents` / `reference_cents` via l'API. Avant de calculer les économies (lot 12), figer ces montants côté serveur (fonction `security definer` à la validation du plan) et retirer ces colonnes des droits d'écriture.
+
+- **08/11 — Lot 6 : choisir son enseigne = valider la semaine.** « Garder Auchan et voir ma liste », « Basculer ma liste chez Lidl » ou « Garder Auchan » valident la semaine : le serveur fige `total_cents` (enseigne choisie), `reference_cents` (enseigne habituelle, base des économies) et l'enseigne la moins chère. Si un repas change ensuite, ces totaux sont recalculés. La bascule vers une autre enseigne que la sienne est réservée à Premium (contrôle serveur), garder la sienne est toujours possible.
+- **08/11 — Lot 6 : migration `0006_liste_validation.sql`** (droits, sans nouvelle colonne). Les totaux du plan et l'enseigne de la liste ne sont plus modifiables par l'utilisateur (faille fermée, testée) : ces écritures passent par un client serveur à clé `service_role` (`lib/supabase/admin.ts`, `server-only`, appartenance vérifiée avant avec la session). « Coché par » / « ajouté par » sont posés par un déclencheur (impossibles à usurper). Seuls les articles ajoutés à la main peuvent être retirés. Temps réel activé sur `shopping_list_items`. Fonction `shared_list(token)` pour la lecture publique d'une liste partagée. Tests RLS : 16 → 26. **Le journal d'audit du BO devient 0007.**
+- **08/11 — Lot 6 : liste de courses.** Produits hors placard, arrondis au paquet entier (on n'achète pas 0,3 sachet), prix estimé par paquet. La liste est recalculée côté serveur à chaque ouverture pour suivre le plan, en gardant les cases cochées et les articles ajoutés à la main. Cochage instantané, synchronisé en temps réel avec la famille ; hors connexion, les cases cochées attendent dans une file locale (`localStorage`) et partent au retour du réseau (le service worker viendra au lot 11). Partage par lien `/liste/[token]` : lecture seule, sans compte, `noindex`.
+- **08/11 — Lot 6 : formule gratuite** : le comparateur montre les 6 totaux et les 2 premières lignes du détail produit par produit ; les autres lignes ne quittent pas le serveur.
+- **08/11 — Reporté (dépend d'autres lots)** : « Léa coche aussi » et invitations (lot 12), « Disponible hors ligne » (lot 11), « Déjà dans tes placards » (pas de suivi des placards pour l'instant), bouton « Exporter », champ d'ajout d'un article (droits et base prêts).
 
 ## Questions ouvertes (à trancher par vous)
 
@@ -128,7 +133,7 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - [x] Lot 4 — Connexion et onboarding (lien magique + code 6 chiffres, onboarding 4 étapes, 6 tests Playwright desktop + mobile : `pnpm --filter @repas/web test:e2e`)
 - [x] Harmonisation visuelle (08/11) — effets de la home sur connexion, questionnaire, espace client, BO, email
 - [x] Lot 5 — Génération du plan (53 recettes, `generatePlan` + 30 tests, tableau de bord et plan desktop/mobile, 8 tests e2e)
-- [ ] Lot 6 — Comparateur et liste
+- [x] Lot 6 — Comparateur et liste (validation de la semaine côté serveur, liste temps réel + file hors ligne, partage par lien, 26 tests RLS, 10 e2e)
 - [ ] Lot 7 — Paiement
 - [ ] Lot 8 — Recettes et pages SEO
 - [ ] Lot 9 — Back-office

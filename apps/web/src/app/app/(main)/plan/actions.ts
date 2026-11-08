@@ -11,6 +11,8 @@ import {
   type StoreId,
 } from '@repas/core';
 import { getAccount } from '@/lib/household';
+import { validatePlan } from '@/lib/list';
+import { createAdminClient } from '@/lib/supabase/admin';
 import {
   composeMeals,
   getWeekPlan,
@@ -58,10 +60,27 @@ async function context(planId: string) {
   return { supabase, household, plan: full!, premium: premium === true };
 }
 
-const done = (): PlanActionResult => {
+type Ctx = NonNullable<Awaited<ReturnType<typeof context>>>;
+
+/**
+ * Après un changement de repas : si la semaine est déjà validée, ses totaux figés sont recalculés
+ * (côté serveur). La liste, elle, se remet à jour à sa prochaine ouverture.
+ */
+async function done(ctx: Ctx): Promise<PlanActionResult> {
+  if (ctx.plan.validated_at) {
+    const fresh = await getWeekPlan(ctx.supabase, ctx.household.id, ctx.plan.week_start);
+    if (fresh)
+      await validatePlan(
+        createAdminClient(),
+        fresh,
+        ctx.household,
+        fresh.store_id as StoreId,
+        await loadPlanData(ctx.supabase),
+      );
+  }
   revalidatePath('/app', 'layout');
   return { ok: true };
-};
+}
 
 /** « Varier la semaine » : recompose tous les repas non verrouillés. */
 export async function regenerateWeek(planId: string, filters: unknown): Promise<PlanActionResult> {
@@ -108,7 +127,7 @@ export async function regenerateWeek(planId: string, filters: unknown): Promise<
         locked: false,
       })),
   );
-  return error ? { ok: false, error: FAILED } : done();
+  return error ? { ok: false, error: FAILED } : done(ctx);
 }
 
 /** « Remplacer » : une autre recette compatible pour ce repas. */
@@ -149,7 +168,7 @@ export async function replaceMealAction(planId: string, input: unknown): Promise
     .from('meal_plan_items')
     .update({ recipe_id: next.recipeId, locked: false })
     .eq('id', item.id);
-  return error ? { ok: false, error: FAILED } : done();
+  return error ? { ok: false, error: FAILED } : done(ctx);
 }
 
 /** Verrouiller : le repas est gardé quand on varie la semaine. */
@@ -164,7 +183,7 @@ export async function toggleLockAction(planId: string, input: unknown): Promise<
     .update({ locked: parsed.data.locked })
     .eq('id', parsed.data.itemId)
     .eq('meal_plan_id', ctx.plan.id);
-  return error ? { ok: false, error: FAILED } : done();
+  return error ? { ok: false, error: FAILED } : done(ctx);
 }
 
 /** Déplacer un repas (glisser-déposer) : il échange sa place avec celui du créneau visé. */
@@ -202,5 +221,5 @@ export async function moveMealAction(planId: string, input: unknown): Promise<Pl
     locked: i.locked,
   }));
   const { error } = await ctx.supabase.from('meal_plan_items').insert(rows);
-  return error ? { ok: false, error: FAILED } : done();
+  return error ? { ok: false, error: FAILED } : done(ctx);
 }

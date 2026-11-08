@@ -7,6 +7,8 @@ import { AppLink } from './app-link';
 
 /** Section active de la navigation, d'après l'adresse (la plus longue entrée qui correspond). */
 export function sectionFor(pathname: string): AppSection {
+  // Le comparateur prolonge l'écran du plan.
+  if (pathname.startsWith('/app/comparateur')) return 'plan';
   const match = [...APP_NAV]
     .sort((a, b) => b.href.length - a.href.length)
     .find((n) => pathname === n.href || pathname.startsWith(`${n.href}/`));

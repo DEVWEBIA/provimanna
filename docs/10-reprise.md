@@ -1,4 +1,4 @@
-# 10 — Fichier de reprise (état au 08/11/2026, après le lot 5)
+# 10 — Fichier de reprise (état au 08/11/2026, après le lot 6 : jalon J3 atteint)
 
 > À lire en début de nouvelle conversation, après `CLAUDE.md`. Il dit où on en est, ce qui a été décidé, ce qui bloque et comment reprendre.
 > Détail des décisions : `docs/09-plan-action.md` (section « Journal des décisions techniques »). Lots : `docs/08-roadmap-claude-code.md`.
@@ -29,14 +29,15 @@ Commence par me confirmer l'état et la prochaine étape.
 | 4 Connexion + onboarding | ✅, puis parcours **questionnaire avant compte** (`/commencer`) |
 | Harmonisation visuelle | ✅ (08/11) effets de la home sur tout le produit |
 | 5 Génération du plan | ✅ (08/11) |
-| 6 → 13 | à faire (prochain : **lot 6 Comparateur et liste**) |
+| 6 Comparateur et liste | ✅ (08/11) — **jalon J3 atteint** |
+| 7 → 13 | à faire (prochain : **lot 7 Paiement**, compte Stripe nécessaire) |
 
 Dernier commit : `60fe4da Affiche les logos des enseignes dans le bandeau…` (13 commits sur `main`, rien en attente).
 
 ## Points ouverts
 
 - **Logo Carrefour** : aucun fichier réutilisable trouvé ; le bandeau affiche « Carrefour » en lettres grises en attendant un SVG.
-- **Sécurité avant le lot 12** : `meal_plans.total_cents` / `reference_cents` sont encore modifiables par l'utilisateur (voir le journal du 08/11).
+- **Lot 7 bloqué sans compte Stripe** (mode test suffit) : clés `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, 2 prix (4,99 €/mois, 39,99 €/an). Et décision : mention TVA des factures (micro-entreprise, art. 293 B du CGI ?).
 
 ## Ce qui existe
 
@@ -54,13 +55,15 @@ Dernier commit : `60fe4da Affiche les logos des enseignes dans le bandeau…` (1
 - `/app/bienvenue` : même questionnaire (`components/onboarding/wizard.tsx`, mode `account`) pour les comptes créés via « Se connecter ».
 - `/app` : tableau de bord (maquettes AppDashboard/MDashboard) : semaine en ticket aubergine, total dans l'enseigne du foyer, « Possible dès … », repas du jour, produits de saison. Garde : session (proxy) + onboarding terminé (layout `app/app/(main)`).
 - `/app/plan` : grille 7 jours × midi/soir (glisser-déposer, menu Voir la recette / Remplacer / Verrouiller), jour par jour sur mobile, filtres + « Varier la semaine », comparateur 6 enseignes « Ce plan coûte… ». Données : `lib/plan.ts` (`currentPlan`, `ensureWeekPlan`, `planView`), actions : `app/app/(main)/plan/actions.ts`.
+- `/app/comparateur` : barres des 6 enseignes, détail produit par produit (Premium ; 2 lignes en gratuit), « Basculer ma liste chez … » / « Garder … » = validation de la semaine.
+- `/app/liste` : liste par rayon, cochage temps réel + file hors ligne, partage. Liste publique `/liste/[token]`. Logique : `lib/list.ts` (`validatePlan`, `syncShoppingList`), action `app/app/(main)/liste/actions.ts`. Écritures sensibles via `lib/supabase/admin.ts` (service_role, serveur seulement).
 - Catalogue : 53 recettes, `supabase/catalogue/generate.mjs` → `supabase/catalogue.sql` (relancer le script après modification, puis `supabase db reset`).
 
 **Back-office (`apps/admin`)** : coquille seulement (page d'accueil + `/connexion` d'attente, tout est protégé par session). Le vrai BO = lot 9.
 
 **Packages** : `packages/core` (moteur de prix, `generatePlan`/`replaceMeal`, semaines à l'heure de Paris, `recipeServingCents`, `cheaperProductCount`, saisons…), `packages/ui` (composants + briques de style de la home : `Reveal`, `Glow`, `PageHeader`, `GlassCard`, `animDelay`, `inputClasses` ; animations dans `packages/ui/styles/motion.css`), `packages/eslint-config`.
 
-**Tests** : core 10 node:test + 47 Vitest, ui 16, web 7 Vitest, **16 tests RLS pgTAP**, **8 e2e Playwright** (desktop + mobile). Lighthouse landing : desktop 100 partout, mobile 94-95 en performance (le bol est l'élément le plus lourd en 4G simulée).
+**Tests** : core 10 node:test + 51 Vitest, ui 16, web 7 Vitest, **26 tests RLS pgTAP**, **10 e2e Playwright** (desktop + mobile). Lighthouse landing : desktop 100 partout, mobile 94-95 en performance (le bol est l'élément le plus lourd en 4G simulée).
 
 ## Décisions clés (à ne pas défaire sans demander)
 
@@ -104,11 +107,12 @@ pnpm --filter @repas/web test:e2e   # nécessite supabase start
 - **Next.js mémorise les requêtes GET identiques pendant un rendu** (y compris celles de supabase-js) : relire une ligne avec la même requête juste après l'avoir créée renvoie l'ancien résultat. Renvoyer les lignes insérées (`.insert().select()`), voir `ensureWeekPlan`.
 - **Captures Playwright `fullPage: true`** : elles relancent les animations d'entrée, les éléments apparaissent vides. Capturer l'écran visible (après défilement) pour juger du rendu.
 - **Animations et piles** : un élément animé (`anim-rise`) crée un contexte d'empilement ; un menu déroulant à l'intérieur passe sous la carte suivante → remonter le parent (`z-30`) quand le menu est ouvert.
-- Démo locale : `marion@example.com` (Auchan, 2 adultes + 2 enfants, sans porc), connexion par code via Mailpit.
+- Démo locale : `marion@example.com` (Auchan, 2 adultes + 2 enfants, sans porc), connexion par code via Mailpit. Sa semaine en cours vient du seed (validée chez Lidl).
+- Les tests RLS tournent sur la base locale réelle : ils doivent rester indépendants des données créées en testant l'appli à la main (`on conflict`, nettoyage).
 
 ## Prochaines étapes
 
-1. **Lot 6 — Comparateur et liste** (`AppComparateur`, `MComparateur`, `AppListe`, `MListe`) : le CTA du comparateur du plan mène déjà à `/app/liste?enseigne=…`. Enregistrer le choix d'enseigne de la semaine, liste par rayon, cochage + Realtime, partage `/liste/[token]`. En profiter pour figer les totaux côté serveur (point sécurité ci-dessus). Réutiliser les briques de style de `packages/ui`.
-2. Lots 7 → 13 dans l'ordre (`docs/08`). Comptes à demander au moment voulu : Stripe (lot 7), fournisseur OCR (lot 10), Resend + domaine (lot 11), Vercel / Supabase prod / PostHog / Sentry + nom et domaine (lot 13). Le journal d'audit du BO sera la migration **0006** (0005 = familles et marqueurs des recettes).
+1. **Lot 7 — Paiement** (maquettes `MPaywall`, `AppAbonnement`, `SiteTarifs`, `SiteMerci`, `EmailRecu`) : demander le compte Stripe (mode test) avant de commencer ; le webhook écrira `subscriptions` avec `lib/supabase/admin.ts`. Les liens « Essayer Premium » pointent déjà vers `/app/abonnement`.
+2. Lots 8 → 13 dans l'ordre (`docs/08`). Le lot 8 (recettes, pages SEO) ne dépend d'aucun compte et peut passer avant si Stripe tarde (à valider). Comptes à demander au moment voulu : fournisseur OCR (lot 10), Resend + domaine (lot 11), Vercel / Supabase prod / PostHog / Sentry + nom et domaine (lot 13). Le journal d'audit du BO sera la migration **0007**.
 3. Idée validée en principe : capture de l'appli dans un téléphone pour la landing.
 3. Idée proposée, non tranchée : une photo de saison qui change automatiquement sur la landing.

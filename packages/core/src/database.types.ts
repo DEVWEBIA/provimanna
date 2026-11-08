@@ -1063,6 +1063,7 @@ export type Database = {
       }
       is_premium: { Args: { h: string }; Returns: boolean }
       my_household_id: { Args: never; Returns: string }
+      shared_list: { Args: { share: string }; Returns: Json }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }

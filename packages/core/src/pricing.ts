@@ -266,6 +266,43 @@ export function priceSpread(totalsCents: number[]): PriceSpread {
   };
 }
 
+export interface ProductComparison {
+  productId: string;
+  /** Prix d'une unité de vente dans chaque enseigne (centimes). */
+  aCents: number;
+  bCents: number;
+  /** b − a : négatif si le produit est moins cher dans l'enseigne b. */
+  diffCents: number;
+}
+
+/**
+ * Comparaison produit par produit entre deux enseignes (hors placard), triée par écart décroissant.
+ * Les produits sans prix dans l'une des deux enseignes sont ignorés.
+ */
+export function compareProducts(
+  lines: ShoppingLine[],
+  a: StoreId,
+  b: StoreId,
+  observations: PriceObservation[],
+  now: Date,
+): { rows: ProductComparison[]; cheaper: number; pricier: number; equal: number } {
+  const rows: ProductComparison[] = [];
+  for (const l of lines) {
+    if (l.pantry) continue;
+    const pa = resolvePrice(observations, l.productId, a, now);
+    const pb = resolvePrice(observations, l.productId, b, now);
+    if (!pa || !pb) continue;
+    rows.push({ productId: l.productId, aCents: pa.cents, bCents: pb.cents, diffCents: pb.cents - pa.cents });
+  }
+  rows.sort((x, y) => Math.abs(y.diffCents) - Math.abs(x.diffCents));
+  return {
+    rows,
+    cheaper: rows.filter((r) => r.diffCents < 0).length,
+    pricier: rows.filter((r) => r.diffCents > 0).length,
+    equal: rows.filter((r) => r.diffCents === 0).length,
+  };
+}
+
 /** Nombre de produits de la liste moins chers dans l'enseigne `cheaper` que dans `reference` (encart Premium). */
 export function cheaperProductCount(
   lines: ShoppingLine[],
@@ -275,10 +312,50 @@ export function cheaperProductCount(
   now: Date,
 ): number {
   if (cheaper === reference) return 0;
-  return lines.filter((l) => {
-    if (l.pantry) return false;
-    const a = resolvePrice(observations, l.productId, cheaper, now);
-    const b = resolvePrice(observations, l.productId, reference, now);
-    return a !== null && b !== null && a.cents < b.cents;
-  }).length;
+  return compareProducts(lines, reference, cheaper, observations, now).cheaper;
+}
+
+export interface ListItem {
+  productId: string;
+  /** Unités de vente à acheter (on achète des paquets entiers). */
+  packs: number;
+  /** Prix estimé de ces paquets dans l'enseigne, null si inconnu. */
+  cents: number | null;
+  /** Prix issu de relevés de plus de 7 jours (affiché avec ≈). */
+  estimate: boolean;
+}
+
+/** Articles de la liste de courses : produits hors placard, arrondis au paquet supérieur. */
+export function listItems(
+  lines: ShoppingLine[],
+  storeId: StoreId,
+  observations: PriceObservation[],
+  now: Date,
+): ListItem[] {
+  return lines
+    .filter((l) => !l.pantry && l.units > 0)
+    .map((l) => {
+      const packs = Math.max(1, Math.ceil(l.units - 1e-6));
+      const p = resolvePrice(observations, l.productId, storeId, now);
+      return { productId: l.productId, packs, cents: p ? p.cents * packs : null, estimate: p ? !p.fresh : false };
+    });
+}
+
+/** Âge moyen (jours, arrondi) des prix utilisés pour une liste dans une enseigne. null si aucun prix. */
+export function averagePriceAgeDays(
+  lines: ShoppingLine[],
+  storeId: StoreId,
+  observations: PriceObservation[],
+  now: Date,
+): number | null {
+  const ages = lines.flatMap((l) => {
+    const p = resolvePrice(observations, l.productId, storeId, now);
+    return p ? [(now.getTime() - Date.parse(p.observedAt)) / DAY_MS] : [];
+  });
+  return ages.length ? Math.round(ages.reduce((a, b) => a + b, 0) / ages.length) : null;
+}
+
+/** Somme de montants (centimes), les montants inconnus (null) étant ignorés : total d'une liste, reste à prendre. */
+export function sumCents(values: readonly (number | null)[]): number {
+  return values.reduce<number>((s, v) => s + (v ?? 0), 0);
 }

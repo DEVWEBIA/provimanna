@@ -36,8 +36,9 @@ export default async function PlanPage() {
       {view.demoPrices ? <DemoNotice /> : null}
       <div className="grid items-start gap-6 2xl:grid-cols-[minmax(0,1fr)_340px]">
         <PlanBoard planId={view.id} weekStart={view.weekStart} today={today} meals={view.meals} />
-        <div className="anim-rise 2xl:sticky 2xl:top-8 max-2xl:max-w-[560px]" style={animDelay(400)}>
+        <div className="anim-rise max-2xl:max-w-[560px] 2xl:sticky 2xl:top-8" style={animDelay(400)}>
           <StoreTotals
+            planId={view.id}
             totals={storeTotals(view, stores)}
             myStore={view.myStore}
             cheapest={view.comparison.cheapest}

@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { formatEuro, type Reliability as ReliabilityLevel, type StoreId } from '@repas/core';
 import { buttonClasses, cx, glassClasses, Icon, Price, Reliability, StoreChip } from '@repas/ui';
 import { href } from '@/lib/site';
+import { ActionMessage } from './use-plan-action';
+import { useChooseStore } from './use-choose-store';
 
 export interface StoreTotalView {
   id: StoreId;
@@ -17,6 +19,7 @@ export interface StoreTotalView {
 }
 
 export interface StoreTotalsProps {
+  planId: string;
   totals: StoreTotalView[];
   myStore: StoreId;
   cheapest: StoreId;
@@ -25,8 +28,16 @@ export interface StoreTotalsProps {
 }
 
 /** Comparateur à côté du plan (maquette AppPlan) : l'enseigne reste un choix libre. */
-export function StoreTotals({ totals, myStore, cheapest, pricesAt, cheaperProducts }: StoreTotalsProps) {
+export function StoreTotals({
+  planId,
+  totals,
+  myStore,
+  cheapest,
+  pricesAt,
+  cheaperProducts,
+}: StoreTotalsProps) {
   const [selected, setSelected] = useState<StoreId>(myStore);
+  const { choose, pending, message, clear } = useChooseStore(planId);
   const mine = totals.find((t) => t.id === myStore)!;
   const cur = totals.find((t) => t.id === selected)!;
   const cheap = totals.find((t) => t.id === cheapest)!;
@@ -106,19 +117,21 @@ export function StoreTotals({ totals, myStore, cheapest, pricesAt, cheaperProduc
           {isMine ? formatEuro(mine.cents) : diff > 0 ? `−${formatEuro(diff)}` : `+${formatEuro(-diff)}`}
         </p>
       </div>
-      <Link
-        href={href(`/app/liste?enseigne=${selected}`)}
-        className={buttonClasses('primary', 'md', 'mt-4 w-full no-underline')}
+      <button
+        type="button"
+        onClick={() => choose(selected)}
+        disabled={pending}
+        className={buttonClasses('primary', 'md', 'mt-4 w-full')}
       >
         {isMine ? `Garder ${mine.name} et voir ma liste` : `Faire mes courses chez ${cur.name}`}
-      </Link>
+      </button>
       <p className="text-ink-muted mt-2.5 text-center text-[13px] font-bold">
         Ton choix reste libre, même plus cher.
       </p>
 
       {cheaperProducts > 0 && cheapest !== myStore ? (
         <Link
-          href={href('/app/profil')}
+          href={href('/app/comparateur')}
           className="border-line text-ink hover:border-brand mt-4 flex items-center gap-3 rounded-[16px] border border-dashed bg-white/60 px-3.5 py-3 no-underline transition-colors"
         >
           <Icon name="panier" size={22} className="text-brand shrink-0" />
@@ -133,6 +146,7 @@ export function StoreTotals({ totals, myStore, cheapest, pricesAt, cheaperProduc
           </span>
         </Link>
       ) : null}
+      <ActionMessage message={message} onClose={clear} />
     </aside>
   );
 }

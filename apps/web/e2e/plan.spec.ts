@@ -34,7 +34,7 @@ test('plan : 14 repas, comparateur, remplacer, verrouiller, varier la semaine', 
   const stores = page.getByRole('radiogroup', { name: 'Enseigne' }).getByRole('radio');
   await expect(stores).toHaveCount(6);
   await expect(page.getByText(/^Prix relevés le \d{2}\/\d{2}$/).first()).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Garder Lidl et voir ma liste' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Garder Lidl et voir ma liste' })).toBeVisible();
   await expect(page.getByText('Ton choix reste libre, même plus cher.')).toBeVisible();
 
   if (!isMobile) {
@@ -75,4 +75,49 @@ test('plan : 14 repas, comparateur, remplacer, verrouiller, varier la semaine', 
   await page.goto('/app');
   await expect(page.getByRole('heading', { name: 'Ton menu de la semaine est prêt.' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Au menu aujourd’hui' })).toBeVisible();
+});
+
+test('comparateur → garder son enseigne → liste cochée, partagée en lecture seule', async ({
+  page,
+  browser,
+}, info) => {
+  await signUp(page, uniqueEmail(`liste-${info.project.name}`));
+
+  // Comparateur détaillé : 6 enseignes, détail produit par produit (essai = Premium).
+  await page.goto('/app/comparateur');
+  await expect(page.getByRole('heading', { name: 'Où ta semaine coûte le moins' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Total par enseigne' }).getByRole('button')).toHaveCount(6);
+  await expect(page.getByRole('heading', { name: /^Produit par produit · Lidl vs / })).toBeVisible();
+  await expect(page.getByRole('table').getByRole('row')).not.toHaveCount(0);
+
+  // « Garder Lidl » : la semaine est validée et la liste s'ouvre.
+  await page.getByRole('button', { name: 'Garder Lidl' }).click();
+  await expect(page).toHaveURL(/\/app\/liste$/);
+  await expect(page.getByRole('heading', { name: 'Ma liste de courses' })).toBeVisible();
+  const first = page.getByRole('checkbox').first();
+  await first.check();
+  await expect(page.getByText(/^1 articles sur \d+$/)).toBeVisible();
+
+  // Enregistré : toujours coché après rechargement.
+  await page.waitForTimeout(500);
+  await page.reload();
+  await expect(page.getByRole('checkbox').first()).toBeChecked();
+
+  // Lien de partage : lisible sans compte.
+  await page
+    .context()
+    .grantPermissions(['clipboard-read', 'clipboard-write'])
+    .catch(() => undefined);
+  const token = await page.evaluate(async () => {
+    const res = await fetch(location.href);
+    const html = await res.text();
+    return /\/liste\/([0-9a-f]{32,})/.exec(html)?.[1] ?? null;
+  });
+  expect(token).not.toBeNull();
+  const visitor = await browser.newContext();
+  const shared = await visitor.newPage();
+  await shared.goto(`/liste/${token}`);
+  await expect(shared.getByRole('heading', { name: 'Liste de courses partagée' })).toBeVisible();
+  await expect(shared.getByText('(déjà pris)')).toHaveCount(1);
+  await visitor.close();
 });

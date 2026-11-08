@@ -2,7 +2,7 @@
 -- Marion = utilisatrice du seed. Bob = second foyer créé ici. Tout est annulé en fin de transaction.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(16);
+select plan(26);
 
 -- ─── Préparation (superutilisateur) ─────────────────────────────────────────
 insert into auth.users (instance_id, id, aud, role, email, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
@@ -16,6 +16,18 @@ select set_config('test.bob_household',
 
 insert into meal_plans (household_id, week_start, store_id, total_cents, reference_cents)
 values (current_setting('test.bob_household')::uuid, '2026-11-09', 'lidl', 6010, 7160);
+
+-- Liste de Marion (créée par le serveur) avec un article issu du plan.
+with l as (
+  insert into shopping_lists (meal_plan_id, store_id)
+  select p.id, 'auchan' from meal_plans p join profiles pr on pr.household_id = p.household_id
+  where pr.id = '00000000-0000-0000-0000-000000000301' order by p.week_start desc limit 1
+  on conflict (meal_plan_id) do update set store_id = 'auchan'
+  returning id, share_token)
+select set_config('test.list', (select id::text from l), true), set_config('test.share', (select share_token from l), true);
+delete from shopping_list_items where list_id = current_setting('test.list')::uuid;
+insert into shopping_list_items (list_id, product_id, label, quantity_label, aisle_id, est_cents)
+values (current_setting('test.list')::uuid, '00000000-0000-0000-0000-000000000101', 'Potimarron', 'pièce', 'fruits_legumes', 249);
 
 -- ─── En tant que Marion ─────────────────────────────────────────────────────
 set local role authenticated;
@@ -58,6 +70,28 @@ select throws_ok(
      where id = current_setting('test.marion')::uuid $$,
   '42501', null, 'Marion ne peut pas se déclarer parrainée');
 
+-- Lot 6 : totaux du plan et enseigne de la liste fixés par le serveur, traces « coché par ».
+select throws_ok($$ update meal_plans set total_cents = 1 $$, '42501', null,
+  'Marion ne peut pas fixer elle-même les totaux de son plan');
+select throws_ok(
+  $$ insert into meal_plans (household_id, week_start, store_id, reference_cents)
+     values (my_household_id(), '2030-01-07', 'lidl', 99999) $$,
+  '42501', null, 'Marion ne peut pas créer un plan avec un total de référence');
+select throws_ok($$ update shopping_lists set store_id = 'lidl' $$, '42501', null,
+  'Marion ne peut pas basculer sa liste sans passer par le serveur');
+select lives_ok($$ update shopping_list_items set checked = true where list_id = current_setting('test.list')::uuid $$,
+  'Marion coche un article de sa liste');
+select is((select checked_by::text from shopping_list_items where list_id = current_setting('test.list')::uuid),
+  current_setting('test.marion'), '« Coché par » est renseigné par la base');
+select lives_ok($$ insert into shopping_list_items (list_id, label) values (current_setting('test.list')::uuid, 'Bougies') $$,
+  'Marion ajoute un article à la main');
+select is((select added_by::text || manual::text from shopping_list_items where label = 'Bougies'),
+  current_setting('test.marion') || 'true', '« Ajouté par » est renseigné par la base');
+select lives_ok($$ delete from shopping_list_items where list_id = current_setting('test.list')::uuid $$,
+  'Marion vide sa liste');
+select is((select count(*)::int from shopping_list_items where list_id = current_setting('test.list')::uuid), 1,
+  'Seuls les articles ajoutés à la main sont retirés (ceux du plan restent)');
+
 -- ─── En tant que Bob ────────────────────────────────────────────────────────
 select set_config('request.jwt.claims', json_build_object('sub', current_setting('test.bob'), 'role', 'authenticated')::text, true);
 select is((select count(*)::int from meal_plans), 1, 'Bob ne voit que son plan');
@@ -67,6 +101,7 @@ set local role anon;
 select set_config('request.jwt.claims', '{"role":"anon"}', true);
 select is((select count(*)::int from recipes where slug = 'veloute-potimarron'), 1, 'Le site voit les recettes publiées');
 select throws_ok($$ select * from households $$, '42501', null, 'Un visiteur n''a aucun accès aux foyers');
+select is(shared_list(current_setting('test.share'))->>'store', 'Auchan', 'Une liste partagée se lit sans compte, par son lien');
 
 select * from finish();
 rollback;
