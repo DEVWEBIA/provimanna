@@ -18,5 +18,16 @@ export { Logo, LogoMark } from './logo.tsx';
 export { Toast, ToastAction, Notice, Skeleton, EmptyState } from './feedback.tsx';
 export type { ToastProps, NoticeProps, EmptyStateProps } from './feedback.tsx';
 export { Reveal, type RevealProps } from './reveal.tsx';
-export { Eyebrow, SectionHeading, PageHeader } from './section-heading.tsx';
+export { AccentTitle, Eyebrow, SectionHeading, PageHeader } from './section-heading.tsx';
 export { Glow, GlassCard, IconTile, animDelay, glassClasses, type GlassCardProps } from './surface.tsx';
+export {
+  CountUp,
+  FadeUp,
+  MotionRoot,
+  NavIndicator,
+  PageTransition,
+  Pressable,
+  Stagger,
+  StaggerItem,
+  StepTransition,
+} from './motion.tsx';

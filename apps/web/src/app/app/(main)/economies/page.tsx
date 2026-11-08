@@ -19,6 +19,7 @@ import {
   Plat,
   Reveal,
   TicketCard,
+  CountUp,
 } from '@repas/ui';
 import { ShareRecap } from '@/components/engagement/share-recap';
 import { longDate } from '@/lib/dates';
@@ -93,7 +94,7 @@ export default async function EconomiesPage() {
             DEPUIS TA PREMIÈRE SEMAINE VALIDÉE, LE {first ? longDate(first.week_start).toUpperCase() : ''}
           </p>
           <h1 className="font-display mt-2 text-[clamp(56px,8vw,88px)] font-extrabold tabular-nums leading-none tracking-[-2px]">
-            {formatEuro(e.saved)}
+            <CountUp value={e.saved} format="euro" duration={1.6} />
           </h1>
           <p className="text-site-on-brand-muted mt-3 max-w-[560px] text-[17px] font-bold">
             d’écart évité par rapport à ton enseigne habituelle, à liste égale. {phrase}

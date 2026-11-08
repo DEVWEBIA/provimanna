@@ -27,6 +27,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@repas/core": "workspace:^"
+    "@repas/core": "workspace:^",
+    "motion": "14.6.0"
   }
 }

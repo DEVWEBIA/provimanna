@@ -3,6 +3,7 @@ import { cx } from './cx.ts';
 import { Icon } from './icons.tsx';
 import { DefaultLink, type LinkComponent } from './link.tsx';
 import { Logo } from './logo.tsx';
+import { NavIndicator } from './motion.tsx';
 import { APP_NAV, type AppSection } from './nav.ts';
 import { Glow } from './surface.tsx';
 import { TabBar } from './tab-bar.tsx';
@@ -55,12 +56,13 @@ export function AppShell({
                 href={item.href}
                 aria-current={on ? 'page' : undefined}
                 className={cx(
-                  'flex min-h-[46px] items-center gap-3 rounded-[14px] px-3.5 text-[15px] font-extrabold no-underline transition-[background-color,transform] duration-200 motion-reduce:transition-none',
+                  'relative isolate flex min-h-[46px] items-center gap-3 rounded-[14px] px-3.5 text-[15px] font-extrabold no-underline transition-[background-color,transform] duration-200 motion-reduce:transition-none',
                   on
-                    ? 'bg-brand-soft text-brand'
+                    ? 'text-brand'
                     : 'text-ink dark:hover:bg-surface-50 hover:translate-x-0.5 hover:bg-white/80',
                 )}
               >
+                {on ? <NavIndicator group="app" className="bg-brand-soft rounded-[14px]" /> : null}
                 <Icon name={item.icon} size={20} />
                 {item.label}
                 {item.id === 'notifications' && unreadNotifications > 0 ? (

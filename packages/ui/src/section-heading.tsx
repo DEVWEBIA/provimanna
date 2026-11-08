@@ -16,17 +16,77 @@ export function Eyebrow({ children, className }: { children: ReactNode; classNam
   );
 }
 
+/**
+ * Titre avec accent typographique : le dernier mot (ou `accent`, une fin de titre) en serif italique.
+ * Automatique pour un titre en texte d'au moins 2 mots, sauf si ce mot contient un chiffre.
+ * `animate` : chaque mot monte de sous la ligne, en cascade (titres en haut de page).
+ */
+export function AccentTitle({
+  title,
+  accent,
+  animate = false,
+  baseDelay = 0,
+}: {
+  title: ReactNode;
+  accent?: string | false;
+  animate?: boolean;
+  baseDelay?: number;
+}) {
+  if (typeof title !== 'string') return <>{title}</>;
+  // Ponctuation isolée (« ? », « ! », « : ») rattachée au mot précédent.
+  const words = title.split(' ').reduce<string[]>((acc, w) => {
+    if (/^[?!:;»]+$/.test(w) && acc.length) acc[acc.length - 1] += ` ${w}`;
+    else acc.push(w);
+    return acc;
+  }, []);
+  let accentFrom = words.length;
+  if (typeof accent === 'string' && title.endsWith(accent)) {
+    accentFrom = words.length - accent.split(' ').filter((w) => !/^[?!:;»]+$/.test(w)).length;
+  } else if (accent === undefined && words.length >= 2 && !/\d/.test(words.at(-1)!)) {
+    accentFrom = words.length - 1;
+  }
+  return (
+    <>
+      {words.map((w, i) => {
+        const accented = i >= accentFrom;
+        const word = (
+          <span className={cx('whitespace-nowrap', accented && 'font-accent text-brand')}>{w}</span>
+        );
+        const space = i < words.length - 1 ? ' ' : null;
+        return animate ? (
+          <span key={i}>
+            <span className="anim-word-mask">
+              <span className="anim-word" style={delay(baseDelay + i * 55)}>
+                {word}
+              </span>
+            </span>
+            {space}
+          </span>
+        ) : (
+          <span key={i}>
+            {word}
+            {space}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
 /** En-tête de section centré : étiquette, titre, phrase d'accroche. */
 export function SectionHeading({
   id,
   eyebrow,
   title,
   lead,
+  accent,
 }: {
   id: string;
   eyebrow: string;
   title: ReactNode;
   lead?: ReactNode;
+  /** Fin du titre en serif italique (automatique : dernier mot), `false` pour aucune. */
+  accent?: string | false;
 }) {
   return (
     <div className="mx-auto max-w-[680px] text-center">
@@ -35,7 +95,7 @@ export function SectionHeading({
         id={id}
         className="font-display mt-5 text-[clamp(30px,3.8vw,46px)] font-extrabold leading-[1.08] tracking-[-1.2px]"
       >
-        {title}
+        <AccentTitle title={title} accent={accent} />
       </h2>
       {lead ? <p className="text-ink-muted mt-4 text-[18px] leading-7">{lead}</p> : null}
     </div>
@@ -52,9 +112,12 @@ export function PageHeader({
   lead,
   actions,
   className,
+  accent,
 }: {
   eyebrow?: ReactNode;
   title: ReactNode;
+  /** Fin du titre en serif italique (automatique : dernier mot), `false` pour aucune. */
+  accent?: string | false;
   lead?: ReactNode;
   actions?: ReactNode;
   className?: string;
@@ -67,11 +130,14 @@ export function PageHeader({
             <Eyebrow>{eyebrow}</Eyebrow>
           </div>
         ) : null}
-        <h1
-          className="anim-rise font-display mt-4 text-[clamp(32px,4vw,48px)] font-extrabold leading-[1.04] tracking-[-1.4px]"
-          style={delay(90)}
-        >
-          {title}
+        <h1 className="font-display mt-4 text-[clamp(32px,4vw,48px)] font-extrabold leading-[1.04] tracking-[-1.4px]">
+          {typeof title === 'string' ? (
+            <AccentTitle title={title} accent={accent} animate baseDelay={90} />
+          ) : (
+            <span className="anim-rise block" style={delay(90)}>
+              {title}
+            </span>
+          )}
         </h1>
         {lead ? (
           <p className="anim-rise text-ink-muted mt-3 max-w-[560px] text-[18px] leading-7" style={delay(180)}>

@@ -46,6 +46,8 @@ import {
   Plat,
   TicketCard,
   type IconName,
+  AccentTitle,
+  StepTransition,
 } from '@repas/ui';
 import { saveOnboarding, type GeneratedPlan } from '@/app/app/bienvenue/actions';
 import { updatePreferences } from '@/app/app/(main)/profil/actions';
@@ -154,15 +156,14 @@ const CHEAPEST_EXAMPLE = priceSpread(EXAMPLE_STORES.map((s) => s.cents)).minCent
 const roundEuro = (cents: number) => Math.round(cents / 100) * 100;
 const clampBudget = (cents: number) => Math.min(BUDGET_MAX_CENTS, Math.max(BUDGET_MIN_CENTS, cents));
 
-const h1Class =
-  'anim-line font-display text-[clamp(34px,4.4vw,50px)] leading-[1.04] font-extrabold tracking-[-1.4px]';
+const h1Class = 'font-display text-[clamp(34px,4.4vw,50px)] leading-[1.04] font-extrabold tracking-[-1.4px]';
 const primaryShadow = 'shadow-[0_12px_30px_rgba(107,56,104,0.28)]';
 
 function StepTitle({ title, lead }: { title: ReactNode; lead: ReactNode }) {
   return (
     <>
       <h1 className={h1Class}>
-        <span style={animDelay(40)}>{title}</span>
+        <AccentTitle title={title} animate baseDelay={40} />
       </h1>
       <p className="anim-rise text-ink-muted mb-8 mt-3 text-[18px] leading-[26px]" style={animDelay(120)}>
         {lead}
@@ -287,8 +288,11 @@ export function OnboardingWizard({
   const reference = roundEuro((scaleCents(exampleCents(d.store), factor) * meals) / 14);
   const budget = clampBudget(d.budget_cents ?? reference);
 
+  // Sens de la transition entre écrans : vers la droite en avançant, vers la gauche en revenant.
+  const [direction, setDirection] = useState<1 | -1>(1);
   const goTo = (i: number) => {
     setErrors({});
+    setDirection(i >= index ? 1 : -1);
     setIndex(i);
     window.scrollTo({ top: 0 });
   };
@@ -479,446 +483,451 @@ export function OnboardingWizard({
             />
           ) : step !== 'resultat' ? (
             <form id="etape" onSubmit={next} noValidate>
-              {step === 'motivations' ? (
-                <>
-                  <StepTitle
-                    title="Qu’est-ce qui t’amène ?"
-                    lead="Coche tout ce qui te ressemble en ce moment. On en tient compte pour ta semaine."
-                  />
-                  <StepBody>
-                    <fieldset className="flex flex-col gap-3">
-                      <legend className="sr-only">Ce qui t’amène</legend>
-                      {MOTIVATIONS.map((m) => (
-                        <OptionCard
-                          key={m.id}
-                          type="checkbox"
-                          name="motivation"
-                          icon={MOTIVATION_ICONS[m.id]}
-                          title={m.label}
-                          hint={m.hint}
-                          checked={d.motivations.includes(m.id)}
-                          onChange={() => set('motivations', toggle(d.motivations, m.id))}
-                        />
-                      ))}
-                    </fieldset>
-                  </StepBody>
-                </>
-              ) : null}
-
-              {step === 'foyer' ? (
-                <>
-                  <StepTitle
-                    title="Vous êtes combien à table ?"
-                    lead="On adapte les quantités et le budget à ton foyer."
-                  />
-                  <StepBody>
-                    <div className="flex flex-col gap-3">
-                      <Counter
-                        id="adults"
-                        label="Adultes"
-                        hint="13 ans et plus"
-                        icon="profil"
-                        value={d.adults}
-                        min={1}
-                        max={8}
-                        onChange={(n) => set('adults', n)}
-                        addLabel="Ajouter un adulte"
-                        removeLabel="Retirer un adulte"
-                      />
-                      <Counter
-                        id="children"
-                        label="Enfants"
-                        hint="Portions adaptées"
-                        icon="famille"
-                        value={d.children}
-                        min={0}
-                        max={8}
-                        onChange={(n) => set('children', n)}
-                        addLabel="Ajouter un enfant"
-                        removeLabel="Retirer un enfant"
-                      />
-                    </div>
-                  </StepBody>
-                </>
-              ) : null}
-
-              {step === 'repas' ? (
-                <>
-                  <StepTitle
-                    title="Quels repas on prévoit ?"
-                    lead="Les moments et les jours de ta semaine."
-                  />
-                  <StepBody>
-                    <fieldset className="grid grid-cols-2 gap-3">
-                      <legend className="sr-only">Repas par jour</legend>
-                      <OptionTile
-                        type="radio"
-                        name="moments"
-                        checked={!d.with_lunch}
-                        onChange={() => set('with_lunch', false)}
-                        visual={<IconBubble name="lune" size={60} />}
-                        title="Le soir"
-                        hint="1 repas par jour"
-                      />
-                      <OptionTile
-                        type="radio"
-                        name="moments"
-                        checked={d.with_lunch}
-                        onChange={() => set('with_lunch', true)}
-                        visual={<IconBubble name="soleil" size={60} />}
-                        title="Midi + soir"
-                        hint="2 repas par jour"
-                      />
-                    </fieldset>
-                    <h2 className="text-ink-muted mb-2.5 mt-7 text-[13px] font-black uppercase tracking-[1.4px]">
-                      Ta semaine
-                    </h2>
-                    <WeekGrid
-                      days={d.meal_days}
-                      withLunch={d.with_lunch}
-                      onToggle={(day) => set('meal_days', toggle(d.meal_days, day))}
+              <StepTransition stepKey={step} direction={direction}>
+                {step === 'motivations' ? (
+                  <>
+                    <StepTitle
+                      title="Qu’est-ce qui t’amène ?"
+                      lead="Coche tout ce qui te ressemble en ce moment. On en tient compte pour ta semaine."
                     />
-                    <p className="mt-4 text-center text-[16px]" aria-live="polite">
-                      <strong className="font-black tabular-nums">{meals} repas</strong>
-                      <span className="text-ink-muted font-bold"> · {daysSummary(d.meal_days)}</span>
-                    </p>
-                    {errors.step ? <Alert>{errors.step}</Alert> : null}
-                  </StepBody>
-                </>
-              ) : null}
-
-              {step === 'enseigne' ? (
-                <>
-                  <StepTitle
-                    title="Où fais-tu tes courses ?"
-                    lead="On calcule les prix dans ton enseigne. Tu verras aussi les autres, pour comparer."
-                  />
-                  <StepBody>
-                    <div className="mb-6">
-                      <label htmlFor="cp" className="mb-2 block text-[15px] font-black">
-                        Code postal
-                      </label>
-                      <input
-                        id="cp"
-                        value={d.postal_code}
-                        onChange={(e) => set('postal_code', e.target.value)}
-                        inputMode="numeric"
-                        autoComplete="postal-code"
-                        maxLength={5}
-                        placeholder="69003"
-                        aria-invalid={errors.postal_code ? true : undefined}
-                        aria-describedby={errors.postal_code ? 'cp-err' : 'cp-aide'}
-                        className={inputClasses(Boolean(errors.postal_code), 'text-[17px] font-extrabold')}
-                      />
-                      <p id="cp-aide" className="text-ink-muted mt-2 text-[14px] font-bold">
-                        Il sert à choisir les enseignes et les prix proches de chez toi. Il n’est jamais
-                        partagé.
-                      </p>
-                      {errors.postal_code ? <Alert id="cp-err">{errors.postal_code}</Alert> : null}
-                    </div>
-                    <fieldset className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                      <legend className="mb-3 text-[17px] font-black">
-                        {region === 'outre_mer'
-                          ? 'Les enseignes près de chez toi'
-                          : 'Ton enseigne habituelle'}
-                      </legend>
-                      {regionStores.map((s) => (
-                        <OptionTile
-                          key={s.id}
-                          type="radio"
-                          name="store"
-                          checked={d.store === s.id}
-                          onChange={() => set('store', s.id)}
-                          visual={<StoreLogo id={s.id} name={s.name} size={56} />}
-                          title={s.name}
-                          hint={STORES_INFO[s.id].partialAssortment ? 'Assortiment partiel' : undefined}
-                        />
-                      ))}
-                    </fieldset>
-                    {errors.store ? <Alert>{errors.store}</Alert> : null}
-                    {d.store && STORES_INFO[d.store].partialAssortment ? (
-                      <InfoNote icon="panier" title="Assortiment partiel">
-                        {STORES_INFO[d.store].name} ne vend pas tout : les produits absents de ta liste sont
-                        comptés au prix moyen des autres enseignes, avec le signe ≈.
-                      </InfoNote>
-                    ) : null}
-                    {region === 'outre_mer' ? (
-                      <InfoNote icon="monde" title="Outre-mer">
-                        On compare les enseignes présentes chez toi. Les prix affichés sont pour l’instant
-                        ceux de la métropole : les relevés locaux arriveront avec les tickets de caisse.
-                      </InfoNote>
-                    ) : null}
-                  </StepBody>
-                </>
-              ) : null}
-
-              {step === 'budget' ? (
-                <>
-                  <StepTitle
-                    title="Quel budget pour tes courses ?"
-                    lead="Par semaine, pour tout le foyer. On compose tes repas pour rester dedans."
-                  />
-                  <StepBody>
-                    <div className={cx('text-center transition-opacity', noBudget && 'opacity-40')}>
-                      <p
-                        className="font-display text-brand text-[clamp(72px,14vw,104px)] font-extrabold tabular-nums leading-none tracking-[-3px]"
-                        aria-hidden="true"
-                      >
-                        {Math.round(budget / 100)} €
-                      </p>
-                      <p className="text-ink-muted mt-2 text-[17px] font-bold">
-                        par semaine, pour {meals} repas
-                      </p>
-                      <p className="bg-brand-soft text-brand mt-4 inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[16px] font-black">
-                        <Icon name="personnes" size={20} />
-                        {people} personne{people > 1 ? 's' : ''}
-                      </p>
-                    </div>
-                    <label htmlFor={budgetId} className="sr-only">
-                      Budget par semaine
-                    </label>
-                    <input
-                      id={budgetId}
-                      type="range"
-                      min={BUDGET_MIN_CENTS / 100}
-                      max={BUDGET_MAX_CENTS / 100}
-                      step={1}
-                      value={Math.round(budget / 100)}
-                      disabled={noBudget}
-                      aria-valuetext={`${Math.round(budget / 100)} euros par semaine`}
-                      onChange={(e) => set('budget_cents', Number(e.target.value) * 100)}
-                      className="accent-brand mt-8 h-11 w-full cursor-pointer disabled:cursor-not-allowed"
-                    />
-                    <div className="flex justify-between text-[15px]">
-                      <span>
-                        <strong className="block font-black tabular-nums">{BUDGET_MIN_CENTS / 100} €</strong>
-                        <span className="text-ink-muted font-bold">Budget serré</span>
-                      </span>
-                      <span className="text-right">
-                        <strong className="block font-black tabular-nums">{BUDGET_MAX_CENTS / 100} €</strong>
-                        <span className="text-ink-muted font-bold">Budget confort</span>
-                      </span>
-                    </div>
-                    <label className="mt-6 flex min-h-11 cursor-pointer items-center gap-3 text-[16px] font-bold">
-                      <input
-                        type="checkbox"
-                        checked={noBudget}
-                        onChange={(e) => setNoBudget(e.target.checked)}
-                        className="accent-brand h-5 w-5"
-                      />
-                      Je n’ai pas de budget précis
-                    </label>
-                    <InfoNote icon="pieces" title={`Repère : ≈ ${formatEuro(reference)} par semaine`}>
-                      {!noBudget && budget < reference * 0.8
-                        ? 'Budget serré : on privilégie les recettes les moins chères de ton enseigne.'
-                        : `C’est le prix habituel de ${meals} repas pour ${people} personne${people > 1 ? 's' : ''}${myStore ? ` chez ${myStore.name}` : ''}.`}
-                    </InfoNote>
-                  </StepBody>
-                </>
-              ) : null}
-
-              {step === 'regime' ? (
-                <>
-                  <StepTitle
-                    title="Un régime ou des allergies ?"
-                    lead="Coche ce qui te concerne. Aucun choix, c’est très bien aussi."
-                  />
-                  <StepBody>
-                    <fieldset className="grid grid-cols-2 gap-3">
-                      <legend className="sr-only">Régimes et aliments à éviter</legend>
-                      {PREFERENCES.map((p) => (
-                        <OptionTile
-                          key={p.id}
-                          type="checkbox"
-                          name="pref"
-                          checked={d.prefs.includes(p.id)}
-                          onChange={() => set('prefs', toggle(d.prefs, p.id))}
-                          visual={<IconBubble name={PREF_ICONS[p.id]} />}
-                          title={p.label}
-                        />
-                      ))}
-                    </fieldset>
-                    <InfoNote icon="bouclier" title="Jamais d’exception">
-                      Ces choix s’appliquent à chaque recette de ta semaine.
-                    </InfoNote>
-                  </StepBody>
-                </>
-              ) : null}
-
-              {step === 'ambiance' ? (
-                <>
-                  <StepTitle
-                    title="Quelle ambiance à table ?"
-                    lead={`Jusqu’à ${MAX_STYLES} styles : on les met en avant dans ta semaine.`}
-                  />
-                  <StepBody>
-                    <fieldset className="flex flex-col gap-3">
-                      <legend className="sr-only">Styles de repas, {MAX_STYLES} au plus</legend>
-                      {STYLES.map((s) => {
-                        const on = d.styles.includes(s.id);
-                        return (
+                    <StepBody>
+                      <fieldset className="flex flex-col gap-3">
+                        <legend className="sr-only">Ce qui t’amène</legend>
+                        {MOTIVATIONS.map((m) => (
                           <OptionCard
-                            key={s.id}
+                            key={m.id}
                             type="checkbox"
-                            name="style"
-                            icon={STYLE_ICONS[s.id]}
-                            title={s.label}
-                            hint={s.hint}
-                            checked={on}
-                            disabled={!on && d.styles.length >= MAX_STYLES}
-                            onChange={() => set('styles', toggle(d.styles, s.id))}
+                            name="motivation"
+                            icon={MOTIVATION_ICONS[m.id]}
+                            title={m.label}
+                            hint={m.hint}
+                            checked={d.motivations.includes(m.id)}
+                            onChange={() => set('motivations', toggle(d.motivations, m.id))}
                           />
-                        );
-                      })}
-                    </fieldset>
-                    <p className="text-ink-muted mt-3 text-[14px] font-bold" aria-live="polite">
-                      {d.styles.length >= MAX_STYLES
-                        ? `${MAX_STYLES} styles choisis : décoche-en un pour changer.`
-                        : `${d.styles.length} sur ${MAX_STYLES}`}
-                    </p>
-                    <fieldset className="mt-7">
-                      <legend className="mb-3 text-[17px] font-black">Temps de cuisine en semaine</legend>
-                      <div className="dark:bg-surface-0 grid grid-cols-3 gap-1.5 rounded-[18px] bg-white p-1.5 shadow-[0_2px_18px_rgba(42,26,40,0.06)]">
-                        {COOKING.map((c) => (
-                          <label key={c.v} className="cursor-pointer">
-                            <input
-                              type="radio"
-                              name="temps"
-                              checked={d.cooking_time === c.v}
-                              onChange={() => set('cooking_time', c.v)}
-                              className="peer sr-only"
-                            />
-                            <span className="text-ink-muted peer-checked:bg-brand peer-checked:text-brand-on peer-focus-visible:outline-brand grid min-h-12 place-items-center rounded-[13px] px-2 text-center text-[14px] font-black leading-[18px] transition-colors peer-focus-visible:outline peer-focus-visible:outline-[3px] sm:text-[15px]">
-                              {c.l}
-                            </span>
-                          </label>
                         ))}
+                      </fieldset>
+                    </StepBody>
+                  </>
+                ) : null}
+
+                {step === 'foyer' ? (
+                  <>
+                    <StepTitle
+                      title="Vous êtes combien à table ?"
+                      lead="On adapte les quantités et le budget à ton foyer."
+                    />
+                    <StepBody>
+                      <div className="flex flex-col gap-3">
+                        <Counter
+                          id="adults"
+                          label="Adultes"
+                          hint="13 ans et plus"
+                          icon="profil"
+                          value={d.adults}
+                          min={1}
+                          max={8}
+                          onChange={(n) => set('adults', n)}
+                          addLabel="Ajouter un adulte"
+                          removeLabel="Retirer un adulte"
+                        />
+                        <Counter
+                          id="children"
+                          label="Enfants"
+                          hint="Portions adaptées"
+                          icon="famille"
+                          value={d.children}
+                          min={0}
+                          max={8}
+                          onChange={(n) => set('children', n)}
+                          addLabel="Ajouter un enfant"
+                          removeLabel="Retirer un enfant"
+                        />
                       </div>
-                    </fieldset>
-                  </StepBody>
-                </>
-              ) : null}
+                    </StepBody>
+                  </>
+                ) : null}
 
-              {step === 'cuisines' ? (
-                <>
-                  <StepTitle
-                    title="Quelles cuisines te font envie ?"
-                    lead="Coche autant de cuisines que tu veux : on les met plus souvent dans ta semaine."
-                  />
-                  <StepBody>
-                    <fieldset className="flex flex-col gap-3">
-                      <legend className="sr-only">Cuisines préférées</legend>
-                      {CUISINES.map((c) => {
-                        const n = cuisineCounts[c.id] ?? 0;
-                        return (
-                          <OptionCard
-                            key={c.id}
-                            type="checkbox"
-                            name="cuisine"
-                            visual={
-                              <span className="bg-brand-soft grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full">
-                                <Plat variant={c.plat} size={40} decorative />
-                              </span>
-                            }
-                            title={c.label}
-                            hint={`${c.hint} · ${n ? `${n} recette${n > 1 ? 's' : ''}` : 'bientôt'}`}
-                            checked={d.cuisines.includes(c.id)}
-                            onChange={() => set('cuisines', toggle(d.cuisines, c.id))}
-                          />
-                        );
-                      })}
-                    </fieldset>
-                    <p className="text-ink-muted mt-3 text-[14px] font-bold">
-                      Aucune case cochée : on varie entre toutes les cuisines.
-                    </p>
-                  </StepBody>
-                </>
-              ) : null}
-
-              {step === 'ingredients' ? (
-                <>
-                  <StepTitle
-                    title="Des ingrédients à éviter ?"
-                    lead="Coche ce que tu n’aimes pas : on l’évite dans tes recettes."
-                  />
-                  <StepBody>
-                    <div className="relative">
-                      <Icon
-                        name="recherche"
-                        size={20}
-                        className="text-ink-muted pointer-events-none absolute left-4 top-1/2 -translate-y-1/2"
+                {step === 'repas' ? (
+                  <>
+                    <StepTitle
+                      title="Quels repas on prévoit ?"
+                      lead="Les moments et les jours de ta semaine."
+                    />
+                    <StepBody>
+                      <fieldset className="grid grid-cols-2 gap-3">
+                        <legend className="sr-only">Repas par jour</legend>
+                        <OptionTile
+                          type="radio"
+                          name="moments"
+                          checked={!d.with_lunch}
+                          onChange={() => set('with_lunch', false)}
+                          visual={<IconBubble name="lune" size={60} />}
+                          title="Le soir"
+                          hint="1 repas par jour"
+                        />
+                        <OptionTile
+                          type="radio"
+                          name="moments"
+                          checked={d.with_lunch}
+                          onChange={() => set('with_lunch', true)}
+                          visual={<IconBubble name="soleil" size={60} />}
+                          title="Midi + soir"
+                          hint="2 repas par jour"
+                        />
+                      </fieldset>
+                      <h2 className="text-ink-muted mb-2.5 mt-7 text-[13px] font-black uppercase tracking-[1.4px]">
+                        Ta semaine
+                      </h2>
+                      <WeekGrid
+                        days={d.meal_days}
+                        withLunch={d.with_lunch}
+                        onToggle={(day) => set('meal_days', toggle(d.meal_days, day))}
                       />
-                      <label htmlFor="ingredient-q" className="sr-only">
-                        Chercher un ingrédient
+                      <p className="mt-4 text-center text-[16px]" aria-live="polite">
+                        <strong className="font-black tabular-nums">{meals} repas</strong>
+                        <span className="text-ink-muted font-bold"> · {daysSummary(d.meal_days)}</span>
+                      </p>
+                      {errors.step ? <Alert>{errors.step}</Alert> : null}
+                    </StepBody>
+                  </>
+                ) : null}
+
+                {step === 'enseigne' ? (
+                  <>
+                    <StepTitle
+                      title="Où fais-tu tes courses ?"
+                      lead="On calcule les prix dans ton enseigne. Tu verras aussi les autres, pour comparer."
+                    />
+                    <StepBody>
+                      <div className="mb-6">
+                        <label htmlFor="cp" className="mb-2 block text-[15px] font-black">
+                          Code postal
+                        </label>
+                        <input
+                          id="cp"
+                          value={d.postal_code}
+                          onChange={(e) => set('postal_code', e.target.value)}
+                          inputMode="numeric"
+                          autoComplete="postal-code"
+                          maxLength={5}
+                          placeholder="69003"
+                          aria-invalid={errors.postal_code ? true : undefined}
+                          aria-describedby={errors.postal_code ? 'cp-err' : 'cp-aide'}
+                          className={inputClasses(Boolean(errors.postal_code), 'text-[17px] font-extrabold')}
+                        />
+                        <p id="cp-aide" className="text-ink-muted mt-2 text-[14px] font-bold">
+                          Il sert à choisir les enseignes et les prix proches de chez toi. Il n’est jamais
+                          partagé.
+                        </p>
+                        {errors.postal_code ? <Alert id="cp-err">{errors.postal_code}</Alert> : null}
+                      </div>
+                      <fieldset className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                        <legend className="mb-3 text-[17px] font-black">
+                          {region === 'outre_mer'
+                            ? 'Les enseignes près de chez toi'
+                            : 'Ton enseigne habituelle'}
+                        </legend>
+                        {regionStores.map((s) => (
+                          <OptionTile
+                            key={s.id}
+                            type="radio"
+                            name="store"
+                            checked={d.store === s.id}
+                            onChange={() => set('store', s.id)}
+                            visual={<StoreLogo id={s.id} name={s.name} size={56} />}
+                            title={s.name}
+                            hint={STORES_INFO[s.id].partialAssortment ? 'Assortiment partiel' : undefined}
+                          />
+                        ))}
+                      </fieldset>
+                      {errors.store ? <Alert>{errors.store}</Alert> : null}
+                      {d.store && STORES_INFO[d.store].partialAssortment ? (
+                        <InfoNote icon="panier" title="Assortiment partiel">
+                          {STORES_INFO[d.store].name} ne vend pas tout : les produits absents de ta liste sont
+                          comptés au prix moyen des autres enseignes, avec le signe ≈.
+                        </InfoNote>
+                      ) : null}
+                      {region === 'outre_mer' ? (
+                        <InfoNote icon="monde" title="Outre-mer">
+                          On compare les enseignes présentes chez toi. Les prix affichés sont pour l’instant
+                          ceux de la métropole : les relevés locaux arriveront avec les tickets de caisse.
+                        </InfoNote>
+                      ) : null}
+                    </StepBody>
+                  </>
+                ) : null}
+
+                {step === 'budget' ? (
+                  <>
+                    <StepTitle
+                      title="Quel budget pour tes courses ?"
+                      lead="Par semaine, pour tout le foyer. On compose tes repas pour rester dedans."
+                    />
+                    <StepBody>
+                      <div className={cx('text-center transition-opacity', noBudget && 'opacity-40')}>
+                        <p
+                          className="font-display text-brand text-[clamp(72px,14vw,104px)] font-extrabold tabular-nums leading-none tracking-[-3px]"
+                          aria-hidden="true"
+                        >
+                          {Math.round(budget / 100)} €
+                        </p>
+                        <p className="text-ink-muted mt-2 text-[17px] font-bold">
+                          par semaine, pour {meals} repas
+                        </p>
+                        <p className="bg-brand-soft text-brand mt-4 inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[16px] font-black">
+                          <Icon name="personnes" size={20} />
+                          {people} personne{people > 1 ? 's' : ''}
+                        </p>
+                      </div>
+                      <label htmlFor={budgetId} className="sr-only">
+                        Budget par semaine
                       </label>
                       <input
-                        id="ingredient-q"
-                        type="search"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Chercher un ingrédient…"
-                        className={inputClasses(false, 'min-h-[56px] pl-12 text-[17px]')}
+                        id={budgetId}
+                        type="range"
+                        min={BUDGET_MIN_CENTS / 100}
+                        max={BUDGET_MAX_CENTS / 100}
+                        step={1}
+                        value={Math.round(budget / 100)}
+                        disabled={noBudget}
+                        aria-valuetext={`${Math.round(budget / 100)} euros par semaine`}
+                        onChange={(e) => set('budget_cents', Number(e.target.value) * 100)}
+                        className="accent-brand mt-8 h-11 w-full cursor-pointer disabled:cursor-not-allowed"
                       />
-                    </div>
-                    <p className="text-ink-muted mt-3 text-[14px] font-bold" aria-live="polite">
-                      {d.disliked.length === 0
-                        ? 'Rien à éviter ? Continue simplement.'
-                        : `${d.disliked.length} ingrédient${d.disliked.length > 1 ? 's' : ''} évité${d.disliked.length > 1 ? 's' : ''}`}
-                    </p>
-                    {filteredIngredients.length === 0 ? (
-                      <p className="text-ink-muted mt-6 text-[16px] font-bold">
-                        Aucun ingrédient ne correspond à « {query} ».
-                      </p>
-                    ) : (
-                      filteredIngredients.map((g) => (
-                        <fieldset key={g.id} className="mt-6">
-                          <legend className="mb-3 text-[18px] font-black">{g.label}</legend>
-                          <div className="flex flex-wrap gap-2">
-                            {g.items.map((i) => (
-                              <ChipToggle
-                                key={i.id}
-                                name="ingredient"
-                                label={i.name}
-                                checked={d.disliked.includes(i.id)}
-                                onChange={() => set('disliked', toggle(d.disliked, i.id))}
-                              />
-                            ))}
-                          </div>
-                        </fieldset>
-                      ))
-                    )}
-                  </StepBody>
-                </>
-              ) : null}
-
-              {step === 'equipement' ? (
-                <>
-                  <StepTitle title="Ton équipement ?" lead="Coche ce que tu as dans ta cuisine." />
-                  <StepBody>
-                    <fieldset className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                      <legend className="sr-only">Ton équipement de cuisine</legend>
-                      {EQUIPMENT.map((e) => (
-                        <OptionTile
-                          key={e.id}
+                      <div className="flex justify-between text-[15px]">
+                        <span>
+                          <strong className="block font-black tabular-nums">
+                            {BUDGET_MIN_CENTS / 100} €
+                          </strong>
+                          <span className="text-ink-muted font-bold">Budget serré</span>
+                        </span>
+                        <span className="text-right">
+                          <strong className="block font-black tabular-nums">
+                            {BUDGET_MAX_CENTS / 100} €
+                          </strong>
+                          <span className="text-ink-muted font-bold">Budget confort</span>
+                        </span>
+                      </div>
+                      <label className="mt-6 flex min-h-11 cursor-pointer items-center gap-3 text-[16px] font-bold">
+                        <input
                           type="checkbox"
-                          name="equipement"
-                          checked={d.equipment.includes(e.id)}
-                          onChange={() => set('equipment', toggle(d.equipment, e.id))}
-                          visual={<IconBubble name={EQUIPMENT_ICONS[e.id]} />}
-                          title={e.label}
-                          hint={e.hint ?? undefined}
+                          checked={noBudget}
+                          onChange={(e) => setNoBudget(e.target.checked)}
+                          className="accent-brand h-5 w-5"
                         />
-                      ))}
-                    </fieldset>
-                    {errors.step ? <Alert>{errors.step}</Alert> : null}
-                    <InfoNote icon="check" title="Que des recettes faisables chez toi">
-                      Sans four, pas de gratin. La gazinière vaut des plaques ; avec un air fryer ou un robot
-                      cuiseur, d’autres recettes passent aussi.
-                    </InfoNote>
-                  </StepBody>
-                </>
-              ) : null}
+                        Je n’ai pas de budget précis
+                      </label>
+                      <InfoNote icon="pieces" title={`Repère : ≈ ${formatEuro(reference)} par semaine`}>
+                        {!noBudget && budget < reference * 0.8
+                          ? 'Budget serré : on privilégie les recettes les moins chères de ton enseigne.'
+                          : `C’est le prix habituel de ${meals} repas pour ${people} personne${people > 1 ? 's' : ''}${myStore ? ` chez ${myStore.name}` : ''}.`}
+                      </InfoNote>
+                    </StepBody>
+                  </>
+                ) : null}
 
+                {step === 'regime' ? (
+                  <>
+                    <StepTitle
+                      title="Un régime ou des allergies ?"
+                      lead="Coche ce qui te concerne. Aucun choix, c’est très bien aussi."
+                    />
+                    <StepBody>
+                      <fieldset className="grid grid-cols-2 gap-3">
+                        <legend className="sr-only">Régimes et aliments à éviter</legend>
+                        {PREFERENCES.map((p) => (
+                          <OptionTile
+                            key={p.id}
+                            type="checkbox"
+                            name="pref"
+                            checked={d.prefs.includes(p.id)}
+                            onChange={() => set('prefs', toggle(d.prefs, p.id))}
+                            visual={<IconBubble name={PREF_ICONS[p.id]} />}
+                            title={p.label}
+                          />
+                        ))}
+                      </fieldset>
+                      <InfoNote icon="bouclier" title="Jamais d’exception">
+                        Ces choix s’appliquent à chaque recette de ta semaine.
+                      </InfoNote>
+                    </StepBody>
+                  </>
+                ) : null}
+
+                {step === 'ambiance' ? (
+                  <>
+                    <StepTitle
+                      title="Quelle ambiance à table ?"
+                      lead={`Jusqu’à ${MAX_STYLES} styles : on les met en avant dans ta semaine.`}
+                    />
+                    <StepBody>
+                      <fieldset className="flex flex-col gap-3">
+                        <legend className="sr-only">Styles de repas, {MAX_STYLES} au plus</legend>
+                        {STYLES.map((s) => {
+                          const on = d.styles.includes(s.id);
+                          return (
+                            <OptionCard
+                              key={s.id}
+                              type="checkbox"
+                              name="style"
+                              icon={STYLE_ICONS[s.id]}
+                              title={s.label}
+                              hint={s.hint}
+                              checked={on}
+                              disabled={!on && d.styles.length >= MAX_STYLES}
+                              onChange={() => set('styles', toggle(d.styles, s.id))}
+                            />
+                          );
+                        })}
+                      </fieldset>
+                      <p className="text-ink-muted mt-3 text-[14px] font-bold" aria-live="polite">
+                        {d.styles.length >= MAX_STYLES
+                          ? `${MAX_STYLES} styles choisis : décoche-en un pour changer.`
+                          : `${d.styles.length} sur ${MAX_STYLES}`}
+                      </p>
+                      <fieldset className="mt-7">
+                        <legend className="mb-3 text-[17px] font-black">Temps de cuisine en semaine</legend>
+                        <div className="dark:bg-surface-0 grid grid-cols-3 gap-1.5 rounded-[18px] bg-white p-1.5 shadow-[0_2px_18px_rgba(42,26,40,0.06)]">
+                          {COOKING.map((c) => (
+                            <label key={c.v} className="cursor-pointer">
+                              <input
+                                type="radio"
+                                name="temps"
+                                checked={d.cooking_time === c.v}
+                                onChange={() => set('cooking_time', c.v)}
+                                className="peer sr-only"
+                              />
+                              <span className="text-ink-muted peer-checked:bg-brand peer-checked:text-brand-on peer-focus-visible:outline-brand grid min-h-12 place-items-center rounded-[13px] px-2 text-center text-[14px] font-black leading-[18px] transition-colors peer-focus-visible:outline peer-focus-visible:outline-[3px] sm:text-[15px]">
+                                {c.l}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </fieldset>
+                    </StepBody>
+                  </>
+                ) : null}
+
+                {step === 'cuisines' ? (
+                  <>
+                    <StepTitle
+                      title="Quelles cuisines te font envie ?"
+                      lead="Coche autant de cuisines que tu veux : on les met plus souvent dans ta semaine."
+                    />
+                    <StepBody>
+                      <fieldset className="flex flex-col gap-3">
+                        <legend className="sr-only">Cuisines préférées</legend>
+                        {CUISINES.map((c) => {
+                          const n = cuisineCounts[c.id] ?? 0;
+                          return (
+                            <OptionCard
+                              key={c.id}
+                              type="checkbox"
+                              name="cuisine"
+                              visual={
+                                <span className="bg-brand-soft grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full">
+                                  <Plat variant={c.plat} size={40} decorative />
+                                </span>
+                              }
+                              title={c.label}
+                              hint={`${c.hint} · ${n ? `${n} recette${n > 1 ? 's' : ''}` : 'bientôt'}`}
+                              checked={d.cuisines.includes(c.id)}
+                              onChange={() => set('cuisines', toggle(d.cuisines, c.id))}
+                            />
+                          );
+                        })}
+                      </fieldset>
+                      <p className="text-ink-muted mt-3 text-[14px] font-bold">
+                        Aucune case cochée : on varie entre toutes les cuisines.
+                      </p>
+                    </StepBody>
+                  </>
+                ) : null}
+
+                {step === 'ingredients' ? (
+                  <>
+                    <StepTitle
+                      title="Des ingrédients à éviter ?"
+                      lead="Coche ce que tu n’aimes pas : on l’évite dans tes recettes."
+                    />
+                    <StepBody>
+                      <div className="relative">
+                        <Icon
+                          name="recherche"
+                          size={20}
+                          className="text-ink-muted pointer-events-none absolute left-4 top-1/2 -translate-y-1/2"
+                        />
+                        <label htmlFor="ingredient-q" className="sr-only">
+                          Chercher un ingrédient
+                        </label>
+                        <input
+                          id="ingredient-q"
+                          type="search"
+                          value={query}
+                          onChange={(e) => setQuery(e.target.value)}
+                          placeholder="Chercher un ingrédient…"
+                          className={inputClasses(false, 'min-h-[56px] pl-12 text-[17px]')}
+                        />
+                      </div>
+                      <p className="text-ink-muted mt-3 text-[14px] font-bold" aria-live="polite">
+                        {d.disliked.length === 0
+                          ? 'Rien à éviter ? Continue simplement.'
+                          : `${d.disliked.length} ingrédient${d.disliked.length > 1 ? 's' : ''} évité${d.disliked.length > 1 ? 's' : ''}`}
+                      </p>
+                      {filteredIngredients.length === 0 ? (
+                        <p className="text-ink-muted mt-6 text-[16px] font-bold">
+                          Aucun ingrédient ne correspond à « {query} ».
+                        </p>
+                      ) : (
+                        filteredIngredients.map((g) => (
+                          <fieldset key={g.id} className="mt-6">
+                            <legend className="mb-3 text-[18px] font-black">{g.label}</legend>
+                            <div className="flex flex-wrap gap-2">
+                              {g.items.map((i) => (
+                                <ChipToggle
+                                  key={i.id}
+                                  name="ingredient"
+                                  label={i.name}
+                                  checked={d.disliked.includes(i.id)}
+                                  onChange={() => set('disliked', toggle(d.disliked, i.id))}
+                                />
+                              ))}
+                            </div>
+                          </fieldset>
+                        ))
+                      )}
+                    </StepBody>
+                  </>
+                ) : null}
+
+                {step === 'equipement' ? (
+                  <>
+                    <StepTitle title="Ton équipement ?" lead="Coche ce que tu as dans ta cuisine." />
+                    <StepBody>
+                      <fieldset className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                        <legend className="sr-only">Ton équipement de cuisine</legend>
+                        {EQUIPMENT.map((e) => (
+                          <OptionTile
+                            key={e.id}
+                            type="checkbox"
+                            name="equipement"
+                            checked={d.equipment.includes(e.id)}
+                            onChange={() => set('equipment', toggle(d.equipment, e.id))}
+                            visual={<IconBubble name={EQUIPMENT_ICONS[e.id]} />}
+                            title={e.label}
+                            hint={e.hint ?? undefined}
+                          />
+                        ))}
+                      </fieldset>
+                      {errors.step ? <Alert>{errors.step}</Alert> : null}
+                      <InfoNote icon="check" title="Que des recettes faisables chez toi">
+                        Sans four, pas de gratin. La gazinière vaut des plaques ; avec un air fryer ou un
+                        robot cuiseur, d’autres recettes passent aussi.
+                      </InfoNote>
+                    </StepBody>
+                  </>
+                ) : null}
+              </StepTransition>
               {errors.global ? <Alert>{errors.global}</Alert> : null}
             </form>
           ) : (
@@ -1074,13 +1083,17 @@ function Result(props: {
         {mode === 'guest' ? 'Réponses prêtes' : plan ? 'Plan généré' : 'Foyer enregistré'}
       </p>
       <h1 className={h1Class}>
-        <span style={animDelay(80)}>
-          {mode === 'guest'
-            ? 'Ta première semaine t’attend.'
-            : plan
-              ? `Ta semaine ${plan.weekNumber} est prête.`
-              : 'Tout est prêt pour ta première semaine.'}
-        </span>
+        <AccentTitle
+          animate
+          baseDelay={80}
+          title={
+            mode === 'guest'
+              ? 'Ta première semaine t’attend.'
+              : plan
+                ? `Ta semaine ${plan.weekNumber} est prête.`
+                : 'Tout est prêt pour ta première semaine.'
+          }
+        />
       </h1>
       <p className="anim-rise text-ink-muted mb-7 mt-3 text-[18px]" style={animDelay(180)}>
         {props.meals} repas pour {props.people} personne{props.people > 1 ? 's' : ''}, de saison, chez{' '}
@@ -1166,7 +1179,7 @@ function Composing({ lines }: { lines: string[] }) {
         <Plat variant="curry" size={120} decorative />
       </div>
       <h1 className={cx(h1Class, 'text-center')}>
-        <span style={animDelay(40)}>On compose ta semaine…</span>
+        <AccentTitle animate baseDelay={40} title="On compose ta semaine…" />
       </h1>
       <ul className="dark:bg-surface-0 mx-auto mt-8 flex max-w-[460px] flex-col gap-3 rounded-[24px] bg-white p-5 shadow-[0_2px_18px_rgba(42,26,40,0.06)]">
         {lines.map((l, i) => (

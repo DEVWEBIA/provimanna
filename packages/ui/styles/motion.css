@@ -3,22 +3,6 @@
  * Importé par apps/web et apps/admin. Tout est neutralisé si l'utilisateur réduit les animations.
  */
 
-/*
- * Apparition au défilement (composant <Reveal>). Masqué seulement si le JavaScript est actif
- * et que l'utilisateur n'a pas demandé à réduire les animations : sinon, le contenu est visible d'emblée.
- */
-@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-  [data-reveal] {
-    transition:
-      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  [data-reveal]:not([data-revealed]) {
-    opacity: 0;
-    transform: translateY(28px);
-  }
-}
-
 /* Effets du hero (site public). Rien ne bouge si l'utilisateur demande à réduire les animations. */
 @keyframes rise {
   from {
@@ -125,5 +109,48 @@
   .anim-pop {
     animation: pop 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
     transform-origin: top center;
+  }
+}
+
+/*
+ * Accent raffiné des grands titres (décision du propriétaire, 08/11/2026) : un ou deux mots en serif italique
+ * (Instrument Serif, chargée par next/font dans chaque app) au milieu de Bricolage Grotesque.
+ * Jamais pour les prix ni les libellés d'interface.
+ */
+:root {
+  --font-accent: var(--font-instrument-serif), Georgia, 'Times New Roman', serif;
+}
+.font-accent {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  font-size: 1.1em;
+  line-height: 0.9;
+}
+
+/* Titres de page : chaque mot monte de sous la ligne, en cascade (PageHeader, SectionHeading). */
+.anim-word-mask {
+  display: inline-block;
+  overflow: hidden;
+  padding: 0 0.08em 0.1em 0;
+  margin-right: -0.08em;
+  vertical-align: bottom;
+}
+@keyframes word-up {
+  from {
+    transform: translateY(105%) rotate(4deg);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .anim-word {
+    display: inline-block;
+    animation: word-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--d, 0ms);
   }
 }

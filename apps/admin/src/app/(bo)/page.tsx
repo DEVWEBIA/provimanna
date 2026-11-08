@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { addDays, isoWeek, weekStartOf, STORE_IDS, STORES_INFO } from '@repas/core';
-import { animDelay, cx, glassClasses, PageHeader, Reveal } from '@repas/ui';
+import { animDelay, cx, glassClasses, PageHeader, Reveal, CountUp } from '@repas/ui';
 import { OnboardingStats } from '@/components/onboarding-stats';
 import { StoreLogo } from '@/components/store-logo';
 import { coverageByStore, recentObservations, STORES } from '@/lib/coverage';
@@ -79,16 +79,16 @@ export default async function BoVuePage() {
       .map((p) => p.household_id),
   ).size;
   const kpis = [
-    ['FOYERS ACTIFS', nb(active), `plan de la semaine ${isoWeek(week)}`],
-    ['ESSAIS EN COURS', nb(trials), '14 jours sans carte'],
+    ['FOYERS ACTIFS', active, `plan de la semaine ${isoWeek(week)}`],
+    ['ESSAIS EN COURS', trials, '14 jours sans carte'],
     [
       'PREMIUM PAYANTS',
-      nb(premium),
+      premium,
       trials + premium ? `${pct(premium / (trials + premium))} des essais et abonnés` : '—',
     ],
-    ['SEMAINES VALIDÉES', nb(validated7), 'sur 7 jours'],
-    ['À TRAITER', nb(pendingTickets + aberrant + (unlinked.data?.length ?? 0)), 'tickets, prix, produits'],
-  ];
+    ['SEMAINES VALIDÉES', validated7, 'sur 7 jours'],
+    ['À TRAITER', pendingTickets + aberrant + (unlinked.data?.length ?? 0), 'tickets, prix, produits'],
+  ] as const;
   const funnel = [
     ['Inscrits (30 j)', cohort.length],
     ['Avec un plan', withPlan],
@@ -117,7 +117,9 @@ export default async function BoVuePage() {
         {kpis.map(([l, v, d], i) => (
           <div key={l} className={cx(glassClasses, 'anim-rise p-4')} style={animDelay(120 + i * 60)}>
             <dt className="text-ink-muted text-[12px] font-black tracking-[1px]">{l}</dt>
-            <dd className="font-display mt-1 text-[32px] font-extrabold tabular-nums">{v}</dd>
+            <dd className="font-display mt-1 text-[32px] font-extrabold tabular-nums">
+              <CountUp value={v} />
+            </dd>
             <dd className="text-ink-muted text-[13px] font-bold">{d}</dd>
           </div>
         ))}

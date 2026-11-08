@@ -52,7 +52,7 @@ export default async function BoLayout({ children }: { children: ReactNode }) {
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="bg-raw-encre px-4 py-3 md:hidden">
-          <BoNav items={items} />
+          <BoNav items={items} group="bo-mobile" />
         </div>
         <main className="mx-auto flex w-full max-w-[1240px] flex-1 flex-col gap-8 px-5 py-8 lg:px-10 lg:py-10">
           {children}

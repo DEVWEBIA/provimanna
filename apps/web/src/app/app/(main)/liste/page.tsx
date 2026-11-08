@@ -44,7 +44,9 @@ export default async function ListePage() {
         title={
           <span className="flex items-center gap-3">
             <StoreLogo id={store} name={storeName} size={44} />
-            Ma liste de courses
+            <span>
+              Ma liste de <em className="font-accent text-brand">courses</em>
+            </span>
           </span>
         }
         actions={

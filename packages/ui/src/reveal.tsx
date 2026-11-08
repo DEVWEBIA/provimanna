@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, type ReactNode, type Ref } from 'react';
+import type { ReactNode } from 'react';
+import { motion } from 'motion/react';
 
 export interface RevealProps {
   children: ReactNode;
@@ -11,36 +12,20 @@ export interface RevealProps {
 }
 
 /**
- * Fait apparaître son contenu en fondu au moment où il entre à l'écran (une seule fois).
- * Styles dans styles/motion.css : contenu visible d'emblée sans JavaScript ou si l'utilisateur réduit les animations.
+ * Fait apparaître son contenu au moment où il entre à l'écran (une seule fois), avec un effet ressort (Motion).
+ * Les animations réduites sont respectées par <MotionRoot>, posé dans le gabarit racine de chaque app.
  */
-export function Reveal({ children, delay = 0, className, as: Tag = 'div' }: RevealProps) {
-  const ref = useRef<HTMLElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            el.setAttribute('data-revealed', '');
-            io.disconnect();
-          }
-        }
-      },
-      { rootMargin: '0px 0px -10% 0px', threshold: 0.1 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+export function Reveal({ children, delay = 0, className, as = 'div' }: RevealProps) {
+  const Comp = motion[as];
   return (
-    <Tag
-      ref={ref as Ref<never>}
-      data-reveal=""
+    <Comp
       className={className}
-      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+      initial={{ opacity: 0, y: 28, scale: 0.985 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: '0px 0px -8% 0px' }}
+      transition={{ type: 'spring', stiffness: 90, damping: 18, delay: delay / 1000 }}
     >
       {children}
-    </Tag>
+    </Comp>
   );
 }

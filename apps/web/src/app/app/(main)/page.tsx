@@ -16,6 +16,7 @@ import {
   Reliability,
   Reveal,
   TicketCard,
+  CountUp,
 } from '@repas/ui';
 import { DAY_SHORT, PLAT_TINT, SLOT_LABEL } from '@/components/plan/labels';
 import { DemoNotice } from '@/components/plan/demo-notice';
@@ -95,7 +96,7 @@ export default async function DashboardPage() {
               {isCurrent ? 'NOUVEAU · ' : ''}SEMAINE {view.weekNumber}
             </p>
             <h2 className="font-display mt-4 text-[clamp(30px,3.6vw,44px)] font-extrabold leading-[1.05] tracking-[-1.2px]">
-              Ton menu de la semaine est prêt.
+              Ton menu de la semaine est <em className="font-accent">prêt.</em>
             </h2>
             <p className="text-site-lilac mt-2.5 text-[16px] font-bold">
               {weekRangeLabel(view.weekStart)} · {view.people} {view.people > 1 ? 'personnes' : 'personne'} ·{' '}
@@ -105,7 +106,7 @@ export default async function DashboardPage() {
             <div className="mt-6 flex flex-wrap items-end gap-x-5 gap-y-3">
               <p className="font-display text-[56px] font-extrabold tabular-nums leading-none tracking-[-2px]">
                 {mine.freshRatio < 1 ? <span aria-hidden="true">≈ </span> : null}
-                {formatEuro(mine.cents)}
+                <CountUp value={mine.cents} format="euro" />
               </p>
               <div className="pb-1.5">
                 {cheapest.storeId !== view.myStore ? (
@@ -208,7 +209,7 @@ export default async function DashboardPage() {
         <Reveal delay={80} className={`${glassClasses} p-5`}>
           <p className="text-ink-muted text-[12px] font-black tracking-[1.2px]">TES ÉCONOMIES</p>
           <p className="font-display mt-1 text-[34px] font-extrabold tabular-nums">
-            {formatEuro(engagement.saved)}
+            <CountUp value={engagement.saved} format="euro" />
           </p>
           <Link
             href={href('/app/economies')}

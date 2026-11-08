@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import {
+  AccentTitle,
   AppShell,
   Button,
   Field,
@@ -113,5 +114,29 @@ describe('Accessibilité des contrôles', () => {
   });
   it('TicketCard dessine le bord dentelé en radial-gradient', () => {
     expect(html(<TicketCard>60,10 €</TicketCard>)).toContain('radial-gradient(circle, var(--surface-50) 7px');
+  });
+});
+
+describe('AccentTitle', () => {
+  const accented = (out: string) => [...out.matchAll(/font-accent[^>]*>([^<]*)</g)].map((m) => m[1]);
+  it('met le dernier mot en italique à partir de 2 mots', () => {
+    expect(accented(html(<AccentTitle title="Ma liste de courses" />))).toEqual(['courses']);
+    expect(accented(html(<AccentTitle title="Vue d’ensemble" />))).toEqual(['d’ensemble']);
+    expect(accented(html(<AccentTitle title="Utilisateurs" />))).toEqual([]);
+  });
+  it('rattache la ponctuation isolée et évite les chiffres', () => {
+    expect(accented(html(<AccentTitle title="Qu’est-ce qui t’amène ?" />))).toEqual(['t’amène ?']);
+    expect(accented(html(<AccentTitle title="Plan de la semaine 46" />))).toEqual([]);
+  });
+  it('accepte une fin de titre choisie, ou aucune', () => {
+    expect(accented(html(<AccentTitle title="Où ta semaine coûte le moins" accent="le moins" />))).toEqual([
+      'le',
+      'moins',
+    ]);
+    expect(accented(html(<AccentTitle title="Ma liste de courses" accent={false} />))).toEqual([]);
+  });
+  it('garde le texte exact du titre (lecteurs d’écran, tests)', () => {
+    const out = html(<AccentTitle title="Qu’est-ce qui t’amène ?" animate />).replace(/<[^>]+>/g, '');
+    expect(out).toBe('Qu’est-ce qui t’amène ?');
   });
 });
