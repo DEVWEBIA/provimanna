@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { addDays, isoWeek, weekStartOf } from '@repas/core';
 import { animDelay, cx, glassClasses, PageHeader, Reveal } from '@repas/ui';
+import { StoreLogo } from '@/components/store-logo';
 import { coverageByStore, recentObservations, STORES } from '@/lib/coverage';
 import { requireRole } from '@/lib/staff';
 import { createAdminClient } from '@/lib/supabase/admin';
@@ -210,7 +211,7 @@ export default async function BoVuePage() {
               {coverage.map((c) => (
                 <tr key={c.store} className="border-line border-t">
                   <th scope="row" className="py-2.5 text-left font-extrabold">
-                    {STORE_NAME[c.store]}
+                    <StoreLogo id={c.store} name={STORE_NAME[c.store] ?? c.store} height={22} />
                   </th>
                   <td className="py-2.5">
                     <span className="flex items-center gap-2">

@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { formatEuro, type Reliability as ReliabilityLevel, type StoreId } from '@repas/core';
-import { buttonClasses, cx, glassClasses, Icon, Price, Reliability, StoreChip } from '@repas/ui';
+import { buttonClasses, cx, glassClasses, Icon, Price, Reliability } from '@repas/ui';
+import { StoreLogo } from '@/components/store-logo';
 import { href } from '@/lib/site';
 import { ActionMessage } from './use-plan-action';
 import { useChooseStore } from './use-choose-store';
@@ -77,7 +78,7 @@ export function StoreTotals({
                   : 'border-surface-50 hover:border-line',
               )}
             >
-              <StoreChip storeId={t.id} name={t.name} initials={t.initials} size="sm" hideName />
+              <StoreLogo id={t.id} name={t.name} size={34} />
               <span className="min-w-0 flex-1 text-[15px] font-extrabold">
                 {t.name}
                 {t.id === cheapest ? (

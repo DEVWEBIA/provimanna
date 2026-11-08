@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { Route } from 'next';
-import type { StoreId } from '@repas/core';
-import { cx, glassClasses, PageHeader, StoreChip } from '@repas/ui';
+import { cx, glassClasses, PageHeader } from '@repas/ui';
 import { Badge, Later } from '@/components/bo-ui';
+import { StoreLogo } from '@/components/store-logo';
 import { coverageByStore, recentObservations } from '@/lib/coverage';
 import { requireRole } from '@/lib/staff';
 import { StoreForm } from './store-form';
@@ -11,7 +11,7 @@ import { StoreForm } from './store-form';
 export const metadata: Metadata = { title: 'Enseignes' };
 export const dynamic = 'force-dynamic';
 
-/** Enseignes et magasins (maquette BOEnseignes) : jamais de logo ni de couleur officielle. */
+/** Enseignes et magasins (maquette BOEnseignes) : vrais logos en couleur (décision du 08/11/2026). */
 export default async function EnseignesPage({
   searchParams,
 }: {
@@ -50,7 +50,9 @@ export default async function EnseignesPage({
                     sel?.id === s.id && 'ring-brand ring-2',
                   )}
                 >
-                  <StoreChip storeId={s.id as StoreId} name={s.name} initials={s.initials} hideName />
+                  <span className="bg-raw-blanc border-line grid h-14 w-24 shrink-0 place-items-center rounded-[14px] border p-2">
+                    <StoreLogo id={s.id} name={s.name} height={30} />
+                  </span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-[17px] font-black">{s.name}</span>
                     <span className="text-ink-muted text-[13px] font-bold">
@@ -72,7 +74,9 @@ export default async function EnseignesPage({
         {sel ? (
           <aside className={cx(glassClasses, 'flex flex-col gap-4 p-5 xl:sticky xl:top-8')}>
             <div className="flex items-center gap-3">
-              <StoreChip storeId={sel.id as StoreId} name={sel.name} initials={sel.initials} hideName />
+              <span className="bg-raw-blanc border-line grid h-14 w-24 shrink-0 place-items-center rounded-[14px] border p-2">
+                <StoreLogo id={sel.id} name={sel.name} height={30} />
+              </span>
               <h2 className="font-display text-[22px] font-extrabold">{sel.name}</h2>
             </div>
             <StoreForm store={sel} />

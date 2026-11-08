@@ -21,7 +21,6 @@ import {
   inputClasses,
   LogoMark,
   Plat,
-  StoreChip,
   TicketCard,
 } from '@repas/ui';
 import { saveOnboarding, type GeneratedPlan } from '@/app/app/bienvenue/actions';
@@ -29,6 +28,7 @@ import { startSignup } from '@/app/commencer/actions';
 import type { AuthFormState } from '@/app/connexion/actions';
 import { EmailSent } from '@/components/auth/email-sent';
 import { BrandPanel } from '@/components/brand/brand-panel';
+import { StoreLogo } from '@/components/store-logo';
 import { EXAMPLE_STORES } from '@/lib/landing-data';
 import { href, ROUTES } from '@/lib/site';
 import { enseigneSchema, type COOKING_TIMES } from './schema';
@@ -455,12 +455,10 @@ export function OnboardingWizard({ mode, stores, initial, referral }: Onboarding
                             onChange={() => set('store', s.id)}
                             className="min-h-[76px] items-center gap-3.5 rounded-[20px] px-4 py-3.5 peer-checked:shadow-[0_0_0_4px_theme(colors.brand.soft)]"
                           >
-                            <StoreChip
-                              storeId={s.id}
-                              name={s.name}
-                              initials={s.initials}
-                              className="text-[17px] font-black"
-                            />
+                            <span className="flex items-center gap-3 text-[17px] font-black">
+                              <StoreLogo id={s.id} name={s.name} size={40} />
+                              {s.name}
+                            </span>
                           </Tile>
                         ))}
                       </div>

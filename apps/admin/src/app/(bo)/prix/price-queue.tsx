@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState, useTransition } from 'react';
 import { formatEuro } from '@repas/core';
 import { Button, cx, glassClasses, Toast } from '@repas/ui';
+import { StoreLogo } from '@/components/store-logo';
 import { moderatePrice } from './actions';
 
 export interface AlertRow {
@@ -11,6 +12,7 @@ export interface AlertRow {
   product: string;
   ean: string | null;
   store: string;
+  storeId: string;
   source: string;
   observedAt: string;
   cents: number;
@@ -101,7 +103,9 @@ export function PriceQueue({ rows }: { rows: AlertRow[] }) {
                   </button>
                   {r.ean ? <span className="text-ink-muted block text-[12px]">EAN {r.ean}</span> : null}
                 </td>
-                <td className="px-3 py-2.5 font-bold">{r.store}</td>
+                <td className="px-3 py-2.5">
+                  <StoreLogo id={r.storeId} name={r.store} height={22} />
+                </td>
                 <td className="px-3 py-2.5 font-black">{formatEuro(r.cents)}</td>
                 <td className="text-ink-muted px-3 py-2.5 font-bold">
                   {r.medianCents !== null ? formatEuro(r.medianCents) : '—'}

@@ -3,7 +3,8 @@
 import { useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { formatEuro, type StoreId } from '@repas/core';
-import { buttonClasses, cx, glassClasses, Icon, Price, Reliability, StoreChip, TicketCard } from '@repas/ui';
+import { buttonClasses, cx, glassClasses, Icon, Price, Reliability, TicketCard } from '@repas/ui';
+import { StoreLogo } from '@/components/store-logo';
 import { href } from '@/lib/site';
 import type { StoreTotalView } from './store-totals';
 import { ActionMessage } from './use-plan-action';
@@ -71,7 +72,7 @@ export function ComparatorView({ planId, totals, myStore, cheapest, premium, det
               )}
               style={{ '--d': `${120 + i * 60}ms` } as CSSProperties}
             >
-              <StoreChip storeId={t.id} name={t.name} initials={t.initials} hideName />
+              <StoreLogo id={t.id} name={t.name} size={40} />
               <span className="min-w-0 flex-1 text-[16px] font-extrabold sm:w-[200px] sm:flex-none">
                 {t.name}{' '}
                 {t.id === cheapest ? (

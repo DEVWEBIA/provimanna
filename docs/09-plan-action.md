@@ -148,6 +148,8 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
   - Tests : core 62, 32 tests RLS (invitation hors de son foyer refusée), e2e famille (inviter, rejoindre, lien à usage unique, quitter) et économies / série / thème.
 - **08/11 — Écarts avec les maquettes (lot 12)** : droits par membre (« Coche la liste seulement ») non repris, faute de colonne en base (migration à valider si souhaité) ; « 1 joker dispo » de la série non repris (règle des jokers à définir) ; badges de défis non visuels pour l'instant.
 
+- **08/11 — Logos des enseignes en couleur (demande d'Emmanuel).** Bandeau de la landing en couleur (filtre gris retiré), vrais logos dans l'espace client (questionnaire, panneau « Ce plan coûte… », comparateur) et dans le back-office (enseignes, couverture des prix, file des prix). Vignette blanche (token `raw-blanc`) pour rester lisible en mode sombre. Les pages éditoriales publiques gardent les pastilles neutres (à étendre si souhaité). Rappel : usage des marques à retirer immédiatement si une enseigne le demande ; logo Carrefour toujours à fournir. `CLAUDE.md` mis à jour.
+
 ## Questions ouvertes (à trancher par vous)
 
 1. ~~Liste d'attente ou inscription directe ?~~ → inscription directe (07/11). Une liste d'attente peut s'ajouter plus tard si besoin.

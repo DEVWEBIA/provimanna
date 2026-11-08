@@ -84,6 +84,7 @@ export default async function PrixPage({ searchParams }: { searchParams: SearchP
       product: a.products?.name ?? 'Produit',
       ean: a.products?.ean ?? null,
       store: STORE_NAME[a.store_id] ?? a.store_id,
+      storeId: a.store_id,
       source: SOURCE[a.source] ?? a.source,
       observedAt: a.observed_at,
       cents: a.cents,

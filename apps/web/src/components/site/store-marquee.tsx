@@ -8,9 +8,9 @@ import lidl from '@/assets/logos/lidl.svg';
 import type { ExampleStore } from '@/lib/landing-data';
 
 /**
- * Logos officiels (Wikimedia Commons, voir src/assets/logos/SOURCES.md), affichés UNIQUEMENT dans ce bandeau,
- * en gris, avec la mention de propriété des marques. Partout ailleurs : pastilles neutres (décision du 07/11/2026).
- * Carrefour : pas de fichier réutilisable pour l'instant → nom en lettres grises.
+ * Logos officiels en couleur (Wikimedia Commons, voir src/assets/logos/SOURCES.md), avec la mention de propriété
+ * des marques. Sur le site, uniquement dans ce bandeau ; ailleurs, pastilles neutres (décisions des 07 et 08/11/2026).
+ * Carrefour : pas de fichier réutilisable pour l'instant → nom écrit en clair.
  */
 const LOGOS: Partial<Record<StoreId, { src: StaticImageData; h: number }>> = {
   lidl: { src: lidl, h: 44 },
@@ -22,8 +22,7 @@ const LOGOS: Partial<Record<StoreId, { src: StaticImageData; h: number }>> = {
 
 function StoreMark({ store }: { store: ExampleStore }) {
   const logo = LOGOS[store.id];
-  const cls =
-    'opacity-50 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0 motion-reduce:transition-none';
+  const cls = 'transition-transform duration-300 hover:scale-105 motion-reduce:transition-none';
   if (!logo) {
     return <span className={`${cls} text-ink text-[26px] font-black tracking-[-0.5px]`}>{store.name}</span>;
   }
