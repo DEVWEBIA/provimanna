@@ -409,3 +409,64 @@ export function ingredientCosts(
 export function discountPercent(cents: number, maxCents: number): number {
   return maxCents <= 0 ? 0 : Math.round(((maxCents - cents) / maxCents) * 100);
 }
+
+/** Totaux par groupe de produits (ex. par rayon) et par enseigne. */
+export function totalsByGroup(
+  lines: ShoppingLine[],
+  groupOf: (productId: string) => string,
+  stores: StoreId[],
+  observations: PriceObservation[],
+  now: Date,
+): Map<string, StoreTotal[]> {
+  const groups = new Map<string, ShoppingLine[]>();
+  for (const l of lines) {
+    const g = groupOf(l.productId);
+    groups.set(g, [...(groups.get(g) ?? []), l]);
+  }
+  return new Map(
+    [...groups].map(([g, ls]) => [g, stores.map((s) => planCostInStore(ls, s, observations, now))] as const),
+  );
+}
+
+/** Écart en pourcentage entier par rapport à une moyenne (−9 = 9 % de moins que la moyenne). */
+export function percentVsAverage(cents: number, all: readonly number[]): number {
+  const avg = all.reduce((a, b) => a + b, 0) / (all.length || 1);
+  return avg <= 0 ? 0 : Math.round(((cents - avg) / avg) * 100);
+}
+
+export interface ProductGap {
+  productId: string;
+  /** Prix unitaire dans l'enseigne étudiée. */
+  cents: number;
+  /** Prix unitaire moyen dans toutes les enseignes où le produit a un prix. */
+  averageCents: number;
+  diffCents: number;
+}
+
+/** Écart du prix de chaque produit (hors placard) avec la moyenne des enseignes, trié du plus avantageux au moins avantageux. */
+export function productPriceGaps(
+  lines: ShoppingLine[],
+  storeId: StoreId,
+  stores: StoreId[],
+  observations: PriceObservation[],
+  now: Date,
+): ProductGap[] {
+  const gaps: ProductGap[] = [];
+  for (const l of lines) {
+    if (l.pantry) continue;
+    const mine = resolvePrice(observations, l.productId, storeId, now);
+    if (!mine) continue;
+    const prices = stores.flatMap((s) => {
+      const p = resolvePrice(observations, l.productId, s, now);
+      return p ? [p.cents] : [];
+    });
+    const averageCents = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+    gaps.push({
+      productId: l.productId,
+      cents: mine.cents,
+      averageCents,
+      diffCents: mine.cents - averageCents,
+    });
+  }
+  return gaps.sort((a, b) => a.diffCents - b.diffCents);
+}

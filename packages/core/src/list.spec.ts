@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest';
 import {
   averagePriceAgeDays,
   ingredientCosts,
+  percentVsAverage,
+  productPriceGaps,
+  totalsByGroup,
   recipeStoreTotals,
   cheaperProductCount,
   compareProducts,
@@ -89,5 +92,35 @@ describe('coûts d’une recette', () => {
   });
   it('par ingrédient (prorata)', () => {
     expect(ingredientCosts(recipe, 4, 'lidl', OBS, NOW).map((c) => c.cents)).toEqual([85, 20]);
+  });
+});
+
+describe('observatoire', () => {
+  it('totaux par rayon et par enseigne', () => {
+    const g = totalsByGroup(
+      LINES,
+      (id) => (id === 'pates' || id === 'huile' ? 'epicerie' : 'cremerie'),
+      ['lidl', 'auchan'],
+      OBS,
+      NOW,
+    );
+    expect(g.get('epicerie')?.map((t) => t.cents)).toEqual([147, 188]); // 85 × 1,5 + 399 × 0,05 = 147,45
+    expect(g.get('cremerie')?.map((t) => t.cents)).toEqual([239, 202]);
+  });
+  it('écart à la moyenne', () => {
+    expect(percentVsAverage(90, [90, 100, 110])).toBe(-10);
+    expect(percentVsAverage(0, [])).toBe(0);
+  });
+});
+
+describe('productPriceGaps', () => {
+  it('écart au prix moyen, du plus avantageux au moins avantageux', () => {
+    expect(
+      productPriceGaps(LINES, 'lidl', ['lidl', 'auchan'], OBS, NOW).map((g) => [g.productId, g.diffCents]),
+    ).toEqual([
+      ['pates', -12],
+      ['creme', 0],
+      ['feta', 37],
+    ]);
   });
 });

@@ -33,10 +33,12 @@ const parse = (sp: Record<string, string | string[] | undefined>) => {
   const filter = f && f in FILTERS ? (f as FilterId) : null;
   const sort = one(sp.tri) === 'temps' ? 'temps' : 'prix';
   const page = Math.max(1, Number.parseInt(one(sp.page) ?? '1', 10) || 1);
-  return { filter, sort, page } as const;
+  const q = (one(sp.q) ?? '').trim().slice(0, 60);
+  return { filter, sort, page, q } as const;
 };
-const query = (p: { filter: FilterId | null; sort: string; page: number }) => {
+const query = (p: { filter: FilterId | null; sort: string; page: number; q?: string }) => {
   const q = new URLSearchParams();
+  if (p.q) q.set('q', p.q);
   if (p.filter) q.set('filtre', p.filter);
   if (p.sort !== 'prix') q.set('tri', p.sort);
   if (p.page > 1) q.set('page', String(p.page));
@@ -74,8 +76,15 @@ export default async function RecettesPage({ searchParams }: { searchParams: Sea
             : id === 'batch'
               ? r.tags.includes('batch')
               : r.perServing < 100;
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  const terms = norm(p.q).split(/\s+/).filter(Boolean);
   const list = recipes
     .filter((r) => !p.filter || matches(p.filter, r))
+    .filter((r) => terms.every((t) => norm(r.title).includes(t)))
     .sort((a, b) => (p.sort === 'temps' ? a.minutes - b.minutes : a.perServing - b.perServing));
   const pages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
   const shown = list.slice((p.page - 1) * PAGE_SIZE, p.page * PAGE_SIZE);
@@ -162,14 +171,14 @@ export default async function RecettesPage({ searchParams }: { searchParams: Sea
       <section aria-labelledby="liste-titre" className="-mt-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 id="liste-titre" className="text-ink-muted text-[15px] font-black">
-            {list.length} recettes affichées
+            {list.length} recettes affichées{p.q ? ` pour « ${p.q} »` : ''}
           </h2>
           <p className="flex items-center gap-2 text-[14px] font-bold">
             <span className="text-ink-muted">Trier par</span>
             {(['prix', 'temps'] as const).map((t) => (
               <Link
                 key={t}
-                href={query({ filter: p.filter, sort: t, page: 1 }) as Route}
+                href={query({ filter: p.filter, sort: t, page: 1, q: p.q }) as Route}
                 aria-current={p.sort === t ? 'true' : undefined}
                 className={cx(
                   'rounded-pill min-h-[40px] border px-3.5 py-2 no-underline',
@@ -200,7 +209,7 @@ export default async function RecettesPage({ searchParams }: { searchParams: Sea
             {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
               <Link
                 key={n}
-                href={query({ filter: p.filter, sort: p.sort, page: n }) as Route}
+                href={query({ filter: p.filter, sort: p.sort, page: n, q: p.q }) as Route}
                 aria-current={n === p.page ? 'page' : undefined}
                 className={cx(
                   'rounded-pill grid h-11 w-11 place-items-center font-black no-underline',

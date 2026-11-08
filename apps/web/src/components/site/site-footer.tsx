@@ -2,10 +2,14 @@ import Link from 'next/link';
 import { href, ROUTES } from '@/lib/site';
 
 const LINKS = [
-  { href: ROUTES.tarifs, label: 'Tarifs' },
+  { href: ROUTES.commentCaMarche, label: 'Comment ça marche' },
+  { href: ROUTES.recettes, label: 'Recettes' },
+  { href: ROUTES.comparatif, label: 'Comparatif des prix' },
+  { href: '/guide/batch-cooking', label: 'Guide batch cooking' },
   { href: ROUTES.methodologie, label: 'Méthodologie' },
   { href: ROUTES.mentionsLegales, label: 'Mentions légales' },
   { href: ROUTES.confidentialite, label: 'Confidentialité' },
+  { href: '/cgu', label: 'CGU' },
 ];
 
 /** Pied de page minimal. */

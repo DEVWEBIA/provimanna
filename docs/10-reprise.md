@@ -1,4 +1,4 @@
-# 10 — Fichier de reprise (état au 08/11/2026, après le lot 6 : jalon J3 atteint)
+# 10 — Fichier de reprise (état au 08/11/2026, après le lot 8)
 
 > À lire en début de nouvelle conversation, après `CLAUDE.md`. Il dit où on en est, ce qui a été décidé, ce qui bloque et comment reprendre.
 > Détail des décisions : `docs/09-plan-action.md` (section « Journal des décisions techniques »). Lots : `docs/08-roadmap-claude-code.md`.
@@ -30,7 +30,9 @@ Commence par me confirmer l'état et la prochaine étape.
 | Harmonisation visuelle | ✅ (08/11) effets de la home sur tout le produit |
 | 5 Génération du plan | ✅ (08/11) |
 | 6 Comparateur et liste | ✅ (08/11) — **jalon J3 atteint** |
-| 7 → 13 | à faire (prochain : **lot 7 Paiement**, compte Stripe nécessaire) |
+| 8 Recettes et pages SEO | ✅ (08/11, fait avant le lot 7 avec l'accord d'Emmanuel) — **jalon J5 atteint** |
+| 7 Paiement | ⏳ attend un compte Stripe (mode test) |
+| 9 → 13 | à faire (prochain possible sans compte : **lot 9 Back-office**) |
 
 Dernier commit : `60fe4da Affiche les logos des enseignes dans le bandeau…` (13 commits sur `main`, rien en attente).
 
@@ -41,7 +43,9 @@ Dernier commit : `60fe4da Affiche les logos des enseignes dans le bandeau…` (1
 
 ## Ce qui existe
 
-**Site public (`apps/web`, route `/`)** — page d'accueil refaite plusieurs fois à la demande d'Emmanuel (la maquette `Main.dc.html` n'est plus la référence pour la landing) :
+**Site public (`apps/web`)** — en plus de la page d'accueil : `/recettes` et `/recettes/[slug]`, `/comparatif-prix-supermarches`, `/enseignes/[id]`, `/menus/[slug]`, `/guide/batch-cooking`, `/methodologie`, `/comment-ca-marche`, pages légales (gabarits), 404, `/prix-courses/[ville]` (seuil de 30 relevés). Gabarit commun `components/site/site-page.tsx`, blocs `components/seo/blocks.tsx`, panier type `lib/observatory.ts`, client sans cookies `lib/supabase/public.ts`.
+
+**Page d'accueil (`/`)** — page d'accueil refaite plusieurs fois à la demande d'Emmanuel (la maquette `Main.dc.html` n'est plus la référence pour la landing) :
 - menu flottant (`components/site/site-header.tsx`) : large et transparent en haut, pastille de verre au défilement, section active surlignée, « Créer mon plan » visible seulement après le hero, panneau mobile ;
 - hero : titre animé, trait orange sous « Tu choisis. », ticket comparateur interactif (taille du foyer) qui flotte, 2 étiquettes flottantes, **buddha bowl détouré en cercle** qui sort à droite et tourne lentement ;
 - bandeau défilant des enseignes avec **vrais logos en gris** (exception autorisée, voir décisions) ;
@@ -63,7 +67,7 @@ Dernier commit : `60fe4da Affiche les logos des enseignes dans le bandeau…` (1
 
 **Packages** : `packages/core` (moteur de prix, `generatePlan`/`replaceMeal`, semaines à l'heure de Paris, `recipeServingCents`, `cheaperProductCount`, saisons…), `packages/ui` (composants + briques de style de la home : `Reveal`, `Glow`, `PageHeader`, `GlassCard`, `animDelay`, `inputClasses` ; animations dans `packages/ui/styles/motion.css`), `packages/eslint-config`.
 
-**Tests** : core 10 node:test + 51 Vitest, ui 16, web 7 Vitest, **26 tests RLS pgTAP**, **10 e2e Playwright** (desktop + mobile). Lighthouse landing : desktop 100 partout, mobile 94-95 en performance (le bol est l'élément le plus lourd en 4G simulée).
+**Tests** : core 10 node:test + 56 Vitest, ui 16, web 7 Vitest, **26 tests RLS pgTAP**, **16 e2e Playwright** (desktop + mobile). Lighthouse landing : desktop 100 partout, mobile 94-95 en performance (le bol est l'élément le plus lourd en 4G simulée).
 
 ## Décisions clés (à ne pas défaire sans demander)
 
@@ -107,12 +111,15 @@ pnpm --filter @repas/web test:e2e   # nécessite supabase start
 - **Next.js mémorise les requêtes GET identiques pendant un rendu** (y compris celles de supabase-js) : relire une ligne avec la même requête juste après l'avoir créée renvoie l'ancien résultat. Renvoyer les lignes insérées (`.insert().select()`), voir `ensureWeekPlan`.
 - **Captures Playwright `fullPage: true`** : elles relancent les animations d'entrée, les éléments apparaissent vides. Capturer l'écran visible (après défilement) pour juger du rendu.
 - **Animations et piles** : un élément animé (`anim-rise`) crée un contexte d'empilement ; un menu déroulant à l'intérieur passe sous la carte suivante → remonter le parent (`z-30`) quand le menu est ouvert.
+- **Serveur de dev et `packages/core`** : après l'ajout d'une nouvelle fonction exportée par core, le serveur de dev garde l'ancien module (« X is not a function ») : le redémarrer.
+- **Zod 4** : utiliser `z.guid()` pour les identifiants (les ids fixes du seed ne sont pas des UUID versionnés, `z.uuid()` les refuse).
+- Espace client : `/app/recettes`, `/app/recettes/[slug]`, mode cuisine `/app/recettes/[slug]/cuisine` (groupe de routes `(cuisine)`, sans la navigation).
 - Démo locale : `marion@example.com` (Auchan, 2 adultes + 2 enfants, sans porc), connexion par code via Mailpit. Sa semaine en cours vient du seed (validée chez Lidl).
 - Les tests RLS tournent sur la base locale réelle : ils doivent rester indépendants des données créées en testant l'appli à la main (`on conflict`, nettoyage).
 
 ## Prochaines étapes
 
-1. **Lot 7 — Paiement** (maquettes `MPaywall`, `AppAbonnement`, `SiteTarifs`, `SiteMerci`, `EmailRecu`) : demander le compte Stripe (mode test) avant de commencer ; le webhook écrira `subscriptions` avec `lib/supabase/admin.ts`. Les liens « Essayer Premium » pointent déjà vers `/app/abonnement`.
-2. Lots 8 → 13 dans l'ordre (`docs/08`). Le lot 8 (recettes, pages SEO) ne dépend d'aucun compte et peut passer avant si Stripe tarde (à valider). Comptes à demander au moment voulu : fournisseur OCR (lot 10), Resend + domaine (lot 11), Vercel / Supabase prod / PostHog / Sentry + nom et domaine (lot 13). Le journal d'audit du BO sera la migration **0007**.
+1. **Lot 7 — Paiement** dès réception du compte Stripe (mode test) et de la décision sur la mention TVA. Les liens « Essayer Premium » pointent déjà vers `/app/abonnement`, `/tarifs` et `/merci` restent à créer.
+2. Sinon **lot 9 — Back-office** (aucun compte requis) : auth staff (`has_role`), BOVue, BOPrix, BOTickets, BORecettes ; journal d'audit = migration **0007** à proposer d'abord. Puis lots 10 → 13 (comptes : OCR au lot 10, Resend + domaine au lot 11, Vercel / Supabase prod / PostHog / Sentry + nom et domaine au lot 13).
 3. Idée validée en principe : capture de l'appli dans un téléphone pour la landing.
 3. Idée proposée, non tranchée : une photo de saison qui change automatiquement sur la landing.

@@ -17,6 +17,31 @@ const BUILD_DATE = new Date().toISOString().slice(0, 10);
 export const PUBLIC_PAGES: SitemapEntry[] = [
   { path: '/', lastmod: BUILD_DATE, changefreq: 'weekly', priority: 1 },
   { path: '/recettes', lastmod: BUILD_DATE, changefreq: 'weekly', priority: 0.9 },
+  { path: '/comparatif-prix-supermarches', lastmod: BUILD_DATE, changefreq: 'weekly', priority: 0.9 },
+  {
+    path: '/menus/menu-semaine-60-euros-4-personnes',
+    lastmod: BUILD_DATE,
+    changefreq: 'weekly',
+    priority: 0.8,
+  },
+  {
+    path: '/menus/menu-vegetarien-semaine-4-personnes',
+    lastmod: BUILD_DATE,
+    changefreq: 'weekly',
+    priority: 0.7,
+  },
+  ...['lidl', 'aldi', 'leclerc', 'intermarche', 'carrefour', 'auchan'].map((id) => ({
+    path: `/enseignes/${id}`,
+    lastmod: BUILD_DATE,
+    changefreq: 'weekly' as const,
+    priority: 0.7,
+  })),
+  { path: '/guide/batch-cooking', lastmod: BUILD_DATE, changefreq: 'monthly', priority: 0.6 },
+  { path: '/comment-ca-marche', lastmod: BUILD_DATE, changefreq: 'monthly', priority: 0.6 },
+  { path: '/methodologie', lastmod: BUILD_DATE, changefreq: 'monthly', priority: 0.6 },
+  { path: '/mentions-legales', lastmod: BUILD_DATE, changefreq: 'yearly', priority: 0.2 },
+  { path: '/confidentialite', lastmod: BUILD_DATE, changefreq: 'yearly', priority: 0.2 },
+  { path: '/cgu', lastmod: BUILD_DATE, changefreq: 'yearly', priority: 0.2 },
 ];
 
 const escapeXml = (s: string) =>

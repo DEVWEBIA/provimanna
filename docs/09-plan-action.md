@@ -124,6 +124,10 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - **08/11 — Écarts assumés avec les maquettes** : pas de « Difficulté » ni de favoris (aucune donnée en base) ; « Coche ce que tu as déjà » retire l'ingrédient du coût du repas, pas encore de la liste (texte adapté) ; boutons du mode cuisine en blanc (orange réservé aux économies) ; la quantité des ingrédients reste celle de la recette (4 parts), seul le tableau des prix suit le nombre de personnes.
 - **08/11 — Validation des identifiants** : `z.guid()` au lieu de `z.uuid()` dans les actions (Zod 4 refuse les identifiants fixes du catalogue, qui n'ont pas de version UUID).
 
+- **08/11 — Lot 8b : pages SEO.** Toutes les pages de prix reposent sur un **panier type** reproductible (`lib/observatory.ts`) : 14 repas pour 2 adultes + 2 enfants composés par `generatePlan` avec une graine fixe par semaine, identiques pour tous les visiteurs ; totaux par enseigne et par rayon calculés par core (`totalsByGroup`, `percentVsAverage`, `productPriceGaps`). Pages : `/comparatif-prix-supermarches` (classement, indices, rayons, duels, JSON-LD `Dataset`), `/enseignes/[id]` ×6 (classement, écart à la moyenne, rayons, plus gros écarts, recettes les moins chères, pastille neutre sans logo), `/menus/[slug]` ×2 (60 € pour 4, végétarien ; le budget annoncé est vérifié sur les vrais totaux), `/guide/batch-cooking` (coûts calculés en direct, `Article`), `/methodologie` (seuils lus dans core), `/comment-ca-marche` (`HowTo`), `/mentions-legales`, `/confidentialite`, `/cgu` (gabarits avec mentions entre crochets à compléter et à faire valider), page 404 avec recherche, `/prix-courses/[ville]` (publiée seulement à partir de 30 relevés de moins de 7 jours dans la ville : aucune pour l'instant, faute de relevés localisés). Recherche `?q=` sur `/recettes`. Sitemap, `llms.txt` et pied de page complétés. En-tête du site : liens vers les rubriques hors de l'accueil.
+- **08/11 — Volontairement laissé de côté dans 8b** : téléchargement CSV des données et mention de licence dans le `Dataset` (licences Open Prices / Open Food Facts à vérifier, point ouvert de CLAUDE.md) ; courbe d'évolution depuis juin (pas d'historique) ; pages « duel » (les duels renvoient vers les pages enseignes) ; carte de l'auteur ou du fondateur (nom à fournir) ; historique de la méthode réduit à la première version (les dates de la maquette étaient fictives) ; section « batch du dimanche » des menus.
+- **08/11 — Tests e2e** : délai des vérifications porté à 15 s (le serveur de dev compile chaque page à sa première visite) ; 16 tests desktop + mobile.
+
 ## Questions ouvertes (à trancher par vous)
 
 1. ~~Liste d'attente ou inscription directe ?~~ → inscription directe (07/11). Une liste d'attente peut s'ajouter plus tard si besoin.
@@ -140,7 +144,7 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - [x] Lot 5 — Génération du plan (53 recettes, `generatePlan` + 30 tests, tableau de bord et plan desktop/mobile, 8 tests e2e)
 - [x] Lot 6 — Comparateur et liste (validation de la semaine côté serveur, liste temps réel + file hors ligne, partage par lien, 26 tests RLS, 10 e2e)
 - [ ] Lot 7 — Paiement
-- [ ] Lot 8 — Recettes et pages SEO (8a recettes ✅ le 08/11 ; 8b pages SEO en cours)
+- [x] Lot 8 — Recettes et pages SEO (8a recettes, 8b observatoire, enseignes, menus, guide, méthodologie, légal, 404 ; 56 tests core, 16 e2e)
 - [ ] Lot 9 — Back-office
 - [ ] Lot 10 — Tickets et prix
 - [ ] Lot 11 — Emails, notifications, PWA

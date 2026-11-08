@@ -32,7 +32,10 @@ test('espace client : ajouter une recette à la semaine, fiche, mode cuisine', a
   await signUp(page, uniqueEmail(`recettes-${info.project.name}`));
   await page.goto('/app/recettes');
   await expect(page.getByRole('heading', { name: 'Recettes', level: 1 })).toBeVisible();
+  // Recherche par ingrédient, puis ajout d'une recette qui n'est pas déjà dans la semaine tirée au hasard.
   await page.getByLabel('Rechercher une recette').fill('lentilles');
+  await expect(page.getByRole('heading', { level: 3, name: 'Dahl de lentilles corail' })).toBeVisible();
+  await page.getByLabel('Rechercher une recette').fill('');
   const add = page.getByRole('button', { name: '+ Ajouter à ma semaine' }).first();
   await add.click();
   await expect(page.getByText(/^1 recette à placer dans ta semaine \d+$/)).toBeVisible();

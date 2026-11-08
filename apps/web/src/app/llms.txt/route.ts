@@ -2,7 +2,7 @@ import { absoluteUrl, ROUTES, SITE_NAME } from '@/lib/site';
 
 export const dynamic = 'force-static';
 
-// Résumé du site pour les moteurs génératifs (docs/06). llms-full.txt arrive avec les pages piliers (lot 8).
+// Résumé du site pour les moteurs génératifs (docs/06).
 export function GET() {
   const u = absoluteUrl;
   const body = `# ${SITE_NAME}
@@ -13,11 +13,15 @@ export function GET() {
 - [Comparatif de la semaine](${u(ROUTES.comparatif)}): coût d'un panier de 14 repas pour 4 personnes dans les 6 enseignes, daté.
 - [Méthodologie](${u(ROUTES.methodologie)}): sources, médiane sur 7 jours, indice de fiabilité, traitement des prix aberrants.
 
-## Recettes
-- [Toutes les recettes](${u(ROUTES.recettes)}): coût par portion par enseigne.
+- [Enseignes](${u('/enseignes/lidl')}): position de chaque enseigne face à la moyenne, rayon par rayon (une page par enseigne).
+
+## Recettes et menus
+- [Toutes les recettes](${u(ROUTES.recettes)}): coût par portion dans chaque enseigne, prix datés.
+- [Menu de la semaine pour 4](${u(ROUTES.menus)}): 14 repas, liste de courses par rayon et prix dans 6 enseignes.
+- [Menu végétarien de la semaine](${u('/menus/menu-vegetarien-semaine-4-personnes')})
 
 ## Guides
-- [Faire ses courses pour moins cher](${u('/guide/courses-pas-cheres')})
+- [Batch cooking : 5 repas en 2 heures](${u('/guide/batch-cooking')})
 
 ## Produit
 - [Comment ça marche](${u(ROUTES.commentCaMarche)})
