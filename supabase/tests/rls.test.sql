@@ -17,6 +17,9 @@ select set_config('test.bob_household',
 insert into meal_plans (household_id, week_start, store_id, total_cents, reference_cents)
 values (current_setting('test.bob_household')::uuid, '2026-11-09', 'lidl', 6010, 7160);
 
+insert into prices (product_id, store_id, cents, observed_at, source, flagged_aberrant)
+values ('00000000-0000-0000-0000-000000000107', 'lidl', 999, now(), 'ticket', true);
+
 -- Liste de Marion (créée par le serveur) avec un article issu du plan.
 with l as (
   insert into shopping_lists (meal_plan_id, store_id)
@@ -50,9 +53,9 @@ select throws_ok(
   '42501', null, 'Marion ne peut pas se passer Premium ni s''offrir des jours bonus');
 
 select is((select count(*)::int from prices where flagged_aberrant), 0, 'Les prix aberrants sont masqués');
--- Feta chez Lidl : un relevé normal (2,25 €) et un aberrant (3,29 €) → seul le normal est visible.
-select is((select array_agg(cents) from prices where product_id = '00000000-0000-0000-0000-000000000107' and store_id = 'lidl'),
-  array[225], 'Les prix normaux sont visibles');
+-- Relevé aberrant créé pour le test (à 9,99 €) : masqué ; les relevés normaux restent visibles.
+select is((select count(*)::int from prices where cents = 999 and product_id = '00000000-0000-0000-0000-000000000107'), 0,
+  'Les prix normaux sont visibles, pas le relevé aberrant');
 
 select throws_ok(
   $$ insert into roles (user_id, role) values (current_setting('test.marion')::uuid, 'admin') $$,

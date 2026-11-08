@@ -17,6 +17,8 @@ export const ROLE_LABEL: Record<StaffRole, string> = {
 export const SECTIONS = [
   { href: '/', label: 'Vue d’ensemble', roles: ['admin', 'moderateur_prix', 'editeur', 'support'] },
   { href: '/prix', label: 'Prix', roles: ['moderateur_prix'] },
+  { href: '/produits', label: 'Produits', roles: ['moderateur_prix'] },
+  { href: '/recettes', label: 'Recettes', roles: ['editeur'] },
   { href: '/roles', label: 'Rôles et journal', roles: ['admin'] },
 ] as const satisfies readonly { href: string; label: string; roles: readonly StaffRole[] }[];
 
