@@ -1,3 +1,4 @@
+import { STORE_IDS } from '@repas/core';
 import { absoluteUrl } from '../site';
 
 export interface SitemapEntry {
@@ -30,7 +31,7 @@ export const PUBLIC_PAGES: SitemapEntry[] = [
     changefreq: 'weekly',
     priority: 0.7,
   },
-  ...['lidl', 'aldi', 'leclerc', 'intermarche', 'carrefour', 'auchan'].map((id) => ({
+  ...STORE_IDS.map((id) => ({
     path: `/enseignes/${id}`,
     lastmod: BUILD_DATE,
     changefreq: 'weekly' as const,

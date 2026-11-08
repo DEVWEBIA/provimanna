@@ -7,6 +7,7 @@ import { href } from '@/lib/site';
 import { listStores } from '@/lib/stores';
 import { themeChoice } from '@/lib/theme';
 import { NotificationToggles, ThemeChooser } from './profile-controls';
+import { StoreLogo } from '@/components/store-logo';
 
 export const metadata: Metadata = { title: 'Profil', robots: { index: false } };
 
@@ -20,6 +21,7 @@ const COOKING: Record<string, string> = {
 export default async function ProfilPage() {
   const { supabase, user, profile, household, subscription } = await getAccount();
   const stores = await listStores(supabase);
+  const myStore = stores.find((s) => s.id === household.preferred_store_id);
   const prefs = preferencesFromHousehold(household.diet, household.exclusions).map(
     (p) => PREFERENCES.find((x) => x.id === p)?.label,
   );
@@ -40,12 +42,22 @@ export default async function ProfilPage() {
                 'Personnes',
                 `${household.adults} adulte${household.adults > 1 ? 's' : ''}, ${household.children} enfant${household.children > 1 ? 's' : ''}`,
               ],
-              ['Enseigne', stores.find((s) => s.id === household.preferred_store_id)?.name ?? '—'],
+              [
+                'Enseigne',
+                myStore ? (
+                  <span className="flex items-center gap-2">
+                    <StoreLogo id={myStore.id} name={myStore.name} size={32} />
+                    {myStore.name}
+                  </span>
+                ) : (
+                  '—'
+                ),
+              ],
               ['Code postal', household.postal_code ?? '—'],
               ['Temps de cuisine', COOKING[household.cooking_time] ?? '—'],
               ['Préférences', prefs.length ? prefs.join(', ') : 'Aucune'],
             ].map(([k, v]) => (
-              <div key={k} className="rounded-[14px] bg-white/70 p-3">
+              <div key={String(k)} className="rounded-[14px] bg-white/70 p-3">
                 <dt className="text-ink-muted text-[12px] font-black uppercase tracking-[1px]">{k}</dt>
                 <dd className="mt-0.5 font-black">{v}</dd>
               </div>

@@ -1,7 +1,15 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { formatEuro, percentVsAverage, productPriceGaps, type StoreId } from '@repas/core';
+import {
+  completeTotals,
+  formatEuro,
+  percentVsAverage,
+  productPriceGaps,
+  STORE_COUNT,
+  STORES_INFO,
+  type StoreId,
+} from '@repas/core';
 import { cx, Reveal, StoreChip } from '@repas/ui';
 import { CtaTicket, DemoBadge, H2, Panel, SeoHero } from '@/components/seo/blocks';
 import { RecipeCard } from '@/components/recipes/recipe-card';
@@ -20,22 +28,14 @@ export const dynamicParams = false;
 export const generateStaticParams = () => STORES.map((id) => ({ id }));
 
 type Params = Promise<{ id: string }>;
-const NAMES: Record<StoreId, string> = {
-  lidl: 'Lidl',
-  aldi: 'Aldi',
-  leclerc: 'E.Leclerc',
-  intermarche: 'Intermarché',
-  carrefour: 'Carrefour',
-  auchan: 'Auchan',
-};
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { id } = await params;
-  const n = NAMES[id as StoreId];
+  const n = STORES_INFO[id as StoreId]?.name;
   if (!n) return {};
   return {
     title: `${n} est-il vraiment le moins cher ? Prix comparés`,
-    description: `Panier type de 14 repas pour 4 personnes chez ${n} face aux 5 autres enseignes : classement, écart à la moyenne, rayon par rayon.`,
+    description: `Panier type de 14 repas pour 4 personnes chez ${n} face aux ${STORE_COUNT - 1} autres enseignes : classement, écart à la moyenne, rayon par rayon.`,
     alternates: { canonical: `/enseignes/${id}` },
   };
 }
@@ -53,16 +53,22 @@ export default async function EnseignePage({ params }: { params: Params }) {
     publicCatalogue(supabase, now),
   ]);
   const name = (s: StoreId) => storeName(b, s);
-  const t = b.comparison.totals;
-  const rank = t.findIndex((x) => x.storeId === store) + 1;
-  const mine = t[rank - 1]!;
-  const all = t.map((x) => x.cents);
-  const vsAvg = percentVsAverage(mine.cents, all);
-  const priciest = t.at(-1)!;
-  const cheapest = t[0]!;
-  const aisleWins = b.aisles.filter(
-    (a) => Math.min(...a.totals.map((x) => x.cents)) === a.totals.find((x) => x.storeId === store)!.cents,
-  );
+  // Classements et moyennes sur les enseignes qui vendent tout le panier ; un total partiel n'est pas classé.
+  const full = completeTotals(b.comparison.totals);
+  const mine = b.comparison.totals.find((x) => x.storeId === store)!;
+  const partial = mine.partial;
+  const rank = full.findIndex((x) => x.storeId === store) + 1;
+  const priciest = full.at(-1)!;
+  const cheapest = full[0]!;
+  // Rayons où l'enseigne vend tout, comparés aux enseignes qui vendent tout le rayon.
+  const aisles = b.aisles.flatMap((a) => {
+    const own = a.totals.find((x) => x.storeId === store);
+    const peers = a.totals.filter((x) => !x.partial);
+    return own && !own.partial && peers.length > 1
+      ? [{ ...a, own: own.cents, peers: peers.map((x) => x.cents) }]
+      : [];
+  });
+  const aisleWins = aisles.filter((a) => Math.min(...a.peers) === a.own);
   const lines = planLines(
     {
       id: '',
@@ -80,9 +86,20 @@ export default async function EnseignePage({ params }: { params: Params }) {
     },
     { catalogue: b.meals.map((m) => m.recipe), observations, now },
   );
-  // Plus gros écarts avec le prix moyen des 6 enseignes (avantages si l'enseigne est bien classée, sinon surcoûts).
+  // Plus gros écarts avec le prix moyen des enseignes (avantages si l'enseigne est bien classée, sinon surcoûts).
   const allGaps = productPriceGaps(lines, store, STORES, observations, now);
-  const gaps = (rank <= 3 ? allGaps : [...allGaps].reverse()).slice(0, 5).map((g) => {
+  // Total partiel : écart moyen calculé sur les seuls produits vendus par l'enseigne.
+  const vsAvg = partial
+    ? percentVsAverage(
+        allGaps.reduce((s, g) => s + g.cents, 0),
+        [allGaps.reduce((s, g) => s + g.averageCents, 0)],
+      )
+    : percentVsAverage(
+        mine.cents,
+        full.map((x) => x.cents),
+      );
+  const pricedCount = lines.length - mine.missing.length;
+  const gaps = (partial || rank <= 3 ? allGaps : [...allGaps].reverse()).slice(0, 5).map((g) => {
     const p = b.products.find((x) => x.id === g.productId);
     return {
       id: g.productId,
@@ -93,14 +110,18 @@ export default async function EnseignePage({ params }: { params: Params }) {
     };
   });
   const cheapRecipes = [...recipes]
-    .map((r) => ({ r, per: Math.round((r.totals.find((x) => x.storeId === store)?.cents ?? 9e9) / 4) }))
+    .flatMap((r) => {
+      const own = r.totals.find((x) => x.storeId === store);
+      return own && !own.partial ? [{ r, per: Math.round(own.cents / 4) }] : [];
+    })
     .sort((a, c) => a.per - c.per)
     .slice(0, 3);
   const n = name(store);
-  const answer =
-    rank === 1
-      ? `Oui, sur notre panier type : ${formatEuro(mine.cents)} pour 14 repas, 1re enseigne sur 6, soit ${Math.round(((priciest.cents - mine.cents) / priciest.cents) * 100)} % de moins que ${name(priciest.storeId)}.`
-      : `Pas sur notre panier type : ${formatEuro(mine.cents)} pour 14 repas, ${rank}e enseigne sur 6, ${formatEuro(mine.cents - cheapest.cents)} de plus que ${name(cheapest.storeId)} par semaine.`;
+  const answer = partial
+    ? `${n} ne vend que ${pricedCount} produits sur ${lines.length} de notre panier type : on ne le classe pas avec les enseignes qui vendent tout. Sur les produits qu’il vend, ses prix sont ${vsAvg === 0 ? 'dans la moyenne' : `${Math.abs(vsAvg)} % ${vsAvg > 0 ? 'au-dessus' : 'en dessous'} de la moyenne`}.`
+    : rank === 1
+      ? `Oui, sur notre panier type : ${formatEuro(mine.cents)} pour 14 repas, 1re enseigne sur ${full.length}, soit ${Math.round(((priciest.cents - mine.cents) / priciest.cents) * 100)} % de moins que ${name(priciest.storeId)}.`
+      : `Pas sur notre panier type : ${formatEuro(mine.cents)} pour 14 repas, ${rank}e enseigne sur ${full.length}, ${formatEuro(mine.cents - cheapest.cents)} de plus que ${name(cheapest.storeId)} par semaine.`;
   const faq = [
     { q: `${n} est-il le supermarché le moins cher ?`, a: answer },
     {
@@ -149,7 +170,7 @@ export default async function EnseignePage({ params }: { params: Params }) {
               <>
                 <strong className="text-ink">{answer}</strong>
                 {aisleWins.length
-                  ? ` ${n} est le moins cher sur ${aisleWins.length} rayon${aisleWins.length > 1 ? 's' : ''} sur ${b.aisles.length}.`
+                  ? ` ${n} est le moins cher sur ${aisleWins.length} rayon${aisleWins.length > 1 ? 's' : ''} sur ${aisles.length}.`
                   : ''}
               </>
             }
@@ -160,8 +181,10 @@ export default async function EnseignePage({ params }: { params: Params }) {
 
       <dl className="-mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
         {[
-          ['CLASSEMENT', `${rank}${rank === 1 ? 're' : 'e'} / 6`],
-          ['PANIER TYPE', formatEuro(mine.cents)],
+          partial
+            ? ['PRODUITS VENDUS', `${pricedCount} / ${lines.length}`]
+            : ['CLASSEMENT', `${rank}${rank === 1 ? 're' : 'e'} / ${full.length}`],
+          partial ? ['PANIER TYPE', 'partiel'] : ['PANIER TYPE', formatEuro(mine.cents)],
           ['VS LA MOYENNE', `${vsAvg > 0 ? '+' : vsAvg < 0 ? '−' : ''}${Math.abs(vsAvg)} %`],
           ['FIABILITÉ DES PRIX', `${Math.round(mine.freshRatio * 100)} %`],
         ].map(([k, v], i) => (
@@ -183,13 +206,12 @@ export default async function EnseignePage({ params }: { params: Params }) {
         <Reveal>
           <Panel className="h-full">
             <H2>Rayon par rayon</H2>
-            <p className="text-ink-muted mt-1 text-[14px] font-bold">Écart avec la moyenne des 6 enseignes</p>
+            <p className="text-ink-muted mt-1 text-[14px] font-bold">
+              Écart avec la moyenne des enseignes, sur les rayons que {n} vend en entier
+            </p>
             <ul className="mt-4 flex flex-col">
-              {b.aisles.map((a) => {
-                const p = percentVsAverage(
-                  a.totals.find((x) => x.storeId === store)!.cents,
-                  a.totals.map((x) => x.cents),
-                );
+              {aisles.map((a) => {
+                const p = percentVsAverage(a.own, a.peers);
                 return (
                   <li
                     key={a.id}
@@ -245,55 +267,59 @@ export default async function EnseignePage({ params }: { params: Params }) {
         </Reveal>
       </div>
 
-      <Reveal>
-        <H2>{n} face aux autres</H2>
-        <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {t
-            .filter((x) => x.storeId !== store)
-            .map((x) => {
-              const d = mine.cents - x.cents;
-              return (
-                <li key={x.storeId}>
-                  <Link
-                    href={href(`/enseignes/${x.storeId}`)}
-                    className="border-line text-ink hover:border-brand block rounded-[20px] border bg-white/75 p-4 no-underline backdrop-blur transition-colors"
-                  >
-                    <span className="block font-black">
-                      {n} ou {name(x.storeId)} ?
-                    </span>
-                    <span
-                      className={cx(
-                        'text-[14px] font-bold tabular-nums',
-                        d < 0 ? 'text-saving-ink' : 'text-ink-muted',
-                      )}
+      {partial ? null : (
+        <Reveal>
+          <H2>{n} face aux autres</H2>
+          <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {full
+              .filter((x) => x.storeId !== store)
+              .map((x) => {
+                const d = mine.cents - x.cents;
+                return (
+                  <li key={x.storeId}>
+                    <Link
+                      href={href(`/enseignes/${x.storeId}`)}
+                      className="border-line text-ink hover:border-brand block rounded-[20px] border bg-white/75 p-4 no-underline backdrop-blur transition-colors"
                     >
-                      {n} {d < 0 ? '−' : '+'}
-                      {formatEuro(Math.abs(d))} par semaine
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
-        </ul>
-      </Reveal>
+                      <span className="block font-black">
+                        {n} ou {name(x.storeId)} ?
+                      </span>
+                      <span
+                        className={cx(
+                          'text-[14px] font-bold tabular-nums',
+                          d < 0 ? 'text-saving-ink' : 'text-ink-muted',
+                        )}
+                      >
+                        {n} {d < 0 ? '−' : '+'}
+                        {formatEuro(Math.abs(d))} par semaine
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+          </ul>
+        </Reveal>
+      )}
 
-      <Reveal>
-        <H2>Les recettes les moins chères chez {n}</H2>
-        <ul className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-3">
-          {cheapRecipes.map(({ r, per }) => (
-            <li key={r.id}>
-              <RecipeCard
-                href={`/recettes/${r.slug}`}
-                title={r.title}
-                illustration={r.illustration}
-                minutes={r.minutes}
-                perServingCents={per}
-                tags={recipeTags(r, 0)}
-              />
-            </li>
-          ))}
-        </ul>
-      </Reveal>
+      {cheapRecipes.length ? (
+        <Reveal>
+          <H2>Les recettes les moins chères chez {n}</H2>
+          <ul className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-3">
+            {cheapRecipes.map(({ r, per }) => (
+              <li key={r.id}>
+                <RecipeCard
+                  href={`/recettes/${r.slug}`}
+                  title={r.title}
+                  illustration={r.illustration}
+                  minutes={r.minutes}
+                  perServingCents={per}
+                  tags={recipeTags(r, 0)}
+                />
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      ) : null}
 
       <Reveal>
         <Faq items={faq} eyebrow="Questions fréquentes" className="" />

@@ -115,3 +115,33 @@ test('costPerServing et formatEuro', () => {
   assert.equal(formatEuro(7160), '71,60 €');
   assert.equal(formatEuro(102), '1,02 €');
 });
+
+test('compareStores : un total partiel (< 90 % des produits) n’est jamais le moins cher', () => {
+  const lines = [
+    { productId: 'a', units: 1, pantry: false },
+    { productId: 'b', units: 1, pantry: false },
+    { productId: 'c', units: 1, pantry: false },
+  ];
+  const o = (productId: string, storeId: PriceObservation['storeId'], cents: number): PriceObservation => ({
+    productId,
+    storeId,
+    cents,
+    observedAt: daysAgo(1),
+    source: 'manual',
+  });
+  const obs = [
+    o('a', 'lidl', 300), o('b', 'lidl', 300), o('c', 'lidl', 300),
+    o('a', 'auchan', 400), o('b', 'auchan', 400), o('c', 'auchan', 400),
+    o('a', 'picard', 250),
+  ];
+  const cmp = compareStores(lines, ['picard', 'auchan', 'lidl'], 'auchan', obs, NOW);
+  assert.deepEqual(cmp.totals.map((t) => t.storeId), ['lidl', 'auchan', 'picard']);
+  const picard = cmp.totals.find((t) => t.storeId === 'picard')!;
+  assert.equal(picard.partial, true);
+  assert.equal(Math.round(picard.coverage * 100), 33);
+  assert.deepEqual(picard.missing, ['b', 'c']);
+  assert.equal(cmp.cheapest, 'lidl');
+  assert.equal(cmp.savingCents, 300);
+  assert.equal(cmp.totals[0]!.partial, false);
+  assert.equal(cmp.totals[0]!.coverage, 1);
+});

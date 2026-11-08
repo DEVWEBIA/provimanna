@@ -1,9 +1,9 @@
 import 'server-only';
-import { resolvePrice, type PriceObservation, type PriceSource, type StoreId } from '@repas/core';
+import { resolvePrice, type PriceObservation, type PriceSource, type StoreId, STORE_IDS } from '@repas/core';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@repas/core/database.types';
 
-export const STORES: StoreId[] = ['lidl', 'aldi', 'leclerc', 'intermarche', 'carrefour', 'auchan'];
+export const STORES: StoreId[] = [...STORE_IDS];
 
 /** Relevés des 30 derniers jours, non aberrants (base des médianes). */
 export async function recentObservations(

@@ -413,7 +413,29 @@ const STORES = [
   ['intermarche', 1.145],
   ['carrefour', 1.17],
   ['auchan', 1.19],
+  ['netto', 1.03],
+  ['super-u', 1.1],
+  ['grand-frais', 1.04],
+  ['picard', 1.22],
+  ['franprix', 1.32],
+  ['monoprix', 1.3],
 ];
+
+// Assortiments partiels (démo) : Grand Frais = frais + une partie de l'épicerie, Picard = surgelés,
+// viandes et poissons, quelques légumes. Les autres enseignes ont tout le catalogue.
+function sells(store, key, aisle) {
+  if (store === 'grand-frais') {
+    if (aisle === 'surgeles') return false;
+    if (aisle === 'epicerie' || aisle === 'placard') return hash(`${key}:gf`) % 2 === 0;
+    return true;
+  }
+  if (store === 'picard') {
+    if (aisle === 'surgeles' || aisle === 'viandes_poissons') return true;
+    if (aisle === 'fruits_legumes') return hash(`${key}:pi`) % 4 === 0;
+    return false;
+  }
+  return true;
+}
 
 const pad = (n, w) => String(n).padStart(w, '0');
 const productId = (key, i) => EXISTING[key] ?? `00000000-0000-0000-0001-${pad(i + 1, 12)}`;
@@ -477,6 +499,7 @@ const priceRows = [];
 for (const [key, p] of byKey) {
   for (const [store, factor] of STORES) {
     if (SEEDED_STORES[key]?.includes(store)) continue;
+    if (!sells(store, key, p.aisle)) continue;
     const cents = storeCents(key, p.base, store, factor);
     const old = (store === 'intermarche' || store === 'carrefour') && hash(`${key}:${store}:age`) % 6 === 0;
     const days = old ? 8 + (hash(key) % 12) : 1 + (hash(`${key}:${store}:d`) % 5);

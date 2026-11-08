@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { formatEuro, type StoreId } from '@repas/core';
+import { completeTotals, formatEuro, STORE_COUNT, type StoreId } from '@repas/core';
 import { cx, Reveal, StoreChip } from '@repas/ui';
 import { CtaTicket, DemoBadge, H2, Panel, SeoHero } from '@/components/seo/blocks';
 import { Faq } from '@/components/site/faq';
@@ -15,7 +15,7 @@ export const revalidate = 86400;
 export const metadata: Metadata = {
   title: 'Quel supermarché est le moins cher ? Observatoire des prix',
   description:
-    'Coût d’un panier de 14 repas pour 4 personnes chez Lidl, Aldi, E.Leclerc, Intermarché, Carrefour et Auchan, mis à jour chaque semaine.',
+    'Coût d’un panier de 14 repas pour 4 personnes chez Lidl, Aldi, E.Leclerc, Super U, Carrefour, Auchan, Monoprix et 5 autres enseignes, mis à jour chaque semaine.',
   alternates: { canonical: ROUTES.comparatif },
 };
 
@@ -23,8 +23,10 @@ export default async function ComparatifPage() {
   const b = await referenceBasket();
   if (!b) throw new Error('Panier type indisponible');
   const t = b.comparison.totals;
-  const [first, second, third] = t;
-  const last = t.at(-1)!;
+  // Classement sur les enseignes qui vendent tout le panier ; les totaux partiels viennent après, sans rang.
+  const ranked = completeTotals(t);
+  const [first, second, third] = ranked;
+  const last = ranked.at(-1)!;
   const period = MONTH_YEAR(b.weekStart);
   const name = (id: StoreId) => storeName(b, id);
   const answer = `Sur notre panier type de 14 repas pour 4 personnes, ${name(first!.storeId)} est le moins cher à ${formatEuro(first!.cents)}, devant ${name(second!.storeId)} (${formatEuro(second!.cents)}) et ${name(third!.storeId)} (${formatEuro(third!.cents)}). ${name(last.storeId)} ferme la marche à ${formatEuro(last.cents)}, soit ${formatEuro(last.cents - first!.cents)} de plus par semaine.`;
@@ -43,6 +45,9 @@ export default async function ComparatifPage() {
     ['lidl', 'leclerc'],
     ['aldi', 'lidl'],
     ['carrefour', 'auchan'],
+    ['super-u', 'leclerc'],
+    ['netto', 'lidl'],
+    ['monoprix', 'franprix'],
   ];
   const total = (id: StoreId) => t.find((x) => x.storeId === id)!.cents;
 
@@ -65,9 +70,9 @@ export default async function ComparatifPage() {
         data={{
           '@context': 'https://schema.org',
           '@type': 'Dataset',
-          name: 'Prix du panier de courses hebdomadaire pour 4 personnes — 6 enseignes',
+          name: `Prix du panier de courses hebdomadaire pour 4 personnes — ${STORE_COUNT} enseignes`,
           description:
-            'Coût d’un panier de 14 repas pour 4 personnes chez Lidl, Aldi, E.Leclerc, Intermarché, Carrefour et Auchan.',
+            'Coût d’un panier de 14 repas pour 4 personnes chez Lidl, Aldi, Netto, E.Leclerc, Super U, Intermarché, Carrefour, Auchan, Franprix et Monoprix, et sur les produits vendus chez Grand Frais et Picard.',
           url: absoluteUrl(ROUTES.comparatif),
           temporalCoverage: b.weekStart,
           spatialCoverage: { '@type': 'Place', name: 'France' },
@@ -85,7 +90,7 @@ export default async function ComparatifPage() {
         meta={
           <>
             {b.pricesAt ? `Prix relevés le ${longDate(b.pricesAt)} · ` : ''}
-            {b.productCount} produits · 6 enseignes · relevés de moins de 7 jours
+            {b.productCount} produits · {STORE_COUNT} enseignes · relevés de moins de 7 jours
           </>
         }
       />
@@ -99,7 +104,7 @@ export default async function ComparatifPage() {
                 key={x.storeId}
                 className="flex flex-wrap items-center gap-4 rounded-[18px] bg-white px-4 py-3"
               >
-                <span className="font-display w-8 text-[24px] font-extrabold">{i + 1}</span>
+                <span className="font-display w-8 text-[24px] font-extrabold">{x.partial ? '' : i + 1}</span>
                 <StoreChip
                   storeId={x.storeId}
                   name={name(x.storeId)}
@@ -107,20 +112,31 @@ export default async function ComparatifPage() {
                   className="w-[170px] text-[16px]"
                 />
                 <span
-                  className="bg-site-track h-3 min-w-[100px] flex-1 overflow-hidden rounded-[9px]"
+                  className={cx(
+                    'h-3 min-w-[100px] flex-1 overflow-hidden rounded-[9px]',
+                    !x.partial && 'bg-site-track',
+                  )}
                   aria-hidden="true"
                 >
-                  <span
-                    className={cx('block h-full rounded-[9px]', i === 0 ? 'bg-saving' : 'bg-site-bar')}
-                    style={{ width: `${Math.round((x.cents / last.cents) * 100)}%` }}
-                  />
+                  {x.partial ? null : (
+                    <span
+                      className={cx('block h-full rounded-[9px]', i === 0 ? 'bg-saving' : 'bg-site-bar')}
+                      style={{ width: `${Math.min(100, Math.round((x.cents / last.cents) * 100))}%` }}
+                    />
+                  )}
                 </span>
                 <span className="font-display w-[110px] text-right text-[22px] font-extrabold tabular-nums">
-                  {formatEuro(x.cents)}
+                  {x.partial ? '—' : formatEuro(x.cents)}
                 </span>
                 <span className="text-ink-muted w-[150px] text-right text-[14px] font-bold tabular-nums">
-                  Indice {Math.round((x.cents / first!.cents) * 100)}
-                  {i > 0 ? ` · +${formatEuro(x.cents - first!.cents)}` : ''}
+                  {x.partial ? (
+                    `Partiel · ${Math.round(x.coverage * 100)} % du panier`
+                  ) : (
+                    <>
+                      Indice {Math.round((x.cents / first!.cents) * 100)}
+                      {i > 0 ? ` · +${formatEuro(x.cents - first!.cents)}` : ''}
+                    </>
+                  )}
                 </span>
               </li>
             ))}
@@ -132,10 +148,11 @@ export default async function ComparatifPage() {
         <Panel>
           <H2>Rayon par rayon</H2>
           <p className="text-ink-muted mt-2 text-[15px] font-bold">
-            Coût du panier type par rayon. En orange : l’enseigne la moins chère du rayon.
+            Coût du panier type par rayon. En orange : l’enseigne la moins chère du rayon. « — » : rayon pas
+            vendu en entier par l’enseigne.
           </p>
           <div className="mt-5 overflow-x-auto">
-            <table className="w-full min-w-[720px] text-[15px] tabular-nums">
+            <table className="w-full min-w-[1180px] text-[14px] tabular-nums">
               <thead>
                 <tr className="text-ink-muted text-left text-[12px] font-black tracking-[1px]">
                   <th scope="col" className="pb-2">
@@ -150,7 +167,7 @@ export default async function ComparatifPage() {
               </thead>
               <tbody>
                 {b.aisles.map((a) => {
-                  const min = Math.min(...a.totals.map((x) => x.cents));
+                  const min = Math.min(...a.totals.filter((x) => !x.partial).map((x) => x.cents));
                   return (
                     <tr key={a.id} className="border-line border-t">
                       <th scope="row" className="py-3 text-left font-extrabold">
@@ -161,10 +178,10 @@ export default async function ComparatifPage() {
                           <span
                             className={cx(
                               'rounded-pill px-2 py-0.5 font-bold',
-                              x.cents === min && 'bg-saving text-raw-encre font-black',
+                              !x.partial && x.cents === min && 'bg-saving text-raw-encre font-black',
                             )}
                           >
-                            {formatEuro(x.cents)}
+                            {x.partial ? '—' : formatEuro(x.cents)}
                           </span>
                         </td>
                       ))}
@@ -177,7 +194,7 @@ export default async function ComparatifPage() {
                   </th>
                   {STORES.map((s) => (
                     <td key={s} className="py-3 text-right">
-                      {formatEuro(total(s))}
+                      {t.find((x) => x.storeId === s)!.partial ? '—' : formatEuro(total(s))}
                     </td>
                   ))}
                 </tr>

@@ -1,7 +1,7 @@
 import type { StoreId } from '@repas/core';
 import { cx } from './cx.ts';
 
-// Fond pastel neutre par enseigne (jamais de logo ni de couleur officielle).
+// Fond pastel neutre par enseigne (jamais de logo ni de couleur officielle). 6 fonds pour 12 enseignes.
 const CHIP_BG: Record<StoreId, string> = {
   lidl: 'bg-chip-1',
   aldi: 'bg-chip-2',
@@ -9,6 +9,12 @@ const CHIP_BG: Record<StoreId, string> = {
   intermarche: 'bg-chip-4',
   carrefour: 'bg-chip-5',
   auchan: 'bg-chip-6',
+  netto: 'bg-chip-3',
+  'super-u': 'bg-chip-1',
+  'grand-frais': 'bg-chip-2',
+  picard: 'bg-chip-5',
+  franprix: 'bg-chip-4',
+  monoprix: 'bg-chip-6',
 };
 
 export interface StoreChipProps {

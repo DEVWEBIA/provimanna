@@ -4,7 +4,7 @@
 
 ## Le produit en une phrase
 
-Une web app (PWA) qui génère le **plan de repas de la semaine** d'un foyer et montre **combien coûte la liste de courses dans 6 enseignes** (Lidl, Aldi, E.Leclerc, Intermarché, Carrefour, Auchan). L'utilisateur reste **libre de garder son enseigne**, même plus chère. Nom définitif pas encore choisi : utilise `[Nom de l'appli]` / la constante `APP_NAME`.
+Une web app (PWA) qui génère le **plan de repas de la semaine** d'un foyer et montre **combien coûte la liste de courses dans 12 enseignes** (Lidl, Aldi, Netto, E.Leclerc, Super U, Intermarché, Carrefour, Auchan, Grand Frais, Picard, Franprix, Monoprix ; liste unique dans `packages/core/src/stores.ts`, décision du 08/11/2026). Grand Frais et Picard ont un **assortiment partiel** : sous 90 % des produits de la liste avec un prix, le total est signalé « partiel », jamais « le moins cher », et ces enseignes ne peuvent pas être l'enseigne principale ni recevoir la liste. L'utilisateur reste **libre de garder son enseigne**, même plus chère. Nom définitif pas encore choisi : utilise `[Nom de l'appli]` / la constante `APP_NAME`.
 
 ## Décisions figées
 
@@ -22,7 +22,7 @@ Une web app (PWA) qui génère le **plan de repas de la semaine** d'un foyer et 
 
 ## Gratuit vs Premium
 
-- **Gratuit** : 1 plan / semaine, prix détaillés dans son enseigne, totaux des 5 autres, liste partageable.
+- **Gratuit** : 1 plan / semaine, prix détaillés dans son enseigne, totaux des autres enseignes, liste partageable.
 - **Premium** : détail produit par produit, bascule de la liste vers une autre enseigne, plans illimités, alertes promo, partage famille temps réel.
 
 ## Structure cible
@@ -57,7 +57,7 @@ docs/         brief, plan d'action, SEO/GEO, écrans → routes, roadmap
 
 - Couleurs uniquement via tokens. Aubergine `#6B3868` = marque/actions (éclaircie le 07/11/2026 à la demande du propriétaire ; ancienne valeur `#4A2545`, encore présente dans les maquettes). **Orange `#EE7A30` réservé aux économies, toujours avec texte foncé `#2A1A28`** (jamais de blanc sur orange). Sable `#F6F3EC` = fond.
 - Polices : Bricolage Grotesque (titres site + grands chiffres), Nunito (interface). Chiffres de prix en `tabular-nums`.
-- **Enseignes : vrais logos en couleur** (décision du propriétaire, 08/11/2026, qui remplace celle du 07/11) dans le bandeau « enseignes comparées » de la landing, l'espace client (composant `apps/web/src/components/store-logo.tsx`, vignette blanche) et le back-office (`apps/admin/src/components/store-logo.tsx`), avec la mention « Marques et logos © leurs propriétaires respectifs » sur le site (sources : `apps/web/src/assets/logos/SOURCES.md`). Pages éditoriales publiques (observatoire, enseignes, menus, recettes) : pastille neutre 2 lettres sur fond pastel + nom en clair, tant que le propriétaire n'en décide pas autrement. Logo Carrefour manquant : nom écrit en clair.
+- **Enseignes : vrais logos en couleur** (décision du propriétaire, 08/11/2026, qui remplace celle du 07/11) dans le bandeau « enseignes comparées » de la landing, l'espace client (composant `apps/web/src/components/store-logo.tsx`, vignette blanche) et le back-office (`apps/admin/src/components/store-logo.tsx`), avec la mention « Marques et logos © leurs propriétaires respectifs » sur le site (sources : `apps/web/src/assets/logos/SOURCES.md`). Pages éditoriales publiques (observatoire, enseignes, menus, recettes) : pastille neutre 2 lettres sur fond pastel + nom en clair, tant que le propriétaire n'en décide pas autrement.
 - Signature : carte « ticket de caisse » à bord dentelé (radial-gradient), voir `Main.dc.html` classe `.edge`.
 - Un seul bouton plein par écran. Cibles tactiles ≥ 44 px. Contraste AA. `prefers-reduced-motion` respecté.
 - Toujours afficher la date des prix et l'indice de fiabilité (●●● / ●●○ / ●○○). Les estimations sont préfixées par `≈`.

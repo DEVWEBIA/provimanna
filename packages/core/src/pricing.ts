@@ -3,7 +3,9 @@
  * Tous les montants sont en CENTIMES (entiers). Le formatage n'arrive qu'à l'affichage.
  */
 
-export type StoreId = 'lidl' | 'aldi' | 'leclerc' | 'intermarche' | 'carrefour' | 'auchan';
+import type { StoreId } from './stores.ts';
+
+export type { StoreId };
 
 export type PriceSource = 'open_prices' | 'ticket' | 'manual';
 
@@ -51,6 +53,8 @@ export const DEFAULTS = {
   freshDays: 7,
   fallbackDays: 30,
   aberrantThreshold: 0.4,
+  /** En dessous de 90 % des produits de la liste avec un prix, le total de l'enseigne est « partiel ». */
+  minCoverage: 0.9,
 } as const;
 
 const DAY_MS = 86_400_000;
@@ -141,6 +145,10 @@ export interface StoreTotal {
   freshRatio: number;
   /** Produits sans aucun prix dans cette enseigne (exclus du total). */
   missing: string[];
+  /** Part des lignes qui ont un prix dans cette enseigne (0 à 1). */
+  coverage: number;
+  /** Couverture sous `DEFAULTS.minCoverage` : total incomplet, jamais présenté comme « le moins cher ». */
+  partial: boolean;
   /** Date (ISO) du relevé le plus récent utilisé, null si aucun prix. */
   latestObservedAt: string | null;
 }
@@ -167,14 +175,27 @@ export function planCostInStore(
     if (!latest || Date.parse(p.observedAt) > Date.parse(latest)) latest = p.observedAt;
   }
   const freshRatio = lines.length === 0 ? 1 : fresh / lines.length;
+  const coverage = lines.length === 0 ? 1 : (lines.length - missing.length) / lines.length;
   return {
     storeId,
     cents: Math.round(cents),
     reliability: reliabilityFromRatio(freshRatio),
     freshRatio,
     missing,
+    coverage,
+    partial: coverage < DEFAULTS.minCoverage,
     latestObservedAt: latest,
   };
+}
+
+/** Totaux des enseignes qui couvrent toute la liste (classements, écarts, « la plus chère »). */
+export function completeTotals(totals: StoreTotal[]): StoreTotal[] {
+  return totals.filter((t) => !t.partial);
+}
+
+/** Ordre d'affichage des totaux : enseignes complètes du moins cher au plus cher, puis les totaux partiels. */
+export function rankStoreTotals(totals: StoreTotal[]): StoreTotal[] {
+  return [...totals].sort((a, b) => Number(a.partial) - Number(b.partial) || a.cents - b.cents);
 }
 
 /**
@@ -204,7 +225,10 @@ export interface Comparison {
   savingCents: number;
 }
 
-/** Compare toutes les enseignes, trie du moins cher au plus cher. */
+/**
+ * Compare toutes les enseignes : complètes du moins cher au plus cher, puis totaux partiels.
+ * `cheapest` est la moins chère des enseignes complètes (un total partiel n'est jamais « le moins cher »).
+ */
 export function compareStores(
   lines: ShoppingLine[],
   stores: StoreId[],
@@ -212,9 +236,7 @@ export function compareStores(
   observations: PriceObservation[],
   now: Date,
 ): Comparison {
-  const totals = stores
-    .map((s) => planCostInStore(lines, s, observations, now))
-    .sort((a, b) => a.cents - b.cents);
+  const totals = rankStoreTotals(stores.map((s) => planCostInStore(lines, s, observations, now)));
   const reference = totals.find((t) => t.storeId === referenceStore);
   if (!reference) throw new Error(`Enseigne de référence absente : ${referenceStore}`);
   const cheapest = totals[0]!;
@@ -365,7 +387,7 @@ export function sumCents(values: readonly (number | null)[]): number {
   return values.reduce<number>((s, v) => s + (v ?? 0), 0);
 }
 
-/** Coût d'une recette pour `servings` parts dans chaque enseigne (du moins cher au plus cher). */
+/** Coût d'une recette pour `servings` parts dans chaque enseigne (ordre de `rankStoreTotals`). */
 export function recipeStoreTotals(
   recipe: Recipe,
   servings: number,
@@ -374,7 +396,7 @@ export function recipeStoreTotals(
   now: Date,
 ): StoreTotal[] {
   const lines = buildShoppingLines([{ recipeId: recipe.id, servings }], new Map([[recipe.id, recipe]]));
-  return stores.map((s) => planCostInStore(lines, s, observations, now)).sort((a, b) => a.cents - b.cents);
+  return rankStoreTotals(stores.map((s) => planCostInStore(lines, s, observations, now)));
 }
 
 export interface IngredientCost {

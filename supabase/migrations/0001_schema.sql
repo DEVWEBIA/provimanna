@@ -15,7 +15,7 @@ create type receipt_status as enum ('en_attente', 'en_revue', 'valide', 'rejete'
 create type line_decision as enum ('auto', 'accepte', 'corrige', 'ignore');
 
 create table stores (
-  id text primary key,                       -- 'lidl', 'aldi', 'leclerc', 'intermarche', 'carrefour', 'auchan'
+  id text primary key,                       -- 'lidl', 'super-u', 'picard'… (liste : packages/core/src/stores.ts)
   name text not null,                        -- 'E.Leclerc'
   initials char(2) not null,                 -- 'EL' (pastille neutre, jamais de logo)
   country char(2) not null default 'FR',

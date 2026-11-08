@@ -1,5 +1,5 @@
 import 'server-only';
-import { compareStores, listItems, nextStreak, sumCents, type StoreId } from '@repas/core';
+import { compareStores, listItems, nextStreak, sumCents, type StoreId, DEFAULTS } from '@repas/core';
 import type { Household } from './household';
 import { planLines, STORES, type PlanData, type PlanRow } from './plan';
 import type { AdminClient } from './supabase/admin';
@@ -185,8 +185,11 @@ export async function syncShoppingList(
 /** Total de la liste (paquets entiers) dans chaque enseigne, via core. */
 export function listTotals(plan: PlanRow, data: PlanData) {
   const lines = planLines(plan, data);
-  return STORES.map((store) => {
+  // Une enseigne qui ne vend pas toute la liste (Picard, Grand Frais…) n'a pas de total comparable.
+  return STORES.flatMap((store) => {
     const items = listItems(lines, store, data.observations, data.now);
-    return { store, cents: sumCents(items.map((i) => i.cents)) };
+    const priced = items.filter((i) => i.cents !== null).length;
+    if (items.length && priced / items.length < DEFAULTS.minCoverage) return [];
+    return [{ store, cents: sumCents(items.map((i) => i.cents)) }];
   }).sort((a, b) => a.cents - b.cents);
 }

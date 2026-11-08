@@ -1,6 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { compareStores, formatEuro, type PriceObservation, type StoreId } from '@repas/core';
+import {
+  compareStores,
+  formatEuro,
+  type PriceObservation,
+  type StoreId,
+  completeTotals,
+  STORE_COUNT,
+} from '@repas/core';
 import { Reveal, StoreChip } from '@repas/ui';
 import { CtaTicket, DemoBadge, H2, Panel, SeoHero } from '@/components/seo/blocks';
 import { SitePage } from '@/components/site/site-page';
@@ -46,7 +53,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   if (!d) return {};
   return {
     title: `Combien coûtent les courses à ${d.city} ?`,
-    description: `Panier type de 14 repas pour 4 personnes à ${d.city} dans 6 enseignes, comparé à la moyenne nationale.`,
+    description: `Panier type de 14 repas pour 4 personnes à ${d.city} dans ${STORE_COUNT} enseignes, comparé à la moyenne nationale.`,
     alternates: { canonical: `/prix-courses/${(await params).ville}` },
   };
 }
@@ -84,8 +91,9 @@ export default async function VillePage({ params }: { params: Params }) {
   );
   const cmp = compareStores(lines, STORES, 'lidl', local, now);
   const national = new Map(b.comparison.totals.map((t) => [t.storeId, t.cents]));
-  const first = cmp.totals[0]!;
-  const last = cmp.totals.at(-1)!;
+  const full = completeTotals(cmp.totals);
+  const first = full[0]!;
+  const last = full.at(-1)!;
   const name = (id: StoreId) => storeName(b, id);
 
   return (
@@ -121,7 +129,7 @@ export default async function VillePage({ params }: { params: Params }) {
               </tr>
             </thead>
             <tbody>
-              {cmp.totals.map((t) => (
+              {full.map((t) => (
                 <tr key={t.storeId} className="border-line border-t">
                   <th scope="row" className="py-2.5 text-left">
                     <StoreChip

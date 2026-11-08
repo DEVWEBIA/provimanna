@@ -10,12 +10,21 @@ export interface HeroTicketProps {
   myStore: StoreId;
   households: readonly { people: number; label: string; factor: number }[];
   weekLabel: string;
+  /** Enseignes comparées en plus des lignes affichées (« + 6 autres enseignes »). */
+  moreStores?: number;
   /** Couleur du fond derrière le ticket (dents du bord dentelé). */
   edge?: 'surface-50' | 'brand' | 'cutout';
 }
 
-/** Ticket comparateur interactif du hero : le total des 6 enseignes suit la taille du foyer. */
-export function HeroTicket({ stores, myStore, households, weekLabel, edge = 'surface-50' }: HeroTicketProps) {
+/** Ticket comparateur interactif du hero : le total des enseignes suit la taille du foyer. */
+export function HeroTicket({
+  stores,
+  myStore,
+  households,
+  weekLabel,
+  moreStores = 0,
+  edge = 'surface-50',
+}: HeroTicketProps) {
   const [people, setPeople] = useState(4);
   const factor = households.find((h) => h.people === people)?.factor ?? 1;
   const rows = stores.map((s) => ({ ...s, total: scaleCents(s.cents, factor) }));
@@ -105,6 +114,11 @@ export function HeroTicket({ stores, myStore, households, weekLabel, edge = 'sur
           );
         })}
       </ul>
+      {moreStores > 0 ? (
+        <p className="text-ink-muted mt-2 px-2.5 text-[13px] font-extrabold">
+          + {moreStores} autres enseignes comparées dans l’appli
+        </p>
+      ) : null}
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-ink-muted max-w-[200px] text-[14px] font-bold">
           Écart entre ton enseigne et la moins chère

@@ -1,13 +1,14 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { STORE_IDS } from '@repas/core';
 import { z } from 'zod';
 import { requireRole } from '@/lib/staff';
 
 export type StoreState = { status: 'idle' } | { status: 'ok' | 'error'; message: string };
 
 const schema = z.object({
-  id: z.enum(['lidl', 'aldi', 'leclerc', 'intermarche', 'carrefour', 'auchan']),
+  id: z.enum(STORE_IDS),
   name: z.string().trim().min(2).max(40),
   initials: z
     .string()

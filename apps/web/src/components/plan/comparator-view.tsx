@@ -6,7 +6,7 @@ import { formatEuro, type StoreId } from '@repas/core';
 import { buttonClasses, cx, glassClasses, Icon, Price, Reliability, TicketCard } from '@repas/ui';
 import { StoreLogo } from '@/components/store-logo';
 import { href } from '@/lib/site';
-import type { StoreTotalView } from './store-totals';
+import { PartialLabel, type StoreTotalView } from './store-totals';
 import { ActionMessage } from './use-plan-action';
 import { useChooseStore } from './use-choose-store';
 
@@ -35,18 +35,27 @@ export interface ComparatorViewProps {
   cheapest: StoreId;
   premium: boolean;
   details: Partial<Record<StoreId, StoreDetail>>;
+  lineCount: number;
 }
 
 const signed = (cents: number) => (cents < 0 ? `−${formatEuro(-cents)}` : `+${formatEuro(cents)}`);
 
 /** Comparateur détaillé (maquettes AppComparateur / MComparateur). */
-export function ComparatorView({ planId, totals, myStore, cheapest, premium, details }: ComparatorViewProps) {
+export function ComparatorView({
+  planId,
+  totals,
+  myStore,
+  cheapest,
+  premium,
+  details,
+  lineCount,
+}: ComparatorViewProps) {
   const others = totals.filter((t) => t.id !== myStore);
   const [other, setOther] = useState<StoreId>(cheapest !== myStore ? cheapest : (others[0]?.id ?? myStore));
   const { choose, pending, message, clear } = useChooseStore(planId);
   const mine = totals.find((t) => t.id === myStore)!;
   const cur = totals.find((t) => t.id === other)!;
-  const max = Math.max(...totals.map((t) => t.cents));
+  const max = Math.max(...totals.filter((t) => !t.partial).map((t) => t.cents), 1);
   const detail = details[other];
   const save = mine.cents - cur.cents;
 
@@ -100,7 +109,7 @@ export function ComparatorView({ planId, totals, myStore, cheapest, premium, det
                           ? 'bg-site-brand-light'
                           : 'bg-site-bar',
                   )}
-                  style={{ width: `${Math.round((t.cents / max) * 100)}%` }}
+                  style={{ width: `${Math.min(100, Math.round((t.cents / max) * 100))}%` }}
                 />
               </span>
               <span className="flex flex-col items-end sm:w-[110px]">
@@ -110,15 +119,19 @@ export function ComparatorView({ planId, totals, myStore, cheapest, premium, det
                   size="md"
                   className="font-display text-[19px] sm:text-[22px]"
                 />
-                <Reliability level={t.reliability} className="text-[11px]" />
+                {t.partial ? (
+                  <PartialLabel priced={t.pricedCount} total={lineCount} />
+                ) : (
+                  <Reliability level={t.reliability} className="text-[11px]" />
+                )}
               </span>
               <span
                 className={cx(
                   'text-right text-[14px] font-black tabular-nums max-sm:w-[70px] sm:w-[86px]',
-                  isMine ? 'text-brand' : diff > 0 ? 'text-saving-ink' : 'text-ink-muted',
+                  isMine ? 'text-brand' : diff > 0 && !t.partial ? 'text-saving-ink' : 'text-ink-muted',
                 )}
               >
-                {isMine ? 'ton choix' : signed(-diff)}
+                {isMine ? 'ton choix' : t.partial ? 'partiel' : signed(-diff)}
               </span>
             </button>
           );
@@ -188,7 +201,9 @@ export function ComparatorView({ planId, totals, myStore, cheapest, premium, det
                 {detail.hidden} autres produits à comparer
               </p>
               <p className="text-ink-muted max-w-[420px] text-[15px]">
-                Vois exactement où se cache l’écart, et bascule ta liste chez {cur.name} en un clic.
+                {cur.partial
+                  ? 'Vois exactement où se cache l’écart, produit par produit.'
+                  : `Vois exactement où se cache l’écart, et bascule ta liste chez ${cur.name} en un clic.`}
               </p>
               <Link
                 href={href('/app/abonnement')}
@@ -205,22 +220,31 @@ export function ComparatorView({ planId, totals, myStore, cheapest, premium, det
             <p className="text-site-lilac text-[12px] font-black tracking-[1.2px]">
               EN PASSANT CHEZ {cur.name.toUpperCase()}
             </p>
-            <p className="font-display mt-1 text-[44px] font-extrabold tabular-nums tracking-[-1.4px]">
-              {save > 0 ? `−${formatEuro(save)}` : signed(-save)}
-            </p>
-            {detail ? (
-              <p className="text-site-on-brand-muted text-[15px] font-bold">
-                {detail.cheaper} produits moins chers, {detail.pricier} plus chers, le reste à prix égal.
+            {cur.partial ? (
+              <p className="mt-2 text-[16px] font-bold">
+                {cur.name} vend {cur.pricedCount} produits sur {lineCount} de ta liste. Pratique en
+                complément, mais ta liste reste chez une enseigne où tu trouveras tout.
               </p>
-            ) : null}
-            <button
-              type="button"
-              disabled={pending}
-              onClick={() => choose(other)}
-              className="rounded-pill text-brand mt-5 min-h-[52px] w-full bg-white text-[16px] font-black transition-transform hover:-translate-y-0.5 disabled:opacity-60 motion-reduce:transition-none"
-            >
-              Basculer ma liste chez {cur.name}
-            </button>
+            ) : (
+              <>
+                <p className="font-display mt-1 text-[44px] font-extrabold tabular-nums tracking-[-1.4px]">
+                  {save > 0 ? `−${formatEuro(save)}` : signed(-save)}
+                </p>
+                {detail ? (
+                  <p className="text-site-on-brand-muted text-[15px] font-bold">
+                    {detail.cheaper} produits moins chers, {detail.pricier} plus chers, le reste à prix égal.
+                  </p>
+                ) : null}
+                <button
+                  type="button"
+                  disabled={pending}
+                  onClick={() => choose(other)}
+                  className="rounded-pill text-brand mt-5 min-h-[52px] w-full bg-white text-[16px] font-black transition-transform hover:-translate-y-0.5 disabled:opacity-60 motion-reduce:transition-none"
+                >
+                  Basculer ma liste chez {cur.name}
+                </button>
+              </>
+            )}
             <button
               type="button"
               disabled={pending}

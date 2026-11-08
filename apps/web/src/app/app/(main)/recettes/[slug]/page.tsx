@@ -19,6 +19,7 @@ import { RecipeDetail, type Alternative } from '@/components/recipes/recipe-deta
 import { coreRecipe, getRecipe, ingredientLines, recipeTags } from '@/lib/recipes';
 import { currentPlan, plannerHousehold, STORES, toRecipe } from '@/lib/plan';
 import { href } from '@/lib/site';
+import { StoreLogo } from '@/components/store-logo';
 
 export const metadata: Metadata = { title: 'Recette', robots: { index: false } };
 
@@ -131,6 +132,7 @@ export default async function AppRecettePage({ params }: { params: Params }) {
           </h1>
           <div className="anim-rise mt-5 flex flex-wrap gap-3" style={animDelay(160)}>
             <div className="border-line rounded-[18px] border bg-white/80 px-4 py-3 backdrop-blur">
+              <StoreLogo id={store} name={name(store)} size={32} className="mb-2" />
               <p className="text-ink-muted text-[12px] font-black tracking-[1px]">
                 CHEZ {name(store).toUpperCase()} · TON CHOIX
               </p>
@@ -141,6 +143,7 @@ export default async function AppRecettePage({ params }: { params: Params }) {
             </div>
             {cheapest.storeId !== store ? (
               <div className="bg-saving-soft rounded-[18px] px-4 py-3">
+                <StoreLogo id={cheapest.storeId} name={name(cheapest.storeId)} size={32} className="mb-2" />
                 <p className="text-saving-ink text-[12px] font-black tracking-[1px]">
                   LE MOINS CHER · {name(cheapest.storeId).toUpperCase()}
                 </p>

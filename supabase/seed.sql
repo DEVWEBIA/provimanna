@@ -8,7 +8,13 @@ insert into stores (id, name, initials, drive_url) values
   ('leclerc',     'E.Leclerc',   'EL', 'https://www.leclercdrive.fr'),
   ('intermarche', 'Intermarché', 'IN', 'https://www.intermarche.com'),
   ('carrefour',   'Carrefour',   'CA', 'https://www.carrefour.fr'),
-  ('auchan',      'Auchan',      'AU', 'https://www.auchan.fr');
+  ('auchan',      'Auchan',      'AU', 'https://www.auchan.fr'),
+  ('netto',       'Netto',       'NE', 'https://www.netto.fr'),
+  ('super-u',     'Super U',     'SU', 'https://www.coursesu.com'),
+  ('grand-frais', 'Grand Frais', 'GF', null),
+  ('picard',      'Picard',      'PI', 'https://www.picard.fr'),
+  ('franprix',    'Franprix',    'FR', 'https://www.franprix.fr'),
+  ('monoprix',    'Monoprix',    'MO', 'https://courses.monoprix.fr');
 
 insert into store_locations (store_id, label, postal_code, city, lat, lng) values
   ('auchan', 'Auchan Lyon Part-Dieu',   '69003', 'Lyon', 45.7609, 4.8590),

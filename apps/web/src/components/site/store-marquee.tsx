@@ -1,41 +1,50 @@
-import Image, { type StaticImageData } from 'next/image';
-import type { StoreId } from '@repas/core';
-import aldi from '@/assets/logos/aldi.svg';
-import auchan from '@/assets/logos/auchan.svg';
-import intermarche from '@/assets/logos/intermarche.svg';
-import leclerc from '@/assets/logos/leclerc.svg';
-import lidl from '@/assets/logos/lidl.svg';
-import type { ExampleStore } from '@/lib/landing-data';
+import Image from 'next/image';
+import { STORE_COUNT, type StoreId } from '@repas/core';
+import { STORE_LOGOS } from '@/lib/store-logos';
 
-/**
- * Logos officiels en couleur (Wikimedia Commons, voir src/assets/logos/SOURCES.md), avec la mention de propriété
- * des marques. Sur le site, uniquement dans ce bandeau ; ailleurs, pastilles neutres (décisions des 07 et 08/11/2026).
- * Carrefour : pas de fichier réutilisable pour l'instant → nom écrit en clair.
- */
-const LOGOS: Partial<Record<StoreId, { src: StaticImageData; h: number }>> = {
-  lidl: { src: lidl, h: 44 },
-  aldi: { src: aldi, h: 44 },
-  leclerc: { src: leclerc, h: 30 },
-  intermarche: { src: intermarche, h: 26 },
-  auchan: { src: auchan, h: 30 },
+/** Hauteur d'affichage par logo, pour un poids visuel comparable (logos carrés plus hauts). */
+const HEIGHT: Record<StoreId, number> = {
+  lidl: 44,
+  aldi: 44,
+  netto: 34,
+  leclerc: 30,
+  'super-u': 28,
+  intermarche: 26,
+  carrefour: 44,
+  auchan: 30,
+  'grand-frais': 48,
+  picard: 48,
+  franprix: 26,
+  monoprix: 22,
 };
 
-function StoreMark({ store }: { store: ExampleStore }) {
-  const logo = LOGOS[store.id];
-  const cls = 'transition-transform duration-300 hover:scale-105 motion-reduce:transition-none';
-  if (!logo) {
-    return <span className={`${cls} text-ink text-[26px] font-black tracking-[-0.5px]`}>{store.name}</span>;
-  }
-  const w = Math.round((logo.src.width / logo.src.height) * logo.h);
-  return <Image src={logo.src} alt="" width={w} height={logo.h} unoptimized className={cls} />;
+type MarqueeStore = { id: StoreId; name: string };
+
+function StoreMark({ store }: { store: MarqueeStore }) {
+  const src = STORE_LOGOS[store.id];
+  const h = HEIGHT[store.id];
+  const w = Math.round((src.width / src.height) * h);
+  return (
+    <Image
+      src={src}
+      alt=""
+      width={w}
+      height={h}
+      unoptimized
+      className="transition-transform duration-300 hover:scale-105 motion-reduce:transition-none"
+    />
+  );
 }
 
-/** Bandeau défilant des enseignes comparées. Figé si l'utilisateur réduit les animations. */
-export function StoreMarquee({ stores }: { stores: ExampleStore[] }) {
+/**
+ * Bandeau défilant des enseignes comparées : vrais logos en couleur (src/assets/logos/SOURCES.md), avec la
+ * mention de propriété des marques. Figé si l'utilisateur réduit les animations.
+ */
+export function StoreMarquee({ stores }: { stores: MarqueeStore[] }) {
   const row = () => (
     <ul className="flex shrink-0 items-center gap-16 pr-16">
-      {[...stores, ...stores].map((s, i) => (
-        <li key={`${s.id}-${i}`} className="flex h-12 items-center">
+      {stores.map((s) => (
+        <li key={s.id} className="flex h-12 items-center">
           <StoreMark store={s} />
         </li>
       ))}
@@ -44,7 +53,7 @@ export function StoreMarquee({ stores }: { stores: ExampleStore[] }) {
   return (
     <section aria-label="Enseignes comparées" className="py-12">
       <p className="text-ink-muted text-center text-[12px] font-black uppercase tracking-[1.4px]">
-        6 enseignes comparées à chaque plan
+        {STORE_COUNT} enseignes comparées à chaque plan
       </p>
       <p className="sr-only">{stores.map((s) => s.name).join(', ')}</p>
       <div className="mt-7 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]">

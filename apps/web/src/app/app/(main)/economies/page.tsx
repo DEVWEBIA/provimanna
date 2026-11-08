@@ -1,7 +1,14 @@
 import type { Metadata } from 'next';
 import { RecipePhoto } from '@/components/recipes/recipe-photo';
 import Link from 'next/link';
-import { formatEuro, recipeServingCents, weekRangeLabel, weekSavingCents, type StoreId } from '@repas/core';
+import {
+  formatEuro,
+  recipeServingCents,
+  weekRangeLabel,
+  weekSavingCents,
+  type StoreId,
+  STORE_COUNT,
+} from '@repas/core';
 import {
   animDelay,
   cx,
@@ -18,6 +25,7 @@ import { longDate } from '@/lib/dates';
 import { getEngagement } from '@/lib/engagement';
 import { currentPlan, toRecipe } from '@/lib/plan';
 import { href } from '@/lib/site';
+import { StoreLogo } from '@/components/store-logo';
 
 export const metadata: Metadata = { title: 'Mes économies', robots: { index: false } };
 
@@ -92,7 +100,7 @@ export default async function EconomiesPage() {
           </p>
           <div className="mt-7">
             <ShareRecap
-              text={`J’ai évité ${formatEuro(e.saved)} de courses en ${validated.length} semaine${validated.length > 1 ? 's' : ''}, en comparant 6 enseignes.`}
+              text={`J’ai évité ${formatEuro(e.saved)} de courses en ${validated.length} semaine${validated.length > 1 ? 's' : ''}, en comparant ${STORE_COUNT} enseignes.`}
             />
           </div>
         </TicketCard>
@@ -132,6 +140,7 @@ export default async function EconomiesPage() {
               const s = weekSavingCents(p);
               return (
                 <li key={p.id} className="border-line flex flex-wrap items-center gap-3 border-t py-3">
+                  {p.validated_at ? <StoreLogo id={p.store_id} name={name(p.store_id)} size={36} /> : null}
                   <span className="min-w-0 flex-1">
                     <span className="block font-black">{weekRangeLabel(p.week_start)}</span>
                     <span className="text-ink-muted text-[14px] font-bold">

@@ -8,6 +8,7 @@ import { PlanControls } from '@/components/plan/plan-controls';
 import { StoreTotals } from '@/components/plan/store-totals';
 import { pricesAtLabel, storeTotals } from '@/components/plan/totals';
 import { currentPlan } from '@/lib/plan';
+import { StoreLogo } from '@/components/store-logo';
 
 export const metadata: Metadata = { title: 'Mon plan', robots: { index: false } };
 
@@ -46,6 +47,7 @@ export default async function PlanPage() {
             cheapest={view.comparison.cheapest}
             pricesAt={pricesAtLabel(view)}
             cheaperProducts={view.cheaperProducts}
+            lineCount={view.lineCount}
           />
         </div>
       </div>
@@ -56,6 +58,7 @@ export default async function PlanPage() {
         href="#comparateur"
         className="bg-raw-encre fixed inset-x-4 bottom-[96px] z-20 flex items-center gap-3 rounded-[20px] px-4 py-3 text-white no-underline shadow-[0_16px_40px_rgba(42,26,40,0.35)] lg:hidden"
       >
+        <StoreLogo id={view.myStore} name={name(view.myStore)} size={40} />
         <span className="flex-1">
           <span className="text-site-on-ink-faint block text-[11px] font-black tracking-[1px]">
             CHEZ {name(view.myStore).toUpperCase()}

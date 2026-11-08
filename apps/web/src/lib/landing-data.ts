@@ -1,4 +1,4 @@
-import type { StoreId } from '@repas/core';
+import { STORE_IDS, STORES_INFO, type StoreId } from '@repas/core';
 
 /**
  * Panier d'exemple de la landing (famille de 4, 14 repas, semaine 46), cohérent avec supabase/seed.sql
@@ -12,16 +12,37 @@ export interface ExampleStore {
   name: string;
   initials: string;
   cents: number;
+  /** Ligne du ticket du hero (les 6 enseignes des maquettes, montants verrouillés par les tests). */
+  hero: boolean;
 }
 
+const example = (id: StoreId, cents: number, hero = false): ExampleStore => ({
+  id,
+  name: STORES_INFO[id].name,
+  initials: STORES_INFO[id].initials,
+  cents,
+  hero,
+});
+
+/** Enseignes à assortiment complet (Picard et Grand Frais n'ont pas de total sur un panier complet). */
 export const EXAMPLE_STORES: ExampleStore[] = [
-  { id: 'lidl', name: 'Lidl', initials: 'LI', cents: 6010 },
-  { id: 'aldi', name: 'Aldi', initials: 'AL', cents: 6140 },
-  { id: 'leclerc', name: 'E.Leclerc', initials: 'EL', cents: 6420 },
-  { id: 'intermarche', name: 'Intermarché', initials: 'IN', cents: 6890 },
-  { id: 'carrefour', name: 'Carrefour', initials: 'CA', cents: 7030 },
-  { id: 'auchan', name: 'Auchan', initials: 'AU', cents: 7160 },
+  example('lidl', 6010, true),
+  example('aldi', 6140, true),
+  example('netto', 6250),
+  example('leclerc', 6420, true),
+  example('super-u', 6680),
+  example('intermarche', 6890, true),
+  example('carrefour', 7030, true),
+  example('auchan', 7160, true),
+  example('franprix', 7920),
+  example('monoprix', 7790),
 ];
+
+/** Lignes du ticket interactif du hero. */
+export const HERO_STORES = EXAMPLE_STORES.filter((s) => s.hero);
+
+/** Toutes les enseignes comparées, pour le bandeau de logos. */
+export const ALL_STORES = STORE_IDS.map((id) => STORES_INFO[id]);
 
 /** Enseigne habituelle du foyer d'exemple. */
 export const EXAMPLE_MY_STORE: StoreId = 'auchan';
@@ -45,7 +66,7 @@ export const LANDING_FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Quelles enseignes sont comparées ?',
-    a: 'Lidl, Aldi, E.Leclerc, Intermarché, Auchan et Carrefour, en France. La Belgique, la Suisse et le Canada suivront.',
+    a: 'Lidl, Aldi, Netto, E.Leclerc, Super U, Intermarché, Carrefour, Auchan, Franprix et Monoprix, plus Grand Frais et Picard pour les produits qu’ils vendent, en France. La Belgique, la Suisse et le Canada suivront.',
   },
   {
     q: 'Dois-je changer de supermarché ?',

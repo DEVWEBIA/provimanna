@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import type { StoreId } from '@repas/core';
+import { STORE_IDS, STORES_INFO, type StoreId } from '@repas/core';
 import { getAccount } from '@/lib/household';
 import { syncShoppingList, validatePlan } from '@/lib/list';
 import { getWeekPlan, loadPlanData } from '@/lib/plan';
@@ -10,7 +10,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 
 export type ListActionResult = { ok: true } | { ok: false; error: string };
 
-const storeSchema = z.enum(['lidl', 'aldi', 'leclerc', 'intermarche', 'carrefour', 'auchan']);
+const storeSchema = z.enum(STORE_IDS);
 const SWITCH_PREMIUM =
   'Faire ta liste dans une autre enseigne que la tienne fait partie de Premium. Ton enseigne habituelle reste disponible.';
 const FAILED = 'Ça n’a pas marché. Réessaie dans un instant.';
@@ -23,6 +23,12 @@ export async function chooseStoreAction(planId: unknown, store: unknown): Promis
   const id = z.guid().safeParse(planId);
   const s = storeSchema.safeParse(store);
   if (!id.success || !s.success) return { ok: false, error: FAILED };
+  if (STORES_INFO[s.data].partialAssortment) {
+    return {
+      ok: false,
+      error: `${STORES_INFO[s.data].name} ne propose pas tous les produits de ta liste. Choisis une enseigne où tu trouveras tout.`,
+    };
+  }
   const { supabase, household } = await getAccount();
 
   // Appartenance vérifiée avec la session de l'utilisateur (RLS) avant toute écriture serveur.

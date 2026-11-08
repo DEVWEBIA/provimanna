@@ -1,23 +1,19 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { Route } from 'next';
-import { addDays, formatEuro, medianCents, weekStartOf } from '@repas/core';
+import { addDays, formatEuro, medianCents, weekStartOf, STORE_IDS, STORES_INFO } from '@repas/core';
 import { animDelay, cx, glassClasses, PageHeader } from '@repas/ui';
 import { coverageByStore, recentObservations, STORES } from '@/lib/coverage';
 import { requireRole } from '@/lib/staff';
 import { PriceQueue, type AlertRow } from './price-queue';
+import { StoreLogo } from '@/components/store-logo';
 
 export const metadata: Metadata = { title: 'Prix' };
 export const dynamic = 'force-dynamic';
 
-const STORE_NAME: Record<string, string> = {
-  lidl: 'Lidl',
-  aldi: 'Aldi',
-  leclerc: 'E.Leclerc',
-  intermarche: 'Intermarché',
-  carrefour: 'Carrefour',
-  auchan: 'Auchan',
-};
+const STORE_NAME: Record<string, string> = Object.fromEntries(
+  STORE_IDS.map((id) => [id, STORES_INFO[id].name]),
+);
 const SOURCE: Record<string, string> = { open_prices: 'Open Prices', ticket: 'Ticket', manual: 'Saisie' };
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -165,7 +161,9 @@ export default async function PrixPage({ searchParams }: { searchParams: SearchP
               {(recent ?? []).map((p) => (
                 <tr key={p.id} className="border-line border-t">
                   <td className="px-3 py-2 font-extrabold">{p.products?.name}</td>
-                  <td className="px-3 py-2 font-bold">{STORE_NAME[p.store_id]}</td>
+                  <td className="px-3 py-2 font-bold">
+                    <StoreLogo id={p.store_id} name={STORE_NAME[p.store_id] ?? p.store_id} height={20} />
+                  </td>
                   <td className="px-3 py-2 font-black">{formatEuro(p.cents)}</td>
                   <td className="text-ink-muted px-3 py-2">
                     {new Date(p.observed_at).toLocaleDateString('fr-FR')}

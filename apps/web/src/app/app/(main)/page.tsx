@@ -24,6 +24,7 @@ import { getEngagement } from '@/lib/engagement';
 import { RECIPE_PHOTOS } from '@/lib/recipe-photos';
 import { currentPlan } from '@/lib/plan';
 import { href } from '@/lib/site';
+import { StoreLogo } from '@/components/store-logo';
 
 export const metadata: Metadata = { title: 'Accueil', robots: { index: false } };
 
@@ -100,6 +101,7 @@ export default async function DashboardPage() {
               {weekRangeLabel(view.weekStart)} · {view.people} {view.people > 1 ? 'personnes' : 'personne'} ·{' '}
               {view.meals.length} repas · chez {name(view.myStore)}
             </p>
+            <StoreLogo id={view.myStore} name={name(view.myStore)} size={36} className="mt-3 w-fit" />
             <div className="mt-6 flex flex-wrap items-end gap-x-5 gap-y-3">
               <p className="font-display text-[56px] font-extrabold tabular-nums leading-none tracking-[-2px]">
                 {mine.freshRatio < 1 ? <span aria-hidden="true">≈ </span> : null}
@@ -107,7 +109,13 @@ export default async function DashboardPage() {
               </p>
               <div className="pb-1.5">
                 {cheapest.storeId !== view.myStore ? (
-                  <p className="bg-saving text-raw-encre rounded-pill inline-flex px-3 py-1 text-[14px] font-black tabular-nums">
+                  <p className="bg-saving text-raw-encre rounded-pill inline-flex items-center gap-2 py-1 pl-1 pr-3 text-[14px] font-black tabular-nums">
+                    <StoreLogo
+                      id={cheapest.storeId}
+                      name={name(cheapest.storeId)}
+                      size={26}
+                      className="rounded-pill"
+                    />
                     Possible dès {formatEuro(cheapest.cents)} chez {name(cheapest.storeId)} · −
                     {formatEuro(view.comparison.savingCents)}
                   </p>

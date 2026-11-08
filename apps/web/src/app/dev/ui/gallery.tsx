@@ -71,7 +71,7 @@ export function Gallery({ theme }: { theme: 'light' | 'dark' }) {
           <Price cents={7160} size="xl" />
           <span className="text-[22px] font-black">Tu compares, tu choisis</span>
           <span className="max-w-[640px] text-[17px] leading-[26px]">
-            On planifie tes repas de la semaine et on te montre ce que coûte ta liste dans six enseignes.
+            On planifie tes repas de la semaine et on te montre ce que coûte ta liste dans douze enseignes.
           </span>
           <span className="text-ink-muted text-[13px] font-black tracking-[1.2px]">
             SEMAINE 47 · 4 PERSONNES

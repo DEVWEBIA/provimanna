@@ -8,6 +8,7 @@ import {
   PREFERENCES,
   priceSpread,
   scaleCents,
+  STORES_INFO,
   type PreferenceId,
   type StoreId,
 } from '@repas/core';
@@ -446,21 +447,23 @@ export function OnboardingWizard({ mode, stores, initial, referral }: Onboarding
                     <fieldset>
                       <legend className="sr-only">Ton enseigne habituelle</legend>
                       <div className="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-3">
-                        {stores.map((s) => (
-                          <Tile
-                            key={s.id}
-                            type="radio"
-                            name="store"
-                            checked={d.store === s.id}
-                            onChange={() => set('store', s.id)}
-                            className="min-h-[76px] items-center gap-3.5 rounded-[20px] px-4 py-3.5 peer-checked:shadow-[0_0_0_4px_theme(colors.brand.soft)]"
-                          >
-                            <span className="flex items-center gap-3 text-[17px] font-black">
-                              <StoreLogo id={s.id} name={s.name} size={40} />
-                              {s.name}
-                            </span>
-                          </Tile>
-                        ))}
+                        {stores
+                          .filter((s) => !STORES_INFO[s.id].partialAssortment)
+                          .map((s) => (
+                            <Tile
+                              key={s.id}
+                              type="radio"
+                              name="store"
+                              checked={d.store === s.id}
+                              onChange={() => set('store', s.id)}
+                              className="min-h-[76px] items-center gap-3.5 rounded-[20px] px-4 py-3.5 peer-checked:shadow-[0_0_0_4px_theme(colors.brand.soft)]"
+                            >
+                              <span className="flex items-center gap-3 text-[17px] font-black">
+                                <StoreLogo id={s.id} name={s.name} size={40} />
+                                {s.name}
+                              </span>
+                            </Tile>
+                          ))}
                       </div>
                     </fieldset>
                     {errors.store ? <Alert>{errors.store}</Alert> : null}

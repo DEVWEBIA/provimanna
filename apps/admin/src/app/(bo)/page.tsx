@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { Route } from 'next';
-import { addDays, isoWeek, weekStartOf } from '@repas/core';
+import { addDays, isoWeek, weekStartOf, STORE_IDS, STORES_INFO } from '@repas/core';
 import { animDelay, cx, glassClasses, PageHeader, Reveal } from '@repas/ui';
 import { StoreLogo } from '@/components/store-logo';
 import { coverageByStore, recentObservations, STORES } from '@/lib/coverage';
@@ -11,14 +11,9 @@ import { createAdminClient } from '@/lib/supabase/admin';
 export const metadata: Metadata = { title: 'Vue d’ensemble' };
 export const dynamic = 'force-dynamic';
 
-const STORE_NAME: Record<string, string> = {
-  lidl: 'Lidl',
-  aldi: 'Aldi',
-  leclerc: 'E.Leclerc',
-  intermarche: 'Intermarché',
-  carrefour: 'Carrefour',
-  auchan: 'Auchan',
-};
+const STORE_NAME: Record<string, string> = Object.fromEntries(
+  STORE_IDS.map((id) => [id, STORES_INFO[id].name]),
+);
 const pct = (n: number) => `${Math.round(n * 100)} %`;
 const nb = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 

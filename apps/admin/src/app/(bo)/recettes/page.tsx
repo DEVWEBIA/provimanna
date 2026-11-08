@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { Route } from 'next';
-import { costPerServing, formatEuro, recipeStoreTotals } from '@repas/core';
+import { costPerServing, formatEuro, recipeStoreTotals, completeTotals } from '@repas/core';
 import { Button, cx, glassClasses, inputClasses, PageHeader } from '@repas/ui';
 import { recentObservations, STORES } from '@/lib/coverage';
 import { requireRole } from '@/lib/staff';
@@ -44,7 +44,7 @@ export default async function BoRecettesPage() {
       ...r,
       unlinked: r.recipe_ingredients.length - linked.length,
       min: costPerServing(totals[0]?.cents ?? 0, r.servings),
-      max: costPerServing(totals.at(-1)?.cents ?? 0, r.servings),
+      max: costPerServing(completeTotals(totals).at(-1)?.cents ?? 0, r.servings),
     };
   });
   return (

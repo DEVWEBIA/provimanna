@@ -1,17 +1,12 @@
-import Image, { type StaticImageData } from 'next/image';
+import Image from 'next/image';
+import { isStoreId } from '@repas/core';
 import { cx } from '@repas/ui';
-import aldi from '@/assets/logos/aldi.svg';
-import auchan from '@/assets/logos/auchan.svg';
-import intermarche from '@/assets/logos/intermarche.svg';
-import leclerc from '@/assets/logos/leclerc.svg';
-import lidl from '@/assets/logos/lidl.svg';
-
-const LOGOS: Record<string, StaticImageData> = { lidl, aldi, leclerc, intermarche, auchan };
+import { STORE_LOGOS } from '@/lib/store-logos';
 
 /**
  * Vrai logo de l'enseigne, en couleur, sur une vignette blanche (lisible aussi en mode sombre).
  * Espace client et bandeau du site (décision du propriétaire du 08/11/2026). Sources : assets/logos/SOURCES.md.
- * Sans fichier (Carrefour pour l'instant) : initiales et nom en clair.
+ * Enseigne inconnue (sans fichier) : nom écrit en clair.
  */
 export function StoreLogo({
   id,
@@ -24,7 +19,7 @@ export function StoreLogo({
   size?: number;
   className?: string;
 }) {
-  const logo = LOGOS[id];
+  const logo = isStoreId(id) ? STORE_LOGOS[id] : undefined;
   const ratio = logo ? logo.width / logo.height : 1;
   const pad = Math.round(size * 0.14);
   // Le logo tient dans la hauteur disponible, sans dépasser 2,4 fois la hauteur en largeur.

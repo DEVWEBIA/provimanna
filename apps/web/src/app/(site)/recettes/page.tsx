@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { Route } from 'next';
-import { formatEuro, zonedDate } from '@repas/core';
+import { formatEuro, zonedDate, STORE_COUNT } from '@repas/core';
 import { animDelay, cx, Reveal } from '@repas/ui';
 import { DemoNotice } from '@/components/plan/demo-notice';
 import { RecipeCard } from '@/components/recipes/recipe-card';
@@ -51,8 +51,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
   const title = p.filter ? FILTERS[p.filter].title : 'Recettes pas chères, prix compris';
   return {
     title,
-    description:
-      'Recettes de saison avec leur coût par part dans 6 enseignes (Lidl, Aldi, E.Leclerc, Intermarché, Carrefour, Auchan), prix datés.',
+    description: `Recettes de saison avec leur coût par part dans ${STORE_COUNT} enseignes (Lidl, Aldi, E.Leclerc, Super U, Carrefour, Auchan…), prix datés.`,
     // Filtres indexables ; le tri et la pagination pointent vers la version canonique du filtre.
     alternates: { canonical: query({ filter: p.filter, sort: 'prix', page: 1 }) },
   };
@@ -127,7 +126,7 @@ export default async function RecettesPage({ searchParams }: { searchParams: Sea
           <strong className="text-ink">
             {recipes.length} recettes, dont {under1} à moins de 1 € la part.
           </strong>{' '}
-          Chaque recette affiche son coût dans 6 enseignes, mis à jour chaque semaine.
+          Chaque recette affiche son coût dans {STORE_COUNT} enseignes, mis à jour chaque semaine.
         </p>
         {pricesAt ? (
           <p className="anim-rise text-ink-muted mt-3 text-[14px] font-bold" style={animDelay(200)}>

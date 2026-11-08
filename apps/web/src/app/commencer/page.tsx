@@ -1,3 +1,4 @@
+import { STORE_COUNT } from '@repas/core';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { OnboardingWizard } from '@/components/onboarding/wizard';
@@ -6,8 +7,7 @@ import { listStores } from '@/lib/stores';
 
 export const metadata: Metadata = {
   title: 'Créer mon plan',
-  description:
-    'Décris ton foyer en 2 minutes : on compose ta semaine et on compare son prix dans 6 enseignes.',
+  description: `Décris ton foyer en 2 minutes : on compose ta semaine et on compare son prix dans ${STORE_COUNT} enseignes.`,
   robots: { index: false, follow: true },
 };
 

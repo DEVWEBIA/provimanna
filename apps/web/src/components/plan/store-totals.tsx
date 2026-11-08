@@ -17,6 +17,10 @@ export interface StoreTotalView {
   reliability: ReliabilityLevel;
   /** Une partie des prix sont des estimations (relevés de plus de 7 jours). */
   estimate: boolean;
+  /** L'enseigne ne vend pas toute la liste (moins de 90 % des produits) : total partiel. */
+  partial: boolean;
+  /** Produits de la liste qui ont un prix dans l'enseigne. */
+  pricedCount: number;
 }
 
 export interface StoreTotalsProps {
@@ -26,6 +30,8 @@ export interface StoreTotalsProps {
   cheapest: StoreId;
   pricesAt: string | null;
   cheaperProducts: number;
+  /** Nombre de produits de la liste (« 12 produits sur 31 »). */
+  lineCount: number;
 }
 
 /** Comparateur à côté du plan (maquette AppPlan) : l'enseigne reste un choix libre. */
@@ -36,6 +42,7 @@ export function StoreTotals({
   cheapest,
   pricesAt,
   cheaperProducts,
+  lineCount,
 }: StoreTotalsProps) {
   const [selected, setSelected] = useState<StoreId>(myStore);
   const { choose, pending, message, clear } = useChooseStore(planId);
@@ -93,38 +100,51 @@ export function StoreTotals({
               </span>
               <span className="flex flex-col items-end">
                 <Price cents={t.cents} estimate={t.estimate} size="md" className="text-[16px]" />
-                <Reliability level={t.reliability} className="text-[11px]" />
+                {t.partial ? (
+                  <PartialLabel priced={t.pricedCount} total={lineCount} />
+                ) : (
+                  <Reliability level={t.reliability} className="text-[11px]" />
+                )}
               </span>
             </button>
           );
         })}
       </div>
 
-      <div
-        className={cx(
-          'mt-4 rounded-[16px] px-4 py-3',
-          isMine || diff <= 0 ? 'bg-surface-50 text-ink-muted' : 'bg-saving-soft text-saving-ink',
-        )}
-        aria-live="polite"
-      >
-        <p className="text-[13px] font-black">
-          {isMine
-            ? 'Total chez ton enseigne'
-            : diff > 0
-              ? `Économie par rapport à ${mine.name}`
-              : `Écart avec ${mine.name}`}
+      {cur.partial ? (
+        <p className="bg-surface-50 text-ink-muted mt-4 rounded-[16px] px-4 py-3 text-[14px] font-bold">
+          {cur.name} ne vend que {cur.pricedCount} produits sur {lineCount} de ta liste : son total est
+          partiel. Idéal en complément de ton enseigne.
         </p>
-        <p className="font-display text-ink text-[30px] font-extrabold tabular-nums tracking-[-1px]">
-          {isMine ? formatEuro(mine.cents) : diff > 0 ? `−${formatEuro(diff)}` : `+${formatEuro(-diff)}`}
-        </p>
-      </div>
+      ) : (
+        <div
+          className={cx(
+            'mt-4 rounded-[16px] px-4 py-3',
+            isMine || diff <= 0 ? 'bg-surface-50 text-ink-muted' : 'bg-saving-soft text-saving-ink',
+          )}
+          aria-live="polite"
+        >
+          <p className="text-[13px] font-black">
+            {isMine
+              ? 'Total chez ton enseigne'
+              : diff > 0
+                ? `Économie par rapport à ${mine.name}`
+                : `Écart avec ${mine.name}`}
+          </p>
+          <p className="font-display text-ink text-[30px] font-extrabold tabular-nums tracking-[-1px]">
+            {isMine ? formatEuro(mine.cents) : diff > 0 ? `−${formatEuro(diff)}` : `+${formatEuro(-diff)}`}
+          </p>
+        </div>
+      )}
       <button
         type="button"
-        onClick={() => choose(selected)}
+        onClick={() => choose(cur.partial ? myStore : selected)}
         disabled={pending}
         className={buttonClasses('primary', 'md', 'mt-4 w-full')}
       >
-        {isMine ? `Garder ${mine.name} et voir ma liste` : `Faire mes courses chez ${cur.name}`}
+        {isMine || cur.partial
+          ? `Garder ${mine.name} et voir ma liste`
+          : `Faire mes courses chez ${cur.name}`}
       </button>
       <p className="text-ink-muted mt-2.5 text-center text-[13px] font-bold">
         Ton choix reste libre, même plus cher.
@@ -149,5 +169,17 @@ export function StoreTotals({
       ) : null}
       <ActionMessage message={message} onClose={clear} />
     </aside>
+  );
+}
+
+/** Remplace l'indice de fiabilité pour un total partiel : « 12/31 produits ». */
+export function PartialLabel({ priced, total }: { priced: number; total: number }) {
+  return (
+    <span
+      className="text-ink-muted text-[11px] font-black"
+      title="Liste partielle : tous les produits n’y sont pas vendus"
+    >
+      Partiel · {priced}/{total} produits
+    </span>
   );
 }

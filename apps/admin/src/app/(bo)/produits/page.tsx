@@ -1,23 +1,19 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { Route } from 'next';
-import { formatEuro, resolvePrice } from '@repas/core';
+import { formatEuro, resolvePrice, STORE_IDS, STORES_INFO } from '@repas/core';
 import { cx, glassClasses, inputClasses, PageHeader } from '@repas/ui';
 import { recentObservations, STORES } from '@/lib/coverage';
 import { requireRole } from '@/lib/staff';
 import { MergeForm, ProductForm } from './product-forms';
+import { StoreLogo } from '@/components/store-logo';
 
 export const metadata: Metadata = { title: 'Produits' };
 export const dynamic = 'force-dynamic';
 
-const STORE_SHORT: Record<string, string> = {
-  lidl: 'LI',
-  aldi: 'AL',
-  leclerc: 'EL',
-  intermarche: 'IN',
-  carrefour: 'CA',
-  auchan: 'AU',
-};
+const STORE_SHORT: Record<string, string> = Object.fromEntries(
+  STORE_IDS.map((id) => [id, STORES_INFO[id].initials]),
+);
 const FILTERS = [
   ['tous', 'Tous'],
   ['sans-prix', 'Sans prix récent'],
@@ -220,8 +216,11 @@ export default async function ProduitsPage({ searchParams }: { searchParams: Sea
                 <p className="text-ink-muted text-[12px] font-black tracking-[1px]">DERNIERS PRIX</p>
                 <ul className="mt-2 grid grid-cols-2 gap-1.5 text-[14px] tabular-nums">
                   {sel.fresh.map((f) => (
-                    <li key={f.store} className="flex justify-between rounded-[10px] bg-white px-2.5 py-1.5">
-                      <span className="font-black">{STORE_SHORT[f.store]}</span>
+                    <li
+                      key={f.store}
+                      className="flex items-center justify-between gap-2 rounded-[10px] bg-white px-2.5 py-1.5"
+                    >
+                      <StoreLogo id={f.store} name={STORES_INFO[f.store].name} height={18} />
                       <span className={f.price && !f.price.fresh ? 'text-warning font-bold' : 'font-bold'}>
                         {f.price ? `${f.price.fresh ? '' : '≈ '}${formatEuro(f.price.cents)}` : '—'}
                       </span>

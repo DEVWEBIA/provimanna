@@ -15,6 +15,8 @@ export interface PriceRow {
   diff: number;
   estimate: boolean;
   reliability: ReliabilityLevel;
+  /** L'enseigne ne vend pas tous les ingrédients : total partiel, sans écart ni classement. */
+  partial: boolean;
 }
 
 /** Coût d'une recette dans chaque enseigne, pour 2 à 8 parts (calculs faits par core côté serveur). */
@@ -100,10 +102,14 @@ export function RecipePriceTable({
                 <td
                   className={cx('py-3 text-right font-black', k === 0 ? 'text-saving-ink' : 'text-ink-muted')}
                 >
-                  {k === 0 ? 'Le moins cher' : `+${formatEuro(r.diff)}`}
+                  {r.partial ? 'partiel' : k === 0 ? 'Le moins cher' : `+${formatEuro(r.diff)}`}
                 </td>
                 <td className="py-3 pr-2 text-right">
-                  <Reliability level={r.reliability} />
+                  {r.partial ? (
+                    <span className="text-ink-muted text-[13px] font-bold">ingrédients manquants</span>
+                  ) : (
+                    <Reliability level={r.reliability} />
+                  )}
                 </td>
               </tr>
             ))}

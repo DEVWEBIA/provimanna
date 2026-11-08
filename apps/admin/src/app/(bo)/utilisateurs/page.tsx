@@ -1,26 +1,20 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { Route } from 'next';
-import { formatEuro, savingsCents, trialDaysLeft } from '@repas/core';
+import { formatEuro, savingsCents, trialDaysLeft, STORE_IDS, STORES_INFO } from '@repas/core';
 import { cx, glassClasses, inputClasses, PageHeader } from '@repas/ui';
 import { Badge, Kpi } from '@/components/bo-ui';
 import { canAccess, requireRole } from '@/lib/staff';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { SupportActions } from './support-actions';
+import { StoreLogo } from '@/components/store-logo';
 
 export const metadata: Metadata = { title: 'Utilisateurs' };
 export const dynamic = 'force-dynamic';
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? '';
-const STORE: Record<string, string> = {
-  lidl: 'Lidl',
-  aldi: 'Aldi',
-  leclerc: 'E.Leclerc',
-  intermarche: 'Intermarché',
-  carrefour: 'Carrefour',
-  auchan: 'Auchan',
-};
+const STORE: Record<string, string> = Object.fromEntries(STORE_IDS.map((id) => [id, STORES_INFO[id].name]));
 const FILTERS = [
   ['tous', 'Tous'],
   ['essai', 'En essai'],
@@ -166,7 +160,15 @@ export default async function UtilisateursPage({ searchParams }: { searchParams:
                     {r.households ? `${r.households.adults} ad. · ${r.households.children} enf.` : '—'}
                   </td>
                   <td className="px-3 py-2.5 font-bold">
-                    {STORE[r.households?.preferred_store_id ?? ''] ?? '—'}
+                    {r.households?.preferred_store_id ? (
+                      <StoreLogo
+                        id={r.households.preferred_store_id}
+                        name={STORE[r.households.preferred_store_id] ?? r.households.preferred_store_id}
+                        height={20}
+                      />
+                    ) : (
+                      '—'
+                    )}
                   </td>
                   <td className="px-3 py-2.5">{statusBadge(r.status)}</td>
                   <td className="text-ink-muted px-3 py-2.5">
@@ -235,8 +237,15 @@ export default async function UtilisateursPage({ searchParams }: { searchParams:
                 {sel.plans.slice(0, 5).map((pl) => (
                   <li key={pl.week_start} className="border-line flex justify-between border-t py-1.5">
                     <span>Semaine du {new Date(pl.week_start).toLocaleDateString('fr-FR')}</span>
-                    <span className="font-bold">
-                      {pl.validated_at ? `validée · ${STORE[pl.store_id]}` : 'non validée'}
+                    <span className="flex items-center gap-1.5 font-bold">
+                      {pl.validated_at ? (
+                        <>
+                          validée ·{' '}
+                          <StoreLogo id={pl.store_id} name={STORE[pl.store_id] ?? pl.store_id} height={16} />
+                        </>
+                      ) : (
+                        'non validée'
+                      )}
                     </span>
                   </li>
                 ))}

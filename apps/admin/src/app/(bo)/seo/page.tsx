@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { STORE_IDS } from '@repas/core';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { cx, glassClasses, PageHeader } from '@repas/ui';
@@ -18,10 +19,7 @@ const STATIC_PAGES = [
   ['/guide/batch-cooking', 'Guide'],
   ['/methodologie', 'Pilier'],
   ['/comment-ca-marche', 'Pilier'],
-  ...['lidl', 'aldi', 'leclerc', 'intermarche', 'carrefour', 'auchan'].map((id) => [
-    `/enseignes/${id}`,
-    'Enseigne',
-  ]),
+  ...STORE_IDS.map((id) => [`/enseignes/${id}`, 'Enseigne']),
 ] as const;
 
 /** Contenu SEO (maquette BOSeo) : pages publiques et checklist GEO des recettes. */

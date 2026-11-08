@@ -1,7 +1,6 @@
 import { z } from 'zod';
-import { PREFERENCE_IDS, type PreferenceId } from '@repas/core';
+import { PREFERENCE_IDS, STORE_IDS, STORES_INFO, type PreferenceId } from '@repas/core';
 
-export const STORE_IDS = ['lidl', 'aldi', 'leclerc', 'intermarche', 'carrefour', 'auchan'] as const;
 export const COOKING_TIMES = ['moins_30', '30_45', 'peu_importe'] as const;
 
 export const foyerSchema = z.object({
@@ -10,7 +9,10 @@ export const foyerSchema = z.object({
 });
 
 export const enseigneSchema = z.object({
-  store: z.enum(STORE_IDS, { error: 'Choisis ton enseigne habituelle.' }),
+  // Enseignes à assortiment partiel (Picard, Grand Frais) : jamais enseigne principale.
+  store: z
+    .enum(STORE_IDS, { error: 'Choisis ton enseigne habituelle.' })
+    .refine((id) => !STORES_INFO[id].partialAssortment, { error: 'Choisis ton enseigne habituelle.' }),
   postal_code: z
     .string()
     .trim()

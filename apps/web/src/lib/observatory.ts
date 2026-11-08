@@ -40,7 +40,8 @@ export interface Basket {
     label: string;
     position: number;
     count: number;
-    totals: { storeId: StoreId; cents: number }[];
+    /** `partial` : l'enseigne ne vend pas tout le rayon (exclue des moyennes et des classements du rayon). */
+    totals: { storeId: StoreId; cents: number; partial: boolean }[];
   }[];
   productCount: number;
   pricesAt: string | null;
@@ -107,7 +108,7 @@ export const referenceBasket = cache(
             label: a?.label ?? 'Divers',
             position: a?.position ?? 99,
             count: lines.filter((l) => (aisleOf.get(l.productId) ?? 'divers') === id && !l.pantry).length,
-            totals: totals.map((t) => ({ storeId: t.storeId, cents: t.cents })),
+            totals: totals.map((t) => ({ storeId: t.storeId, cents: t.cents, partial: t.partial })),
           };
         })
         .sort((a, b) => a.position - b.position),

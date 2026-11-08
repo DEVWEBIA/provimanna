@@ -1,9 +1,9 @@
 import { ImageResponse } from 'next/og';
 import { formatEuro, priceSpread } from '@repas/core';
 import { APP_NAME } from '@repas/ui';
-import { EXAMPLE_STORES, EXAMPLE_WEEK } from '@/lib/landing-data';
+import { EXAMPLE_WEEK, HERO_STORES } from '@/lib/landing-data';
 
-export const alt = 'Le même menu. Six prix. Tu choisis.';
+export const alt = 'Le même menu. Douze enseignes. Tu choisis.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -12,7 +12,7 @@ const C = { aubergine: '#6B3868', orange: '#EE7A30', encre: '#2A1A28', clair: '#
 
 /** Image Open Graph avec le chiffre clé : l'écart de prix du panier d'exemple. */
 export default function OpengraphImage() {
-  const s = priceSpread(EXAMPLE_STORES.map((x) => x.cents));
+  const s = priceSpread(HERO_STORES.map((x) => x.cents));
   return new ImageResponse(
     <div
       style={{

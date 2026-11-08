@@ -48,7 +48,7 @@ Commence par me confirmer l'état et la prochaine étape.
 3. **Lot 11** : compte **Resend** (ou Brevo) + domaine d'envoi.
 4. **Lot 13** : nom de l'appli, domaine, Vercel, Supabase prod (UE), PostHog, Sentry.
 5. **Logos sur les pages éditoriales publiques** (observatoire, pages enseigne, tableaux de prix des recettes et menus) : encore en pastilles neutres. Les passer aussi en logos couleur ? (question posée, sans réponse)
-6. **Logo Carrefour** : aucun fichier réutilisable trouvé, le nom est écrit en clair. Fournir un SVG si possible.
+6. ~~Logo Carrefour~~ : récupéré le 08/11 (fr.wikipedia), avec ceux des 6 nouvelles enseignes.
 7. **Récompense de parrainage** : à décider (le lien et le rattachement du parrain fonctionnent, aucune récompense n'est promise).
 8. Écarts de maquettes laissés de côté (à trancher si besoin) : droits par membre de la famille (« coche la liste seulement », demande une migration), règle des « jokers » de la série, badges de défis visuels, paramètres du BO modifiables (demande une table de réglages, donc une migration).
 

@@ -7,6 +7,10 @@ import {
   recipeStoreTotals,
   type PriceObservation,
   type StoreId,
+  STORE_IDS,
+  STORES_INFO,
+  completeTotals,
+  STORE_COUNT,
 } from '@repas/core';
 import {
   Button,
@@ -20,6 +24,7 @@ import {
   type PlatVariant,
 } from '@repas/ui';
 import { saveRecipe } from '../actions';
+import { StoreLogo } from '@/components/store-logo';
 
 export interface EditorProduct {
   id: string;
@@ -63,15 +68,10 @@ const TAGS = [
   ['enfants', 'Enfants'],
   ['batch', 'Batch cooking'],
 ] as const;
-const STORE_NAME: Record<StoreId, string> = {
-  lidl: 'Lidl',
-  aldi: 'Aldi',
-  leclerc: 'E.Leclerc',
-  intermarche: 'Intermarché',
-  carrefour: 'Carrefour',
-  auchan: 'Auchan',
-};
-const STORES = Object.keys(STORE_NAME) as StoreId[];
+const STORE_NAME: Record<string, string> = Object.fromEntries(
+  STORE_IDS.map((id) => [id, STORES_INFO[id].name]),
+);
+const STORES: StoreId[] = [...STORE_IDS];
 
 const words = (s: string) =>
   s
@@ -146,7 +146,7 @@ export function RecipeEditor({
     r.seoTitle ?? `${r.title} : ${totals[0] ? formatEuro(totals[0].cents) : '—'} pour ${r.servings}`;
   const seoDesc =
     r.seoDescription ??
-    `${r.title} pour ${r.servings} : ${totals[0] ? formatEuro(costPerServing(totals[0].cents, r.servings)) : '—'} par part chez ${totals[0] ? STORE_NAME[totals[0].storeId] : '—'}. Prix comparés dans 6 enseignes.`;
+    `${r.title} pour ${r.servings} : ${totals[0] ? formatEuro(costPerServing(totals[0].cents, r.servings)) : '—'} par part chez ${totals[0] ? STORE_NAME[totals[0].storeId] : '—'}. Prix comparés dans ${STORE_COUNT} enseignes.`;
   const checks = [
     { ok: seoTitle.length <= 60, text: `Titre SEO de ${seoTitle.length} caractères (60 maximum)` },
     { ok: seoDesc.length <= 155, text: `Méta-description de ${seoDesc.length} caractères (155 maximum)` },
@@ -526,19 +526,33 @@ export function RecipeEditor({
             </h2>
             <ul className="mt-3 flex flex-col gap-1.5">
               {totals.map((t, i) => (
-                <li key={t.storeId} className="flex justify-between text-[15px] font-bold tabular-nums">
-                  <span>{STORE_NAME[t.storeId]}</span>
-                  <span className={i === 0 ? 'text-raw-peche font-black' : ''}>
-                    {t.freshRatio < 1 ? '≈ ' : ''}
-                    {formatEuro(t.cents)}
+                <li
+                  key={t.storeId}
+                  className="flex items-center justify-between gap-2 text-[15px] font-bold tabular-nums"
+                >
+                  <span className="flex items-center gap-2">
+                    <span className="bg-raw-blanc grid h-7 min-w-[52px] place-items-center rounded-[8px] px-1.5">
+                      <StoreLogo id={t.storeId} name={STORE_NAME[t.storeId] ?? t.storeId} height={18} />
+                    </span>
+                    {STORE_NAME[t.storeId]}
                   </span>
+                  {t.partial ? (
+                    <span className="text-site-on-ink-faint text-[13px]">
+                      partiel · ingrédients manquants
+                    </span>
+                  ) : (
+                    <span className={i === 0 ? 'text-raw-peche font-black' : ''}>
+                      {t.freshRatio < 1 ? '≈ ' : ''}
+                      {formatEuro(t.cents)}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
             {totals.length ? (
               <p className="text-site-on-ink mt-3 text-[13px] font-bold">
                 {formatEuro(costPerServing(totals[0]!.cents, r.servings))} à{' '}
-                {formatEuro(costPerServing(totals.at(-1)!.cents, r.servings))} par part
+                {formatEuro(costPerServing(completeTotals(totals).at(-1)?.cents ?? 0, r.servings))} par part
                 {stale ? ` · ${stale} prix de plus de 7 jours` : ''}
               </p>
             ) : null}

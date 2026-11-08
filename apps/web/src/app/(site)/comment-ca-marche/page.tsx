@@ -1,3 +1,4 @@
+import { STORE_COUNT } from '@repas/core';
 import type { Metadata } from 'next';
 import { Icon, IconTile, Reveal, type IconName } from '@repas/ui';
 import { CtaTicket, H2, SeoHero } from '@/components/seo/blocks';
@@ -7,8 +8,7 @@ import { absoluteUrl, ROUTES } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Comment ça marche : ton plan de repas chiffré en 2 minutes',
-  description:
-    'Décris ton foyer, reçois 14 repas de saison chaque jeudi, compare la liste de courses dans 6 enseignes et choisis où faire tes courses.',
+  description: `Décris ton foyer, reçois 14 repas de saison chaque jeudi, compare la liste de courses dans ${STORE_COUNT} enseignes et choisis où faire tes courses.`,
   alternates: { canonical: ROUTES.commentCaMarche },
 };
 
@@ -25,7 +25,7 @@ const STEPS: { icon: IconName; title: string; text: string }[] = [
   },
   {
     icon: 'panier',
-    title: 'Tu compares les 6 enseignes',
+    title: `Tu compares les ${STORE_COUNT} enseignes`,
     text: 'Le total de ta liste dans chaque enseigne, daté et avec sa fiabilité. Tu restes libre de garder la tienne.',
   },
   {
@@ -70,7 +70,7 @@ export default function CommentCaMarchePage() {
       <SeoHero
         eyebrow="Comment ça marche"
         title="Ta semaine de repas, planifiée et chiffrée en 2 minutes."
-        answer="Tu décris ton foyer une fois. Chaque jeudi soir, on te propose 14 repas de saison avec leur liste de courses et leur prix dans 6 enseignes. Tu choisis où faire tes courses."
+        answer={`Tu décris ton foyer une fois. Chaque jeudi soir, on te propose 14 repas de saison avec leur liste de courses et leur prix dans ${STORE_COUNT} enseignes. Tu choisis où faire tes courses.`}
       />
       <ol className="-mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {STEPS.map((s, i) => (

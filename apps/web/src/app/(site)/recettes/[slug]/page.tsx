@@ -3,7 +3,16 @@ import { RecipePhoto } from '@/components/recipes/recipe-photo';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { notFound } from 'next/navigation';
-import { costPerServing, discountPercent, formatEuro, sumCents, zonedDate, type StoreId } from '@repas/core';
+import {
+  costPerServing,
+  discountPercent,
+  formatEuro,
+  sumCents,
+  zonedDate,
+  type StoreId,
+  completeTotals,
+  STORE_COUNT,
+} from '@repas/core';
 import { animDelay, Glow, Reveal, TicketCard } from '@repas/ui';
 import { DemoNotice } from '@/components/plan/demo-notice';
 import { RecipeCard } from '@/components/recipes/recipe-card';
@@ -64,7 +73,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const cents = t?.cheapest.cents;
   const title = cents ? `${d.recipe.title} : ${formatEuro(cents)} pour 4` : d.recipe.title;
   const description = cents
-    ? `${d.recipe.title} pour 4 personnes, de ${formatEuro(t.totals[0]!.cents)} à ${formatEuro(t.totals.at(-1)!.cents)} selon l’enseigne. Prix datés, 6 enseignes comparées.`
+    ? `${d.recipe.title} pour 4 personnes, de ${formatEuro(t.totals[0]!.cents)} à ${formatEuro(completeTotals(t.totals).at(-1)!.cents)} selon l’enseigne. Prix datés, ${STORE_COUNT} enseignes comparées.`
     : (d.recipe.description ?? undefined);
   return {
     title: title.length <= 60 ? title : d.recipe.title,
@@ -94,12 +103,13 @@ export default async function RecettePage({ params }: { params: Params }) {
         diff: t.cents - totals[0]!.cents,
         estimate: t.freshRatio < 1,
         reliability: t.reliability,
+        partial: t.partial,
       })),
     ]),
   );
   const base = byServings[4]!;
   const cheapest = base[0]!;
-  const priciest = base.at(-1)!;
+  const priciest = completeTotals(base).at(-1)!;
   const perPart = costPerServing(cheapest.cents, 4);
   const lines = ingredientLines(recipe, recipe.servings, cheapest.storeId, observations, now);
   const pricesAt = latest(base.map((t) => t.latestObservedAt));

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import type React from 'react';
 import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
-import { costPerServing, formatEuro } from '@repas/core';
+import { costPerServing, formatEuro, STORE_COUNT } from '@repas/core';
 import { Glow, Icon, Plat, Reveal, SectionHeading, TicketCard, type IconName } from '@repas/ui';
 import couscousLegumes from '@/assets/photos/couscous-legumes.jpg';
 import curryPoisChiches from '@/assets/photos/curry-pois-chiches-courge.jpg';
@@ -16,8 +16,9 @@ import { SiteFooter } from '@/components/site/site-footer';
 import { SiteHeader } from '@/components/site/site-header';
 import { StoreMarquee } from '@/components/site/store-marquee';
 import {
+  ALL_STORES,
   EXAMPLE_MY_STORE,
-  EXAMPLE_STORES,
+  HERO_STORES,
   EXAMPLE_WEEK,
   HOUSEHOLD_FACTORS,
   LANDING_FAQ,
@@ -26,9 +27,9 @@ import {
 import { faqPageLd, JsonLd, organizationLd, softwareApplicationLd, webSiteLd } from '@/lib/seo/json-ld';
 import { href, ROUTES } from '@/lib/site';
 
-const TITLE = 'Plan de repas de la semaine et prix dans 6 enseignes';
+const TITLE = `Plan de repas de la semaine et prix dans ${STORE_COUNT} enseignes`;
 const DESCRIPTION =
-  'On planifie tes repas, on calcule ta liste de courses et on te montre son prix chez Lidl, Aldi, E.Leclerc, Intermarché, Carrefour et Auchan. Gratuit.';
+  'On planifie tes repas, on calcule ta liste de courses et on te montre son prix chez Lidl, Aldi, E.Leclerc, Super U, Carrefour, Auchan, Monoprix et 5 autres enseignes. Gratuit.';
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -60,7 +61,7 @@ const STEPS: { icon: IconName; title: string; text: string }[] = [
   {
     icon: 'panier',
     title: 'Tu compares, tu choisis',
-    text: 'Le total dans 6 enseignes, l’écart avec la tienne. Tu gardes la main.',
+    text: `Le total dans ${STORE_COUNT} enseignes, l’écart avec la tienne. Tu gardes la main.`,
   },
 ];
 
@@ -203,7 +204,8 @@ export default function HomePage() {
               <div className="anim-ticket relative z-10">
                 <div className="anim-float drop-shadow-[0_28px_44px_rgba(42,26,40,0.28)]">
                   <HeroTicket
-                    stores={EXAMPLE_STORES}
+                    stores={HERO_STORES}
+                    moreStores={STORE_COUNT - HERO_STORES.length}
                     myStore={EXAMPLE_MY_STORE}
                     households={HOUSEHOLD_FACTORS}
                     weekLabel={EXAMPLE_WEEK.label}
@@ -244,7 +246,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <StoreMarquee stores={EXAMPLE_STORES} />
+        <StoreMarquee stores={ALL_STORES} />
 
         {/* COMMENT ÇA MARCHE */}
         <section

@@ -9,6 +9,7 @@ import { listTotals, syncShoppingList } from '@/lib/list';
 import { currentPlan } from '@/lib/plan';
 import { absoluteUrl, href } from '@/lib/site';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { StoreLogo } from '@/components/store-logo';
 
 export const metadata: Metadata = { title: 'Liste de courses', robots: { index: false } };
 
@@ -40,7 +41,12 @@ export default async function ListePage() {
     <>
       <PageHeader
         eyebrow={`Semaine ${view.weekNumber} · ${weekRangeLabel(view.weekStart)} · chez ${storeName}`}
-        title="Ma liste de courses"
+        title={
+          <span className="flex items-center gap-3">
+            <StoreLogo id={store} name={storeName} size={44} />
+            Ma liste de courses
+          </span>
+        }
         actions={
           <>
             {list.share_token ? (

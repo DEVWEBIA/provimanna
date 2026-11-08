@@ -17,6 +17,8 @@ export function storeTotals(view: PlanView, stores: StoreInfo[]): StoreTotalView
             cents: t.cents,
             reliability: t.reliability,
             estimate: t.freshRatio < 1,
+            partial: t.partial,
+            pricedCount: view.lineCount - t.missing.length,
           },
         ]
       : [];

@@ -2,7 +2,14 @@ import type { Metadata } from 'next';
 import { RecipePhoto } from '@/components/recipes/recipe-photo';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { costPerServing, formatEuro, type PlanFilters, type PlannerHousehold } from '@repas/core';
+import {
+  costPerServing,
+  formatEuro,
+  type PlanFilters,
+  type PlannerHousehold,
+  completeTotals,
+  STORE_COUNT,
+} from '@repas/core';
 import { cx, Reveal, StoreChip } from '@repas/ui';
 import { DAY_LONG } from '@/components/plan/labels';
 import { CtaTicket, DemoBadge, H2, Panel, SeoHero } from '@/components/seo/blocks';
@@ -42,8 +49,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   if (!m) return {};
   return {
     title: `${m.label} pour 4 personnes : menu et liste de courses`,
-    description:
-      'Menu de 14 repas pour 2 adultes et 2 enfants, avec la liste de courses par rayon et son prix dans 6 enseignes.',
+    description: `Menu de 14 repas pour 2 adultes et 2 enfants, avec la liste de courses par rayon et son prix dans ${STORE_COUNT} enseignes.`,
     alternates: { canonical: `/menus/${(await params).slug}` },
   };
 }
@@ -54,7 +60,8 @@ export default async function MenuPage({ params }: { params: Params }) {
   if (!menu) notFound();
   const b = await referenceBasket(menu.filters, menu.household);
   if (!b) throw new Error('Menu indisponible');
-  const t = b.comparison.totals;
+  // Totaux des enseignes qui vendent tout le menu (Picard, Grand Frais : totaux partiels, non affichés ici).
+  const t = completeTotals(b.comparison.totals);
   const first = t[0]!;
   const last = t.at(-1)!;
   const name = (id: string) => storeName(b, id);
@@ -67,7 +74,7 @@ export default async function MenuPage({ params }: { params: Params }) {
   const veg = b.meals.filter((m) => m.recipe.diets.includes('vegetarien')).length;
   const answer = `Ce menu de 14 repas pour 2 adultes et 2 enfants coûte ${formatEuro(first.cents)} chez ${name(first.storeId)}, soit ${formatEuro(costPerServing(first.cents, 56))} par part.${
     menu.budget
-      ? ` Il reste sous ${menu.budget / 100} € dans ${under} enseigne${under > 1 ? 's' : ''} sur 6.`
+      ? ` Il reste sous ${menu.budget / 100} € dans ${under} enseigne${under > 1 ? 's' : ''} sur ${t.length}.`
       : ''
   }`;
   const faq = [

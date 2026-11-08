@@ -72,6 +72,7 @@ export default async function ComparateurPage() {
         cheapest={view.comparison.cheapest}
         premium={premium === true}
         details={details}
+        lineCount={view.lineCount}
       />
     </>
   );

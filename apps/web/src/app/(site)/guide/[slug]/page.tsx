@@ -40,14 +40,13 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   const supabase = createPublicClient();
   const [data, stores] = await Promise.all([loadPlanData(supabase), listStores(supabase)]);
   const recipes = DINNERS.map((s) => data.catalogue.find((r) => r.slug === s)).filter((r) => r !== undefined);
-  // Coût des 5 dîners pour 4 personnes, par enseigne (core).
-  const totals = STORES.map((store) => ({
-    store,
-    cents: recipes.reduce(
-      (sum, r) => sum + recipeStoreTotals(toRecipe(r), 4, [store], data.observations, data.now)[0]!.cents,
-      0,
-    ),
-  })).sort((a, b) => a.cents - b.cents);
+  // Coût des 5 dîners pour 4 personnes, par enseigne (core) ; seules les enseignes qui vendent tout comptent.
+  const totals = STORES.flatMap((store) => {
+    const each = recipes.map(
+      (r) => recipeStoreTotals(toRecipe(r), 4, [store], data.observations, data.now)[0]!,
+    );
+    return each.some((t) => t.partial) ? [] : [{ store, cents: each.reduce((sum, t) => sum + t.cents, 0) }];
+  }).sort((a, b) => a.cents - b.cents);
   const name = (id: StoreId) => stores.find((s) => s.id === id)?.name ?? id;
   const best = totals[0]!;
   const parts = recipes.length * 4;

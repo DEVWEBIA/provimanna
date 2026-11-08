@@ -12,6 +12,7 @@ import {
   PlannerError,
   recipeServingCents,
   sortMeals,
+  STORE_IDS,
   weekStartOf,
   type Comparison,
   type CookingTime,
@@ -81,7 +82,7 @@ export interface PlanView {
   demoPrices: boolean;
 }
 
-export const STORES: StoreId[] = ['lidl', 'aldi', 'leclerc', 'intermarche', 'carrefour', 'auchan'];
+export const STORES: StoreId[] = [...STORE_IDS];
 const PLAN_COLUMNS = 'id, week_start, store_id, validated_at';
 const ITEM_COLUMNS = 'id, day, slot, recipe_id, servings, locked';
 const isPlat = (v: string | null): v is PlatVariant => PLAT_VARIANTS.includes(v as PlatVariant);

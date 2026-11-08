@@ -33,6 +33,9 @@ async function fillQuestionnaire(page: Page, project: string) {
   // Erreurs utiles, saisie conservée.
   await page.getByRole('button', { name: 'Générer ma semaine' }).click();
   await expect(page.getByText('Choisis ton enseigne habituelle.')).toBeVisible();
+  // Picard et Grand Frais (assortiment partiel) ne sont pas proposés comme enseigne habituelle.
+  await expect(page.getByRole('radio', { name: 'Picard' })).toHaveCount(0);
+  await expect(page.getByRole('radio', { name: 'Super U' })).toHaveCount(1);
   await page.getByText('Auchan', { exact: true }).click();
   await page.getByLabel('Code postal').fill('690');
   await page.getByRole('button', { name: 'Générer ma semaine' }).click();
