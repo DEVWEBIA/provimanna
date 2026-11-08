@@ -108,4 +108,14 @@ where p.id = '00000000-0000-0000-0000-000000000301';
 -- Économie d'une semaine = reference_cents − total_cents (≥ 0), uniquement pour les plans validés.
 -- Total : 9,60 + 38,40 + 10,30 = 58,30 €.
 
--- Staff de démo : à créer à la main (roles) après la première connexion à l'admin.
+-- ─── Staff de démo (local uniquement) : admin@example.com, rôle admin. Connexion par code via Mailpit. ───
+insert into auth.users (instance_id, id, aud, role, email, email_confirmed_at, raw_user_meta_data, raw_app_meta_data, created_at, updated_at,
+                        confirmation_token, recovery_token, email_change_token_new, email_change, email_change_token_current,
+                        reauthentication_token, phone_change, phone_change_token)
+values ('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000401', 'authenticated', 'authenticated',
+        'admin@example.com', now(), '{"name":"Admin"}', '{"provider":"email","providers":["email"]}', now(), now(),
+        '', '', '', '', '', '', '', '');
+insert into auth.identities (id, user_id, provider_id, provider, identity_data, last_sign_in_at, created_at, updated_at)
+values (gen_random_uuid(), '00000000-0000-0000-0000-000000000401', '00000000-0000-0000-0000-000000000401', 'email',
+        '{"sub":"00000000-0000-0000-0000-000000000401","email":"admin@example.com","email_verified":true}', now(), now(), now());
+insert into roles (user_id, role) values ('00000000-0000-0000-0000-000000000401', 'admin');

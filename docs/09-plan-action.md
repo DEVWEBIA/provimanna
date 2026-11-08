@@ -128,6 +128,9 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - **08/11 — Volontairement laissé de côté dans 8b** : téléchargement CSV des données et mention de licence dans le `Dataset` (licences Open Prices / Open Food Facts à vérifier, point ouvert de CLAUDE.md) ; courbe d'évolution depuis juin (pas d'historique) ; pages « duel » (les duels renvoient vers les pages enseignes) ; carte de l'auteur ou du fondateur (nom à fournir) ; historique de la méthode réduit à la première version (les dates de la maquette étaient fictives) ; section « batch du dimanche » des menus.
 - **08/11 — Tests e2e** : délai des vérifications porté à 15 s (le serveur de dev compile chaque page à sa première visite) ; 16 tests desktop + mobile.
 
+- **08/11 — Lot 9a : socle du back-office.** Migration `0007_audit.sql` (principe validé par Emmanuel) : table `audit_log` en ajout seul, lisible par les admins, alimentée uniquement par `log_action()` qui fixe l'auteur et son rôle (`auth.uid()`) et refuse les comptes sans rôle ; fonction `my_staff_role()`. Seed local : `admin@example.com` (rôle admin). Connexion staff par code ou lien (`shouldCreateUser: false`, même réponse que le compte existe ou non), rôle vérifié par chaque page (`lib/staff.ts`, rubriques filtrées par rôle, page « Accès réservé à l'équipe »). Écrans : **Vue d'ensemble** (chiffres réels : foyers actifs, essais, Premium, semaines validées, plans par semaine sur 8 semaines, entonnoir des inscrits, couverture des prix par enseigne, à traiter), **Prix** (file des aberrants avec médiane 30 j, historique 8 semaines, piste, décisions Valider / Rejeter / Promo au clavier ; « tous les prix »), **Rôles et journal**. Les écritures passent par la session du staff (RLS existante) ; la clé serveur ne sert qu'aux agrégats et à retrouver un compte par email. Valider un prix : il sort des aberrants et entre dans la médiane ; rejeter ou promo : il reste masqué et marqué comme traité (`moderated_by`). Tests RLS : 26 → 31 ; e2e back-office (admin, compte refusé).
+- **08/11 — Reporté dans le BO** : revenu mensuel et conversion essai → payant réelle (lot 7, Stripe), export CSV et lancement d'import (lot 10), courbe des actifs hebdomadaires « ouverture du plan » (pas de suivi d'ouverture avant PostHog, lot 13).
+
 ## Questions ouvertes (à trancher par vous)
 
 1. ~~Liste d'attente ou inscription directe ?~~ → inscription directe (07/11). Une liste d'attente peut s'ajouter plus tard si besoin.
@@ -145,7 +148,7 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - [x] Lot 6 — Comparateur et liste (validation de la semaine côté serveur, liste temps réel + file hors ligne, partage par lien, 26 tests RLS, 10 e2e)
 - [ ] Lot 7 — Paiement
 - [x] Lot 8 — Recettes et pages SEO (8a recettes, 8b observatoire, enseignes, menus, guide, méthodologie, légal, 404 ; 56 tests core, 16 e2e)
-- [ ] Lot 9 — Back-office
+- [ ] Lot 9 — Back-office (9a socle, vue d'ensemble, prix, rôles et journal ✅ ; suite en cours)
 - [ ] Lot 10 — Tickets et prix
 - [ ] Lot 11 — Emails, notifications, PWA
 - [ ] Lot 12 — Famille, économies, mode sombre

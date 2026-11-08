@@ -516,6 +516,13 @@ insert into prices (product_id, store_id, cents, observed_at, source) values
   ('00000000-0000-0000-0001-000000000076', 'carrefour', 189, now() - interval '1 days', 'manual'),
   ('00000000-0000-0000-0001-000000000076', 'auchan', 199, now() - interval '3 days', 'manual');
 
+insert into prices (product_id, store_id, cents, observed_at, source, flagged_aberrant) values
+  ('00000000-0000-0000-0000-000000000108', 'carrefour', 89, now() - interval '1 days', 'ticket', true),
+  ('00000000-0000-0000-0001-000000000038', 'auchan', 45, now() - interval '2 days', 'ticket', true),
+  ('00000000-0000-0000-0001-000000000027', 'leclerc', 499, now() - interval '1 days', 'open_prices', true),
+  ('00000000-0000-0000-0001-000000000072', 'aldi', 199, now() - interval '3 days', 'ticket', true),
+  ('00000000-0000-0000-0000-000000000101', 'intermarche', 349, now() - interval '2 days', 'open_prices', true);
+
 update recipes set family = 'soupe', tags = '{lactose,enfants,batch}', diets = '{omnivore,sans_porc,vegetarien,halal}' where id = '00000000-0000-0000-0000-000000000201';
 
 insert into recipes (id, slug, title, description, servings, prep_minutes, cook_minutes, diets, season_months, illustration, family, tags, steps, published) values ('00000000-0000-0000-0002-000000000001', 'soupe-poireaux-pommes-de-terre', 'Soupe de poireaux et pommes de terre', 'La soupe de grand-mère, douce et rassasiante.', 4, 15, 30, '{omnivore,sans_porc,vegetarien,halal,sans_gluten}', '{9,10,11,12,1,2,3}', 'soupeverte', 'soupe', '{lactose,enfants,batch}', '[{"text":"Lave et émince les poireaux, épluche et coupe les pommes de terre en cubes.","minutes":15},{"text":"Fais revenir l''oignon dans l''huile, ajoute les légumes, couvre d''eau et ajoute le bouillon.","minutes":5},{"text":"Laisse cuire 25 min, mixe et ajoute la crème.","minutes":25}]', true);

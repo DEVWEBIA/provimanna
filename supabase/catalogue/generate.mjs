@@ -487,6 +487,20 @@ out.push('insert into prices (product_id, store_id, cents, observed_at, source) 
 out.push(priceRows.join(',\n') + ';');
 out.push('');
 
+// Relevés aberrants de démonstration (écart > 40 % avec la médiane) : file de modération du back-office.
+const ABERRANT = [
+  ['coco', 'carrefour', 89, 'ticket', 1],
+  ['pates', 'auchan', 45, 'ticket', 2],
+  ['oeufs', 'leclerc', 499, 'open_prices', 1],
+  ['saumon', 'aldi', 199, 'ticket', 3],
+  ['potimarron', 'intermarche', 349, 'open_prices', 2],
+];
+out.push('insert into prices (product_id, store_id, cents, observed_at, source, flagged_aberrant) values');
+out.push(
+  ABERRANT.map(([k, store, cents, src, days]) => `  (${q(byKey.get(k).id)}, ${q(store)}, ${cents}, now() - interval '${days} days', '${src}', true)`).join(',\n') + ';',
+);
+out.push('');
+
 // Velouté (seed) : famille, marqueurs, régimes recalculés
 {
   const { diets, tags } = deduce(VELOUTE.ing);

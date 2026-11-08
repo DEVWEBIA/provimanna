@@ -2,7 +2,7 @@
 -- Marion = utilisatrice du seed. Bob = second foyer créé ici. Tout est annulé en fin de transaction.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(26);
+select plan(31);
 
 -- ─── Préparation (superutilisateur) ─────────────────────────────────────────
 insert into auth.users (instance_id, id, aud, role, email, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
@@ -91,6 +91,19 @@ select lives_ok($$ delete from shopping_list_items where list_id = current_setti
   'Marion vide sa liste');
 select is((select count(*)::int from shopping_list_items where list_id = current_setting('test.list')::uuid), 1,
   'Seuls les articles ajoutés à la main sont retirés (ceux du plan restent)');
+
+-- Lot 9 : journal d'audit réservé au staff.
+select throws_ok($$ select log_action('prix.valider', 'prices', '1') $$, '42501', null,
+  'Marion (sans rôle staff) ne peut pas écrire dans le journal');
+select is((select count(*)::int from audit_log), 0, 'Marion ne lit pas le journal');
+select throws_ok($$ insert into audit_log (action, entity, entity_id) values ('x', 'y', 'z') $$, '42501', null,
+  'Personne n''écrit directement dans le journal');
+
+-- ─── En tant qu'admin (seed) ────────────────────────────────────────────────
+select set_config('request.jwt.claims', json_build_object('sub', '00000000-0000-0000-0000-000000000401', 'role', 'authenticated')::text, true);
+select lives_ok($$ select log_action('prix.valider', 'prices', '42', '{"motif":"test"}') $$, 'L''admin journalise une action');
+select is((select actor_id::text || '/' || actor_role::text from audit_log where entity_id = '42'),
+  '00000000-0000-0000-0000-000000000401/admin', 'L''auteur et son rôle sont fixés par la base');
 
 -- ─── En tant que Bob ────────────────────────────────────────────────────────
 select set_config('request.jwt.claims', json_build_object('sub', current_setting('test.bob'), 'role', 'authenticated')::text, true);

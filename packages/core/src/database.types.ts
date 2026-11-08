@@ -52,6 +52,39 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_role: Database["public"]["Enums"]["staff_role"] | null
+          created_at: string
+          details: Json
+          entity: string
+          entity_id: string
+          id: number
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_role?: Database["public"]["Enums"]["staff_role"] | null
+          created_at?: string
+          details?: Json
+          entity: string
+          entity_id: string
+          id?: never
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_role?: Database["public"]["Enums"]["staff_role"] | null
+          created_at?: string
+          details?: Json
+          entity?: string
+          entity_id?: string
+          id?: never
+        }
+        Relationships: []
+      }
       challenges: {
         Row: {
           active: boolean
@@ -1062,7 +1095,20 @@ export type Database = {
         Returns: boolean
       }
       is_premium: { Args: { h: string }; Returns: boolean }
+      log_action: {
+        Args: {
+          p_action: string
+          p_details?: Json
+          p_entity: string
+          p_entity_id: string
+        }
+        Returns: undefined
+      }
       my_household_id: { Args: never; Returns: string }
+      my_staff_role: {
+        Args: never
+        Returns: Database["public"]["Enums"]["staff_role"]
+      }
       shared_list: { Args: { share: string }; Returns: Json }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
