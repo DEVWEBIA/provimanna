@@ -6,7 +6,7 @@ import { ComparatorView, type StoreDetail } from '@/components/plan/comparator-v
 import { DemoNotice } from '@/components/plan/demo-notice';
 import { storeTotals } from '@/components/plan/totals';
 import { loadProducts } from '@/lib/list';
-import { currentPlan, planLines, STORES } from '@/lib/plan';
+import { currentPlan, householdStores, planLines } from '@/lib/plan';
 import { href } from '@/lib/site';
 
 export const metadata: Metadata = { title: 'Comparateur', robots: { index: false } };
@@ -33,7 +33,7 @@ export default async function ComparateurPage() {
   const shown = premium ? PREMIUM_ROWS : FREE_ROWS;
   // Détail calculé côté serveur ; en gratuit, seules les 2 premières lignes quittent le serveur.
   const details: Partial<Record<StoreId, StoreDetail>> = {};
-  for (const other of STORES.filter((s) => s !== view.myStore)) {
+  for (const other of householdStores(household).filter((s) => s !== view.myStore)) {
     const cmp = compareProducts(lines, view.myStore, other, data.observations, data.now);
     details[other] = {
       rows: cmp.rows.slice(0, shown).map((r) => ({

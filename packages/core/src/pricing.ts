@@ -151,6 +151,51 @@ export interface StoreTotal {
   partial: boolean;
   /** Date (ISO) du relevé le plus récent utilisé, null si aucun prix. */
   latestObservedAt: string | null;
+  /**
+   * Produits absents de l'enseigne comptés au prix médian des autres enseignes (enseigne du foyer
+   * à assortiment partiel). 0 ou absent : total de l'enseigne seule.
+   */
+  filled?: number;
+}
+
+/**
+ * Total de l'enseigne du foyer complété : chaque produit qu'elle ne vend pas est compté au prix
+ * médian des autres enseignes (estimation, donc jamais « frais »). Le marqueur `partial` est gardé :
+ * un total complété n'est jamais présenté comme « le moins cher ».
+ */
+export function fillMissingFromOthers(
+  total: StoreTotal,
+  lines: ShoppingLine[],
+  others: StoreId[],
+  observations: PriceObservation[],
+  now: Date,
+): StoreTotal {
+  if (total.missing.length === 0) return total;
+  let extra = 0;
+  let filled = 0;
+  const stillMissing: string[] = [];
+  for (const productId of total.missing) {
+    const line = lines.find((l) => l.productId === productId)!;
+    const prices = others
+      .filter((s) => s !== total.storeId)
+      .map((s) => resolvePrice(observations, productId, s, now)?.cents)
+      .filter((c): c is number => c !== undefined);
+    if (prices.length === 0) {
+      stillMissing.push(productId);
+      continue;
+    }
+    extra += medianCents(prices) * line.units;
+    filled += 1;
+  }
+  const n = lines.length;
+  // Les lignes complétées comptent comme des estimations : le ratio « frais » ne change pas.
+  return {
+    ...total,
+    cents: total.cents + Math.round(extra),
+    missing: stillMissing,
+    coverage: n === 0 ? 1 : (n - stillMissing.length) / n,
+    filled,
+  };
 }
 
 /** Coût du plan dans une enseigne. Les lignes sont valorisées au prorata (units × prix unitaire). */
@@ -236,7 +281,12 @@ export function compareStores(
   observations: PriceObservation[],
   now: Date,
 ): Comparison {
-  const totals = rankStoreTotals(stores.map((s) => planCostInStore(lines, s, observations, now)));
+  const raw = stores.map((s) => planCostInStore(lines, s, observations, now));
+  // L'enseigne du foyer est complétée (prix médian des autres) quand il lui manque des produits.
+  const filled = raw.map((t) =>
+    t.storeId === referenceStore ? fillMissingFromOthers(t, lines, stores, observations, now) : t,
+  );
+  const totals = rankStoreTotals(filled);
   const reference = totals.find((t) => t.storeId === referenceStore);
   if (!reference) throw new Error(`Enseigne de référence absente : ${referenceStore}`);
   const cheapest = totals[0]!;

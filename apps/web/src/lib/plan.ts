@@ -7,6 +7,8 @@ import {
   compareStores,
   generatePlan,
   householdSlots,
+  regionOf,
+  storesForRegion,
   isRecipeAllowed,
   isoWeek,
   mealServings,
@@ -49,6 +51,7 @@ export interface CatalogueRecipe {
   family: string;
   tags: string[];
   equipment: string[];
+  cuisine: string;
   diets: Diet[];
   seasonMonths: number[];
   ingredients: { productId: string; units: number; pantry: boolean }[];
@@ -88,6 +91,16 @@ export interface PlanView {
 }
 
 export const STORES: StoreId[] = [...STORE_IDS];
+
+/**
+ * Enseignes comparées pour un foyer : celles de sa région (code postal 97x/98x = outre-mer),
+ * plus son enseigne habituelle si elle n'y figure pas.
+ */
+export function householdStores(h: Pick<Household, 'postal_code' | 'preferred_store_id'>): StoreId[] {
+  const stores = storesForRegion(regionOf(h.postal_code));
+  const mine = h.preferred_store_id as StoreId | null;
+  return mine && !stores.includes(mine) ? [...stores, mine] : stores;
+}
 const PLAN_COLUMNS = 'id, week_start, store_id, validated_at';
 const ITEM_COLUMNS = 'id, day, slot, recipe_id, servings, locked';
 const isPlat = (v: string | null): v is PlatVariant => PLAT_VARIANTS.includes(v as PlatVariant);
@@ -97,7 +110,7 @@ export async function loadCatalogue(supabase: Client): Promise<CatalogueRecipe[]
   const { data, error } = await supabase
     .from('recipes')
     .select(
-      'id, slug, title, servings, prep_minutes, cook_minutes, diets, season_months, illustration, family, tags, equipment, recipe_ingredients(product_id, units, pantry)',
+      'id, slug, title, servings, prep_minutes, cook_minutes, diets, season_months, illustration, family, tags, equipment, cuisine, recipe_ingredients(product_id, units, pantry)',
     )
     .eq('published', true);
   if (error) throw new Error(`Catalogue indisponible : ${error.message}`);
@@ -111,6 +124,7 @@ export async function loadCatalogue(supabase: Client): Promise<CatalogueRecipe[]
     family: r.family,
     tags: r.tags,
     equipment: r.equipment,
+    cuisine: r.cuisine,
     diets: r.diets,
     seasonMonths: r.season_months,
     ingredients: r.recipe_ingredients.flatMap((i) =>
@@ -161,6 +175,7 @@ export function plannerHousehold(h: Household): PlannerHousehold {
     equipment: h.equipment,
     dislikedProductIds: h.disliked_product_ids,
     styles: h.styles,
+    cuisines: h.cuisines,
   };
 }
 
@@ -186,6 +201,7 @@ export function plannerRecipes(
     diets: r.diets,
     tags: r.tags,
     equipment: r.equipment,
+    cuisine: r.cuisine,
     productIds: r.ingredients.filter((i) => !i.pantry).map((i) => i.productId),
     seasonMonths: r.seasonMonths,
     totalMinutes: r.minutes,
@@ -363,7 +379,7 @@ export function planView(plan: PlanRow, household: Household, data: PlanData): P
   const myStore = (household.preferred_store_id ?? plan.store_id) as StoreId;
   const items = sortMeals(plan.meal_plan_items.filter((i) => byId.has(i.recipe_id)));
   const lines = planLines(plan, data);
-  const comparison = compareStores(lines, STORES, myStore, data.observations, data.now);
+  const comparison = compareStores(lines, householdStores(household), myStore, data.observations, data.now);
   const usedProducts = new Set(lines.map((l) => l.productId));
   const used = data.observations.filter((o) => usedProducts.has(o.productId));
   const dates = comparison.totals.map((t) => t.latestObservedAt).filter((d): d is string => d !== null);

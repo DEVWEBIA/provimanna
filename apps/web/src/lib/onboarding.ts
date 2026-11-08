@@ -1,9 +1,11 @@
 import {
   dietFromPreferences,
+  CUISINE_IDS,
   EQUIPMENT_IDS,
   MOTIVATION_IDS,
   preferencesFromHousehold,
   STYLE_IDS,
+  type CuisineId,
   type EquipmentId,
   type MotivationId,
   type StoreId,
@@ -37,6 +39,7 @@ export function householdUpdateFromDraft(
     equipment: d.equipment,
     disliked_product_ids: d.disliked,
     motivations: d.motivations,
+    cuisines: d.cuisines,
   };
 }
 
@@ -57,6 +60,7 @@ export const DEFAULT_DRAFT: WizardDraft = {
   equipment: ['plaques', 'four'],
   disliked: [],
   motivations: [],
+  cuisines: [],
 };
 
 /** Foyer enregistré → réponses du questionnaire (compte connecté, modification depuis le profil). */
@@ -75,5 +79,6 @@ export function draftFromHousehold(h: HouseholdRow): WizardDraft {
     equipment: h.equipment.filter((e): e is EquipmentId => (EQUIPMENT_IDS as string[]).includes(e)),
     disliked: [...h.disliked_product_ids],
     motivations: h.motivations.filter((m): m is MotivationId => (MOTIVATION_IDS as string[]).includes(m)),
+    cuisines: h.cuisines.filter((c): c is CuisineId => (CUISINE_IDS as string[]).includes(c)),
   };
 }

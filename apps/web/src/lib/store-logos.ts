@@ -17,7 +17,8 @@ import superU from '@/assets/logos/super-u.svg';
  * Vrais logos des enseignes, en couleur (décision du propriétaire du 08/11/2026).
  * Sources et statut : src/assets/logos/SOURCES.md. À retirer si une enseigne le demande.
  */
-export const STORE_LOGOS: Record<StoreId, StaticImageData> = {
+// Match : pas de fichier réutilisable trouvé, le nom est écrit en clair.
+export const STORE_LOGOS: Partial<Record<StoreId, StaticImageData>> = {
   lidl,
   aldi,
   netto,

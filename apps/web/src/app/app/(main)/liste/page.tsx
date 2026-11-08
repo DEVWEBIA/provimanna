@@ -6,7 +6,7 @@ import { ShareButton } from '@/components/list/share-button';
 import { ShoppingList } from '@/components/list/shopping-list';
 import { DemoNotice } from '@/components/plan/demo-notice';
 import { listTotals, syncShoppingList } from '@/lib/list';
-import { currentPlan } from '@/lib/plan';
+import { currentPlan, householdStores } from '@/lib/plan';
 import { absoluteUrl, href } from '@/lib/site';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { StoreLogo } from '@/components/store-logo';
@@ -14,7 +14,7 @@ import { StoreLogo } from '@/components/store-logo';
 export const metadata: Metadata = { title: 'Liste de courses', robots: { index: false } };
 
 export default async function ListePage() {
-  const { supabase, user, plan, view, stores, data } = await currentPlan();
+  const { supabase, user, plan, view, stores, data, household } = await currentPlan();
   if (!plan || !view) {
     return (
       <EmptyState
@@ -32,7 +32,7 @@ export default async function ListePage() {
     supabase.from('profiles').select('id, display_name'),
     supabase.from('stores').select('name, drive_url').eq('id', store).single(),
   ]);
-  const totals = listTotals(plan, data);
+  const totals = listTotals(plan, data, householdStores(household));
   const best = totals[0]!;
   const name = (id: string) => stores.find((s) => s.id === id)?.name ?? id;
   const storeName = storeRow?.name ?? name(store);

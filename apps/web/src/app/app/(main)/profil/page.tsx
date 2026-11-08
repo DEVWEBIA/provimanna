@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import {
+  CUISINES,
   EQUIPMENT,
   formatEuro,
   PREFERENCES,
@@ -97,6 +98,16 @@ export default async function ProfilPage({ searchParams }: { searchParams: Searc
       icon: 'toque',
       label: 'Ambiance',
       value: `${styles || 'Pas de style préféré'} · ${COOKING[household.cooking_time] ?? ''}`,
+    },
+    {
+      step: 'cuisines',
+      icon: 'monde',
+      label: 'Cuisines',
+      value:
+        household.cuisines
+          .map((id) => CUISINES.find((c) => c.id === id)?.label)
+          .filter(Boolean)
+          .join(', ') || 'Toutes, en alternance',
     },
     {
       step: 'ingredients',

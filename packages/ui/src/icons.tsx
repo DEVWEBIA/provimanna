@@ -146,6 +146,22 @@ const PATHS = {
     </>
   ),
   poubelle: <path d="M4 7h16M10 3h4M6 7l1 13h10l1-13M10 11v6M14 11v6" />,
+  flamme: (
+    <path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-4 2.5-5 .3 1.6 1 2.6 2 3 0-3-1-5.5.5-8zM8 21h8" />
+  ),
+  microondes: (
+    <>
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <rect x="5" y="8" width="10" height="8" rx="1" />
+      <path d="M18.5 9h.01M18.5 12h.01M18.5 15h.01" />
+    </>
+  ),
+  robot: (
+    <>
+      <path d="M6 10h12l-1.5 9a2 2 0 0 1-2 1.7h-5a2 2 0 0 1-2-1.7z" />
+      <path d="M8 10V7a4 4 0 0 1 8 0v3M12 3V2M18 13h2.5" />
+    </>
+  ),
   interdit: (
     <>
       <circle cx="12" cy="12" r="9" />

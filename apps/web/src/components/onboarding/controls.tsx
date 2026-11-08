@@ -42,15 +42,18 @@ function Tick() {
 /** Carte en ligne : icône ronde, titre et précision (motivations, styles, budget…). */
 export function OptionCard({
   icon,
+  visual,
   title,
   hint,
   ...input
-}: ChoiceProps & { icon: IconName; title: ReactNode; hint?: ReactNode }) {
+}: ChoiceProps & { title: ReactNode; hint?: ReactNode } & (
+    { icon: IconName; visual?: undefined } | { icon?: undefined; visual: ReactNode }
+  )) {
   return (
     <label className="relative block cursor-pointer">
       <input {...input} type={input.type} className="peer sr-only" />
       <span className={cx(cardBase, 'flex min-h-[84px] items-center gap-4 rounded-[24px] px-4 py-3.5 pr-12')}>
-        <IconBubble name={icon} />
+        {icon ? <IconBubble name={icon} /> : visual}
         <span className="min-w-0">
           <span className="block text-[18px] font-black leading-[23px]">{title}</span>
           {hint ? <span className="text-ink-muted mt-0.5 block text-[15px] font-bold">{hint}</span> : null}

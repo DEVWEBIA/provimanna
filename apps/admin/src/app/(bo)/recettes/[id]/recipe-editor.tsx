@@ -11,6 +11,7 @@ import {
   STORES_INFO,
   completeTotals,
   STORE_COUNT,
+  CUISINES,
 } from '@repas/core';
 import {
   Button,
@@ -45,6 +46,7 @@ export interface EditorRecipe {
   diets: string[];
   tags: string[];
   equipment: string[];
+  cuisine: string;
   seasonMonths: number[];
   steps: { text: string; minutes: number | null }[];
   ingredients: { label: string; productId: string | null; units: number; pantry: boolean }[];
@@ -296,6 +298,20 @@ export function RecipeEditor({
                   onChange={(e) => set('family', e.target.value)}
                   className={inputClasses()}
                 />
+              </Field>
+              <Field label="Cuisine" id="cuisine">
+                <select
+                  id="cuisine"
+                  value={r.cuisine}
+                  onChange={(e) => set('cuisine', e.target.value)}
+                  className={inputClasses()}
+                >
+                  {CUISINES.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
               </Field>
               <Field label="Illustration" id="plat">
                 <select

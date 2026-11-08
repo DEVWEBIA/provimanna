@@ -130,12 +130,19 @@ test('compareStores : un total partiel (< 90 % des produits) n’est jamais le m
     source: 'manual',
   });
   const obs = [
-    o('a', 'lidl', 300), o('b', 'lidl', 300), o('c', 'lidl', 300),
-    o('a', 'auchan', 400), o('b', 'auchan', 400), o('c', 'auchan', 400),
+    o('a', 'lidl', 300),
+    o('b', 'lidl', 300),
+    o('c', 'lidl', 300),
+    o('a', 'auchan', 400),
+    o('b', 'auchan', 400),
+    o('c', 'auchan', 400),
     o('a', 'picard', 250),
   ];
   const cmp = compareStores(lines, ['picard', 'auchan', 'lidl'], 'auchan', obs, NOW);
-  assert.deepEqual(cmp.totals.map((t) => t.storeId), ['lidl', 'auchan', 'picard']);
+  assert.deepEqual(
+    cmp.totals.map((t) => t.storeId),
+    ['lidl', 'auchan', 'picard'],
+  );
   const picard = cmp.totals.find((t) => t.storeId === 'picard')!;
   assert.equal(picard.partial, true);
   assert.equal(Math.round(picard.coverage * 100), 33);
@@ -144,4 +151,34 @@ test('compareStores : un total partiel (< 90 % des produits) n’est jamais le m
   assert.equal(cmp.savingCents, 300);
   assert.equal(cmp.totals[0]!.partial, false);
   assert.equal(cmp.totals[0]!.coverage, 1);
+});
+
+test('compareStores : l’enseigne du foyer à assortiment partiel est complétée au prix médian', () => {
+  const lines = [
+    { productId: 'a', units: 1, pantry: false },
+    { productId: 'b', units: 2, pantry: false },
+  ];
+  const o = (productId: string, storeId: PriceObservation['storeId'], cents: number): PriceObservation => ({
+    productId,
+    storeId,
+    cents,
+    observedAt: daysAgo(1),
+    source: 'manual',
+  });
+  const obs = [
+    o('a', 'picard', 250),
+    o('a', 'lidl', 300),
+    o('b', 'lidl', 100),
+    o('a', 'auchan', 400),
+    o('b', 'auchan', 300),
+  ];
+  const cmp = compareStores(lines, ['picard', 'auchan', 'lidl'], 'picard', obs, NOW);
+  // b : médiane(100, 300) = 200, × 2 unités = 400 ; total = 250 + 400.
+  assert.equal(cmp.reference.cents, 650);
+  assert.equal(cmp.reference.filled, 1);
+  assert.deepEqual(cmp.reference.missing, []);
+  // Estimation : jamais « le moins cher », et l'indice de fiabilité baisse.
+  assert.equal(cmp.reference.partial, true);
+  assert.ok(cmp.reference.freshRatio < 1);
+  assert.equal(cmp.cheapest, 'lidl');
 });

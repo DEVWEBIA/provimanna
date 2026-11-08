@@ -28,6 +28,7 @@ export async function quickQuestionnaire(page: Page) {
   await page.getByText('Végétarien', { exact: true }).click();
   await nextQuestion(page); // régime
   await nextQuestion(page); // ambiance
+  await nextQuestion(page); // cuisines
   await nextQuestion(page); // ingrédients
   await page.getByRole('button', { name: 'Composer ma semaine' }).click();
 }

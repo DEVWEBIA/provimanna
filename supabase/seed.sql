@@ -14,7 +14,8 @@ insert into stores (id, name, initials, drive_url) values
   ('grand-frais', 'Grand Frais', 'GF', null),
   ('picard',      'Picard',      'PI', 'https://www.picard.fr'),
   ('franprix',    'Franprix',    'FR', 'https://www.franprix.fr'),
-  ('monoprix',    'Monoprix',    'MO', 'https://courses.monoprix.fr');
+  ('monoprix',    'Monoprix',    'MO', 'https://courses.monoprix.fr'),
+  ('match',       'Match',       'MA', null);
 
 insert into store_locations (store_id, label, postal_code, city, lat, lng) values
   ('auchan', 'Auchan Lyon Part-Dieu',   '69003', 'Lyon', 45.7609, 4.8590),

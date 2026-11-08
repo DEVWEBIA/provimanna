@@ -17,7 +17,7 @@ import { animDelay, Glow } from '@repas/ui';
 import { DAY_LONG } from '@/components/plan/labels';
 import { RecipeDetail, type Alternative } from '@/components/recipes/recipe-detail';
 import { coreRecipe, getRecipe, ingredientLines, recipeTags } from '@/lib/recipes';
-import { currentPlan, plannerHousehold, STORES, toRecipe } from '@/lib/plan';
+import { currentPlan, householdStores, plannerHousehold, toRecipe } from '@/lib/plan';
 import { href } from '@/lib/site';
 import { StoreLogo } from '@/components/store-logo';
 
@@ -33,7 +33,13 @@ export default async function AppRecettePage({ params }: { params: Params }) {
   const store = (household.preferred_store_id ?? 'lidl') as StoreId;
   const name = (id: string) => stores.find((s) => s.id === id)?.name ?? id;
   const servings = mealServings(household.adults, household.children);
-  const totals = recipeStoreTotals(coreRecipe(recipe), servings, STORES, data.observations, data.now);
+  const totals = recipeStoreTotals(
+    coreRecipe(recipe),
+    servings,
+    householdStores(household),
+    data.observations,
+    data.now,
+  );
   const mine = totals.find((t) => t.storeId === store)!;
   const cheapest = totals[0]!;
   const lines = ingredientLines(recipe, servings, store, data.observations, data.now);

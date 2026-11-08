@@ -1,4 +1,4 @@
-import { EQUIPMENT, formatEuro, MOTIVATIONS, STYLES } from '@repas/core';
+import { CUISINES, EQUIPMENT, formatEuro, MOTIVATIONS, STYLES } from '@repas/core';
 import { cx, glassClasses, Reveal } from '@repas/ui';
 import { createAdminClient } from '@/lib/supabase/admin';
 
@@ -50,7 +50,9 @@ const median = (xs: number[]) => {
 export async function OnboardingStats() {
   const { data } = await createAdminClient()
     .from('households')
-    .select('motivations, with_lunch, meal_days, weekly_budget_cents, adults, children, styles, equipment')
+    .select(
+      'motivations, with_lunch, meal_days, weekly_budget_cents, adults, children, styles, equipment, cuisines',
+    )
     .not('preferred_store_id', 'is', null);
   const rows = data ?? [];
   const total = rows.length;
@@ -94,7 +96,7 @@ export async function OnboardingStats() {
               </div>
             ))}
           </dl>
-          <div className="mt-6 grid gap-6 lg:grid-cols-3">
+          <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             <Bars
               title="Ce qui les amène"
               total={total}
@@ -104,6 +106,11 @@ export async function OnboardingStats() {
               title="Ambiance"
               total={total}
               rows={STYLES.map((s) => ({ label: s.label, n: has((r) => r.styles.includes(s.id)) }))}
+            />
+            <Bars
+              title="Cuisines"
+              total={total}
+              rows={CUISINES.map((c) => ({ label: c.label, n: has((r) => r.cuisines.includes(c.id)) }))}
             />
             <Bars
               title="Équipement"

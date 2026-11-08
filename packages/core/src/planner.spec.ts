@@ -326,3 +326,23 @@ describe('questionnaire enrichi', () => {
     expect(budgetPerServing(null, 10, 2)).toBeNull();
   });
 });
+
+describe('équipement élargi et cuisines', () => {
+  const base: PlannerRecipe = { ...RECIPES[0]!, id: 'x', equipment: ['plaques'], tags: [] };
+  it('la gazinière vaut des plaques, le robot seulement pour les recettes marquées', () => {
+    expect(canCook(base, ['gaziniere'])).toBe(true);
+    expect(canCook(base, ['robot'])).toBe(false);
+    expect(canCook({ ...base, tags: ['robot'] }, ['robot'])).toBe(true);
+    expect(canCook(base, ['micro_ondes'])).toBe(false);
+  });
+
+  it('favorise les cuisines choisies', () => {
+    const recipes = RECIPES.map((r, i) => ({ ...r, cuisine: i % 4 === 0 ? 'reunionnaise' : 'francaise' }));
+    const byRecipe = new Map(recipes.map((r) => [r.id, r]));
+    const count = (cuisines: string[]) =>
+      generatePlan({ ...OMNI, cuisines }, recipes, { month: 10, random: seededRandom(11) }).filter(
+        (m) => byRecipe.get(m.recipeId)!.cuisine === 'reunionnaise',
+      ).length;
+    expect(count(['reunionnaise'])).toBeGreaterThan(count([]));
+  });
+});

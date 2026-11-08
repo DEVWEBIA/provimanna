@@ -98,6 +98,8 @@ const PRODUCTS = [
   ['chataignes', 'Châtaignes cuites', '400 g', 'epicerie', 349, []],
   ['noix', 'Cerneaux de noix', '100 g', 'epicerie', 199, ['noix']],
   ['soja', 'Sauce soja', '25 cl', 'epicerie', 129, ['gluten']],
+  // Arachide : marquée comme fruit à coque par prudence (le questionnaire n'a pas d'allergie arachide).
+  ['beurre_cacahuete', 'Beurre de cacahuète', '350 g', 'epicerie', 249, ['noix']],
   // Placard (épices, condiments : comptés au prorata, absents de la liste de courses)
   ['curry', 'Curry en poudre', '50 g', 'placard', 99, ['epice']],
   ['cumin', 'Cumin moulu', '40 g', 'placard', 99, []],
@@ -106,6 +108,7 @@ const PRODUCTS = [
   ['herbes', 'Herbes de Provence', '30 g', 'placard', 89, []],
   ['farine', 'Farine de blé', '1 kg', 'placard', 65, ['gluten']],
   ['moutarde', 'Moutarde de Dijon', '370 g', 'placard', 89, []],
+  ['curcuma', 'Curcuma moulu', '40 g', 'placard', 119, []],
   // Viandes et poissons
   ['poulet', 'Filets de poulet', '600 g', 'viandes_poissons', 699, ['volaille']],
   ['cuisses', 'Cuisses de poulet', '1 kg', 'viandes_poissons', 399, ['volaille']],
@@ -122,7 +125,7 @@ const PRODUCTS = [
   ['petits_pois', 'Petits pois', '1 kg', 'surgeles', 169, []],
 ];
 
-const PANTRY = new Set(['huile', 'curry', 'cumin', 'paprika', 'ras_el_hanout', 'herbes', 'farine', 'moutarde', 'bouillon', 'soja']);
+const PANTRY = new Set(['curcuma', 'huile', 'curry', 'cumin', 'paprika', 'ras_el_hanout', 'herbes', 'farine', 'moutarde', 'bouillon', 'soja']);
 
 // ─── Recettes (4 parts) ───────────────────────────────────────────────────
 // family : variété du plan · plat : illustration <Plat> · tags : epice, enfants, batch (le reste est déduit).
@@ -394,6 +397,57 @@ const RECIPES = [
     ing: [['colin', 1, '400 g de colin'], ['citrons', 0.3, '1 citron'], ['riz', 0.3, '300 g de riz'], ['haricots_verts', 0.5, '500 g de haricots verts'], ['huile', 0.02, "2 c. à soupe d'huile d'olive"]],
     steps: [['Fais cuire le riz et les haricots verts.', 15], ['Dispose le colin dans un plat avec l’huile et des rondelles de citron, 15 min à 200 °C.', 15], ['Sers aussitôt.', 1]],
   }),
+  // ─── Cuisines du monde (demande du 08/11/2026) ───
+  R('rougail-saucisses', 'Rougail saucisses', 'Le plat du dimanche à La Réunion : saucisses mijotées à la tomate, riz blanc.', {
+    family: 'mijote', plat: 'curry', prep: 15, cook: 35, season: TOUTE_ANNEE, tags: ['batch'], cuisine: 'reunionnaise',
+    ing: [['saucisses', 1, '6 saucisses'], ['tomates_conc', 2, '2 boîtes de tomates concassées'], ['oignons', 0.2, '2 oignons'], ['ail', 0.1, '3 gousses d’ail'], ['gingembre', 0.2, '20 g de gingembre'], ['riz', 0.3, '300 g de riz'], ['huile', 0.03, '3 c. à soupe d’huile']],
+    steps: [['Pique les saucisses et fais-les bouillir 5 min pour les dessaler, puis coupe-les en rondelles.', 8], ['Fais-les dorer dans une cocotte avec l’huile, ajoute l’oignon émincé, l’ail et le gingembre pilés.', 7], ['Ajoute les tomates et laisse mijoter 25 min à couvert. Sers avec le riz, le piment à part.', 25]],
+  }),
+  R('cari-poulet', 'Cari de poulet', 'Le cari réunionnais : poulet mijoté au curcuma, tomate et gingembre.', {
+    family: 'curry', plat: 'curry', prep: 15, cook: 40, season: TOUTE_ANNEE, tags: ['enfants', 'batch'], cuisine: 'reunionnaise',
+    ing: [['cuisses', 1, '1 kg de cuisses de poulet'], ['tomates_conc', 1, '1 boîte de tomates concassées'], ['oignons', 0.2, '2 oignons'], ['ail', 0.1, '3 gousses d’ail'], ['gingembre', 0.2, '20 g de gingembre'], ['curcuma', 0.1, '1 c. à soupe de curcuma'], ['riz', 0.3, '300 g de riz'], ['huile', 0.03, '3 c. à soupe d’huile']],
+    steps: [['Fais dorer les morceaux de poulet dans l’huile, dans une cocotte.', 10], ['Ajoute l’oignon, l’ail et le gingembre pilés, puis le curcuma : remue 2 min.', 5], ['Ajoute les tomates, couvre et laisse mijoter 30 min. Sers avec le riz.', 30]],
+  }),
+  R('cari-lentilles', 'Cari de lentilles et riz', 'Les grains à la réunionnaise : lentilles mijotées au curcuma, riz blanc.', {
+    family: 'legumineuses', plat: 'dahl', prep: 10, cook: 35, season: TOUTE_ANNEE, tags: ['batch'], cuisine: 'reunionnaise',
+    ing: [['lentilles_vertes', 1, '500 g de lentilles'], ['oignons', 0.2, '2 oignons'], ['ail', 0.1, '3 gousses d’ail'], ['tomates_conc', 1, '1 boîte de tomates concassées'], ['curcuma', 0.1, '1 c. à soupe de curcuma'], ['gingembre', 0.1, '10 g de gingembre'], ['riz', 0.3, '300 g de riz'], ['huile', 0.03, '3 c. à soupe d’huile']],
+    steps: [['Fais revenir l’oignon, l’ail et le gingembre dans l’huile, ajoute le curcuma.', 5], ['Ajoute les lentilles, les tomates et 1 L d’eau : laisse cuire 30 min à petit feu.', 30], ['Fais cuire le riz et sers ensemble.', 15]],
+  }),
+  R('colombo-poulet', 'Colombo de poulet', 'Le colombo des Antilles : poulet et pommes de terre aux épices, citron.', {
+    family: 'curry', plat: 'curry', prep: 15, cook: 40, season: TOUTE_ANNEE, tags: ['epice'], cuisine: 'iles',
+    ing: [['poulet', 1, '600 g de filets de poulet'], ['pdt', 0.2, '500 g de pommes de terre'], ['oignons', 0.2, '2 oignons'], ['ail', 0.1, '3 gousses d’ail'], ['curry', 0.1, '2 c. à soupe de poudre à colombo (ou curry)'], ['citrons', 0.5, '2 citrons'], ['riz', 0.3, '300 g de riz'], ['huile', 0.03, '3 c. à soupe d’huile']],
+    steps: [['Coupe le poulet en morceaux et fais-le mariner 10 min avec le jus d’un citron et l’ail.', 10], ['Fais dorer le poulet et l’oignon dans l’huile, ajoute la poudre à colombo.', 8], ['Ajoute les pommes de terre en cubes et 40 cl d’eau, laisse mijoter 30 min. Sers avec le riz.', 30]],
+  }),
+  R('colin-coco-citron', 'Colin au lait de coco et citron', 'Un poisson des îles, doux et parfumé, prêt en 30 minutes.', {
+    family: 'poisson', plat: 'poisson', prep: 10, cook: 20, season: TOUTE_ANNEE, tags: ['enfants'], cuisine: 'iles',
+    ing: [['colin', 1.5, '600 g de filets de colin'], ['coco', 1, '40 cl de lait de coco'], ['citrons', 0.5, '2 citrons'], ['oignons', 0.1, '1 oignon'], ['gingembre', 0.2, '20 g de gingembre'], ['riz', 0.3, '300 g de riz'], ['huile', 0.02, '2 c. à soupe d’huile']],
+    steps: [['Fais cuire le riz.', 15], ['Fais revenir l’oignon et le gingembre dans l’huile, verse le lait de coco et le jus des citrons.', 5], ['Ajoute le colin en morceaux et laisse frémir 10 min. Sers avec le riz.', 10]],
+  }),
+  R('poulet-yassa', 'Poulet yassa', 'Le classique sénégalais : poulet mariné au citron, fondue d’oignons.', {
+    family: 'mijote', plat: 'curry', prep: 20, cook: 45, season: TOUTE_ANNEE, tags: [], cuisine: 'africaine',
+    ing: [['cuisses', 1, '1 kg de cuisses de poulet'], ['oignons', 0.6, '6 oignons'], ['citrons', 1, '4 citrons'], ['moutarde', 0.08, '2 c. à soupe de moutarde'], ['ail', 0.1, '3 gousses d’ail'], ['riz', 0.3, '300 g de riz'], ['huile', 0.04, '4 c. à soupe d’huile']],
+    steps: [['Fais mariner le poulet avec le jus des citrons, la moutarde, l’ail et les oignons émincés (1 h si tu as le temps).', 15], ['Fais dorer le poulet dans l’huile, puis les oignons de la marinade jusqu’à ce qu’ils fondent.', 15], ['Remets le poulet, ajoute la marinade et laisse mijoter 30 min. Sers avec le riz.', 30]],
+  }),
+  R('mafe-boeuf', 'Mafé de bœuf', 'Le mafé d’Afrique de l’Ouest : bœuf mijoté dans une sauce à l’arachide.', {
+    family: 'mijote', plat: 'curry', prep: 20, cook: 70, season: AUTOMNE, tags: ['batch'], cuisine: 'africaine',
+    ing: [['boeuf_mijoter', 1, '600 g de bœuf à mijoter'], ['beurre_cacahuete', 0.43, '150 g de beurre de cacahuète'], ['tomates_conc', 1, '1 boîte de tomates concassées'], ['oignons', 0.2, '2 oignons'], ['carottes', 0.3, '3 carottes'], ['patate_douce', 0.5, '500 g de patates douces'], ['riz', 0.3, '300 g de riz'], ['huile', 0.02, '2 c. à soupe d’huile']],
+    steps: [['Fais dorer le bœuf en cubes et l’oignon dans l’huile, dans une cocotte.', 10], ['Délaye le beurre de cacahuète dans 50 cl d’eau chaude, verse-le avec les tomates.', 5], ['Ajoute carottes et patates douces, couvre et laisse mijoter 1 h. Sers avec le riz.', 60]],
+  }),
+  R('fish-pie', 'Fish pie', 'La tourte de poisson anglaise, sans pâte : colin et petits pois sous une purée gratinée.', {
+    family: 'gratin', plat: 'gratin', prep: 25, cook: 30, season: TOUTE_ANNEE, tags: ['enfants'], cuisine: 'anglaise',
+    ing: [['colin', 1, '400 g de filets de colin'], ['pdt', 0.4, '1 kg de pommes de terre'], ['lait', 0.4, '40 cl de lait'], ['beurre', 0.16, '40 g de beurre'], ['petits_pois', 0.3, '300 g de petits pois'], ['oignons', 0.1, '1 oignon'], ['farine', 0.03, '2 c. à soupe de farine']],
+    steps: [['Fais cuire les pommes de terre et écrase-les avec la moitié du beurre et un peu de lait.', 20], ['Fais une sauce blanche avec le reste du beurre, la farine et le lait, ajoute le colin en morceaux, l’oignon et les petits pois.', 10], ['Verse dans un plat, couvre de purée et fais gratiner 25 min à 200 °C.', 25]],
+  }),
+  R('cottage-pie', 'Cottage pie', 'Le hachis anglais : bœuf, carottes et petits pois sous une purée dorée.', {
+    family: 'gratin', plat: 'gratin', prep: 25, cook: 30, season: TOUTE_ANNEE, tags: ['enfants', 'batch'], cuisine: 'anglaise',
+    ing: [['boeuf_hache', 1, '500 g de bœuf haché'], ['carottes', 0.3, '3 carottes'], ['petits_pois', 0.3, '300 g de petits pois'], ['oignons', 0.1, '1 oignon'], ['pdt', 0.4, '1 kg de pommes de terre'], ['beurre', 0.16, '40 g de beurre'], ['lait', 0.2, '20 cl de lait']],
+    steps: [['Fais cuire les pommes de terre et écrase-les avec le beurre et le lait.', 20], ['Fais revenir l’oignon, le bœuf et les carottes en dés 10 min, ajoute les petits pois.', 10], ['Verse dans un plat, couvre de purée et fais dorer 25 min à 200 °C.', 25]],
+  }),
+  R('poulet-soja-gingembre', 'Poulet sauté soja et gingembre', 'Un wok express : poulet, brocoli et riz, sauce soja gingembre.', {
+    family: 'wok', plat: 'riz', prep: 15, cook: 15, season: TOUTE_ANNEE, tags: ['enfants'], cuisine: 'asiatique',
+    ing: [['poulet', 1, '600 g de filets de poulet'], ['soja', 0.24, '6 c. à soupe de sauce soja'], ['gingembre', 0.2, '20 g de gingembre'], ['ail', 0.1, '2 gousses d’ail'], ['brocoli', 1, '500 g de brocoli'], ['riz', 0.3, '300 g de riz'], ['huile', 0.03, '3 c. à soupe d’huile']],
+    steps: [['Fais cuire le riz et le brocoli en petits bouquets.', 12], ['Fais sauter le poulet en lamelles dans l’huile bien chaude, avec l’ail et le gingembre râpés.', 6], ['Ajoute le brocoli et la sauce soja, mélange 2 min et sers sur le riz.', 3]],
+  }),
 ];
 
 
@@ -419,6 +473,7 @@ const STORES = [
   ['picard', 1.22],
   ['franprix', 1.32],
   ['monoprix', 1.3],
+  ['match', 1.18],
 ];
 
 // Assortiments partiels (démo) : Grand Frais = frais + une partie de l'épicerie, Picard = surgelés,
@@ -504,10 +559,25 @@ function stylesOf(r, keys) {
   const tags = [];
   if (rich.length === 0 && new Set(fresh).size >= 2) tags.push('equilibre');
   if (rich.length >= 2 || ['gratin', 'tarte'].includes(r.family)) tags.push('gourmand');
-  if (keys.some((k) => WORLD.has(k)) || ['curry', 'wrap'].includes(r.family)) tags.push('monde');
+  if (keys.some((k) => WORLD.has(k)) || ['curry', 'wrap'].includes(r.family) || cuisineOf(r) !== 'francaise') tags.push('monde');
   if (AIR_FRYER.has(r.slug)) tags.push('air_fryer');
+  // Faisable au robot cuiseur (Thermomix, Cookeo…) : soupes, mijotés, currys, légumineuses, risotto.
+  if (['soupe', 'mijote', 'curry', 'legumineuses'].includes(r.family) || r.slug.startsWith('risotto')) tags.push('robot');
   return tags;
 }
+
+// Cuisine de chaque recette (questionnaire « Quelles cuisines te font envie ? »).
+// Par défaut : française. Les recettes du monde la précisent dans leur définition (`cuisine`).
+const CUISINE_BY_SLUG = {
+  italienne: ['pates-tomate-basilic', 'penne-au-thon', 'gnocchis-epinards-creme', 'pates-pesto-brocoli', 'pates-champignons-creme', 'spaghetti-bolognaise', 'lasagnes-vegetariennes', 'risotto-champignons', 'spaghetti-epinards-tomate'],
+  indienne: ['curry-pois-chiches-courge', 'dahl-lentilles-corail', 'curry-legumes'],
+  asiatique: ['riz-saute-legumes', 'quinoa-saute-legumes', 'poulet-lait-de-coco'],
+  americaine: ['chili-sin-carne', 'chili-con-carne', 'fajitas-poulet-poivrons', 'riz-haricots-rouges-mais'],
+  africaine: ['couscous-legumes'],
+  europeenne: ['tortilla-pommes-de-terre', 'salade-lentilles-feta'],
+};
+const cuisineOf = (r) =>
+  r.cuisine ?? Object.entries(CUISINE_BY_SLUG).find(([, slugs]) => slugs.includes(r.slug))?.[0] ?? 'francaise';
 
 const out = [];
 out.push('-- catalogue.sql — GÉNÉRÉ par supabase/catalogue/generate.mjs : ne pas modifier à la main.');
@@ -576,7 +646,7 @@ RECIPES.forEach((r, i) => {
   const equipment = equipmentOf(r);
   const steps = JSON.stringify(r.steps.map(([text, minutes]) => ({ text, minutes })));
   out.push(
-    `insert into recipes (id, slug, title, description, servings, prep_minutes, cook_minutes, diets, season_months, illustration, family, tags, equipment, steps, published) values (${q(id)}, ${q(r.slug)}, ${q(r.title)}, ${q(r.description)}, 4, ${r.prep}, ${r.cook}, ${arr(diets)}, ${arr(r.season)}, ${q(r.plat)}, ${q(r.family)}, ${arr(allTags)}, ${arr(equipment)}, ${q(steps)}, true);`,
+    `insert into recipes (id, slug, title, description, servings, prep_minutes, cook_minutes, diets, season_months, illustration, family, tags, equipment, cuisine, steps, published) values (${q(id)}, ${q(r.slug)}, ${q(r.title)}, ${q(r.description)}, 4, ${r.prep}, ${r.cook}, ${arr(diets)}, ${arr(r.season)}, ${q(r.plat)}, ${q(r.family)}, ${arr(allTags)}, ${arr(equipment)}, ${q(cuisineOf(r))}, ${q(steps)}, true);`,
   );
   out.push('insert into recipe_ingredients (recipe_id, label, product_id, units, pantry, position) values');
   out.push(
@@ -586,7 +656,7 @@ RECIPES.forEach((r, i) => {
   );
   out.push('');
   const lidl = r.ing.reduce((s, [k, u]) => s + byKey.get(k).base * u, 0);
-  report.push(`${(lidl / 400).toFixed(2).padStart(5)} €/part · ${String(r.prep + r.cook).padStart(3)} min · ${r.family.padEnd(12)} · ${diets.includes('vegetarien') ? 'végé ' : '     '} ${r.title} · [${equipment}] ${stylesOf(r, keys).join(' ')}`);
+  report.push(`${(lidl / 400).toFixed(2).padStart(5)} €/part · ${String(r.prep + r.cook).padStart(3)} min · ${r.family.padEnd(12)} · ${diets.includes('vegetarien') ? 'végé ' : '     '} ${r.title} · ${cuisineOf(r)} · [${equipment}] ${stylesOf(r, keys).join(' ')}`);
 });
 
 writeFileSync(OUT, out.join('\n') + '\n');

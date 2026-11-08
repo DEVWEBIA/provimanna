@@ -37,3 +37,11 @@ export async function dislikableIngredients(supabase: SupabaseClient<Database>):
         .sort((x, y) => x.name.localeCompare(y.name, 'fr')),
     }));
 }
+
+/** Nombre de recettes publiées par cuisine (écran « Quelles cuisines te font envie ? »). */
+export async function cuisineCounts(supabase: SupabaseClient<Database>): Promise<Record<string, number>> {
+  const { data } = await supabase.from('recipes').select('cuisine').eq('published', true);
+  const counts: Record<string, number> = {};
+  for (const r of data ?? []) counts[r.cuisine] = (counts[r.cuisine] ?? 0) + 1;
+  return counts;
+}

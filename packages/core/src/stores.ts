@@ -11,6 +11,7 @@ export const STORE_IDS = [
   'super-u',
   'intermarche',
   'carrefour',
+  'match',
   'auchan',
   'grand-frais',
   'picard',
@@ -19,6 +20,18 @@ export const STORE_IDS = [
 ] as const;
 
 export type StoreId = (typeof STORE_IDS)[number];
+
+/**
+ * Régions de comparaison : un foyer ne compare que les enseignes présentes chez lui.
+ * Outre-mer (codes postaux 97x et 98x) : à La Réunion, Jumbo et Score sont devenus Carrefour (2020),
+ * Leader Price et Run Market passent sous Intermarché (novembre 2026).
+ */
+export type Region = 'metropole' | 'outre_mer';
+
+/** Région d'un code postal (métropole par défaut, y compris s'il est vide ou invalide). */
+export function regionOf(postalCode: string | null | undefined): Region {
+  return /^9[78]\d{3}$/.test((postalCode ?? '').trim()) ? 'outre_mer' : 'metropole';
+}
 
 export interface StoreInfo {
   id: StoreId;
@@ -30,25 +43,45 @@ export interface StoreInfo {
    * l'enseigne principale du foyer (décision du propriétaire, 08/11/2026).
    */
   partialAssortment: boolean;
+  /** Régions où l'enseigne est présente. */
+  regions: readonly Region[];
 }
 
+const METRO: readonly Region[] = ['metropole'];
+const BOTH: readonly Region[] = ['metropole', 'outre_mer'];
+
 export const STORES_INFO: Record<StoreId, StoreInfo> = {
-  lidl: { id: 'lidl', name: 'Lidl', initials: 'LI', partialAssortment: false },
-  aldi: { id: 'aldi', name: 'Aldi', initials: 'AL', partialAssortment: false },
-  netto: { id: 'netto', name: 'Netto', initials: 'NE', partialAssortment: false },
-  leclerc: { id: 'leclerc', name: 'E.Leclerc', initials: 'EL', partialAssortment: false },
-  'super-u': { id: 'super-u', name: 'Super U', initials: 'SU', partialAssortment: false },
-  intermarche: { id: 'intermarche', name: 'Intermarché', initials: 'IN', partialAssortment: false },
-  carrefour: { id: 'carrefour', name: 'Carrefour', initials: 'CA', partialAssortment: false },
-  auchan: { id: 'auchan', name: 'Auchan', initials: 'AU', partialAssortment: false },
-  'grand-frais': { id: 'grand-frais', name: 'Grand Frais', initials: 'GF', partialAssortment: true },
-  picard: { id: 'picard', name: 'Picard', initials: 'PI', partialAssortment: true },
-  franprix: { id: 'franprix', name: 'Franprix', initials: 'FR', partialAssortment: false },
-  monoprix: { id: 'monoprix', name: 'Monoprix', initials: 'MO', partialAssortment: false },
+  lidl: { id: 'lidl', name: 'Lidl', initials: 'LI', partialAssortment: false, regions: METRO },
+  aldi: { id: 'aldi', name: 'Aldi', initials: 'AL', partialAssortment: false, regions: METRO },
+  netto: { id: 'netto', name: 'Netto', initials: 'NE', partialAssortment: false, regions: METRO },
+  leclerc: { id: 'leclerc', name: 'E.Leclerc', initials: 'EL', partialAssortment: false, regions: BOTH },
+  'super-u': { id: 'super-u', name: 'Super U', initials: 'SU', partialAssortment: false, regions: BOTH },
+  intermarche: {
+    id: 'intermarche',
+    name: 'Intermarché',
+    initials: 'IN',
+    partialAssortment: false,
+    regions: BOTH,
+  },
+  match: { id: 'match', name: 'Match', initials: 'MA', partialAssortment: false, regions: METRO },
+  carrefour: { id: 'carrefour', name: 'Carrefour', initials: 'CA', partialAssortment: false, regions: BOTH },
+  auchan: { id: 'auchan', name: 'Auchan', initials: 'AU', partialAssortment: false, regions: METRO },
+  'grand-frais': {
+    id: 'grand-frais',
+    name: 'Grand Frais',
+    initials: 'GF',
+    partialAssortment: true,
+    regions: METRO,
+  },
+  picard: { id: 'picard', name: 'Picard', initials: 'PI', partialAssortment: true, regions: METRO },
+  franprix: { id: 'franprix', name: 'Franprix', initials: 'FR', partialAssortment: false, regions: METRO },
+  monoprix: { id: 'monoprix', name: 'Monoprix', initials: 'MO', partialAssortment: false, regions: METRO },
 };
 
-/** Enseignes qui peuvent être l'enseigne principale d'un foyer (assortiment complet). */
-export const MAIN_STORE_IDS: StoreId[] = STORE_IDS.filter((id) => !STORES_INFO[id].partialAssortment);
+/** Enseignes présentes dans une région, dans l'ordre d'affichage. */
+export function storesForRegion(region: Region): StoreId[] {
+  return STORE_IDS.filter((id) => STORES_INFO[id].regions.includes(region));
+}
 
 export function isStoreId(value: string): value is StoreId {
   return (STORE_IDS as readonly string[]).includes(value);
@@ -59,5 +92,5 @@ export function storeDisplayName(id: string): string {
   return isStoreId(id) ? STORES_INFO[id].name : id;
 }
 
-/** Nombre d'enseignes comparées (textes « dans 12 enseignes »). */
-export const STORE_COUNT = STORE_IDS.length;
+/** Nombre d'enseignes comparées en métropole (textes « dans 13 enseignes »). */
+export const STORE_COUNT = storesForRegion('metropole').length;

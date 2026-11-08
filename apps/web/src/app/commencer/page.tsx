@@ -2,7 +2,7 @@ import { STORE_COUNT } from '@repas/core';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { OnboardingWizard } from '@/components/onboarding/wizard';
-import { dislikableIngredients } from '@/lib/ingredients';
+import { cuisineCounts, dislikableIngredients } from '@/lib/ingredients';
 import { DEFAULT_DRAFT } from '@/lib/onboarding';
 import { createClient } from '@/lib/supabase/server';
 import { listStores } from '@/lib/stores';
@@ -24,13 +24,18 @@ export default async function CommencerPage({ searchParams }: { searchParams: Se
   } = await supabase.auth.getUser();
   if (user) redirect('/app');
 
-  const [stores, ingredients] = await Promise.all([listStores(supabase), dislikableIngredients(supabase)]);
+  const [stores, ingredients, counts] = await Promise.all([
+    listStores(supabase),
+    dislikableIngredients(supabase),
+    cuisineCounts(supabase),
+  ]);
   return (
     <OnboardingWizard
       mode="guest"
       referral={typeof parrain === 'string' ? parrain : undefined}
       stores={stores}
       ingredients={ingredients}
+      cuisineCounts={counts}
       initial={DEFAULT_DRAFT}
     />
   );

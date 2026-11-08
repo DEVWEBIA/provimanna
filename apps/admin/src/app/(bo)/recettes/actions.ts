@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import { CUISINE_IDS } from '@repas/core';
 import { requireRole } from '@/lib/staff';
 
 export type SaveResult = { ok: true; message: string } | { ok: false; error: string };
@@ -24,6 +25,7 @@ const recipeSchema = z.object({
   diets: z.array(z.enum(DIETS)).min(1),
   tags: z.array(z.string().max(30)).max(16),
   equipment: z.array(z.enum(['four', 'plaques'])).max(2),
+  cuisine: z.enum(CUISINE_IDS as [string, ...string[]]),
   seasonMonths: z.array(z.number().int().min(1).max(12)).min(1),
   steps: z
     .array(z.object({ text: z.string().trim().min(3), minutes: z.number().int().min(0).max(600).nullable() }))
@@ -64,6 +66,7 @@ export async function saveRecipe(input: unknown): Promise<SaveResult> {
       diets: r.diets,
       tags: r.tags,
       equipment: r.equipment,
+      cuisine: r.cuisine,
       season_months: r.seasonMonths,
       steps: r.steps,
       seo_title: r.seoTitle,

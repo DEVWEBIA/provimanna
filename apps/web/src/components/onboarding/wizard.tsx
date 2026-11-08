@@ -22,9 +22,11 @@ import {
   PREFERENCES,
   priceSpread,
   scaleCents,
-  STORE_COUNT,
   STORES_INFO,
   STYLES,
+  CUISINES,
+  regionOf,
+  type CuisineId,
   type EquipmentId,
   type MotivationId,
   type PreferenceId,
@@ -81,6 +83,7 @@ export interface WizardDraft {
   equipment: EquipmentId[];
   disliked: string[];
   motivations: MotivationId[];
+  cuisines: CuisineId[];
 }
 
 const LAST_QUESTION = WIZARD_STEPS.indexOf('equipement');
@@ -93,6 +96,8 @@ export interface OnboardingWizardProps {
   mode: 'guest' | 'account' | 'edit';
   stores: { id: StoreId; name: string; initials: string }[];
   ingredients: IngredientGroup[];
+  /** Nombre de recettes publiées par cuisine (francaise → 40…). */
+  cuisineCounts: Record<string, number>;
   initial: WizardDraft;
   /** Le foyer a déjà répondu « pas de budget précis ». */
   initialNoBudget?: boolean;
@@ -135,8 +140,11 @@ const PREF_ICONS: Record<PreferenceId, IconName> = {
 };
 const EQUIPMENT_ICONS: Record<EquipmentId, IconName> = {
   plaques: 'plaques',
+  gaziniere: 'flamme',
   four: 'four',
   air_fryer: 'airfryer',
+  micro_ondes: 'microondes',
+  robot: 'robot',
 };
 
 // Panier d'exemple de la landing (14 repas) : sert de repère avant le vrai plan.
@@ -242,6 +250,7 @@ export function OnboardingWizard({
   mode,
   stores,
   ingredients,
+  cuisineCounts,
   initial,
   initialNoBudget = false,
   editStep,
@@ -267,8 +276,9 @@ export function OnboardingWizard({
   const budgetId = useId();
 
   const set = <K extends keyof WizardDraft>(k: K, v: WizardDraft[K]) => setD((prev) => ({ ...prev, [k]: v }));
-  // Enseignes à assortiment partiel (Picard, Grand Frais) : jamais enseigne principale du foyer.
-  const mainStores = stores.filter((s) => !STORES_INFO[s.id].partialAssortment);
+  // Enseignes présentes dans la région du code postal (outre-mer : 97x, 98x).
+  const region = regionOf(d.postal_code);
+  const regionStores = stores.filter((s) => STORES_INFO[s.id].regions.includes(region));
   const factor = householdFactor(d.adults, d.children);
   const myStore = stores.find((s) => s.id === d.store);
   const people = d.adults + d.children;
@@ -324,7 +334,7 @@ export function OnboardingWizard({
     setErrors({});
     if (mode === 'edit') {
       setSaving(true);
-      const res = await updatePreferences({ ...draft, store: draft.store ?? '' });
+      const res = await updatePreferences({ ...draft, store: (draft.store ?? '') as StoreId });
       if (res.error) {
         setSaving(false);
         setErrors({ global: res.error });
@@ -342,7 +352,7 @@ export function OnboardingWizard({
       window.scrollTo({ top: 0 });
       if (mode === 'account') {
         setSaving(true);
-        const res = await saveOnboarding({ ...draft, store: draft.store ?? '' });
+        const res = await saveOnboarding({ ...draft, store: (draft.store ?? '') as StoreId });
         setSaving(false);
         if (res.error) {
           setComposing(false);
@@ -451,8 +461,13 @@ export function OnboardingWizard({
                 ...(d.styles.length
                   ? [`Style : ${d.styles.map((s) => STYLES.find((x) => x.id === s)?.label).join(', ')}`]
                   : []),
+                ...(d.cuisines.length
+                  ? [
+                      `Cuisines : ${d.cuisines.map((c) => CUISINES.find((x) => x.id === c)?.label).join(', ')}`,
+                    ]
+                  : []),
                 d.budget_cents ? `Budget visé : ${formatEuro(d.budget_cents)}` : 'Recettes de saison',
-                `Prix comparés dans ${STORE_COUNT} enseignes`,
+                `Prix comparés dans ${regionStores.length} enseignes`,
               ]}
             />
           ) : emailSent && signup.status === 'sent' ? (
@@ -579,22 +594,7 @@ export function OnboardingWizard({
                     lead="On calcule les prix dans ton enseigne. Tu verras aussi les autres, pour comparer."
                   />
                   <StepBody>
-                    <fieldset className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                      <legend className="sr-only">Ton enseigne habituelle</legend>
-                      {mainStores.map((s) => (
-                        <OptionTile
-                          key={s.id}
-                          type="radio"
-                          name="store"
-                          checked={d.store === s.id}
-                          onChange={() => set('store', s.id)}
-                          visual={<StoreLogo id={s.id} name={s.name} size={56} />}
-                          title={s.name}
-                        />
-                      ))}
-                    </fieldset>
-                    {errors.store ? <Alert>{errors.store}</Alert> : null}
-                    <div className="mt-6">
+                    <div className="mb-6">
                       <label htmlFor="cp" className="mb-2 block text-[15px] font-black">
                         Code postal
                       </label>
@@ -611,10 +611,43 @@ export function OnboardingWizard({
                         className={inputClasses(Boolean(errors.postal_code), 'text-[17px] font-extrabold')}
                       />
                       <p id="cp-aide" className="text-ink-muted mt-2 text-[14px] font-bold">
-                        Il sert à choisir les prix des magasins proches. Il n’est jamais partagé.
+                        Il sert à choisir les enseignes et les prix proches de chez toi. Il n’est jamais
+                        partagé.
                       </p>
                       {errors.postal_code ? <Alert id="cp-err">{errors.postal_code}</Alert> : null}
                     </div>
+                    <fieldset className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                      <legend className="mb-3 text-[17px] font-black">
+                        {region === 'outre_mer'
+                          ? 'Les enseignes près de chez toi'
+                          : 'Ton enseigne habituelle'}
+                      </legend>
+                      {regionStores.map((s) => (
+                        <OptionTile
+                          key={s.id}
+                          type="radio"
+                          name="store"
+                          checked={d.store === s.id}
+                          onChange={() => set('store', s.id)}
+                          visual={<StoreLogo id={s.id} name={s.name} size={56} />}
+                          title={s.name}
+                          hint={STORES_INFO[s.id].partialAssortment ? 'Assortiment partiel' : undefined}
+                        />
+                      ))}
+                    </fieldset>
+                    {errors.store ? <Alert>{errors.store}</Alert> : null}
+                    {d.store && STORES_INFO[d.store].partialAssortment ? (
+                      <InfoNote icon="panier" title="Assortiment partiel">
+                        {STORES_INFO[d.store].name} ne vend pas tout : les produits absents de ta liste sont
+                        comptés au prix moyen des autres enseignes, avec le signe ≈.
+                      </InfoNote>
+                    ) : null}
+                    {region === 'outre_mer' ? (
+                      <InfoNote icon="monde" title="Outre-mer">
+                        On compare les enseignes présentes chez toi. Les prix affichés sont pour l’instant
+                        ceux de la métropole : les relevés locaux arriveront avec les tickets de caisse.
+                      </InfoNote>
+                    ) : null}
                   </StepBody>
                 </>
               ) : null}
@@ -766,6 +799,42 @@ export function OnboardingWizard({
                 </>
               ) : null}
 
+              {step === 'cuisines' ? (
+                <>
+                  <StepTitle
+                    title="Quelles cuisines te font envie ?"
+                    lead="Coche autant de cuisines que tu veux : on les met plus souvent dans ta semaine."
+                  />
+                  <StepBody>
+                    <fieldset className="flex flex-col gap-3">
+                      <legend className="sr-only">Cuisines préférées</legend>
+                      {CUISINES.map((c) => {
+                        const n = cuisineCounts[c.id] ?? 0;
+                        return (
+                          <OptionCard
+                            key={c.id}
+                            type="checkbox"
+                            name="cuisine"
+                            visual={
+                              <span className="bg-brand-soft grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full">
+                                <Plat variant={c.plat} size={40} decorative />
+                              </span>
+                            }
+                            title={c.label}
+                            hint={`${c.hint} · ${n ? `${n} recette${n > 1 ? 's' : ''}` : 'bientôt'}`}
+                            checked={d.cuisines.includes(c.id)}
+                            onChange={() => set('cuisines', toggle(d.cuisines, c.id))}
+                          />
+                        );
+                      })}
+                    </fieldset>
+                    <p className="text-ink-muted mt-3 text-[14px] font-bold">
+                      Aucune case cochée : on varie entre toutes les cuisines.
+                    </p>
+                  </StepBody>
+                </>
+              ) : null}
+
               {step === 'ingredients' ? (
                 <>
                   <StepTitle
@@ -837,12 +906,14 @@ export function OnboardingWizard({
                           onChange={() => set('equipment', toggle(d.equipment, e.id))}
                           visual={<IconBubble name={EQUIPMENT_ICONS[e.id]} />}
                           title={e.label}
+                          hint={e.hint ?? undefined}
                         />
                       ))}
                     </fieldset>
                     {errors.step ? <Alert>{errors.step}</Alert> : null}
                     <InfoNote icon="check" title="Que des recettes faisables chez toi">
-                      Sans four, pas de gratin. Avec un air fryer, les rôtis passent aussi.
+                      Sans four, pas de gratin. La gazinière vaut des plaques ; avec un air fryer ou un robot
+                      cuiseur, d’autres recettes passent aussi.
                     </InfoNote>
                   </StepBody>
                 </>

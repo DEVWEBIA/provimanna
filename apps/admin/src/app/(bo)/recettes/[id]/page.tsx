@@ -52,6 +52,7 @@ export default async function BoRecettePage({ params }: { params: Promise<{ id: 
           diets: r.diets,
           tags: r.tags,
           equipment: r.equipment,
+          cuisine: r.cuisine,
           seasonMonths: r.season_months,
           steps: steps.length ? steps : [{ text: '', minutes: null }],
           ingredients: [...r.recipe_ingredients]

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { Route } from 'next';
 import {
+  CUISINES,
   daysSummary,
   EQUIPMENT,
   formatEuro,
@@ -49,7 +50,7 @@ export default async function UtilisateursPage({ searchParams }: { searchParams:
       admin
         .from('profiles')
         .select(
-          'id, display_name, created_at, household_id, households(adults, children, preferred_store_id, postal_code, diet, exclusions, cooking_time, meal_days, with_lunch, weekly_budget_cents, styles, equipment, disliked_product_ids, subscriptions(tier, trial_ends_at, bonus_days, interval, current_period_end))',
+          'id, display_name, created_at, household_id, households(adults, children, preferred_store_id, postal_code, diet, exclusions, cooking_time, meal_days, with_lunch, weekly_budget_cents, styles, equipment, cuisines, disliked_product_ids, subscriptions(tier, trial_ends_at, bonus_days, interval, current_period_end))',
         ),
       admin
         .from('meal_plans')
@@ -291,6 +292,7 @@ function HouseholdAnswers({
     with_lunch: boolean;
     weekly_budget_cents: number | null;
     styles: string[];
+    cuisines: string[];
     equipment: string[];
     disliked_product_ids: string[];
   };
@@ -309,6 +311,7 @@ function HouseholdAnswers({
     ['Budget', h.weekly_budget_cents ? `${formatEuro(h.weekly_budget_cents)} / semaine` : 'aucun'],
     ['Régime', prefs || 'aucun'],
     ['Ambiance', `${label(STYLES, h.styles) || 'aucune'} · ${COOKING[h.cooking_time] ?? ''}`],
+    ['Cuisines', label(CUISINES, h.cuisines) || 'toutes'],
     ['Équipement', label(EQUIPMENT, h.equipment)],
     ['Évités', h.disliked_product_ids.length ? `${h.disliked_product_ids.length} ingrédient(s)` : 'aucun'],
   ];

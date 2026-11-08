@@ -6,7 +6,9 @@ test('pages SEO : observatoire, enseigne, menu, guide, 404, sitemap', async ({ p
     page.getByRole('heading', { level: 1, name: /^Quel supermarché est le moins cher en / }),
   ).toBeVisible();
   await expect(page.getByText(/^Sur notre panier type de 14 repas pour 4 personnes, /).first()).toBeVisible();
-  await expect(page.getByRole('list').filter({ hasText: 'Indice 100' }).getByRole('listitem')).toHaveCount(12);
+  await expect(page.getByRole('list').filter({ hasText: 'Indice 100' }).getByRole('listitem')).toHaveCount(
+    13,
+  );
   const ld = (await page.locator('script[type="application/ld+json"]').allTextContents()).map(
     (t) => JSON.parse(t) as { '@type': string },
   );
@@ -20,7 +22,9 @@ test('pages SEO : observatoire, enseigne, menu, guide, 404, sitemap', async ({ p
 
   // Enseigne à assortiment partiel : pas de classement, couverture du panier annoncée.
   await page.goto('/enseignes/picard');
-  await expect(page.getByText(/Picard ne vend que \d+ produits sur \d+ de notre panier type/).first()).toBeVisible();
+  await expect(
+    page.getByText(/Picard ne vend que \d+ produits sur \d+ de notre panier type/).first(),
+  ).toBeVisible();
 
   await page.goto('/menus/menu-semaine-60-euros-4-personnes');
   await expect(page.getByRole('heading', { name: 'Les 14 repas' })).toBeVisible();

@@ -76,7 +76,7 @@ Commence par me confirmer l'état et la prochaine étape.
 
 **Packages** : `packages/core` (prix, `generatePlan` / `replaceMeal`, semaines à l'heure de Paris, coûts par recette et par ingrédient, comparaisons produit par produit, totaux par rayon, `savingsCents`, `nextStreak`, `challengeProgress`…), `packages/ui` (composants, briques de style : `Reveal`, `Glow`, `PageHeader`, `GlassCard`, `animDelay`, `inputClasses` ; `styles/motion.css`, `styles/dark.css`).
 
-**Migrations** : 0001 schéma, 0002 RLS, 0003 droits colonne par colonne, 0004 temps de cuisine, 0005 familles et marqueurs des recettes, 0006 liste et validation (totaux écrits par le serveur, « coché par » posé par la base, temps réel, `shared_list`), 0007 journal d'audit, 0008 réponses enrichies du questionnaire (jours et repas, budget, styles, équipement, ingrédients évités, motivations). **Prochain numéro libre : 0009.**
+**Migrations** : 0001 schéma, 0002 RLS, 0003 droits colonne par colonne, 0004 temps de cuisine, 0005 familles et marqueurs des recettes, 0006 liste et validation (totaux écrits par le serveur, « coché par » posé par la base, temps réel, `shared_list`), 0007 journal d'audit, 0008 réponses enrichies du questionnaire (jours et repas, budget, styles, équipement, ingrédients évités, motivations). 0009 équipement élargi et cuisines. **Prochain numéro libre : 0010.**
 
 **Tests** : core 10 node:test + 62 Vitest, ui 16, web 7 Vitest, **32 tests RLS** (`pnpm db:test`), **22 e2e Playwright** desktop + mobile (dont back-office, famille, recettes, SEO).
 

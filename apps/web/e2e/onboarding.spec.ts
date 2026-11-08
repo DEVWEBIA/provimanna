@@ -43,9 +43,17 @@ async function fillQuestionnaire(page: Page, project: string) {
   // Erreurs utiles, saisie conservée.
   await nextQuestion(page);
   await expect(page.getByText('Choisis ton enseigne habituelle.')).toBeVisible();
-  // Picard et Grand Frais (assortiment partiel) ne sont pas proposés comme enseigne habituelle.
-  await expect(page.getByRole('radio', { name: 'Picard' })).toHaveCount(0);
-  await expect(page.getByRole('radio', { name: 'Super U' })).toHaveCount(1);
+  // Picard (assortiment partiel) est proposé, avec un avertissement une fois choisi.
+  await page.getByText('Picard', { exact: true }).click();
+  await expect(page.getByText('Picard ne vend pas tout')).toBeVisible();
+  // Outre-mer : seules les enseignes présentes sur place.
+  await page.getByLabel('Code postal').fill('97400');
+  await expect(page.getByRole('radio')).toHaveCount(4);
+  await expect(page.getByRole('radio', { name: 'Lidl' })).toHaveCount(0);
+  await expect(
+    page.getByText('Les prix affichés sont pour l’instant ceux de la métropole', { exact: false }),
+  ).toBeVisible();
+  await page.getByLabel('Code postal').fill('');
   await page.getByText('Auchan', { exact: true }).click();
   await page.getByLabel('Code postal').fill('690');
   await nextQuestion(page);
@@ -70,6 +78,11 @@ async function fillQuestionnaire(page: Page, project: string) {
   // 3 styles au plus : les autres se désactivent.
   await expect(page.getByRole('checkbox', { name: /Saveurs du monde/ })).toBeDisabled();
   await page.getByText('Moins de 30 min', { exact: true }).click();
+  await nextQuestion(page);
+
+  await expect(page.getByRole('heading', { name: 'Quelles cuisines te font envie ?' })).toBeVisible();
+  await page.getByText('Réunionnaise', { exact: true }).click();
+  await page.getByText('Italienne', { exact: true }).click();
   await nextQuestion(page);
 
   await expect(page.getByRole('heading', { name: 'Des ingrédients à éviter ?' })).toBeVisible();
@@ -131,6 +144,7 @@ test('visiteur : questionnaire sans compte → email → espace client déjà co
   await expect(answers).toContainText('Sans porc');
   await expect(answers).toContainText('Gourmand, Rapide & facile, En famille');
   await expect(answers).toContainText('Champignons de Paris');
+  await expect(answers).toContainText('Réunionnaise, Italienne');
   await expect(answers).toContainText('Plaques');
 
   // Plan : 10 repas, aucun le week-end.

@@ -1,7 +1,7 @@
 import 'server-only';
 import { compareStores, listItems, nextStreak, sumCents, type StoreId, DEFAULTS } from '@repas/core';
 import type { Household } from './household';
-import { planLines, STORES, type PlanData, type PlanRow } from './plan';
+import { householdStores, planLines, type PlanData, type PlanRow } from './plan';
 import type { AdminClient } from './supabase/admin';
 import type { createClient } from './supabase/server';
 
@@ -62,7 +62,13 @@ export async function validatePlan(
   data: PlanData,
 ) {
   const reference = (household.preferred_store_id ?? store) as StoreId;
-  const cmp = compareStores(planLines(plan, data), STORES, reference, data.observations, data.now);
+  const cmp = compareStores(
+    planLines(plan, data),
+    householdStores(household),
+    reference,
+    data.observations,
+    data.now,
+  );
   const chosen = cmp.totals.find((t) => t.storeId === store)!;
   const { error } = await admin
     .from('meal_plans')
@@ -183,13 +189,15 @@ export async function syncShoppingList(
 }
 
 /** Total de la liste (paquets entiers) dans chaque enseigne, via core. */
-export function listTotals(plan: PlanRow, data: PlanData) {
+export function listTotals(plan: PlanRow, data: PlanData, stores: StoreId[]) {
   const lines = planLines(plan, data);
   // Une enseigne qui ne vend pas toute la liste (Picard, Grand Frais…) n'a pas de total comparable.
-  return STORES.flatMap((store) => {
-    const items = listItems(lines, store, data.observations, data.now);
-    const priced = items.filter((i) => i.cents !== null).length;
-    if (items.length && priced / items.length < DEFAULTS.minCoverage) return [];
-    return [{ store, cents: sumCents(items.map((i) => i.cents)) }];
-  }).sort((a, b) => a.cents - b.cents);
+  return stores
+    .flatMap((store) => {
+      const items = listItems(lines, store, data.observations, data.now);
+      const priced = items.filter((i) => i.cents !== null).length;
+      if (items.length && priced / items.length < DEFAULTS.minCoverage) return [];
+      return [{ store, cents: sumCents(items.map((i) => i.cents)) }];
+    })
+    .sort((a, b) => a.cents - b.cents);
 }

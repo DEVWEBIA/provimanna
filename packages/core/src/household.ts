@@ -65,12 +65,34 @@ export const MAX_STYLES = 3;
 
 /** Équipement de cuisine du foyer. */
 export const EQUIPMENT = [
-  { id: 'plaques', label: 'Plaques' },
-  { id: 'four', label: 'Four' },
-  { id: 'air_fryer', label: 'Air fryer' },
+  { id: 'plaques', label: 'Plaques', hint: 'Induction, vitrocéramique' },
+  { id: 'gaziniere', label: 'Gazinière', hint: 'Feux au gaz, bouteille ou ville' },
+  { id: 'four', label: 'Four', hint: null },
+  { id: 'air_fryer', label: 'Air fryer', hint: null },
+  { id: 'micro_ondes', label: 'Micro-ondes', hint: 'Pour réchauffer' },
+  { id: 'robot', label: 'Robot cuiseur', hint: 'Thermomix, Cookeo…' },
 ] as const;
 export type EquipmentId = (typeof EQUIPMENT)[number]['id'];
 export const EQUIPMENT_IDS = EQUIPMENT.map((e) => e.id) as EquipmentId[];
+
+/**
+ * Cuisines du monde (questionnaire « Quelles cuisines te font envie ? »), favorisées dans le plan.
+ * `plat` : illustration <Plat> de la carte.
+ */
+export const CUISINES = [
+  { id: 'francaise', label: 'Française', hint: 'Gratins, soupes, quiches', plat: 'gratin' },
+  { id: 'europeenne', label: 'Européenne', hint: 'Tortilla, plats d’ailleurs en Europe', plat: 'omelette' },
+  { id: 'italienne', label: 'Italienne', hint: 'Pâtes, risotto, lasagnes', plat: 'pates' },
+  { id: 'reunionnaise', label: 'Réunionnaise', hint: 'Caris, rougails, grains', plat: 'curry' },
+  { id: 'iles', label: 'Des îles', hint: 'Colombo, poisson coco', plat: 'poisson' },
+  { id: 'anglaise', label: 'Anglaise', hint: 'Pies, fish pie', plat: 'lasagnes' },
+  { id: 'americaine', label: 'Américaine', hint: 'Chili, fajitas', plat: 'riz' },
+  { id: 'asiatique', label: 'Asiatique', hint: 'Riz sautés, wok', plat: 'riz' },
+  { id: 'indienne', label: 'Indienne', hint: 'Dahl, currys', plat: 'dahl' },
+  { id: 'africaine', label: 'Africaine', hint: 'Yassa, mafé, couscous', plat: 'soupe' },
+] as const;
+export type CuisineId = (typeof CUISINES)[number]['id'];
+export const CUISINE_IDS = CUISINES.map((c) => c.id) as CuisineId[];
 
 /** Ce qui amène le foyer (premier écran du questionnaire, stats du back-office). */
 export const MOTIVATIONS = [

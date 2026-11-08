@@ -15,7 +15,7 @@ test('site public : recettes, prix par enseigne, données structurées', async (
   await page.goto('/recettes/veloute-potimarron');
   await expect(page.getByRole('heading', { level: 1, name: 'Velouté de potimarron' })).toBeVisible();
   await expect(page.getByText(/^Pour 4 personnes, cette recette coûte/)).toBeVisible();
-  await expect(page.getByRole('table').getByRole('row')).toHaveCount(13); // en-tête + 12 enseignes
+  await expect(page.getByRole('table').getByRole('row')).toHaveCount(14); // en-tête + 13 enseignes
   await page.getByRole('button', { name: 'Plus de parts' }).click();
   await expect(page.getByText('6 personnes')).toBeVisible();
   const ld = await page.locator('script[type="application/ld+json"]').allTextContents();

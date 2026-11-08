@@ -24,6 +24,8 @@ export interface PlannerRecipe {
   costPerServingCents: number | null;
   /** Équipement nécessaire (recipes.equipment) : four, plaques. Absent = aucun contrôle. */
   equipment?: readonly string[];
+  /** Cuisine (recipes.cuisine) : francaise, italienne, reunionnaise… */
+  cuisine?: string;
   /** Produits utilisés (pour éviter les ingrédients que le foyer n'aime pas). */
   productIds?: readonly string[];
 }
@@ -42,6 +44,8 @@ export interface PlannerHousehold {
   dislikedProductIds?: readonly string[];
   /** Styles préférés (equilibre, rapide, gourmand, famille, monde, vegetal) : favorisés, jamais imposés. */
   styles?: readonly string[];
+  /** Cuisines préférées : favorisées, jamais imposées. */
+  cuisines?: readonly string[];
 }
 
 /** Filtres de la maquette AppPlan (« Varier la semaine »). */
@@ -108,12 +112,20 @@ const EXCLUSION_RULES: Partial<Record<PreferenceId, (r: PlannerRecipe) => boolea
 };
 
 /**
- * La recette est-elle faisable avec l'équipement du foyer ? Le four peut être remplacé par un
- * air fryer quand la recette est marquée 'air_fryer'.
+ * La recette est-elle faisable avec l'équipement du foyer ?
+ * - plaques : plaques ou gazinière, ou robot cuiseur si la recette est marquée 'robot' ;
+ * - four : four, ou air fryer si la recette est marquée 'air_fryer'.
+ * Le micro-ondes ne remplace rien (il favorise seulement le batch cooking).
  */
 export function canCook(recipe: PlannerRecipe, equipment: readonly string[] | undefined): boolean {
   if (!equipment || !recipe.equipment) return true;
-  if (recipe.equipment.includes('plaques') && !equipment.includes('plaques')) return false;
+  if (
+    recipe.equipment.includes('plaques') &&
+    !equipment.includes('plaques') &&
+    !equipment.includes('gaziniere') &&
+    !(equipment.includes('robot') && recipe.tags.includes('robot'))
+  )
+    return false;
   if (
     recipe.equipment.includes('four') &&
     !equipment.includes('four') &&
@@ -256,6 +268,10 @@ function score(r: PlannerRecipe, ctx: Context, neighbours: (string | undefined)[
   if (ctx.budget && r.costPerServingCents !== null && r.costPerServingCents > ctx.budget)
     s += ((r.costPerServingCents - ctx.budget) / ctx.budget) * 2.5;
   if (ctx.household.styles?.some((st) => matchesStyle(r, st))) s -= 0.6;
+  if (r.cuisine && ctx.household.cuisines?.includes(r.cuisine)) s -= 0.6;
+  // Équipement « bonus » : robot cuiseur → plats mijotés, micro-ondes → plats qui se réchauffent.
+  if (ctx.household.equipment?.includes('robot') && r.tags.includes('robot')) s -= 0.2;
+  if (ctx.household.equipment?.includes('micro_ondes') && r.tags.includes('batch')) s -= 0.2;
   if (hasDisliked(r, ctx.household.dislikedProductIds)) s += 3;
   return s;
 }

@@ -17,6 +17,7 @@ const HEIGHT: Record<StoreId, number> = {
   picard: 48,
   franprix: 26,
   monoprix: 22,
+  match: 30,
 };
 
 type MarqueeStore = { id: StoreId; name: string };
@@ -24,6 +25,8 @@ type MarqueeStore = { id: StoreId; name: string };
 function StoreMark({ store }: { store: MarqueeStore }) {
   const src = STORE_LOGOS[store.id];
   const h = HEIGHT[store.id];
+  // Enseigne sans logo (Match) : nom écrit en clair.
+  if (!src) return <span className="text-ink text-[22px] font-black">{store.name}</span>;
   const w = Math.round((src.width / src.height) * h);
   return (
     <Image

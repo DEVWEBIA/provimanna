@@ -11,7 +11,7 @@ test('plan : 14 repas, comparateur, remplacer, verrouiller, varier la semaine', 
 
   // Comparateur : 12 enseignes (Picard en total partiel), date des relevés, le choix reste libre.
   const stores = page.getByRole('radiogroup', { name: 'Enseigne' }).getByRole('radio');
-  await expect(stores).toHaveCount(12);
+  await expect(stores).toHaveCount(13);
   await expect(stores.filter({ hasText: 'Picard' })).toContainText('Partiel');
   await expect(page.getByText(/^Prix relevés le \d{2}\/\d{2}$/).first()).toBeVisible();
   await expect(page.getByRole('button', { name: 'Garder Lidl et voir ma liste' })).toBeVisible();
@@ -66,7 +66,7 @@ test('comparateur → garder son enseigne → liste cochée, partagée en lectur
   // Comparateur détaillé : 12 enseignes, détail produit par produit (essai = Premium).
   await page.goto('/app/comparateur');
   await expect(page.getByRole('heading', { name: 'Où ta semaine coûte le moins' })).toBeVisible();
-  await expect(page.getByRole('region', { name: 'Total par enseigne' }).getByRole('button')).toHaveCount(12);
+  await expect(page.getByRole('region', { name: 'Total par enseigne' }).getByRole('button')).toHaveCount(13);
   await expect(page.getByRole('heading', { name: /^Produit par produit · Lidl vs / })).toBeVisible();
   await expect(page.getByRole('table').getByRole('row')).not.toHaveCount(0);
 

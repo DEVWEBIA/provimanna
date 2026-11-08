@@ -163,6 +163,7 @@ export type Database = {
           children: number
           cooking_time: Database["public"]["Enums"]["cooking_time"]
           created_at: string
+          cuisines: string[]
           diet: Database["public"]["Enums"]["diet"]
           disliked_product_ids: string[]
           equipment: string[]
@@ -183,6 +184,7 @@ export type Database = {
           children?: number
           cooking_time?: Database["public"]["Enums"]["cooking_time"]
           created_at?: string
+          cuisines?: string[]
           diet?: Database["public"]["Enums"]["diet"]
           disliked_product_ids?: string[]
           equipment?: string[]
@@ -203,6 +205,7 @@ export type Database = {
           children?: number
           cooking_time?: Database["public"]["Enums"]["cooking_time"]
           created_at?: string
+          cuisines?: string[]
           diet?: Database["public"]["Enums"]["diet"]
           disliked_product_ids?: string[]
           equipment?: string[]
@@ -699,6 +702,7 @@ export type Database = {
         Row: {
           cook_minutes: number | null
           created_at: string
+          cuisine: string
           description: string | null
           diets: Database["public"]["Enums"]["diet"][]
           equipment: string[]
@@ -720,6 +724,7 @@ export type Database = {
         Insert: {
           cook_minutes?: number | null
           created_at?: string
+          cuisine?: string
           description?: string | null
           diets?: Database["public"]["Enums"]["diet"][]
           equipment?: string[]
@@ -741,6 +746,7 @@ export type Database = {
         Update: {
           cook_minutes?: number | null
           created_at?: string
+          cuisine?: string
           description?: string | null
           diets?: Database["public"]["Enums"]["diet"][]
           equipment?: string[]

@@ -3,11 +3,12 @@ import {
   BUDGET_MAX_CENTS,
   BUDGET_MIN_CENTS,
   EQUIPMENT_IDS,
-  MAIN_STORE_IDS,
   MAX_STYLES,
   MOTIVATION_IDS,
   PREFERENCE_IDS,
+  STORE_IDS,
   STYLE_IDS,
+  CUISINE_IDS,
   type PreferenceId,
 } from '@repas/core';
 
@@ -21,6 +22,7 @@ export const WIZARD_STEPS = [
   'budget',
   'regime',
   'ambiance',
+  'cuisines',
   'ingredients',
   'equipement',
   'resultat',
@@ -34,8 +36,9 @@ export const foyerSchema = z.object({
 });
 
 export const enseigneSchema = z.object({
-  // Enseignes à assortiment complet uniquement (Picard et Grand Frais ne peuvent pas être l'enseigne principale).
-  store: z.enum(MAIN_STORE_IDS as [string, ...string[]], { error: 'Choisis ton enseigne habituelle.' }),
+  // Toutes les enseignes, Picard et Grand Frais compris (décision du 08/11/2026 : les produits qu'ils ne
+  // vendent pas sont comptés au prix médian des autres enseignes).
+  store: z.enum(STORE_IDS, { error: 'Choisis ton enseigne habituelle.' }),
   postal_code: z
     .string()
     .trim()
@@ -78,6 +81,10 @@ export const onboardingDraftSchema = foyerSchema.extend(enseigneSchema.shape).ex
     .default([]),
   equipment: equipementSchema.shape.equipment.default(['plaques', 'four']),
   disliked: z.array(z.guid()).max(60).default([]),
+  cuisines: z
+    .array(z.enum(CUISINE_IDS as [string, ...string[]]))
+    .max(CUISINE_IDS.length)
+    .default([]),
   motivations: z
     .array(z.enum(MOTIVATION_IDS as [string, ...string[]]))
     .max(MOTIVATION_IDS.length)
