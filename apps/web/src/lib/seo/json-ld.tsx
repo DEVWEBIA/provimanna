@@ -57,3 +57,14 @@ export const faqPageLd = (items: { q: string; a: string }[]) => ({
     acceptedAnswer: { '@type': 'Answer', text: i.a },
   })),
 });
+
+export const breadcrumbLd = (items: { label: string; path: string }[]) => ({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    item: absoluteUrl(c.path),
+  })),
+});

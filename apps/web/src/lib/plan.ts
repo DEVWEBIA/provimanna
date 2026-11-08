@@ -29,9 +29,10 @@ import {
 import { PLAT_VARIANTS, type PlatVariant } from '@repas/ui';
 import { getAccount, type Household } from './household';
 import { listStores } from './stores';
-import type { createClient } from './supabase/server';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@repas/core/database.types';
 
-type Client = Awaited<ReturnType<typeof createClient>>;
+type Client = SupabaseClient<Database>;
 
 export interface CatalogueRecipe {
   id: string;

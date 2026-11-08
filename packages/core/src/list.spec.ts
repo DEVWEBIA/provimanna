@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   averagePriceAgeDays,
+  ingredientCosts,
+  recipeStoreTotals,
   cheaperProductCount,
   compareProducts,
   listItems,
@@ -66,5 +68,26 @@ describe('averagePriceAgeDays', () => {
   it('moyenne des âges des prix utilisés', () => {
     expect(averagePriceAgeDays(LINES, 'lidl', OBS, NOW)).toBe(4); // (1 + 1 + 1 + 12) / 4 = 3,75
     expect(averagePriceAgeDays([], 'lidl', OBS, NOW)).toBeNull();
+  });
+});
+
+describe('coûts d’une recette', () => {
+  const recipe = {
+    id: 'r',
+    servings: 4,
+    ingredients: [
+      { productId: 'pates', units: 1 },
+      { productId: 'huile', units: 0.05, pantry: true },
+    ],
+  };
+  it('par enseigne, à l’échelle des parts, triés', () => {
+    const t = recipeStoreTotals(recipe, 8, ['auchan', 'lidl'], OBS, NOW);
+    expect(t.map((x) => [x.storeId, x.cents])).toEqual([
+      ['lidl', 210], // (85 + 399 × 0,05) × 2
+      ['auchan', 268],
+    ]);
+  });
+  it('par ingrédient (prorata)', () => {
+    expect(ingredientCosts(recipe, 4, 'lidl', OBS, NOW).map((c) => c.cents)).toEqual([85, 20]);
   });
 });

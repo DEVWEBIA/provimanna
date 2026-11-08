@@ -20,7 +20,7 @@ const FAILED = 'Ça n’a pas marché. Réessaie dans un instant.';
  * (totaux figés côté serveur) et prépare la liste. La bascule vers une autre enseigne est réservée à Premium.
  */
 export async function chooseStoreAction(planId: unknown, store: unknown): Promise<ListActionResult> {
-  const id = z.uuid().safeParse(planId);
+  const id = z.guid().safeParse(planId);
   const s = storeSchema.safeParse(store);
   if (!id.success || !s.success) return { ok: false, error: FAILED };
   const { supabase, household } = await getAccount();

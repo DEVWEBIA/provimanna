@@ -8,14 +8,15 @@ export interface SitemapEntry {
   priority?: number;
 }
 
-/** Segments du sitemap (docs/06). recettes et villes arrivent au lot 8. */
-export const SITEMAP_SEGMENTS = ['pages'] as const;
+/** Segments du sitemap (docs/06). */
+export const SITEMAP_SEGMENTS = ['pages', 'recettes'] as const;
 
 const BUILD_DATE = new Date().toISOString().slice(0, 10);
 
 /** Pages éditoriales publiques existantes. Ajouter chaque nouvelle page publique ici. */
 export const PUBLIC_PAGES: SitemapEntry[] = [
   { path: '/', lastmod: BUILD_DATE, changefreq: 'weekly', priority: 1 },
+  { path: '/recettes', lastmod: BUILD_DATE, changefreq: 'weekly', priority: 0.9 },
 ];
 
 const escapeXml = (s: string) =>

@@ -5,16 +5,19 @@ export function Faq({
   items,
   title = 'Tes questions, nos réponses.',
   eyebrow = 'Questions fréquentes',
+  className = 'px-6 pb-24 md:pb-32',
 }: {
   items: { q: string; a: string }[];
   title?: string;
   eyebrow?: string;
+  /** Marges extérieures (la page d'accueil aère davantage). */
+  className?: string;
 }) {
   return (
     <section
       id="faq"
       aria-labelledby="faq-titre"
-      className="mx-auto max-w-[760px] scroll-mt-24 px-6 pb-24 md:pb-32"
+      className={`mx-auto w-full max-w-[760px] scroll-mt-24 ${className}`}
     >
       <SectionHeading id="faq-titre" eyebrow={eyebrow} title={title} />
       <div className="mt-12 flex flex-col gap-3">

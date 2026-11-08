@@ -119,6 +119,11 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - **08/11 — Lot 6 : formule gratuite** : le comparateur montre les 6 totaux et les 2 premières lignes du détail produit par produit ; les autres lignes ne quittent pas le serveur.
 - **08/11 — Reporté (dépend d'autres lots)** : « Léa coche aussi » et invitations (lot 12), « Disponible hors ligne » (lot 11), « Déjà dans tes placards » (pas de suivi des placards pour l'instant), bouton « Exporter », champ d'ajout d'un article (droits et base prêts).
 
+- **08/11 — Ordre des lots : le lot 8 passe avant le lot 7** (accord d'Emmanuel), le paiement attendant un compte Stripe. Le lot 8 est livré en deux commits : 8a recettes, 8b pages SEO.
+- **08/11 — Lot 8a : recettes.** Site public `/recettes` (filtres en liens indexables `?filtre=`, canonique sans tri ni pagination, FAQ, fil d'Ariane) et `/recettes/[slug]` (réponse directe chiffrée et datée, tableau des 6 enseignes pour 2 à 8 personnes, ingrédients avec coût, étapes, FAQ générée à partir des données, JSON-LD `Recipe` + `estimatedCost`, `FAQPage`, `BreadcrumbList`, ISR 24 h, recettes sœurs). Les pages publiques lisent la base avec un client anonyme sans cookies (`lib/supabase/public.ts`) pour rester en cache. Espace client : `/app/recettes` (recettes compatibles avec le foyer, recherche par titre et ingrédients, « Ajouter à ma semaine » puis « Les placer dans mon plan » : chaque recette remplace un repas libre en partant de la fin de semaine et est verrouillée, Premium), `/app/recettes/[slug]` (prix dans son enseigne et la moins chère, « Coche ce que tu as déjà », tiroir « Remplacer ce repas » avec 3 propositions moins cher / végé / rapide), mode cuisine `/app/recettes/[slug]/cuisine` (plein écran, Wake Lock, minuteur pour les étapes de 3 min et plus). Segment `/sitemap/recettes.xml` (date = dernier relevé).
+- **08/11 — Écarts assumés avec les maquettes** : pas de « Difficulté » ni de favoris (aucune donnée en base) ; « Coche ce que tu as déjà » retire l'ingrédient du coût du repas, pas encore de la liste (texte adapté) ; boutons du mode cuisine en blanc (orange réservé aux économies) ; la quantité des ingrédients reste celle de la recette (4 parts), seul le tableau des prix suit le nombre de personnes.
+- **08/11 — Validation des identifiants** : `z.guid()` au lieu de `z.uuid()` dans les actions (Zod 4 refuse les identifiants fixes du catalogue, qui n'ont pas de version UUID).
+
 ## Questions ouvertes (à trancher par vous)
 
 1. ~~Liste d'attente ou inscription directe ?~~ → inscription directe (07/11). Une liste d'attente peut s'ajouter plus tard si besoin.
@@ -135,7 +140,7 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - [x] Lot 5 — Génération du plan (53 recettes, `generatePlan` + 30 tests, tableau de bord et plan desktop/mobile, 8 tests e2e)
 - [x] Lot 6 — Comparateur et liste (validation de la semaine côté serveur, liste temps réel + file hors ligne, partage par lien, 26 tests RLS, 10 e2e)
 - [ ] Lot 7 — Paiement
-- [ ] Lot 8 — Recettes et pages SEO
+- [ ] Lot 8 — Recettes et pages SEO (8a recettes ✅ le 08/11 ; 8b pages SEO en cours)
 - [ ] Lot 9 — Back-office
 - [ ] Lot 10 — Tickets et prix
 - [ ] Lot 11 — Emails, notifications, PWA

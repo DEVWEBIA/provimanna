@@ -1,14 +1,24 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { cx, Icon, Logo } from '@repas/ui';
 import { href, ROUTES } from '@/lib/site';
 
-const LINKS = [
-  { id: 'comment', label: 'Comment ça marche' },
-  { id: 'recettes', label: 'Recettes' },
-  { id: 'faq', label: 'Questions' },
+type NavLink = { href: string; label: string; anchor?: string };
+
+// Page d'accueil : ancres vers ses sections. Autres pages : liens vers les rubriques du site.
+const HOME_LINKS: NavLink[] = [
+  { href: '#comment', anchor: 'comment', label: 'Comment ça marche' },
+  { href: '#recettes', anchor: 'recettes', label: 'Recettes' },
+  { href: '#faq', anchor: 'faq', label: 'Questions' },
+];
+const PAGE_LINKS: NavLink[] = [
+  { href: ROUTES.recettes, label: 'Recettes' },
+  { href: ROUTES.menus, label: 'Menus' },
+  { href: ROUTES.comparatif, label: 'Comparatifs' },
+  { href: ROUTES.tarifs, label: 'Tarifs' },
 ];
 
 /**
@@ -16,7 +26,9 @@ const LINKS = [
  * La section visible est surlignée. Le bouton « Créer mon plan » n'apparaît qu'une fois le hero dépassé
  * (un seul bouton plein à l'écran).
  */
-export function SiteHeader() {
+export function SiteHeader({ variant = 'home' }: { variant?: 'home' | 'pages' }) {
+  const LINKS = variant === 'home' ? HOME_LINKS : PAGE_LINKS;
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [pastHero, setPastHero] = useState(false);
   const [active, setActive] = useState<string | null>(null);
@@ -25,15 +37,18 @@ export function SiteHeader() {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 24);
-      setPastHero(window.scrollY > window.innerHeight * 0.7);
+      setPastHero(window.scrollY > window.innerHeight * (variant === 'home' ? 0.7 : 0.35));
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [variant]);
 
   useEffect(() => {
-    const sections = LINKS.map((l) => document.getElementById(l.id)).filter((e): e is HTMLElement => !!e);
+    if (variant !== 'home') return;
+    const sections = HOME_LINKS.map((l) => document.getElementById(l.anchor ?? '')).filter(
+      (e): e is HTMLElement => !!e,
+    );
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
@@ -42,7 +57,7 @@ export function SiteHeader() {
     );
     sections.forEach((s) => io.observe(s));
     return () => io.disconnect();
-  }, []);
+  }, [variant]);
 
   useEffect(() => {
     if (!open) return;
@@ -75,20 +90,25 @@ export function SiteHeader() {
 
           <nav aria-label="Sections" className="hidden md:block">
             <ul className="rounded-pill flex items-center gap-1 p-1">
-              {LINKS.map((l) => (
-                <li key={l.id}>
-                  <a
-                    href={`#${l.id}`}
-                    aria-current={active === l.id ? 'location' : undefined}
-                    className={cx(
-                      'rounded-pill inline-flex min-h-[40px] items-center px-4 text-[14px] font-extrabold no-underline transition-colors',
-                      active === l.id ? 'bg-brand-soft text-brand' : 'text-ink-muted hover:text-ink',
-                    )}
-                  >
-                    {l.label}
-                  </a>
-                </li>
-              ))}
+              {LINKS.map((l) => {
+                const on = l.anchor
+                  ? active === l.anchor
+                  : pathname.startsWith(l.href.split('/').slice(0, 2).join('/'));
+                return (
+                  <li key={l.href}>
+                    <a
+                      href={l.href}
+                      aria-current={on ? (l.anchor ? 'location' : 'page') : undefined}
+                      className={cx(
+                        'rounded-pill inline-flex min-h-[40px] items-center px-4 text-[14px] font-extrabold no-underline transition-colors',
+                        on ? 'bg-brand-soft text-brand' : 'text-ink-muted hover:text-ink',
+                      )}
+                    >
+                      {l.label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
 
@@ -133,9 +153,9 @@ export function SiteHeader() {
           >
             <ul className="flex flex-col">
               {LINKS.map((l) => (
-                <li key={l.id}>
+                <li key={l.href}>
                   <a
-                    href={`#${l.id}`}
+                    href={l.href}
                     onClick={() => setOpen(false)}
                     className="text-ink hover:bg-brand-soft flex min-h-[52px] items-center rounded-[16px] px-3 text-[18px] font-extrabold no-underline"
                   >

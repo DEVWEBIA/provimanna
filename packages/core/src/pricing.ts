@@ -337,7 +337,12 @@ export function listItems(
     .map((l) => {
       const packs = Math.max(1, Math.ceil(l.units - 1e-6));
       const p = resolvePrice(observations, l.productId, storeId, now);
-      return { productId: l.productId, packs, cents: p ? p.cents * packs : null, estimate: p ? !p.fresh : false };
+      return {
+        productId: l.productId,
+        packs,
+        cents: p ? p.cents * packs : null,
+        estimate: p ? !p.fresh : false,
+      };
     });
 }
 
@@ -358,4 +363,49 @@ export function averagePriceAgeDays(
 /** Somme de montants (centimes), les montants inconnus (null) étant ignorés : total d'une liste, reste à prendre. */
 export function sumCents(values: readonly (number | null)[]): number {
   return values.reduce<number>((s, v) => s + (v ?? 0), 0);
+}
+
+/** Coût d'une recette pour `servings` parts dans chaque enseigne (du moins cher au plus cher). */
+export function recipeStoreTotals(
+  recipe: Recipe,
+  servings: number,
+  stores: StoreId[],
+  observations: PriceObservation[],
+  now: Date,
+): StoreTotal[] {
+  const lines = buildShoppingLines([{ recipeId: recipe.id, servings }], new Map([[recipe.id, recipe]]));
+  return stores.map((s) => planCostInStore(lines, s, observations, now)).sort((a, b) => a.cents - b.cents);
+}
+
+export interface IngredientCost {
+  productId: string;
+  /** Coût de la quantité utilisée (prorata de l'unité de vente), null si prix inconnu. */
+  cents: number | null;
+  fresh: boolean;
+  observedAt: string | null;
+}
+
+/** Coût de chaque ingrédient d'une recette pour `servings` parts, dans une enseigne. */
+export function ingredientCosts(
+  recipe: Recipe,
+  servings: number,
+  storeId: StoreId,
+  observations: PriceObservation[],
+  now: Date,
+): IngredientCost[] {
+  const factor = servings / recipe.servings;
+  return recipe.ingredients.map((i) => {
+    const p = resolvePrice(observations, i.productId, storeId, now);
+    return {
+      productId: i.productId,
+      cents: p ? Math.round(p.cents * i.units * factor) : null,
+      fresh: p?.fresh ?? false,
+      observedAt: p?.observedAt ?? null,
+    };
+  });
+}
+
+/** Économie en pourcentage entier par rapport au prix le plus élevé (4,06 € vs 4,96 € → 18). */
+export function discountPercent(cents: number, maxCents: number): number {
+  return maxCents <= 0 ? 0 : Math.round(((maxCents - cents) / maxCents) * 100);
 }

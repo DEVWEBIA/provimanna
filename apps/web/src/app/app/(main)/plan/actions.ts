@@ -38,7 +38,7 @@ const filtersSchema = z
     batch: z.boolean().optional(),
   })
   .strict();
-const itemSchema = z.object({ itemId: z.uuid() });
+const itemSchema = z.object({ itemId: z.guid() });
 const lockSchema = itemSchema.extend({ locked: z.boolean() });
 const moveSchema = itemSchema.extend({
   day: z.number().int().min(1).max(7),
@@ -85,7 +85,7 @@ async function done(ctx: Ctx): Promise<PlanActionResult> {
 /** « Varier la semaine » : recompose tous les repas non verrouillés. */
 export async function regenerateWeek(planId: string, filters: unknown): Promise<PlanActionResult> {
   const f = filtersSchema.safeParse(filters);
-  const id = z.uuid().safeParse(planId);
+  const id = z.guid().safeParse(planId);
   if (!f.success || !id.success) return { ok: false, error: FAILED };
   const ctx = await context(id.data);
   if (!ctx) return { ok: false, error: FAILED };
@@ -133,7 +133,7 @@ export async function regenerateWeek(planId: string, filters: unknown): Promise<
 /** « Remplacer » : une autre recette compatible pour ce repas. */
 export async function replaceMealAction(planId: string, input: unknown): Promise<PlanActionResult> {
   const parsed = itemSchema.safeParse(input);
-  const id = z.uuid().safeParse(planId);
+  const id = z.guid().safeParse(planId);
   if (!parsed.success || !id.success) return { ok: false, error: FAILED };
   const ctx = await context(id.data);
   if (!ctx) return { ok: false, error: FAILED };
@@ -174,7 +174,7 @@ export async function replaceMealAction(planId: string, input: unknown): Promise
 /** Verrouiller : le repas est gardé quand on varie la semaine. */
 export async function toggleLockAction(planId: string, input: unknown): Promise<PlanActionResult> {
   const parsed = lockSchema.safeParse(input);
-  const id = z.uuid().safeParse(planId);
+  const id = z.guid().safeParse(planId);
   if (!parsed.success || !id.success) return { ok: false, error: FAILED };
   const ctx = await context(id.data);
   if (!ctx) return { ok: false, error: FAILED };
@@ -189,7 +189,7 @@ export async function toggleLockAction(planId: string, input: unknown): Promise<
 /** Déplacer un repas (glisser-déposer) : il échange sa place avec celui du créneau visé. */
 export async function moveMealAction(planId: string, input: unknown): Promise<PlanActionResult> {
   const parsed = moveSchema.safeParse(input);
-  const id = z.uuid().safeParse(planId);
+  const id = z.guid().safeParse(planId);
   if (!parsed.success || !id.success) return { ok: false, error: FAILED };
   const ctx = await context(id.data);
   if (!ctx) return { ok: false, error: FAILED };
@@ -221,5 +221,65 @@ export async function moveMealAction(planId: string, input: unknown): Promise<Pl
     locked: i.locked,
   }));
   const { error } = await ctx.supabase.from('meal_plan_items').insert(rows);
+  return error ? { ok: false, error: FAILED } : done(ctx);
+}
+
+const placeSchema = z.object({ recipeIds: z.array(z.guid()).min(1).max(14) });
+const swapSchema = itemSchema.extend({ recipeId: z.guid() });
+
+/**
+ * « Les placer dans mon plan » (écran Recettes) : chaque recette choisie prend la place d'un repas non
+ * verrouillé, en partant de la fin de la semaine, et elle est verrouillée.
+ */
+export async function placeRecipesAction(planId: string, input: unknown): Promise<PlanActionResult> {
+  const parsed = placeSchema.safeParse(input);
+  const id = z.guid().safeParse(planId);
+  if (!parsed.success || !id.success) return { ok: false, error: FAILED };
+  const ctx = await context(id.data);
+  if (!ctx) return { ok: false, error: FAILED };
+  if (!ctx.premium) return { ok: false, error: PREMIUM_ONLY };
+  const { data: allowed } = await ctx.supabase
+    .from('recipes')
+    .select('id')
+    .in('id', parsed.data.recipeIds)
+    .eq('published', true);
+  const wanted = parsed.data.recipeIds.filter(
+    (r) => allowed?.some((a) => a.id === r) && !ctx.plan.meal_plan_items.some((i) => i.recipe_id === r),
+  );
+  const free = [...ctx.plan.meal_plan_items]
+    .filter((i) => !i.locked)
+    .sort((a, b) => b.day - a.day || (a.slot === 'diner' ? -1 : 1));
+  if (wanted.length > free.length)
+    return { ok: false, error: 'Pas assez de repas libres : déverrouille-en un dans ton plan.' };
+  for (const [k, recipeId] of wanted.entries()) {
+    const { error } = await ctx.supabase
+      .from('meal_plan_items')
+      .update({ recipe_id: recipeId, locked: true })
+      .eq('id', free[k]!.id);
+    if (error) return { ok: false, error: FAILED };
+  }
+  return done(ctx);
+}
+
+/** Tiroir « Remplacer ce repas » (écran Recette) : remplace par la recette choisie. */
+export async function swapMealAction(planId: string, input: unknown): Promise<PlanActionResult> {
+  const parsed = swapSchema.safeParse(input);
+  const id = z.guid().safeParse(planId);
+  if (!parsed.success || !id.success) return { ok: false, error: FAILED };
+  const ctx = await context(id.data);
+  if (!ctx) return { ok: false, error: FAILED };
+  if (!ctx.premium) return { ok: false, error: PREMIUM_ONLY };
+  const item = ctx.plan.meal_plan_items.find((i) => i.id === parsed.data.itemId);
+  const { data: recipe } = await ctx.supabase
+    .from('recipes')
+    .select('id')
+    .eq('id', parsed.data.recipeId)
+    .eq('published', true)
+    .maybeSingle();
+  if (!item || !recipe) return { ok: false, error: FAILED };
+  const { error } = await ctx.supabase
+    .from('meal_plan_items')
+    .update({ recipe_id: parsed.data.recipeId, locked: false })
+    .eq('id', item.id);
   return error ? { ok: false, error: FAILED } : done(ctx);
 }
