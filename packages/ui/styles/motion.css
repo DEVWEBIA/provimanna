@@ -109,3 +109,21 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Menus et petites fenêtres : apparition courte (pas de translate, pour ne pas gêner le positionnement). */
+@keyframes pop {
+  from {
+    opacity: 0;
+    scale: 0.96;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .anim-pop {
+    animation: pop 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-origin: top center;
+  }
+}

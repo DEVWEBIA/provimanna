@@ -10,6 +10,11 @@ port = 55322
 shadow_port = 55320
 major_version = 17
 
+[db.seed]
+enabled = true
+# Données d'exemple, puis catalogue généré (node supabase/catalogue/generate.mjs).
+sql_paths = ["./seed.sql", "./catalogue.sql"]
+
 [db.pooler]
 port = 55329
 

@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
 import { trialDaysLeft } from '@repas/core';
-import { AppShell } from '@repas/ui';
-import { AppLink } from '@/components/app-link';
+import { AppShellClient } from '@/components/app-shell-client';
 import { getAccount, isOnboarded } from '@/lib/household';
 
 const TRIAL_DAYS = 14;
@@ -18,10 +17,5 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       : 0;
   const trial = daysLeft > 0 ? { daysLeft, elapsed: Math.max(0, 1 - daysLeft / TRIAL_DAYS) } : null;
 
-  // La section active est fixée par chaque page au fil des lots ; « accueil » par défaut.
-  return (
-    <AppShell active="accueil" trial={trial} Link={AppLink}>
-      {children}
-    </AppShell>
-  );
+  return <AppShellClient trial={trial}>{children}</AppShellClient>;
 }

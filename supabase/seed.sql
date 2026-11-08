@@ -77,9 +77,16 @@ insert into challenges (id, title, description, target, window_weeks) values
   ('premier_ticket',  'Premier ticket',          'Envoie ton premier ticket de caisse.', 1, 52);
 
 -- ─── Utilisatrice de démo : Marion D. (lien magique local : marion@example.com) ───
-insert into auth.users (instance_id, id, aud, role, email, email_confirmed_at, raw_user_meta_data, raw_app_meta_data, created_at, updated_at)
+-- Les colonnes de jetons doivent valoir '' (et non NULL) : sinon GoTrue refuse la connexion (« Database error finding user »).
+insert into auth.users (instance_id, id, aud, role, email, email_confirmed_at, raw_user_meta_data, raw_app_meta_data, created_at, updated_at,
+                        confirmation_token, recovery_token, email_change_token_new, email_change, email_change_token_current,
+                        reauthentication_token, phone_change, phone_change_token)
 values ('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000301', 'authenticated', 'authenticated',
-        'marion@example.com', now(), '{"name":"Marion D."}', '{"provider":"email","providers":["email"]}', now(), now());
+        'marion@example.com', now(), '{"name":"Marion D."}', '{"provider":"email","providers":["email"]}', now(), now(),
+        '', '', '', '', '', '', '', '');
+insert into auth.identities (id, user_id, provider_id, provider, identity_data, last_sign_in_at, created_at, updated_at)
+values (gen_random_uuid(), '00000000-0000-0000-0000-000000000301', '00000000-0000-0000-0000-000000000301', 'email',
+        '{"sub":"00000000-0000-0000-0000-000000000301","email":"marion@example.com","email_verified":true}', now(), now(), now());
 -- Le trigger handle_new_user a créé son foyer, son essai et sa série.
 
 update households set name = 'Foyer de Marion', adults = 2, children = 2, diet = 'sans_porc',

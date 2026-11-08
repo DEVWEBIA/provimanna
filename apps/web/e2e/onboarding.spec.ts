@@ -68,7 +68,8 @@ test('visiteur : questionnaire sans compte → email → espace client déjà co
 
   // Les réponses ont été appliquées : on arrive directement dans l'espace client.
   await expect(page).toHaveURL(/\/app$/);
-  await expect(page.getByRole('heading', { name: /^Bonjour/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^(Bonjour|Bonsoir)/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Ton menu de la semaine est prêt.' })).toBeVisible();
   await shot(page, 'app', info.project.name);
 
   // Et elles sont bien enregistrées dans le foyer.
@@ -105,6 +106,9 @@ test('connexion directe par code → questionnaire du compte → espace client',
 
   await expect(page).toHaveURL(/\/app\/bienvenue/);
   await fillQuestionnaire(page, `${info.project.name}-compte`);
+  // Compte connecté : la semaine est générée dès l'étape 3 (texte de la maquette).
+  await expect(page.getByText('Plan généré')).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^Ta semaine \d+ est prête\.$/ })).toBeVisible();
   await page.getByRole('link', { name: 'Voir mon plan →' }).click();
   await expect(page).toHaveURL(/\/app$/);
 });

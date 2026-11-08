@@ -1,4 +1,4 @@
-# 10 — Fichier de reprise (état au 08/11/2026)
+# 10 — Fichier de reprise (état au 08/11/2026, après le lot 5)
 
 > À lire en début de nouvelle conversation, après `CLAUDE.md`. Il dit où on en est, ce qui a été décidé, ce qui bloque et comment reprendre.
 > Détail des décisions : `docs/09-plan-action.md` (section « Journal des décisions techniques »). Lots : `docs/08-roadmap-claude-code.md`.
@@ -27,19 +27,16 @@ Commence par me confirmer l'état et la prochaine étape.
 | 2 Design system | ✅ |
 | 3 Landing + socle SEO | ✅, puis landing **entièrement refaite** à la demande (voir plus bas) |
 | 4 Connexion + onboarding | ✅, puis parcours **questionnaire avant compte** (`/commencer`) |
-| **5 Génération du plan** | ⏳ **bloqué : réponse attendue sur le catalogue de recettes** |
-| 6 → 13 | à faire |
+| Harmonisation visuelle | ✅ (08/11) effets de la home sur tout le produit |
+| 5 Génération du plan | ✅ (08/11) |
+| 6 → 13 | à faire (prochain : **lot 6 Comparateur et liste**) |
 
 Dernier commit : `60fe4da Affiche les logos des enseignes dans le bandeau…` (13 commits sur `main`, rien en attente).
 
-## La question en attente (bloque le lot 5)
+## Points ouverts
 
-Le seed ne contient **qu'une recette** (velouté de potimarron) : impossible de composer 14 repas. Proposition faite à Emmanuel, sans réponse encore :
-1. **(recommandé)** Claude rédige un catalogue de départ d'environ 40 recettes automne/hiver (ingrédients reliés aux produits, étapes, régimes, saisons), avec des prix de démo clairement marqués, relu ensuite depuis le BO ;
-2. Emmanuel fournit ses recettes (tableur/document) à importer ;
-3. Petit jeu de test (~20 recettes simples) pour faire tourner l'algorithme.
-
-Autre point ouvert : **logo Carrefour** (aucun fichier réutilisable trouvé ; le bandeau affiche « Carrefour » en lettres grises en attendant un SVG).
+- **Logo Carrefour** : aucun fichier réutilisable trouvé ; le bandeau affiche « Carrefour » en lettres grises en attendant un SVG.
+- **Sécurité avant le lot 12** : `meal_plans.total_cents` / `reference_cents` sont encore modifiables par l'utilisateur (voir le journal du 08/11).
 
 ## Ce qui existe
 
@@ -55,13 +52,15 @@ Autre point ouvert : **logo Carrefour** (aucun fichier réutilisable trouvé ; l
 - `/commencer` : questionnaire **sans compte** (foyer, préférences, enseigne + CP), étape 4 = estimation + email + CGU → lien magique. Les réponses partent dans `user_metadata.onboarding` et sont **appliquées au foyer au premier accès** (`lib/household.ts > getAccount`), même si le lien est ouvert sur un autre appareil.
 - `/connexion` : lien magique **ou code à 6 chiffres** (crée le compte si besoin), Google/Apple prêts mais désactivés (`supabase/config.toml`, identifiants à fournir).
 - `/app/bienvenue` : même questionnaire (`components/onboarding/wizard.tsx`, mode `account`) pour les comptes créés via « Se connecter ».
-- `/app` : tableau de bord **provisoire** dans l'AppShell (le vrai arrive au lot 5). Garde : session (proxy) + onboarding terminé (layout `app/app/(main)`).
+- `/app` : tableau de bord (maquettes AppDashboard/MDashboard) : semaine en ticket aubergine, total dans l'enseigne du foyer, « Possible dès … », repas du jour, produits de saison. Garde : session (proxy) + onboarding terminé (layout `app/app/(main)`).
+- `/app/plan` : grille 7 jours × midi/soir (glisser-déposer, menu Voir la recette / Remplacer / Verrouiller), jour par jour sur mobile, filtres + « Varier la semaine », comparateur 6 enseignes « Ce plan coûte… ». Données : `lib/plan.ts` (`currentPlan`, `ensureWeekPlan`, `planView`), actions : `app/app/(main)/plan/actions.ts`.
+- Catalogue : 53 recettes, `supabase/catalogue/generate.mjs` → `supabase/catalogue.sql` (relancer le script après modification, puis `supabase db reset`).
 
 **Back-office (`apps/admin`)** : coquille seulement (page d'accueil + `/connexion` d'attente, tout est protégé par session). Le vrai BO = lot 9.
 
-**Packages** : `packages/core` (moteur de prix + `priceSpread`, `scaleCents`, `householdFactor`, préférences ↔ `diet`/`exclusions`, `trialDaysLeft`), `packages/ui` (19 composants, `TicketCard` avec `edge="cutout"` et `tone="brand"`), `packages/eslint-config`.
+**Packages** : `packages/core` (moteur de prix, `generatePlan`/`replaceMeal`, semaines à l'heure de Paris, `recipeServingCents`, `cheaperProductCount`, saisons…), `packages/ui` (composants + briques de style de la home : `Reveal`, `Glow`, `PageHeader`, `GlassCard`, `animDelay`, `inputClasses` ; animations dans `packages/ui/styles/motion.css`), `packages/eslint-config`.
 
-**Tests** : core 10 node:test + 13 Vitest, ui 16, web 7 Vitest, **16 tests RLS pgTAP**, **6 e2e Playwright** (desktop + mobile). Lighthouse landing : desktop 100 partout, mobile 94-95 en performance (le bol est l'élément le plus lourd en 4G simulée).
+**Tests** : core 10 node:test + 47 Vitest, ui 16, web 7 Vitest, **16 tests RLS pgTAP**, **8 e2e Playwright** (desktop + mobile). Lighthouse landing : desktop 100 partout, mobile 94-95 en performance (le bol est l'élément le plus lourd en 4G simulée).
 
 ## Décisions clés (à ne pas défaire sans demander)
 
@@ -102,9 +101,14 @@ pnpm --filter @repas/web test:e2e   # nécessite supabase start
 - Prettier (plugin Tailwind) réordonne les classes : les remplacements de texte par script échouent souvent → relire le fichier avant d'éditer.
 - Sites qui bloquent les robots (notretemps.com, API interne Unsplash, API Wikipédia) : ne pas contourner.
 - `body` a `suppressHydrationWarning` (extension ColorZilla de l'utilisateur).
+- **Next.js mémorise les requêtes GET identiques pendant un rendu** (y compris celles de supabase-js) : relire une ligne avec la même requête juste après l'avoir créée renvoie l'ancien résultat. Renvoyer les lignes insérées (`.insert().select()`), voir `ensureWeekPlan`.
+- **Captures Playwright `fullPage: true`** : elles relancent les animations d'entrée, les éléments apparaissent vides. Capturer l'écran visible (après défilement) pour juger du rendu.
+- **Animations et piles** : un élément animé (`anim-rise`) crée un contexte d'empilement ; un menu déroulant à l'intérieur passe sous la carte suivante → remonter le parent (`z-30`) quand le menu est ouvert.
+- Démo locale : `marion@example.com` (Auchan, 2 adultes + 2 enfants, sans porc), connexion par code via Mailpit.
 
 ## Prochaines étapes
 
-1. Obtenir la réponse sur le **catalogue de recettes**, puis **lot 5** : `generatePlan()` pur et testé dans `packages/core` (régime, exclusions, saison, variété, verrouillages, seed aléatoire injectable), Server Actions « générer / régénérer un repas », vrais écrans `AppDashboard`/`MDashboard` et `AppPlan`/`MPlan` ; remettre à l'étape 4 du questionnaire le texte de la maquette (« Plan généré · Ta semaine NN est prête ») et brancher les vrais totaux ; capture de l'appli dans un téléphone pour la landing (idée validée en principe).
-2. Lots 6 → 13 dans l'ordre (`docs/08`). Comptes à demander au moment voulu : Stripe (lot 7), fournisseur OCR (lot 10), Resend + domaine (lot 11), Vercel / Supabase prod / PostHog / Sentry + nom et domaine (lot 13). Le journal d'audit du BO sera la migration **0005** (0003 et 0004 sont prises).
+1. **Lot 6 — Comparateur et liste** (`AppComparateur`, `MComparateur`, `AppListe`, `MListe`) : le CTA du comparateur du plan mène déjà à `/app/liste?enseigne=…`. Enregistrer le choix d'enseigne de la semaine, liste par rayon, cochage + Realtime, partage `/liste/[token]`. En profiter pour figer les totaux côté serveur (point sécurité ci-dessus). Réutiliser les briques de style de `packages/ui`.
+2. Lots 7 → 13 dans l'ordre (`docs/08`). Comptes à demander au moment voulu : Stripe (lot 7), fournisseur OCR (lot 10), Resend + domaine (lot 11), Vercel / Supabase prod / PostHog / Sentry + nom et domaine (lot 13). Le journal d'audit du BO sera la migration **0006** (0005 = familles et marqueurs des recettes).
+3. Idée validée en principe : capture de l'appli dans un téléphone pour la landing.
 3. Idée proposée, non tranchée : une photo de saison qui change automatiquement sur la landing.

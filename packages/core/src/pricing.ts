@@ -141,6 +141,8 @@ export interface StoreTotal {
   freshRatio: number;
   /** Produits sans aucun prix dans cette enseigne (exclus du total). */
   missing: string[];
+  /** Date (ISO) du relevé le plus récent utilisé, null si aucun prix. */
+  latestObservedAt: string | null;
 }
 
 /** Coût du plan dans une enseigne. Les lignes sont valorisées au prorata (units × prix unitaire). */
@@ -152,6 +154,7 @@ export function planCostInStore(
 ): StoreTotal {
   let cents = 0;
   let fresh = 0;
+  let latest: string | null = null;
   const missing: string[] = [];
   for (const line of lines) {
     const p = resolvePrice(observations, line.productId, storeId, now);
@@ -161,6 +164,7 @@ export function planCostInStore(
     }
     cents += p.cents * line.units;
     if (p.fresh) fresh += 1;
+    if (!latest || Date.parse(p.observedAt) > Date.parse(latest)) latest = p.observedAt;
   }
   const freshRatio = lines.length === 0 ? 1 : fresh / lines.length;
   return {
@@ -169,7 +173,27 @@ export function planCostInStore(
     reliability: reliabilityFromRatio(freshRatio),
     freshRatio,
     missing,
+    latestObservedAt: latest,
   };
+}
+
+/**
+ * Coût d'une part d'une recette dans une enseigne (centimes), produits de placard compris au prorata.
+ * null si aucun ingrédient n'a de prix dans cette enseigne.
+ */
+export function recipeServingCents(
+  recipe: Recipe,
+  storeId: StoreId,
+  observations: PriceObservation[],
+  now: Date,
+): number | null {
+  const lines = buildShoppingLines(
+    [{ recipeId: recipe.id, servings: recipe.servings }],
+    new Map([[recipe.id, recipe]]),
+  );
+  const total = planCostInStore(lines, storeId, observations, now);
+  if (total.missing.length === lines.length) return null;
+  return costPerServing(total.cents, recipe.servings);
 }
 
 export interface Comparison {
@@ -240,4 +264,21 @@ export function priceSpread(totalsCents: number[]): PriceSpread {
     gapCents: maxCents - minCents,
     overPercent: minCents === 0 ? 0 : Math.round(((maxCents - minCents) / minCents) * 100),
   };
+}
+
+/** Nombre de produits de la liste moins chers dans l'enseigne `cheaper` que dans `reference` (encart Premium). */
+export function cheaperProductCount(
+  lines: ShoppingLine[],
+  cheaper: StoreId,
+  reference: StoreId,
+  observations: PriceObservation[],
+  now: Date,
+): number {
+  if (cheaper === reference) return 0;
+  return lines.filter((l) => {
+    if (l.pantry) return false;
+    const a = resolvePrice(observations, l.productId, cheaper, now);
+    const b = resolvePrice(observations, l.productId, reference, now);
+    return a !== null && b !== null && a.cents < b.cents;
+  }).length;
 }

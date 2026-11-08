@@ -20,10 +20,11 @@ import {
   Glow,
   inputClasses,
   LogoMark,
+  Plat,
   StoreChip,
   TicketCard,
 } from '@repas/ui';
-import { saveOnboarding } from '@/app/app/bienvenue/actions';
+import { saveOnboarding, type GeneratedPlan } from '@/app/app/bienvenue/actions';
 import { startSignup } from '@/app/commencer/actions';
 import type { AuthFormState } from '@/app/connexion/actions';
 import { EmailSent } from '@/components/auth/email-sent';
@@ -207,6 +208,7 @@ export function OnboardingWizard({ mode, stores, initial }: OnboardingWizardProp
   const [d, setD] = useState<WizardDraft>(initial);
   const [errors, setErrors] = useState<{ store?: string; postal_code?: string; global?: string }>({});
   const [saving, setSaving] = useState(false);
+  const [plan, setPlan] = useState<GeneratedPlan | null>(null);
   const [signup, sendSignup, sending] = useActionState(startSignup, { status: 'idle' } as AuthFormState);
   const [editingEmail, setEditingEmail] = useState(false);
 
@@ -232,6 +234,7 @@ export function OnboardingWizard({ mode, stores, initial }: OnboardingWizardProp
         const res = await saveOnboarding({ ...d, store: check.data.store });
         setSaving(false);
         if (res.error) return setErrors({ global: res.error });
+        setPlan(res.plan ?? null);
       }
     }
     setStep((s) => Math.min(4, s + 1));
@@ -520,13 +523,15 @@ export function OnboardingWizard({ mode, stores, initial }: OnboardingWizardProp
                 >
                   <path d="M20 6 9 17l-5-5" />
                 </svg>
-                {mode === 'guest' ? 'Réponses prêtes' : 'Foyer enregistré'}
+                {mode === 'guest' ? 'Réponses prêtes' : plan ? 'Plan généré' : 'Foyer enregistré'}
               </p>
               <h1 className={h1Class}>
                 <span style={animDelay(80)}>
                   {mode === 'guest'
                     ? 'Ta première semaine t’attend.'
-                    : 'Tout est prêt pour ta première semaine.'}
+                    : plan
+                      ? `Ta semaine ${plan.weekNumber} est prête.`
+                      : 'Tout est prêt pour ta première semaine.'}
                 </span>
               </h1>
               <p className="anim-rise text-ink-muted mb-7 mt-3 text-[18px]" style={animDelay(180)}>
@@ -544,24 +549,48 @@ export function OnboardingWizard({ mode, stores, initial }: OnboardingWizardProp
                     {['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'].map((x) => (
                       <span key={x}>{x}</span>
                     ))}
-                    {WEEK_COLORS.map((c, i) => (
-                      <span
-                        key={i}
-                        className={`anim-rise h-11 rounded-[10px] ${c}`}
-                        style={animDelay(500 + i * 40)}
-                      />
-                    ))}
+                    {plan
+                      ? // Ordre du plan : lundi midi, lundi soir… → affichage en 2 lignes (midis, puis soirs).
+                        [0, 1].flatMap((row) =>
+                          [0, 1, 2, 3, 4, 5, 6].map((day) => {
+                            const v = plan.illustrations[day * 2 + row];
+                            return (
+                              <span
+                                key={`${row}-${day}`}
+                                className="anim-rise grid h-11 place-items-center"
+                                style={animDelay(500 + (row * 7 + day) * 40)}
+                              >
+                                {v ? <Plat variant={v} size={40} decorative /> : null}
+                              </span>
+                            );
+                          }),
+                        )
+                      : WEEK_COLORS.map((c, i) => (
+                          <span
+                            key={i}
+                            className={`anim-rise h-11 rounded-[10px] ${c}`}
+                            style={animDelay(500 + i * 40)}
+                          />
+                        ))}
                   </div>
                   <div className="border-line mt-5 flex flex-wrap items-center justify-between gap-3 border-t-2 border-dashed pt-[18px]">
                     <span>
                       <span className="text-ink-muted block text-[13px] font-black tracking-[1px]">
-                        TOTAL ESTIMÉ CHEZ {myStore?.name.toUpperCase()}
+                        {plan ? 'TOTAL' : 'TOTAL ESTIMÉ'} CHEZ {myStore?.name.toUpperCase()}
                       </span>
                       <span className="font-display text-[44px] font-extrabold tabular-nums tracking-[-1.4px]">
-                        ≈ {formatEuro(scaleCents(exampleCents(d.store), factor))}
+                        {plan
+                          ? `${plan.estimate ? '≈ ' : ''}${formatEuro(plan.myCents)}`
+                          : `≈ ${formatEuro(scaleCents(exampleCents(d.store), factor))}`}
                       </span>
                     </span>
-                    {d.store !== 'lidl' ? (
+                    {plan ? (
+                      plan.cheapestId !== d.store ? (
+                        <span className="bg-saving-soft text-saving-ink rounded-[14px] px-4 py-2.5 font-black tabular-nums">
+                          Possible dès {formatEuro(plan.cheapestCents)} chez {plan.cheapestName}
+                        </span>
+                      ) : null
+                    ) : d.store !== 'lidl' ? (
                       <span className="bg-saving-soft text-saving-ink rounded-[14px] px-4 py-2.5 font-black tabular-nums">
                         Possible dès ≈ {formatEuro(scaleCents(CHEAPEST_EXAMPLE, factor))} chez Lidl
                       </span>

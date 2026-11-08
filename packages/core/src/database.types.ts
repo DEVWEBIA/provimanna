@@ -647,6 +647,7 @@ export type Database = {
           created_at: string
           description: string | null
           diets: Database["public"]["Enums"]["diet"][]
+          family: string
           id: string
           illustration: string | null
           prep_minutes: number | null
@@ -657,6 +658,7 @@ export type Database = {
           servings: number
           slug: string
           steps: Json
+          tags: string[]
           title: string
           updated_at: string
         }
@@ -665,6 +667,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           diets?: Database["public"]["Enums"]["diet"][]
+          family?: string
           id?: string
           illustration?: string | null
           prep_minutes?: number | null
@@ -675,6 +678,7 @@ export type Database = {
           servings?: number
           slug: string
           steps?: Json
+          tags?: string[]
           title: string
           updated_at?: string
         }
@@ -683,6 +687,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           diets?: Database["public"]["Enums"]["diet"][]
+          family?: string
           id?: string
           illustration?: string | null
           prep_minutes?: number | null
@@ -693,6 +698,7 @@ export type Database = {
           servings?: number
           slug?: string
           steps?: Json
+          tags?: string[]
           title?: string
           updated_at?: string
         }

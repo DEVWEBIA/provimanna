@@ -38,7 +38,9 @@ select throws_ok(
   '42501', null, 'Marion ne peut pas se passer Premium ni s''offrir des jours bonus');
 
 select is((select count(*)::int from prices where flagged_aberrant), 0, 'Les prix aberrants sont masqués');
-select is((select count(*)::int from prices), 14, 'Les prix normaux sont visibles');
+-- Feta chez Lidl : un relevé normal (2,25 €) et un aberrant (3,29 €) → seul le normal est visible.
+select is((select array_agg(cents) from prices where product_id = '00000000-0000-0000-0000-000000000107' and store_id = 'lidl'),
+  array[225], 'Les prix normaux sont visibles');
 
 select throws_ok(
   $$ insert into roles (user_id, role) values (current_setting('test.marion')::uuid, 'admin') $$,
