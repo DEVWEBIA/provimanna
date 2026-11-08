@@ -66,6 +66,22 @@ test.describe('back-office', () => {
     await expect(page.getByText('a validé un prix').first()).toBeVisible();
     await expect(page.getByText('produit.fusionner').first()).toBeVisible();
     await expect(page.getByText('recette.enregistrer').first()).toBeVisible();
+
+    // Support : fiche utilisateur et jours offerts ; enseignes ; paramètres.
+    await nav.getByRole('link', { name: 'Utilisateurs' }).click();
+    await page.getByLabel('Rechercher un utilisateur').fill('marion');
+    await page.getByLabel('Rechercher un utilisateur').press('Enter');
+    await expect(page.getByRole('heading', { name: 'Marion D.', level: 2 })).toBeVisible();
+    await page.getByRole('button', { name: 'Offrir 7 jours de Premium' }).click();
+    await expect(page.getByText('7 jours de Premium offerts.')).toBeVisible();
+
+    await nav.getByRole('link', { name: 'Enseignes' }).click();
+    await expect(page.getByRole('heading', { level: 1, name: 'Enseignes et magasins' })).toBeVisible();
+    await page.getByRole('button', { name: 'Enregistrer' }).click();
+    await expect(page.getByText('Enseigne enregistrée.')).toBeVisible();
+
+    await nav.getByRole('link', { name: 'Paramètres' }).click();
+    await expect(page.getByText('Alerte prix aberrant au-delà de')).toBeVisible();
   });
 
   test('un compte sans rôle staff est refusé', async ({ page }) => {

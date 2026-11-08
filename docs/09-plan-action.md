@@ -135,6 +135,9 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - **08/11 — Points à traiter plus tard** : le site public garde ses pages en cache 24 h (ISR), une recette publiée depuis le BO apparaît donc au plus tard le lendemain ; une revalidation à la demande (route protégée du site appelée par le BO) est à ajouter avant la mise en ligne (lot 13). La liste des produits de l'éditeur est chargée en entier (76 fiches) : à paginer ou rechercher côté serveur quand l'import Open Food Facts arrivera (lot 10). Les régimes ne sont plus déduits automatiquement des ingrédients dans le BO (pas de drapeaux allergènes sur les produits en base) : l'éditeur les coche.
 - **08/11 — Tests rendus indépendants de la base locale** : le test RLS et l'e2e du BO créent leur propre relevé aberrant (les validations faites pendant les tests vidaient la file).
 
+- **08/11 — Lot 9c : autres rubriques du BO.** **Utilisateurs** (support, lecture : comptes, foyer, enseigne, statut, dernier plan, tickets, fiche avec série, plans, économies calculées par core `savingsCents` — 58,30 € pour Marion —, abonnement en lecture seule ; actions « Offrir 7 jours de Premium » réservée aux admins et « Renvoyer un lien de connexion », journalisées ; export RGPD et suppression au lot 13). **Enseignes** (admin : pastille neutre, magasins, couverture, nom, pastille, lien du drive, active). **Contenu SEO** (pages publiques, checklist des recettes, fichiers pour les robots ; clics Google et visites venues d'une IA au lot 13). **Engagement** (séries, défis activables, rendez-vous et emails prévus aux lots 7 et 11). **Paramètres** (valeurs en vigueur lues dans core ; les rendre modifiables demandera une table de réglages, migration à valider).
+- **08/11 — Tickets et Imports du BO** : regroupés avec le lot 10, qui apporte les tickets, l'OCR et l'import Open Prices (sans eux, ces écrans seraient vides).
+
 ## Questions ouvertes (à trancher par vous)
 
 1. ~~Liste d'attente ou inscription directe ?~~ → inscription directe (07/11). Une liste d'attente peut s'ajouter plus tard si besoin.
@@ -152,7 +155,7 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - [x] Lot 6 — Comparateur et liste (validation de la semaine côté serveur, liste temps réel + file hors ligne, partage par lien, 26 tests RLS, 10 e2e)
 - [ ] Lot 7 — Paiement
 - [x] Lot 8 — Recettes et pages SEO (8a recettes, 8b observatoire, enseignes, menus, guide, méthodologie, légal, 404 ; 56 tests core, 16 e2e)
-- [ ] Lot 9 — Back-office (9a socle, vue d'ensemble, prix, rôles et journal ✅ ; 9b recettes, produits ✅ ; suite en cours)
+- [x] Lot 9 — Back-office (connexion staff, journal d'audit 0007, vue d'ensemble, prix, produits, recettes, utilisateurs, enseignes, SEO, engagement, rôles, paramètres ; Tickets et Imports avec le lot 10)
 - [ ] Lot 10 — Tickets et prix
 - [ ] Lot 11 — Emails, notifications, PWA
 - [ ] Lot 12 — Famille, économies, mode sombre

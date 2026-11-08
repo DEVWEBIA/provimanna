@@ -19,7 +19,12 @@ export const SECTIONS = [
   { href: '/prix', label: 'Prix', roles: ['moderateur_prix'] },
   { href: '/produits', label: 'Produits', roles: ['moderateur_prix'] },
   { href: '/recettes', label: 'Recettes', roles: ['editeur'] },
+  { href: '/utilisateurs', label: 'Utilisateurs', roles: ['support'] },
+  { href: '/enseignes', label: 'Enseignes', roles: ['admin'] },
+  { href: '/seo', label: 'Contenu SEO', roles: ['editeur'] },
+  { href: '/engagement', label: 'Engagement', roles: ['admin'] },
   { href: '/roles', label: 'Rôles et journal', roles: ['admin'] },
+  { href: '/parametres', label: 'Paramètres', roles: ['admin'] },
 ] as const satisfies readonly { href: string; label: string; roles: readonly StaffRole[] }[];
 
 export const canAccess = (role: StaffRole, roles: readonly StaffRole[]) =>

@@ -1,4 +1,4 @@
-# 10 — Fichier de reprise (état au 08/11/2026, après le lot 8)
+# 10 — Fichier de reprise (état au 08/11/2026, après le lot 9)
 
 > À lire en début de nouvelle conversation, après `CLAUDE.md`. Il dit où on en est, ce qui a été décidé, ce qui bloque et comment reprendre.
 > Détail des décisions : `docs/09-plan-action.md` (section « Journal des décisions techniques »). Lots : `docs/08-roadmap-claude-code.md`.
@@ -32,7 +32,8 @@ Commence par me confirmer l'état et la prochaine étape.
 | 6 Comparateur et liste | ✅ (08/11) — **jalon J3 atteint** |
 | 8 Recettes et pages SEO | ✅ (08/11, fait avant le lot 7 avec l'accord d'Emmanuel) — **jalon J5 atteint** |
 | 7 Paiement | ⏳ attend un compte Stripe (mode test) |
-| 9 → 13 | à faire (prochain possible sans compte : **lot 9 Back-office**) |
+| 9 Back-office | ✅ (08/11) — **jalon J6 atteint** (Tickets et Imports avec le lot 10) |
+| 10 → 13 | à faire (le lot 10 demande un fournisseur OCR) |
 
 Dernier commit : `60fe4da Affiche les logos des enseignes dans le bandeau…` (13 commits sur `main`, rien en attente).
 
@@ -63,11 +64,11 @@ Dernier commit : `60fe4da Affiche les logos des enseignes dans le bandeau…` (1
 - `/app/liste` : liste par rayon, cochage temps réel + file hors ligne, partage. Liste publique `/liste/[token]`. Logique : `lib/list.ts` (`validatePlan`, `syncShoppingList`), action `app/app/(main)/liste/actions.ts`. Écritures sensibles via `lib/supabase/admin.ts` (service_role, serveur seulement).
 - Catalogue : 53 recettes, `supabase/catalogue/generate.mjs` → `supabase/catalogue.sql` (relancer le script après modification, puis `supabase db reset`).
 
-**Back-office (`apps/admin`)** : coquille seulement (page d'accueil + `/connexion` d'attente, tout est protégé par session). Le vrai BO = lot 9.
+**Back-office (`apps/admin`, :3001)** : connexion staff par code (`admin@example.com` en local), rôle vérifié par page (`lib/staff.ts`), journal d'audit (`log_action`, migration 0007). Rubriques : vue d'ensemble, prix (modération des aberrants), produits (fusion de doublons), recettes (éditeur, coût en direct), utilisateurs, enseignes, contenu SEO, engagement, rôles et journal, paramètres.
 
 **Packages** : `packages/core` (moteur de prix, `generatePlan`/`replaceMeal`, semaines à l'heure de Paris, `recipeServingCents`, `cheaperProductCount`, saisons…), `packages/ui` (composants + briques de style de la home : `Reveal`, `Glow`, `PageHeader`, `GlassCard`, `animDelay`, `inputClasses` ; animations dans `packages/ui/styles/motion.css`), `packages/eslint-config`.
 
-**Tests** : core 10 node:test + 56 Vitest, ui 16, web 7 Vitest, **26 tests RLS pgTAP**, **16 e2e Playwright** (desktop + mobile). Lighthouse landing : desktop 100 partout, mobile 94-95 en performance (le bol est l'élément le plus lourd en 4G simulée).
+**Tests** : core 10 node:test + 58 Vitest, ui 16, web 7 Vitest, **31 tests RLS pgTAP**, **18 e2e Playwright** (desktop + mobile, dont le back-office). Lighthouse landing : desktop 100 partout, mobile 94-95 en performance (le bol est l'élément le plus lourd en 4G simulée).
 
 ## Décisions clés (à ne pas défaire sans demander)
 
@@ -111,7 +112,8 @@ pnpm --filter @repas/web test:e2e   # nécessite supabase start
 - **Next.js mémorise les requêtes GET identiques pendant un rendu** (y compris celles de supabase-js) : relire une ligne avec la même requête juste après l'avoir créée renvoie l'ancien résultat. Renvoyer les lignes insérées (`.insert().select()`), voir `ensureWeekPlan`.
 - **Captures Playwright `fullPage: true`** : elles relancent les animations d'entrée, les éléments apparaissent vides. Capturer l'écran visible (après défilement) pour juger du rendu.
 - **Animations et piles** : un élément animé (`anim-rise`) crée un contexte d'empilement ; un menu déroulant à l'intérieur passe sous la carte suivante → remonter le parent (`z-30`) quand le menu est ouvert.
-- **Serveur de dev et `packages/core`** : après l'ajout d'une nouvelle fonction exportée par core, le serveur de dev garde l'ancien module (« X is not a function ») : le redémarrer.
+- **Serveur de dev** : après l'ajout d'une fonction exportée par core, ou une modification de `apps/admin/src/lib/staff.ts`, le serveur garde parfois l'ancien module (« X is not a function », navigation incomplète) : le redémarrer.
+- **Tests e2e et base locale** : chaque test prépare ses propres données (comptes uniques, relevé aberrant créé via la clé serveur de `.env.local`, voir `e2e/helpers.ts`) ; ne pas supposer l'état laissé par un autre test.
 - **Zod 4** : utiliser `z.guid()` pour les identifiants (les ids fixes du seed ne sont pas des UUID versionnés, `z.uuid()` les refuse).
 - Espace client : `/app/recettes`, `/app/recettes/[slug]`, mode cuisine `/app/recettes/[slug]/cuisine` (groupe de routes `(cuisine)`, sans la navigation).
 - Démo locale : `marion@example.com` (Auchan, 2 adultes + 2 enfants, sans porc), connexion par code via Mailpit. Sa semaine en cours vient du seed (validée chez Lidl).
@@ -119,7 +121,8 @@ pnpm --filter @repas/web test:e2e   # nécessite supabase start
 
 ## Prochaines étapes
 
-1. **Lot 7 — Paiement** dès réception du compte Stripe (mode test) et de la décision sur la mention TVA. Les liens « Essayer Premium » pointent déjà vers `/app/abonnement`, `/tarifs` et `/merci` restent à créer.
-2. Sinon **lot 9 — Back-office** (aucun compte requis) : auth staff (`has_role`), BOVue, BOPrix, BOTickets, BORecettes ; journal d'audit = migration **0007** à proposer d'abord. Puis lots 10 → 13 (comptes : OCR au lot 10, Resend + domaine au lot 11, Vercel / Supabase prod / PostHog / Sentry + nom et domaine au lot 13).
+1. **Lot 7 — Paiement** dès réception du compte Stripe (mode test) et de la décision sur la mention TVA.
+2. **Lot 10 — Tickets et prix** : choisir un fournisseur OCR (clé à fournir) ; l'import Open Prices (Edge Function + cron) et les écrans BO Tickets / Imports peuvent avancer avant, mais vérifier d'abord la **licence Open Prices (ODbL)** avant de republier des prix (point ouvert).
+3. **Lot 11 — Emails, PWA** (Resend + domaine), **lot 12 — Famille, économies, mode sombre** (aucun compte requis : peut passer avant si les comptes tardent), **lot 13 — mise en ligne**. Avant la mise en ligne : revalidation à la demande des pages publiques depuis le BO.
 3. Idée validée en principe : capture de l'appli dans un téléphone pour la landing.
 3. Idée proposée, non tranchée : une photo de saison qui change automatiquement sur la landing.

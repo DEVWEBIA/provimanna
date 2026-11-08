@@ -45,6 +45,7 @@ test('espace client : ajouter une recette à la semaine, fiche, mode cuisine', a
 
   await page.goto('/app/recettes/dahl-lentilles-corail');
   await expect(page.getByRole('heading', { name: 'Dahl de lentilles corail' })).toBeVisible();
+  await page.waitForLoadState('networkidle'); // page interactive (hydratée) avant de cocher
   await page.getByRole('checkbox').first().check();
   await expect(page.getByText('1 ingrédient déjà dans tes placards')).toBeVisible();
   await page.getByRole('tab', { name: 'Étapes' }).click();
