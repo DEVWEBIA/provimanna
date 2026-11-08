@@ -8,7 +8,8 @@ describe('householdFactor', () => {
 });
 
 describe('dietFromPreferences / preferencesFromHousehold', () => {
-  it('sans choix → omnivore', () => expect(dietFromPreferences([])).toEqual({ diet: 'omnivore', exclusions: [] }));
+  it('sans choix → omnivore', () =>
+    expect(dietFromPreferences([])).toEqual({ diet: 'omnivore', exclusions: [] }));
   it('végétarien prime, le reste va dans les exclusions', () => {
     expect(dietFromPreferences(['sans_gluten', 'vegetarien', 'sans_porc'])).toEqual({
       diet: 'vegetarien',

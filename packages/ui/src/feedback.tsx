@@ -100,7 +100,7 @@ export function EmptyState({
   return (
     <section
       className={cx(
-        'border-line bg-surface-0 flex flex-col items-center gap-3 rounded-lg border px-6 py-10 text-center',
+        'border-line dark:bg-surface-0 flex flex-col items-center gap-3 rounded-[26px] border bg-white/70 px-6 py-12 text-center shadow-[0_2px_20px_rgba(42,26,40,0.05)] backdrop-blur',
         className,
       )}
     >

@@ -3,7 +3,7 @@ import type React from 'react';
 import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
 import { costPerServing, formatEuro } from '@repas/core';
-import { Icon, Plat, TicketCard, type IconName } from '@repas/ui';
+import { Glow, Icon, Plat, Reveal, SectionHeading, TicketCard, type IconName } from '@repas/ui';
 import couscousLegumes from '@/assets/photos/couscous-legumes.jpg';
 import curryPoisChiches from '@/assets/photos/curry-pois-chiches-courge.jpg';
 import familleCuisine from '@/assets/photos/famille-cuisine.jpg';
@@ -12,8 +12,6 @@ import bowlColore from '@/assets/photos/bowl-colore.jpg';
 import veloutePotimarron from '@/assets/photos/veloute-potimarron.jpg';
 import { Faq } from '@/components/site/faq';
 import { HeroTicket } from '@/components/site/hero-ticket';
-import { Reveal } from '@/components/site/reveal';
-import { SectionHeading } from '@/components/site/section-heading';
 import { SiteFooter } from '@/components/site/site-footer';
 import { SiteHeader } from '@/components/site/site-header';
 import { StoreMarquee } from '@/components/site/store-marquee';
@@ -89,16 +87,6 @@ function PrimaryCta({ tone = 'brand' }: { tone?: 'brand' | 'light' }) {
       Créer mon plan gratuit
       <span aria-hidden="true">→</span>
     </Link>
-  );
-}
-
-/** Halo de couleur flou en arrière-plan (purement décoratif). */
-function Glow({ className }: { className: string }) {
-  return (
-    <div
-      aria-hidden="true"
-      className={`pointer-events-none absolute -z-10 rounded-full blur-[100px] ${className}`}
-    />
   );
 }
 

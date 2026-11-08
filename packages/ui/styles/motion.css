@@ -1,0 +1,111 @@
+/*
+ * Effets partagés (site, espace client, back-office) : apparitions, entrées animées, halos.
+ * Importé par apps/web et apps/admin. Tout est neutralisé si l'utilisateur réduit les animations.
+ */
+
+/*
+ * Apparition au défilement (composant <Reveal>). Masqué seulement si le JavaScript est actif
+ * et que l'utilisateur n'a pas demandé à réduire les animations : sinon, le contenu est visible d'emblée.
+ */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+/* Effets du hero (site public). Rien ne bouge si l'utilisateur demande à réduire les animations. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes line-up {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes ticket-in {
+  from {
+    opacity: 0;
+    transform: translateY(48px) rotate(5deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-1.2deg);
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -10px;
+  }
+}
+@keyframes spin-slow {
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .anim-rise {
+    animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .anim-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+  }
+  .anim-line > span {
+    display: inline-block;
+    animation: line-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .anim-ticket {
+    animation: ticket-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+  }
+  .anim-float {
+    animation: float 6s ease-in-out 1.4s infinite;
+  }
+  .anim-spin {
+    animation: spin-slow 140s linear infinite;
+  }
+  .anim-draw path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 0.9s cubic-bezier(0.65, 0, 0.35, 1) 1s forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

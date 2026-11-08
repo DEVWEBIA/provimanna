@@ -1,4 +1,4 @@
-import { SectionHeading } from './section-heading';
+import { SectionHeading } from '@repas/ui';
 
 /** FAQ en <details> natif : accessible au clavier, sans JavaScript, contenu indexable. */
 export function Faq({

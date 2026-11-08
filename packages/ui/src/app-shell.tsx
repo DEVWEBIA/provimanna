@@ -4,6 +4,7 @@ import { Icon } from './icons.tsx';
 import { DefaultLink, type LinkComponent } from './link.tsx';
 import { Logo } from './logo.tsx';
 import { APP_NAV, type AppSection } from './nav.ts';
+import { Glow } from './surface.tsx';
 import { TabBar } from './tab-bar.tsx';
 
 export interface TrialInfo {
@@ -31,8 +32,11 @@ export function AppShell({
   homeHref = '/',
 }: AppShellProps) {
   return (
-    <div className="bg-surface-50 text-ink flex min-h-screen font-sans">
-      <aside className="border-line bg-surface-0 sticky top-0 hidden h-screen w-[260px] shrink-0 flex-col gap-6 border-r px-4 py-6 lg:flex">
+    <div className="bg-surface-50 text-ink relative isolate flex min-h-screen overflow-x-clip font-sans">
+      {/* Halos de la page d'accueil, discrets derrière le contenu. */}
+      <Glow className="bg-raw-aubergine-clair -top-24 left-[30%] h-96 w-96" />
+      <Glow className="bg-raw-peche right-0 top-[40vh] h-80 w-80 opacity-60" />
+      <aside className="dark:border-line dark:bg-surface-0 sticky top-0 hidden h-screen w-[260px] shrink-0 flex-col gap-6 border-r border-white/70 bg-white/60 px-4 py-6 shadow-[8px_0_30px_rgba(42,26,40,0.04)] backdrop-blur-xl lg:flex">
         <Link href={homeHref} className="px-2 no-underline">
           <Logo />
         </Link>
@@ -45,8 +49,10 @@ export function AppShell({
                 href={item.href}
                 aria-current={on ? 'page' : undefined}
                 className={cx(
-                  'flex min-h-[46px] items-center gap-3 rounded-[14px] px-3.5 text-[15px] font-extrabold no-underline',
-                  on ? 'bg-brand-soft text-brand' : 'text-ink hover:bg-surface-50',
+                  'flex min-h-[46px] items-center gap-3 rounded-[14px] px-3.5 text-[15px] font-extrabold no-underline transition-[background-color,transform] duration-200 motion-reduce:transition-none',
+                  on
+                    ? 'bg-brand-soft text-brand'
+                    : 'text-ink dark:hover:bg-surface-50 hover:translate-x-0.5 hover:bg-white/80',
                 )}
               >
                 <Icon name={item.icon} size={20} />
@@ -62,7 +68,8 @@ export function AppShell({
           })}
         </nav>
         {trial ? (
-          <div className="bg-brand text-brand-on mt-auto rounded-md p-4">
+          <div className="bg-brand text-brand-on relative isolate mt-auto overflow-hidden rounded-[20px] p-4 shadow-[0_14px_30px_rgba(107,56,104,0.3)]">
+            <Glow className="-right-10 -top-10 h-28 w-28 bg-white/25 blur-2xl" />
             <p className="text-brand-soft text-[12px] font-black tracking-[1px]">ESSAI PREMIUM</p>
             <p className="mb-2.5 mt-1.5 font-black">
               {trial.daysLeft} {trial.daysLeft > 1 ? 'jours restants' : 'jour restant'}
@@ -84,7 +91,7 @@ export function AppShell({
         ) : null}
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <main className="flex flex-1 flex-col gap-5 px-5 pb-28 pt-7 lg:px-[clamp(20px,3vw,44px)] lg:pb-16">
+        <main className="mx-auto flex w-full max-w-[1180px] flex-1 flex-col gap-8 px-5 pb-28 pt-8 lg:px-[clamp(20px,3vw,48px)] lg:pb-20 lg:pt-12">
           {children}
         </main>
         <TabBar active={active} Link={Link} className="fixed inset-x-0 bottom-0 z-10 lg:hidden" />

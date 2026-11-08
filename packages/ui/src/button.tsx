@@ -5,12 +5,12 @@ export type ButtonVariant = 'primary' | 'secondary' | 'neutral' | 'saving' | 'li
 export type ButtonSize = 'md' | 'sm';
 
 const BASE =
-  'inline-flex items-center justify-center gap-2 font-sans transition-colors focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed';
+  'inline-flex items-center justify-center gap-2 font-sans transition-[color,background-color,border-color,opacity,transform,box-shadow] duration-200 motion-reduce:transition-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed';
 
 const VARIANTS: Record<ButtonVariant, string> = {
   // Un seul bouton « primary » par écran.
   primary:
-    'rounded-pill bg-brand px-[26px] font-black text-brand-on hover:opacity-90 disabled:bg-disabled disabled:text-disabled-ink',
+    'rounded-pill bg-brand px-[26px] font-black text-brand-on shadow-[0_10px_30px_rgba(107,56,104,0.30)] hover:-translate-y-0.5 hover:opacity-95 disabled:translate-y-0 disabled:bg-disabled disabled:text-disabled-ink disabled:shadow-none',
   secondary:
     'rounded-pill border-2 border-brand bg-surface-0 px-6 font-black text-brand hover:bg-brand-soft disabled:border-disabled disabled:text-disabled-ink',
   neutral:

@@ -15,7 +15,7 @@ export function TabBar({ active, Link = DefaultLink, className }: TabBarProps) {
     <nav
       aria-label="Navigation"
       className={cx(
-        'border-line bg-surface-0 grid grid-cols-5 border-t px-1.5 pb-[max(18px,env(safe-area-inset-bottom))] pt-2',
+        'dark:border-line dark:bg-surface-0 grid grid-cols-5 border-t border-white/70 bg-white/80 px-1.5 pb-[max(18px,env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_30px_rgba(42,26,40,0.06)] backdrop-blur-xl',
         className,
       )}
     >
@@ -31,7 +31,12 @@ export function TabBar({ active, Link = DefaultLink, className }: TabBarProps) {
               on ? 'text-brand' : 'text-ink-muted',
             )}
           >
-            <span className={cx('rounded-pill grid h-8 w-[52px] place-items-center', on && 'bg-brand-soft')}>
+            <span
+              className={cx(
+                'rounded-pill grid h-8 w-[52px] place-items-center transition-colors duration-300 motion-reduce:transition-none',
+                on && 'bg-brand-soft',
+              )}
+            >
               <Icon name={t.icon} size={22} />
             </span>
             {t.label}

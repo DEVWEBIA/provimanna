@@ -4,7 +4,16 @@ import prettier from 'eslint-config-prettier';
 
 /** Règles communes : TypeScript strict, pas de `any`. */
 export default tseslint.config(
-  { ignores: ['**/node_modules/**', '**/.next/**', '**/dist/**', '**/coverage/**', '**/*.d.ts', '**/database.types.ts'] },
+  {
+    ignores: [
+      '**/node_modules/**',
+      '**/.next/**',
+      '**/dist/**',
+      '**/coverage/**',
+      '**/*.d.ts',
+      '**/database.types.ts',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.strict,
   {

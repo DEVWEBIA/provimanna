@@ -103,6 +103,9 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 
 - **07/11 — Vrais logos des enseignes, uniquement dans le bandeau (option 2 choisie par Emmanuel).** Comme Planivore : logos officiels dans le bandeau « enseignes comparées », mais en gris (couleur au survol) et avec la mention « Marques et logos © leurs propriétaires respectifs ». Ailleurs, on garde les pastilles neutres. Fichiers issus de Wikimedia Commons (sources dans `src/assets/logos/SOURCES.md`). À retirer immédiatement si une enseigne le demande. Carrefour : aucun fichier réutilisable trouvé, le nom est affiché en lettres grises en attendant.
 
+- **08/11 — Langage visuel de la page d'accueil étendu à tout le produit (demande d'Emmanuel).** Les effets de la home sont devenus des briques partagées de `packages/ui` : `Reveal` (apparition au défilement), `Glow` (halos flous), `Eyebrow` / `SectionHeading` / `PageHeader` (en-têtes avec entrée en cascade), `GlassCard` / `IconTile` (cartes « verre »), `animDelay()`, `inputClasses()` ; les animations sont dans `packages/ui/styles/motion.css`, importé par le site et le back-office. Bouton principal : ombre aubergine et léger soulèvement au survol, partout. Appliqué à `/connexion` (panneau aubergine avec plat qui tourne et ticket flottant, `components/brand/brand-panel.tsx`), au questionnaire (`/commencer`, `/app/bienvenue` : étapes animées, cartes vitrées, récap en ticket), à l'espace client (barre latérale et barre d'onglets en verre, halos, `PageHeader`), au back-office (accueil et connexion d'attente) et à l'email de connexion (maquette `EmailConnexion`, aubergine actuelle, carte ticket à bord dentelé). **Règle pour la suite : chaque nouvel écran (lots 5 à 13) réutilise ces briques.**
+- **08/11 — Catalogue de recettes : Claude rédige ~40 recettes automne/hiver** (option recommandée, choisie par Emmanuel), prix de démo marqués comme tels, relecture prévue depuis le BO.
+
 ## Questions ouvertes (à trancher par vous)
 
 1. ~~Liste d'attente ou inscription directe ?~~ → inscription directe (07/11). Une liste d'attente peut s'ajouter plus tard si besoin.
@@ -115,6 +118,7 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - [x] Lot 2 — Design system (19 composants dans `packages/ui`, 16 tests de rendu, catalogue `/dev/ui` clair + sombre, script de captures `apps/web/scripts/screenshots.mjs`)
 - [x] Lot 3 — Landing et socle SEO (Lighthouse mobile 100/100/100/100, desktop 100/100/96/100 : les 4 points = préchargement des pages du lot 8 pas encore créées)
 - [x] Lot 4 — Connexion et onboarding (lien magique + code 6 chiffres, onboarding 4 étapes, 6 tests Playwright desktop + mobile : `pnpm --filter @repas/web test:e2e`)
+- [x] Harmonisation visuelle (08/11) — effets de la home sur connexion, questionnaire, espace client, BO, email
 - [ ] Lot 5 — Génération du plan
 - [ ] Lot 6 — Comparateur et liste
 - [ ] Lot 7 — Paiement

@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { useActionState, useEffect, useState } from 'react';
-import { Button, cx } from '@repas/ui';
-import { webmailUrl } from '@/lib/auth/webmail';
+import { animDelay, Button, inputClasses } from '@repas/ui';
+import { EmailSent } from '@/components/auth/email-sent';
 import { href, ROUTES } from '@/lib/site';
-import { requestLink, signInWithProvider, verifyCode, type AuthFormState } from './actions';
+import { requestLink, signInWithProvider, type AuthFormState } from './actions';
 
 type Mode = 'connexion' | 'inscription';
 
@@ -30,7 +30,7 @@ const COPY: Record<
 };
 
 const socialClass =
-  'flex min-h-[54px] w-full items-center justify-center gap-2.5 rounded-pill border-2 border-line bg-surface-0 text-[16px] font-extrabold text-ink hover:border-brand';
+  'flex min-h-[54px] w-full items-center justify-center gap-2.5 rounded-pill border-2 border-line bg-white/80 text-[16px] font-extrabold text-ink backdrop-blur transition-[border-color,transform] hover:-translate-y-0.5 hover:border-brand motion-reduce:transition-none';
 
 function ProviderButton({
   provider,
@@ -83,20 +83,10 @@ export interface ConnexionFormProps {
 export function ConnexionForm({ initialMode, initialEmail, suite, linkError }: ConnexionFormProps) {
   const [mode, setMode] = useState<Mode>(initialMode);
   const [linkState, sendLink, sending] = useActionState(requestLink, { status: 'idle' });
-  const [codeState, sendCode, verifying] = useActionState(verifyCode, { status: 'idle' });
   const [providerState, setProviderState] = useState<AuthFormState>({ status: 'idle' });
   const [editing, setEditing] = useState(false);
-  const [now, setNow] = useState(0);
 
   const sent = linkState.status === 'sent' && !editing;
-  const sentAt = linkState.status === 'sent' ? linkState.sentAt : 0;
-  // Le renvoi devient possible 30 s après l'envoi (limite réelle côté Supabase, pas un faux compte à rebours).
-  useEffect(() => {
-    if (!sentAt) return;
-    const t = setTimeout(() => setNow(Date.now()), Math.max(0, sentAt + 30_000 - Date.now()));
-    return () => clearTimeout(t);
-  }, [sentAt]);
-  const canResend = sentAt > 0 && now >= sentAt + 30_000;
 
   const email =
     linkState.status === 'sent'
@@ -107,99 +97,14 @@ export function ConnexionForm({ initialMode, initialEmail, suite, linkError }: C
   const fieldError = (f: string) =>
     linkState.status === 'error' && linkState.field === f ? linkState.message : null;
 
-  if (sent) {
-    const webmail = webmailUrl(email);
-    const codeError = codeState.status === 'error' ? codeState.message : null;
+  if (sent && linkState.status === 'sent') {
     return (
-      <div>
-        <div className="bg-saving-soft text-saving-ink mb-6 grid h-[72px] w-[72px] place-items-center rounded-[22px]">
-          <svg
-            width="34"
-            height="34"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            <rect x="3" y="5" width="18" height="14" rx="3" />
-            <path d="m4 7 8 6 8-6" />
-          </svg>
-        </div>
-        <h1 className="font-display text-[clamp(36px,3.6vw,52px)] font-extrabold leading-none tracking-[-1.6px]">
-          Regarde tes emails.
-        </h1>
-        <p className="text-ink-muted mb-7 mt-3.5 text-[18px] leading-[27px]" role="status">
-          On a envoyé un lien de connexion à <strong className="text-ink">{email}</strong>. Il est valable 15
-          minutes.
-        </p>
-        <div className="flex flex-wrap gap-2.5">
-          {webmail ? (
-            <a
-              href={webmail}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-pill bg-brand text-brand-on flex min-h-[54px] flex-[1_1_180px] items-center justify-center font-black no-underline"
-            >
-              Ouvrir ma messagerie
-            </a>
-          ) : null}
-          <button
-            type="button"
-            onClick={() => setEditing(true)}
-            className="rounded-pill border-line bg-surface-0 text-ink min-h-[54px] flex-[1_1_160px] border-2 text-[16px] font-extrabold"
-          >
-            Changer d’adresse
-          </button>
-        </div>
-
-        <form action={sendCode} className="mt-8">
-          <input type="hidden" name="email" value={email} />
-          <input type="hidden" name="suite" value={suite} />
-          <label htmlFor="code" className="mb-2 block text-[15px] font-black">
-            Ou saisis le code reçu
-          </label>
-          <div className="flex gap-2.5">
-            <input
-              id="code"
-              name="code"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              placeholder="482 913"
-              aria-invalid={codeError ? true : undefined}
-              aria-describedby={codeError ? 'code-err' : undefined}
-              className={cx(
-                'bg-surface-0 box-border min-h-[56px] min-w-0 flex-1 rounded-[16px] border-2 px-[18px] text-[20px] font-extrabold tabular-nums tracking-[4px]',
-                codeError ? 'border-danger' : 'border-line',
-              )}
-            />
-            <Button type="submit" variant="secondary" disabled={verifying}>
-              Valider
-            </Button>
-          </div>
-          {codeError ? (
-            <p id="code-err" role="alert" className="text-danger mt-2 text-[14px] font-extrabold">
-              {codeError}
-            </p>
-          ) : null}
-        </form>
-
-        <form action={sendLink} className="text-ink-muted mt-[22px] text-[14px]">
-          <input type="hidden" name="email" value={email} />
-          <input type="hidden" name="mode" value="connexion" />
-          <input type="hidden" name="suite" value={suite} />
-          Rien reçu ? Regarde dans les spams, ou{' '}
-          <button
-            type="submit"
-            disabled={!canResend || sending}
-            className="text-brand disabled:text-ink-muted bg-transparent px-0.5 py-2 text-[14px] font-black underline disabled:no-underline"
-          >
-            renvoie le lien
-          </button>{' '}
-          dans 30 secondes.
-        </form>
-      </div>
+      <EmailSent
+        email={linkState.email}
+        suite={suite}
+        sentAt={linkState.sentAt}
+        onChangeEmail={() => setEditing(true)}
+      />
     );
   }
 
@@ -214,11 +119,13 @@ export function ConnexionForm({ initialMode, initialEmail, suite, linkError }: C
   const cguError = fieldError('cgu');
 
   return (
-    <div>
-      <h1 className="font-display text-[clamp(36px,3.6vw,52px)] font-extrabold leading-none tracking-[-1.6px]">
-        {c.heading}
+    <div key={mode}>
+      <h1 className="anim-line font-display text-[clamp(36px,3.6vw,52px)] font-extrabold leading-none tracking-[-1.6px]">
+        <span style={animDelay(80)}>{c.heading}</span>
       </h1>
-      <p className="text-ink-muted mb-8 mt-3.5 text-[18px] leading-[27px]">{c.sub}</p>
+      <p className="anim-rise text-ink-muted mb-8 mt-3.5 text-[18px] leading-[27px]" style={animDelay(180)}>
+        {c.sub}
+      </p>
       {globalError ? (
         <p
           role="alert"
@@ -227,16 +134,22 @@ export function ConnexionForm({ initialMode, initialEmail, suite, linkError }: C
           {globalError}
         </p>
       ) : null}
-      <div className="flex flex-col gap-2.5">
+      <div className="anim-rise flex flex-col gap-2.5" style={animDelay(260)}>
         <ProviderButton provider="google" suite={suite} onResult={setProviderState} />
         <ProviderButton provider="apple" suite={suite} onResult={setProviderState} />
       </div>
-      <div className="text-ink-muted my-6 flex items-center gap-3.5 text-[14px] font-extrabold">
+      <div className="anim-rise text-ink-muted my-6 flex items-center gap-3.5 text-[14px] font-extrabold">
         <span className="bg-line h-px flex-1" />
         ou par email
         <span className="bg-line h-px flex-1" />
       </div>
-      <form action={sendLink} noValidate onSubmit={() => setEditing(false)}>
+      <form
+        action={sendLink}
+        noValidate
+        onSubmit={() => setEditing(false)}
+        className="anim-rise"
+        style={animDelay(340)}
+      >
         <input type="hidden" name="mode" value={mode} />
         <input type="hidden" name="suite" value={suite} />
         <label htmlFor="mail" className="mb-2 block text-[15px] font-black">
@@ -251,10 +164,7 @@ export function ConnexionForm({ initialMode, initialEmail, suite, linkError }: C
           placeholder="ton@email.fr"
           aria-invalid={emailError ? true : undefined}
           aria-describedby={emailError ? 'mail-err' : undefined}
-          className={cx(
-            'bg-surface-0 text-ink box-border min-h-[56px] w-full rounded-[16px] border-2 px-[18px] text-[17px] font-bold',
-            emailError ? 'border-danger' : 'border-line',
-          )}
+          className={inputClasses(Boolean(emailError), 'min-h-[56px] px-[18px] text-[17px]')}
         />
         {emailError ? (
           <p id="mail-err" role="alert" className="text-danger mt-2 text-[14px] font-extrabold">

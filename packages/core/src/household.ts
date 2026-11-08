@@ -28,7 +28,10 @@ export const PREFERENCE_IDS = PREFERENCES.map((p) => p.id) as PreferenceId[];
 // les autres choix vont dans households.exclusions.
 const DIET_PRIORITY: Diet[] = ['vegetarien', 'halal', 'sans_porc'];
 
-export function dietFromPreferences(selected: readonly PreferenceId[]): { diet: Diet; exclusions: PreferenceId[] } {
+export function dietFromPreferences(selected: readonly PreferenceId[]): {
+  diet: Diet;
+  exclusions: PreferenceId[];
+} {
   const unique = PREFERENCE_IDS.filter((id) => selected.includes(id));
   const diet = DIET_PRIORITY.find((d) => (unique as string[]).includes(d)) ?? 'omnivore';
   return { diet, exclusions: unique.filter((id) => id !== diet) };

@@ -1,6 +1,122 @@
-<!-- Modèle provisoire (lien + code). La version maquettée (EmailConnexion, React Email) arrive au lot 11. -->
-<h2>Ton lien de connexion</h2>
-<p>Clique sur le bouton pour te connecter. Il fonctionne une seule fois, pendant 15 minutes.</p>
-<p><a href="{{ .ConfirmationURL }}">Me connecter</a></p>
-<p>Ou saisis ce code dans l'appli : <strong>{{ .Token }}</strong></p>
-<p>Ce n'est pas toi ? Ignore simplement cet email : personne ne peut se connecter sans ce lien.</p>
+<!doctype html>
+<!--
+  Email « Ton lien de connexion » (maquette design/maquettes/EmailConnexion.dc.html), aux couleurs actuelles
+  (aubergine #6B3868) et avec la carte « ticket » de la page d'accueil. HTML d'email : tableaux et styles en ligne.
+  Le lien de connexion doit rester le PREMIER href du message (lu par les tests e2e) et le code reste sur 6 chiffres collés.
+  La version React Email (packages/emails) le remplacera au lot 11.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Ton lien de connexion</title>
+  </head>
+  <body style="margin: 0; padding: 0; background: #f6f3ec">
+    <div style="display: none; max-height: 0; overflow: hidden; opacity: 0">
+      Valable 15 minutes. Si ce n'est pas toi, ignore cet email.
+    </div>
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      style="background: #f6f3ec; font-family: Nunito, 'Segoe UI', Arial, sans-serif; color: #2a1a28"
+    >
+      <tr>
+        <td align="center" style="padding: 32px 16px 40px">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width: 560px">
+            <!-- Marque -->
+            <tr>
+              <td style="padding: 0 8px 20px">
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td
+                      width="28"
+                      height="28"
+                      style="background: #6b3868; border-radius: 8px; color: #ffffff; font-size: 15px; font-weight: 900; text-align: center; line-height: 28px"
+                    >
+                      ≡
+                    </td>
+                    <td style="padding-left: 10px; font-size: 16px; font-weight: 900; color: #6b3868">
+                      [Nom de l'appli]
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <!-- Carte ticket -->
+            <tr>
+              <td
+                style="background: #ffffff; border-radius: 26px 26px 0 0; padding: 44px 36px 32px; text-align: center; box-shadow: 0 24px 50px rgba(42, 26, 40, 0.1)"
+              >
+                <table role="presentation" cellpadding="0" cellspacing="0" align="center">
+                  <tr>
+                    <td
+                      width="76"
+                      height="76"
+                      style="background: #efe3ec; border-radius: 22px; text-align: center; font-size: 34px; line-height: 76px"
+                    >
+                      🔒
+                    </td>
+                  </tr>
+                </table>
+                <p
+                  style="margin: 22px 0 0; display: inline-block; padding: 4px 14px; border: 1px solid #e3ddd0; border-radius: 999px; font-size: 12px; font-weight: 900; letter-spacing: 1.2px; text-transform: uppercase; color: #625a60"
+                >
+                  Connexion sans mot de passe
+                </p>
+                <h1
+                  style="margin: 16px 0 0; font-size: 34px; line-height: 38px; font-weight: 900; letter-spacing: -0.8px; color: #2a1a28"
+                >
+                  Ton lien de connexion
+                </h1>
+                <p style="margin: 14px auto 30px; max-width: 420px; font-size: 17px; line-height: 26px; color: #4d444b">
+                  Clique sur le bouton pour te connecter. Il fonctionne une seule fois, pendant 15 minutes.
+                </p>
+                <a
+                  href="{{ .ConfirmationURL }}"
+                  style="display: inline-block; background: #6b3868; color: #ffffff; text-decoration: none; font-weight: 900; font-size: 18px; padding: 19px 40px; border-radius: 999px; box-shadow: 0 10px 30px rgba(107, 56, 104, 0.3)"
+                  >Me connecter</a
+                >
+                <!-- Ligne pointillée du ticket -->
+                <div style="margin: 34px 0 0; border-top: 2px dashed #e3ddd0; height: 0; line-height: 0">&nbsp;</div>
+                <p style="margin: 24px 0 6px; font-size: 14px; color: #625a60">Ou saisis ce code dans l'appli :</p>
+                <p
+                  style="margin: 0; font-size: 32px; font-weight: 900; letter-spacing: 8px; font-variant-numeric: tabular-nums; color: #2a1a28"
+                >
+                  {{ .Token }}
+                </p>
+              </td>
+            </tr>
+            <!-- Bord dentelé (demi-cercles couleur du fond) -->
+            <tr>
+              <td style="background: #ffffff; height: 12px; line-height: 12px; font-size: 0">
+                <div
+                  style="height: 12px; background-image: radial-gradient(circle at 11px 12px, #f6f3ec 7px, transparent 7.5px); background-size: 22px 12px; background-repeat: repeat-x"
+                ></div>
+              </td>
+            </tr>
+            <!-- Sécurité -->
+            <tr>
+              <td style="padding: 24px 8px 0">
+                <div
+                  style="background: rgba(255, 255, 255, 0.7); border: 1px solid #e3ddd0; border-radius: 18px; padding: 16px 18px; font-size: 14px; line-height: 22px; color: #4d444b"
+                >
+                  <strong style="color: #2a1a28">Ce n'est pas toi ?</strong> Ignore simplement cet email : personne
+                  ne peut se connecter sans ce lien.
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 22px 8px 0; font-size: 12px; line-height: 19px; color: #625a60">
+                [Nom de l'appli] · [Raison sociale] · [Adresse] · Email de sécurité, envoyé quelles que soient tes
+                préférences.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

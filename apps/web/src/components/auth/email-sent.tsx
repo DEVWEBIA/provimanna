@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
-import { Button, cx } from '@repas/ui';
+import { animDelay, Button, buttonClasses, inputClasses } from '@repas/ui';
 import { requestLink, verifyCode, type AuthFormState } from '@/app/connexion/actions';
 import { webmailUrl } from '@/lib/auth/webmail';
 
@@ -31,7 +31,7 @@ export function EmailSent({ email, suite, sentAt: firstSentAt, onChangeEmail }: 
 
   return (
     <div>
-      <div className="bg-saving-soft text-saving-ink mb-6 grid h-[72px] w-[72px] place-items-center rounded-[22px]">
+      <div className="anim-ticket bg-saving-soft text-saving-ink mb-6 grid h-[72px] w-[72px] place-items-center rounded-[22px] shadow-[0_12px_30px_rgba(238,122,48,0.25)]">
         <svg
           width="34"
           height="34"
@@ -46,20 +46,24 @@ export function EmailSent({ email, suite, sentAt: firstSentAt, onChangeEmail }: 
           <path d="m4 7 8 6 8-6" />
         </svg>
       </div>
-      <h1 className="font-display text-[clamp(36px,3.6vw,52px)] font-extrabold leading-none tracking-[-1.6px]">
-        Regarde tes emails.
+      <h1 className="anim-line font-display text-[clamp(36px,3.6vw,52px)] font-extrabold leading-none tracking-[-1.6px]">
+        <span style={animDelay(120)}>Regarde tes emails.</span>
       </h1>
-      <p className="text-ink-muted mb-7 mt-3.5 text-[18px] leading-[27px]" role="status">
+      <p
+        className="anim-rise text-ink-muted mb-7 mt-3.5 text-[18px] leading-[27px]"
+        style={animDelay(220)}
+        role="status"
+      >
         On a envoyé un lien de connexion à <strong className="text-ink">{email}</strong>. Il est valable 15
         minutes.
       </p>
-      <div className="flex flex-wrap gap-2.5">
+      <div className="anim-rise flex flex-wrap gap-2.5" style={animDelay(320)}>
         {webmail ? (
           <a
             href={webmail}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-pill bg-brand text-brand-on flex min-h-[54px] flex-[1_1_180px] items-center justify-center font-black no-underline"
+            className={buttonClasses('primary', 'md', 'min-h-[54px] flex-[1_1_180px] no-underline')}
           >
             Ouvrir ma messagerie
           </a>
@@ -67,13 +71,13 @@ export function EmailSent({ email, suite, sentAt: firstSentAt, onChangeEmail }: 
         <button
           type="button"
           onClick={onChangeEmail}
-          className="rounded-pill border-line bg-surface-0 text-ink min-h-[54px] flex-[1_1_160px] border-2 text-[16px] font-extrabold"
+          className={buttonClasses('neutral', 'md', 'min-h-[54px] flex-[1_1_160px] bg-white/80')}
         >
           Changer d’adresse
         </button>
       </div>
 
-      <form action={sendCode} className="mt-8">
+      <form action={sendCode} className="anim-rise mt-8" style={animDelay(420)}>
         <input type="hidden" name="email" value={email} />
         <input type="hidden" name="suite" value={suite} />
         <label htmlFor="code" className="mb-2 block text-[15px] font-black">
@@ -88,9 +92,9 @@ export function EmailSent({ email, suite, sentAt: firstSentAt, onChangeEmail }: 
             placeholder="482 913"
             aria-invalid={codeError ? true : undefined}
             aria-describedby={codeError ? 'code-err' : undefined}
-            className={cx(
-              'bg-surface-0 box-border min-h-[56px] min-w-0 flex-1 rounded-[16px] border-2 px-[18px] text-[20px] font-extrabold tabular-nums tracking-[4px]',
-              codeError ? 'border-danger' : 'border-line',
+            className={inputClasses(
+              Boolean(codeError),
+              'min-h-[56px] w-auto min-w-0 flex-1 px-[18px] text-[20px] font-extrabold tabular-nums tracking-[4px]',
             )}
           />
           <Button type="submit" variant="secondary" disabled={verifying}>
