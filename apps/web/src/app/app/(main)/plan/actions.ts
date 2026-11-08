@@ -197,6 +197,11 @@ export async function moveMealAction(planId: string, input: unknown): Promise<Pl
   if (!from) return { ok: false, error: FAILED };
   const to = ctx.plan.meal_plan_items.find((i) => i.day === parsed.data.day && i.slot === parsed.data.slot);
   if (to?.id === from.id) return { ok: true };
+  // Seulement vers un créneau prévu par le foyer (jours et moments du questionnaire).
+  const planned =
+    ctx.household.meal_days.includes(parsed.data.day) &&
+    (ctx.household.with_lunch || parsed.data.slot === 'diner');
+  if (!planned) return { ok: false, error: 'Ce créneau ne fait pas partie de ta semaine.' };
 
   // La contrainte unique (plan, jour, créneau) empêche l'échange en place : on supprime puis on réinsère.
   const moved = [from, ...(to ? [to] : [])];

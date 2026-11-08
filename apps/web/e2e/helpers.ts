@@ -7,7 +7,32 @@ import { extractCode, waitForEmail } from './mailbox';
 export const uniqueEmail = (tag: string) =>
   `e2e-plan-${tag}-${Date.now()}-${Math.floor(Math.random() * 1e6)}@example.com`;
 
-/** Nouveau compte par code, questionnaire rapide (2 adultes, végétarien, Lidl 75011). */
+/** Passe un écran du questionnaire (bouton du bas, toujours visible). */
+export const nextQuestion = (page: Page) =>
+  page.getByRole('button', { name: /^(Continuer|Composer ma semaine)$/ }).click();
+
+/**
+ * Questionnaire rapide d'un compte connecté : 2 adultes, midi et soir toute la semaine,
+ * Lidl 75011, pas de budget précis, végétarien, four et plaques.
+ */
+export async function quickQuestionnaire(page: Page) {
+  await expect(page.getByRole('heading', { name: 'Qu’est-ce qui t’amène ?' })).toBeVisible();
+  await nextQuestion(page); // motivations
+  await nextQuestion(page); // foyer
+  await nextQuestion(page); // repas
+  await page.getByText('Lidl', { exact: true }).click();
+  await page.getByLabel('Code postal').fill('75011');
+  await nextQuestion(page);
+  await page.getByText('Je n’ai pas de budget précis').click();
+  await nextQuestion(page);
+  await page.getByText('Végétarien', { exact: true }).click();
+  await nextQuestion(page); // régime
+  await nextQuestion(page); // ambiance
+  await nextQuestion(page); // ingrédients
+  await page.getByRole('button', { name: 'Composer ma semaine' }).click();
+}
+
+/** Nouveau compte par code, questionnaire rapide (voir quickQuestionnaire). */
 export async function signUp(page: Page, email: string) {
   await page.goto('/connexion');
   await page.getByLabel('Adresse email').fill(email);
@@ -16,12 +41,7 @@ export async function signUp(page: Page, email: string) {
   await page.getByLabel('Ou saisis le code reçu').fill(extractCode(mail.text));
   await page.getByRole('button', { name: 'Valider' }).click();
   await expect(page).toHaveURL(/\/app\/bienvenue/);
-  await page.getByRole('button', { name: 'Continuer' }).click();
-  await page.getByText('Végétarien', { exact: true }).click();
-  await page.getByRole('button', { name: 'Continuer' }).click();
-  await page.getByText('Lidl', { exact: true }).click();
-  await page.getByLabel('Code postal').fill('75011');
-  await page.getByRole('button', { name: 'Générer ma semaine' }).click();
+  await quickQuestionnaire(page);
   await expect(page.getByText('Plan généré')).toBeVisible();
 }
 

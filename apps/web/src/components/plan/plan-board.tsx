@@ -17,15 +17,23 @@ export interface PlanBoardProps {
   /** Jour de la semaine affiché comme « aujourd'hui » (1 = lundi), null hors de la semaine. */
   today: number | null;
   meals: PlanMealView[];
+  /** Jours planifiés du foyer (1 = lundi … 7). */
+  days: number[];
+  /** Midi + soir, ou soir seulement. */
+  withLunch: boolean;
 }
 
-const SLOTS: MealSlot[] = ['dejeuner', 'diner'];
 const recipeHref = (slug: string) => href(`/app/recettes/${slug}`);
 
-/** Grille des 14 repas (desktop) et vue jour par jour (mobile), maquettes AppPlan / MPlan. */
-export function PlanBoard({ planId, weekStart, today, meals }: PlanBoardProps) {
+/**
+ * Grille des repas (desktop) et vue jour par jour (mobile), maquettes AppPlan / MPlan.
+ * Seuls les jours et moments choisis par le foyer sont affichés (questionnaire du 08/11/2026).
+ */
+export function PlanBoard({ planId, weekStart, today, meals, days, withLunch }: PlanBoardProps) {
   const { run, pending, message, clear } = usePlanAction();
-  const [day, setDay] = useState(today ?? 1);
+  const SLOTS: MealSlot[] = withLunch ? ['dejeuner', 'diner'] : ['diner'];
+  const shown = [1, 2, 3, 4, 5, 6, 7].filter((d) => days.includes(d));
+  const [day, setDay] = useState(today && shown.includes(today) ? today : (shown[0] ?? 1));
   const [menu, setMenu] = useState<string | null>(null);
   const [dragging, setDragging] = useState<string | null>(null);
   const [over, setOver] = useState<string | null>(null);
@@ -57,29 +65,34 @@ export function PlanBoard({ planId, weekStart, today, meals }: PlanBoardProps) {
     >
       {/* Desktop : 7 jours × midi / soir */}
       <div className="hidden lg:block">
-        <div className="grid grid-cols-[52px_repeat(7,minmax(0,1fr))] gap-2">
+        <div
+          className="grid gap-2"
+          style={{ gridTemplateColumns: `52px repeat(${shown.length}, minmax(0, 1fr))` }}
+        >
           <span />
-          {DAY_SHORT.map((label, i) => (
-            <span
-              key={label}
-              className={cx(
-                'anim-rise rounded-[14px] py-2 text-center',
-                today === i + 1
-                  ? 'bg-brand text-brand-on shadow-[0_8px_20px_rgba(107,56,104,0.3)]'
-                  : 'text-ink',
-              )}
-              style={animDelay(i * 40)}
-            >
-              <span className="block text-[12px] font-black tracking-[1px]">{label}</span>
-              <span className="font-display block text-[22px] font-extrabold">
-                {dayOfMonth(weekStart, i + 1)}
+          {shown
+            .map((d) => [DAY_SHORT[d - 1]!, d - 1] as const)
+            .map(([label, i]) => (
+              <span
+                key={label + i}
+                className={cx(
+                  'anim-rise rounded-[14px] py-2 text-center',
+                  today === i + 1
+                    ? 'bg-brand text-brand-on shadow-[0_8px_20px_rgba(107,56,104,0.3)]'
+                    : 'text-ink',
+                )}
+                style={animDelay(i * 40)}
+              >
+                <span className="block text-[12px] font-black tracking-[1px]">{label}</span>
+                <span className="font-display block text-[22px] font-extrabold">
+                  {dayOfMonth(weekStart, i + 1)}
+                </span>
               </span>
-            </span>
-          ))}
+            ))}
           {SLOTS.map((slot, row) => (
             <Row key={slot} label={SLOT_LABEL[slot]}>
-              {DAY_SHORT.map((_, i) => {
-                const d = i + 1;
+              {shown.map((d) => {
+                const i = d - 1;
                 const m = meal(d, slot);
                 const cell = `${d}:${slot}`;
                 return (
@@ -136,8 +149,10 @@ export function PlanBoard({ planId, weekStart, today, meals }: PlanBoardProps) {
       {/* Mobile : un jour à la fois */}
       <div className="lg:hidden">
         <div role="tablist" aria-label="Jours" className="flex gap-1.5 pb-2">
-          {DAY_SHORT.map((label, i) => {
-            const on = day === i + 1;
+          {shown.map((d) => {
+            const i = d - 1;
+            const label = DAY_SHORT[i]!;
+            const on = day === d;
             return (
               <button
                 key={label}

@@ -13,7 +13,7 @@ import { StoreLogo } from '@/components/store-logo';
 export const metadata: Metadata = { title: 'Mon plan', robots: { index: false } };
 
 export default async function PlanPage() {
-  const { view, stores, data } = await currentPlan();
+  const { view, stores, data, household } = await currentPlan();
   if (!view) {
     return (
       <EmptyState
@@ -38,7 +38,14 @@ export default async function PlanPage() {
       {view.demoPrices ? <DemoNotice /> : null}
       <StalePrices view={view} storeName={name(view.myStore)} />
       <div className="grid items-start gap-6 2xl:grid-cols-[minmax(0,1fr)_340px]">
-        <PlanBoard planId={view.id} weekStart={view.weekStart} today={today} meals={view.meals} />
+        <PlanBoard
+          planId={view.id}
+          weekStart={view.weekStart}
+          today={today}
+          meals={view.meals}
+          days={household.meal_days}
+          withLunch={household.with_lunch}
+        />
         <div className="anim-rise max-2xl:max-w-[560px] 2xl:sticky 2xl:top-8" style={animDelay(400)}>
           <StoreTotals
             planId={view.id}

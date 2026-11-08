@@ -40,7 +40,7 @@ const longDate = (at: Date) => {
 
 /** Tableau de bord (maquettes AppDashboard / MDashboard), dans le style de la page d'accueil. */
 export default async function DashboardPage() {
-  const { profile, view, stores, data } = await currentPlan();
+  const { profile, view, stores, data, household } = await currentPlan();
   const firstName = (profile.display_name ?? '').split(' ')[0];
   const { hour, weekday } = zonedDate(data.now);
   const greeting = `${hour >= 18 ? 'Bonsoir' : 'Bonjour'}${firstName ? ` ${firstName}` : ''}`;
@@ -128,6 +128,13 @@ export default async function DashboardPage() {
                   <Reliability level={mine.reliability} className="text-white" />
                   {pricesAt ? `Prix relevés le ${pricesAt}` : null}
                 </p>
+                {household.weekly_budget_cents ? (
+                  <p className="text-site-on-brand-faint mt-1 text-[13px] font-bold tabular-nums">
+                    {mine.cents <= household.weekly_budget_cents
+                      ? `Dans ton budget de ${formatEuro(household.weekly_budget_cents)}`
+                      : `Ton budget : ${formatEuro(household.weekly_budget_cents)} · recettes les moins chères choisies`}
+                  </p>
+                ) : null}
               </div>
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-5">

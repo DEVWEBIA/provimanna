@@ -1,10 +1,13 @@
 import 'server-only';
 import { cache } from 'react';
 import {
+  budgetPerServing,
   buildShoppingLines,
   cheaperProductCount,
   compareStores,
   generatePlan,
+  householdSlots,
+  isRecipeAllowed,
   isoWeek,
   mealServings,
   monthOf,
@@ -30,6 +33,7 @@ import {
 import { PLAT_VARIANTS, type PlatVariant } from '@repas/ui';
 import { getAccount, type Household } from './household';
 import { listStores } from './stores';
+import { createAdminClient } from './supabase/admin';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@repas/core/database.types';
 
@@ -44,6 +48,7 @@ export interface CatalogueRecipe {
   illustration: PlatVariant;
   family: string;
   tags: string[];
+  equipment: string[];
   diets: Diet[];
   seasonMonths: number[];
   ingredients: { productId: string; units: number; pantry: boolean }[];
@@ -92,7 +97,7 @@ export async function loadCatalogue(supabase: Client): Promise<CatalogueRecipe[]
   const { data, error } = await supabase
     .from('recipes')
     .select(
-      'id, slug, title, servings, prep_minutes, cook_minutes, diets, season_months, illustration, family, tags, recipe_ingredients(product_id, units, pantry)',
+      'id, slug, title, servings, prep_minutes, cook_minutes, diets, season_months, illustration, family, tags, equipment, recipe_ingredients(product_id, units, pantry)',
     )
     .eq('published', true);
   if (error) throw new Error(`Catalogue indisponible : ${error.message}`);
@@ -105,6 +110,7 @@ export async function loadCatalogue(supabase: Client): Promise<CatalogueRecipe[]
     illustration: isPlat(r.illustration) ? r.illustration : 'soupe',
     family: r.family,
     tags: r.tags,
+    equipment: r.equipment,
     diets: r.diets,
     seasonMonths: r.season_months,
     ingredients: r.recipe_ingredients.flatMap((i) =>
@@ -146,7 +152,25 @@ export const toRecipe = (r: CatalogueRecipe): Recipe => ({
 });
 
 export function plannerHousehold(h: Household): PlannerHousehold {
-  return { diet: h.diet, exclusions: h.exclusions, cookingTime: h.cooking_time as CookingTime };
+  return {
+    diet: h.diet,
+    exclusions: h.exclusions,
+    cookingTime: h.cooking_time as CookingTime,
+    mealDays: h.meal_days,
+    withLunch: h.with_lunch,
+    equipment: h.equipment,
+    dislikedProductIds: h.disliked_product_ids,
+    styles: h.styles,
+  };
+}
+
+/** Coût visé par part pour tenir le budget du foyer (null sans budget). */
+export function householdBudgetPerServing(h: Household): number | null {
+  return budgetPerServing(
+    h.weekly_budget_cents,
+    householdSlots(plannerHousehold(h)).length,
+    mealServings(h.adults, h.children),
+  );
 }
 
 /** Recettes vues par le planificateur, avec leur coût par part dans l'enseigne du foyer. */
@@ -161,6 +185,8 @@ export function plannerRecipes(
     family: r.family,
     diets: r.diets,
     tags: r.tags,
+    equipment: r.equipment,
+    productIds: r.ingredients.filter((i) => !i.pantry).map((i) => i.productId),
     seasonMonths: r.seasonMonths,
     totalMinutes: r.minutes,
     costPerServingCents: recipeServingCents(toRecipe(r), store, observations, now),
@@ -235,6 +261,7 @@ export async function composeMeals({ supabase, household, data, weekStart, locke
       month: monthOf(weekStart),
       locked,
       filters,
+      budgetPerServingCents: householdBudgetPerServing(household) ?? undefined,
       recentRecipeIds: await previousWeekRecipes(supabase, household.id, weekStart),
     },
   );
@@ -381,3 +408,53 @@ export const currentPlan = cache(async () => {
   ]);
   return { ...account, data, stores, plan, view: plan ? planView(plan, account.household, data) : null };
 });
+
+/**
+ * Réponses du questionnaire modifiées : la semaine en cours, si elle n'est pas encore validée,
+ * est recomposée (repas verrouillés gardés s'ils restent compatibles). Une semaine validée ne
+ * bouge pas : les nouvelles réponses s'appliquent à la suivante.
+ * Renvoie 'recomposee', 'validee' (inchangée) ou 'aucune' (pas encore de plan).
+ */
+export async function rebuildCurrentWeek(
+  supabase: Client,
+  household: Household,
+): Promise<'recomposee' | 'validee' | 'aucune'> {
+  const data = await loadPlanData(supabase);
+  const weekStart = weekStartOf(data.now);
+  const plan = await getWeekPlan(supabase, household.id, weekStart);
+  if (!plan) return 'aucune';
+  if (plan.validated_at) return 'validee';
+  const store = (household.preferred_store_id ?? 'lidl') as StoreId;
+  const recipes = plannerRecipes(data.catalogue, store, data.observations, data.now);
+  const byId = new Map(recipes.map((r) => [r.id, r]));
+  const ph = plannerHousehold(household);
+  const locked: PlannedMeal[] = plan.meal_plan_items
+    .filter((i) => i.locked && byId.has(i.recipe_id) && isRecipeAllowed(byId.get(i.recipe_id)!, ph))
+    .map((i) => ({ day: i.day, slot: i.slot, recipeId: i.recipe_id, locked: true }));
+  let meals: PlannedMeal[];
+  try {
+    meals = await composeMeals({ supabase, household, data, weekStart, locked });
+  } catch (e) {
+    if (e instanceof PlannerError) return 'aucune';
+    throw e;
+  }
+  const servings = mealServings(household.adults, household.children);
+  const del = await supabase.from('meal_plan_items').delete().eq('meal_plan_id', plan.id);
+  if (del.error) throw new Error(`Plan non recomposé : ${del.error.message}`);
+  const { error } = await supabase.from('meal_plan_items').insert(
+    meals.map((m) => ({
+      meal_plan_id: plan.id,
+      day: m.day,
+      slot: m.slot,
+      recipe_id: m.recipeId,
+      servings,
+      locked: m.locked,
+    })),
+  );
+  if (error) throw new Error(`Plan non recomposé : ${error.message}`);
+  // Semaine pas encore validée : elle suit la nouvelle enseigne habituelle. meal_plans n'est pas
+  // modifiable côté client (migration 0006), d'où la clé serveur, limitée à ce plan.
+  if (plan.store_id !== store)
+    await createAdminClient().from('meal_plans').update({ store_id: store }).eq('id', plan.id);
+  return 'recomposee';
+}

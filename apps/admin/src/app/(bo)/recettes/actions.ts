@@ -22,7 +22,8 @@ const recipeSchema = z.object({
   family: z.string().trim().min(2).max(40),
   illustration: z.string().max(20),
   diets: z.array(z.enum(DIETS)).min(1),
-  tags: z.array(z.string().max(30)).max(12),
+  tags: z.array(z.string().max(30)).max(16),
+  equipment: z.array(z.enum(['four', 'plaques'])).max(2),
   seasonMonths: z.array(z.number().int().min(1).max(12)).min(1),
   steps: z
     .array(z.object({ text: z.string().trim().min(3), minutes: z.number().int().min(0).max(600).nullable() }))
@@ -62,6 +63,7 @@ export async function saveRecipe(input: unknown): Promise<SaveResult> {
       illustration: r.illustration,
       diets: r.diets,
       tags: r.tags,
+      equipment: r.equipment,
       season_months: r.seasonMonths,
       steps: r.steps,
       seo_title: r.seoTitle,

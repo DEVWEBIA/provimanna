@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { nextQuestion, signUp } from './helpers';
 import { extractCode, extractLink, waitForEmail } from './mailbox';
 
 // SHOTS=<dossier> : captures d'écran de contrôle visuel aux étapes clés.
@@ -10,41 +11,82 @@ const shot = async (page: Page, name: string, project: string) => {
 const uniqueEmail = (tag: string) =>
   `e2e-${tag}-${Date.now()}-${Math.floor(Math.random() * 1e6)}@example.com`;
 
-/** Étapes 1 à 3 du questionnaire (foyer 2 + 2, sans porc, moins de 30 min, Auchan 69003). */
+/**
+ * Questionnaire complet (foyer 2 + 2, midi et soir du lundi au vendredi, Auchan 69003, budget,
+ * sans porc, moins de 30 min, styles, un ingrédient évité, plaques seulement).
+ */
 async function fillQuestionnaire(page: Page, project: string) {
-  await expect(page.getByRole('heading', { name: 'Vous êtes combien à table ?' })).toBeVisible();
-  await shot(page, 'etape1', project);
-  await page.getByRole('button', { name: 'Ajouter un enfant' }).click();
-  await page.getByRole('button', { name: 'Ajouter un enfant' }).click();
-  await page.getByRole('button', { name: 'Continuer' }).click();
+  await expect(page.getByRole('heading', { name: 'Qu’est-ce qui t’amène ?' })).toBeVisible();
+  await page.getByText('Mes courses me coûtent trop cher').click();
+  await shot(page, 'motivations', project);
+  await nextQuestion(page);
 
-  await expect(page.getByRole('heading', { name: 'Des choses à éviter ?' })).toBeVisible();
-  await page.getByText('Sans porc', { exact: true }).click();
-  await page.getByLabel('Temps de cuisine en semaine').selectOption('moins_30');
-  await shot(page, 'etape2', project);
-  await page.getByRole('button', { name: 'Continuer' }).click();
+  await expect(page.getByRole('heading', { name: 'Vous êtes combien à table ?' })).toBeVisible();
+  await page.getByRole('button', { name: 'Ajouter un enfant' }).click();
+  await page.getByRole('button', { name: 'Ajouter un enfant' }).click();
+  await nextQuestion(page);
+
+  await expect(page.getByRole('heading', { name: 'Quels repas on prévoit ?' })).toBeVisible();
+  await page.getByRole('button', { name: 'samedi' }).click();
+  await page.getByRole('button', { name: 'dimanche' }).click();
+  await expect(page.getByText('Du lundi au vendredi')).toBeVisible();
+  await expect(page.getByText('10 repas', { exact: true })).toBeVisible();
+  await shot(page, 'repas', project);
+  await nextQuestion(page);
 
   // Retour arrière sans perte.
   await expect(page.getByRole('heading', { name: 'Où fais-tu tes courses ?' })).toBeVisible();
-  await page.getByRole('button', { name: '← Retour' }).click();
-  await expect(page.getByRole('checkbox', { name: 'Sans porc' })).toBeChecked();
-  await page.getByRole('button', { name: 'Continuer' }).click();
+  await page.getByRole('button', { name: 'Question précédente' }).click();
+  await expect(page.getByRole('button', { name: 'samedi' })).toHaveAttribute('aria-pressed', 'false');
+  await nextQuestion(page);
 
   // Erreurs utiles, saisie conservée.
-  await page.getByRole('button', { name: 'Générer ma semaine' }).click();
+  await nextQuestion(page);
   await expect(page.getByText('Choisis ton enseigne habituelle.')).toBeVisible();
   // Picard et Grand Frais (assortiment partiel) ne sont pas proposés comme enseigne habituelle.
   await expect(page.getByRole('radio', { name: 'Picard' })).toHaveCount(0);
   await expect(page.getByRole('radio', { name: 'Super U' })).toHaveCount(1);
   await page.getByText('Auchan', { exact: true }).click();
   await page.getByLabel('Code postal').fill('690');
-  await page.getByRole('button', { name: 'Générer ma semaine' }).click();
+  await nextQuestion(page);
   await expect(page.getByText('Le code postal fait 5 chiffres, par exemple 69003.')).toBeVisible();
   await expect(page.getByRole('radio', { name: 'Auchan' })).toBeChecked();
-  await shot(page, 'etape3', project);
   await page.getByLabel('Code postal').fill('69003');
-  await page.getByRole('button', { name: 'Générer ma semaine' }).click();
-  await expect(page.getByText('14 repas pour 4 personnes, de saison, chez Auchan.')).toBeVisible();
+  await nextQuestion(page);
+
+  await expect(page.getByRole('heading', { name: 'Quel budget pour tes courses ?' })).toBeVisible();
+  await page.getByLabel('Budget par semaine').fill('60');
+  await shot(page, 'budget', project);
+  await nextQuestion(page);
+
+  await expect(page.getByRole('heading', { name: 'Un régime ou des allergies ?' })).toBeVisible();
+  await page.getByText('Sans porc', { exact: true }).click();
+  await nextQuestion(page);
+
+  await expect(page.getByRole('heading', { name: 'Quelle ambiance à table ?' })).toBeVisible();
+  await page.getByText('Gourmand', { exact: true }).click();
+  await page.getByText('Rapide & facile', { exact: true }).click();
+  await page.getByText('En famille', { exact: true }).click();
+  // 3 styles au plus : les autres se désactivent.
+  await expect(page.getByRole('checkbox', { name: /Saveurs du monde/ })).toBeDisabled();
+  await page.getByText('Moins de 30 min', { exact: true }).click();
+  await nextQuestion(page);
+
+  await expect(page.getByRole('heading', { name: 'Des ingrédients à éviter ?' })).toBeVisible();
+  await page.getByLabel('Chercher un ingrédient').fill('champ');
+  await page.getByText('Champignons de Paris', { exact: true }).click();
+  await expect(page.getByText('1 ingrédient évité')).toBeVisible();
+  await nextQuestion(page);
+
+  await expect(page.getByRole('heading', { name: 'Ton équipement ?' })).toBeVisible();
+  await page.getByText('Four', { exact: true }).click();
+  await page.getByText('Plaques', { exact: true }).click();
+  await nextQuestion(page);
+  await expect(page.getByText('Choisis au moins un équipement : plaques, four ou air fryer.')).toBeVisible();
+  await page.getByText('Plaques', { exact: true }).click();
+  await shot(page, 'equipement', project);
+  await page.getByRole('button', { name: 'Composer ma semaine' }).click();
+  await expect(page.getByText('10 repas pour 4 personnes, de saison, chez Auchan.')).toBeVisible();
 }
 
 test('visiteur : questionnaire sans compte → email → espace client déjà configuré', async ({
@@ -75,14 +117,21 @@ test('visiteur : questionnaire sans compte → email → espace client déjà co
   await expect(page.getByRole('heading', { name: 'Ton menu de la semaine est prêt.' })).toBeVisible();
   await shot(page, 'app', info.project.name);
 
-  // Et elles sont bien enregistrées dans le foyer.
-  await page.goto('/app/bienvenue');
-  await page.getByRole('button', { name: 'Continuer' }).click();
-  await expect(page.getByRole('checkbox', { name: 'Sans porc' })).toBeChecked();
-  await expect(page.getByLabel('Temps de cuisine en semaine')).toHaveValue('moins_30');
-  await page.getByRole('button', { name: 'Continuer' }).click();
-  await expect(page.getByRole('radio', { name: 'Auchan' })).toBeChecked();
-  await expect(page.getByLabel('Code postal')).toHaveValue('69003');
+  // Et elles sont bien enregistrées dans le foyer (profil).
+  await page.goto('/app/profil');
+  const answers = page.getByRole('heading', { name: 'Tes réponses' }).locator('..');
+  await expect(answers).toContainText('2 adultes, 2 enfants');
+  await expect(answers).toContainText('10 repas · midi et soir · du lundi au vendredi');
+  await expect(answers).toContainText('Auchan · 69003');
+  await expect(answers).toContainText('60,00 €');
+  await expect(answers).toContainText('Sans porc');
+  await expect(answers).toContainText('Gourmand, Rapide & facile, En famille');
+  await expect(answers).toContainText('Champignons de Paris');
+  await expect(answers).toContainText('Plaques');
+
+  // Plan : 10 repas, aucun le week-end.
+  await page.goto('/app/plan');
+  await expect(page.getByText(/· 10 repas$/)).toBeVisible();
 
   // Connecté : /commencer et /connexion renvoient vers l'espace client.
   await page.goto('/commencer');
@@ -109,7 +158,7 @@ test('connexion directe par code → questionnaire du compte → espace client',
 
   await expect(page).toHaveURL(/\/app\/bienvenue/);
   await fillQuestionnaire(page, `${info.project.name}-compte`);
-  // Compte connecté : la semaine est générée dès l'étape 3 (texte de la maquette).
+  // Compte connecté : la semaine est générée après la dernière question.
   await expect(page.getByText('Plan généré')).toBeVisible();
   await expect(page.getByRole('heading', { name: /^Ta semaine \d+ est prête\.$/ })).toBeVisible();
   await page.getByRole('link', { name: 'Voir mon plan →' }).click();
@@ -119,4 +168,17 @@ test('connexion directe par code → questionnaire du compte → espace client',
 test('/app sans session → connexion', async ({ page }) => {
   await page.goto('/app/plan');
   await expect(page).toHaveURL(/\/connexion\?suite=%2Fapp%2Fplan/);
+});
+
+test('profil : modifier une réponse recompose la semaine', async ({ page }, info) => {
+  await signUp(page, uniqueEmail(`profil-${info.project.name}`));
+  await page.goto('/app/profil');
+  await page.getByRole('link', { name: /Modifier : Repas/ }).click();
+  await expect(page.getByRole('heading', { name: 'Quels repas on prévoit ?' })).toBeVisible();
+  await page.getByText('Le soir', { exact: true }).click();
+  await page.getByRole('button', { name: 'Enregistrer' }).click();
+  await expect(page).toHaveURL(/\/app\/profil\?fait=recomposee/);
+  await expect(page.getByText('Ta semaine a été recomposée avec tes nouvelles réponses.')).toBeVisible();
+  await page.goto('/app/plan');
+  await expect(page.getByText(/· 7 repas$/)).toBeVisible();
 });

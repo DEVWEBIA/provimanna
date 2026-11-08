@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  budgetPerServing,
+  canCook,
   generatePlan,
+  householdSlots,
+  matchesStyle,
   isRecipeAllowed,
   mealServings,
   PlannerError,
@@ -256,4 +260,69 @@ describe('mealServings', () => {
     [1, 0, 1],
     [4, 3, 7],
   ])('%i adulte(s) + %i enfant(s) → %i parts', (a, c, n) => expect(mealServings(a, c)).toBe(n));
+});
+
+describe('questionnaire enrichi', () => {
+  const opts = { month: 10, random: seededRandom(7) };
+
+  it('ne planifie que les jours et repas choisis', () => {
+    const plan = generatePlan({ ...OMNI, mealDays: [1, 2, 3, 4, 5], withLunch: false }, RECIPES, opts);
+    expect(plan).toHaveLength(5);
+    expect(plan.every((m) => m.slot === 'diner' && m.day <= 5)).toBe(true);
+    expect(householdSlots({ mealDays: [6, 7] })).toHaveLength(4);
+    expect(householdSlots({})).toHaveLength(14);
+  });
+
+  it('ignore les repas verrouillés hors des créneaux choisis', () => {
+    const locked: PlannedMeal[] = [{ day: 6, slot: 'dejeuner', recipeId: 'soupe-0', locked: true }];
+    const plan = generatePlan({ ...OMNI, mealDays: [1], withLunch: false }, RECIPES, { ...opts, locked });
+    expect(plan).toHaveLength(1);
+    expect(plan[0]!.day).toBe(1);
+  });
+
+  it('respecte l’équipement (le air fryer remplace le four si la recette le permet)', () => {
+    const oven: PlannerRecipe = { ...RECIPES[0]!, id: 'four-seul', equipment: ['four'], tags: [] };
+    const airOk: PlannerRecipe = { ...oven, id: 'four-air', tags: ['air_fryer'] };
+    expect(canCook(oven, ['plaques'])).toBe(false);
+    expect(canCook(oven, ['plaques', 'air_fryer'])).toBe(false);
+    expect(canCook(airOk, ['plaques', 'air_fryer'])).toBe(true);
+    expect(canCook(oven, undefined)).toBe(true);
+    const recipes = RECIPES.map((r, i) => ({ ...r, equipment: i % 3 === 0 ? ['four'] : ['plaques'] }));
+    const plan = generatePlan({ ...OMNI, equipment: ['plaques'] }, recipes, opts);
+    const used = new Map(recipes.map((r) => [r.id, r]));
+    expect(plan.every((m) => !used.get(m.recipeId)!.equipment.includes('four'))).toBe(true);
+  });
+
+  it('évite les ingrédients non aimés tant qu’il reste assez de recettes', () => {
+    const recipes = RECIPES.map((r, i) => ({ ...r, productIds: i % 4 === 0 ? ['oignon'] : ['riz'] }));
+    const plan = generatePlan({ ...OMNI, dislikedProductIds: ['oignon'] }, recipes, opts);
+    const byRecipe = new Map(recipes.map((r) => [r.id, r]));
+    expect(plan.some((m) => byRecipe.get(m.recipeId)!.productIds.includes('oignon'))).toBe(false);
+    // Tout le catalogue contient l'ingrédient : le plan reste possible.
+    const all = RECIPES.map((r) => ({ ...r, productIds: ['oignon'] }));
+    expect(generatePlan({ ...OMNI, dislikedProductIds: ['oignon'] }, all, opts)).toHaveLength(14);
+  });
+
+  it('favorise les styles choisis', () => {
+    const count = (styles: string[]) =>
+      generatePlan({ ...OMNI, styles }, RECIPES, { month: 10, random: seededRandom(3) }).filter((m) =>
+        byId.get(m.recipeId)!.tags.includes('enfants'),
+      ).length;
+    expect(count(['famille'])).toBeGreaterThan(count([]));
+    expect(matchesStyle({ ...RECIPES[0]!, totalMinutes: 25 }, 'rapide')).toBe(true);
+  });
+
+  it('tire le coût vers le budget', () => {
+    const cost = (plan: PlannedMeal[]) =>
+      plan.reduce((s, m) => s + (byId.get(m.recipeId)!.costPerServingCents ?? 0), 0);
+    const free = generatePlan(OMNI, RECIPES, { month: 10, random: seededRandom(5) });
+    const tight = generatePlan(OMNI, RECIPES, {
+      month: 10,
+      random: seededRandom(5),
+      budgetPerServingCents: 90,
+    });
+    expect(cost(tight)).toBeLessThan(cost(free));
+    expect(budgetPerServing(6300, 10, 2)).toBe(315);
+    expect(budgetPerServing(null, 10, 2)).toBeNull();
+  });
 });

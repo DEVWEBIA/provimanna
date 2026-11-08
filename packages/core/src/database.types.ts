@@ -164,12 +164,19 @@ export type Database = {
           cooking_time: Database["public"]["Enums"]["cooking_time"]
           created_at: string
           diet: Database["public"]["Enums"]["diet"]
+          disliked_product_ids: string[]
+          equipment: string[]
           exclusions: string[]
           id: string
+          meal_days: number[]
           meals_per_week: number
+          motivations: string[]
           name: string | null
           postal_code: string | null
           preferred_store_id: string | null
+          styles: string[]
+          weekly_budget_cents: number | null
+          with_lunch: boolean
         }
         Insert: {
           adults?: number
@@ -177,12 +184,19 @@ export type Database = {
           cooking_time?: Database["public"]["Enums"]["cooking_time"]
           created_at?: string
           diet?: Database["public"]["Enums"]["diet"]
+          disliked_product_ids?: string[]
+          equipment?: string[]
           exclusions?: string[]
           id?: string
+          meal_days?: number[]
           meals_per_week?: number
+          motivations?: string[]
           name?: string | null
           postal_code?: string | null
           preferred_store_id?: string | null
+          styles?: string[]
+          weekly_budget_cents?: number | null
+          with_lunch?: boolean
         }
         Update: {
           adults?: number
@@ -190,12 +204,19 @@ export type Database = {
           cooking_time?: Database["public"]["Enums"]["cooking_time"]
           created_at?: string
           diet?: Database["public"]["Enums"]["diet"]
+          disliked_product_ids?: string[]
+          equipment?: string[]
           exclusions?: string[]
           id?: string
+          meal_days?: number[]
           meals_per_week?: number
+          motivations?: string[]
           name?: string | null
           postal_code?: string | null
           preferred_store_id?: string | null
+          styles?: string[]
+          weekly_budget_cents?: number | null
+          with_lunch?: boolean
         }
         Relationships: [
           {
@@ -680,6 +701,7 @@ export type Database = {
           created_at: string
           description: string | null
           diets: Database["public"]["Enums"]["diet"][]
+          equipment: string[]
           family: string
           id: string
           illustration: string | null
@@ -700,6 +722,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           diets?: Database["public"]["Enums"]["diet"][]
+          equipment?: string[]
           family?: string
           id?: string
           illustration?: string | null
@@ -720,6 +743,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           diets?: Database["public"]["Enums"]["diet"][]
+          equipment?: string[]
           family?: string
           id?: string
           illustration?: string | null

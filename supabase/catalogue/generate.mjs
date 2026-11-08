@@ -478,6 +478,37 @@ function deduce(keys) {
   return { diets, tags };
 }
 
+// Équipement nécessaire, déduit des étapes : four (« four », « °C ») et plaques (poêle, casserole…).
+const OVEN = /\bfour\b|°C/i;
+const HOB = /po[êe]le|casserole|faitout|cocotte|wok|revenir|bouillir|saisi|mijot|fais cuire|fais fondre|r[ée]chauffe|sauteuse|feu/i;
+// Recettes dont la cuisson au four se fait aussi au air fryer (pièces, filets, légumes en morceaux).
+const AIR_FRYER = new Set([
+  'legumes-rotis-pois-chiches', 'potimarron-chataignes-rotis', 'cuisses-poulet-roties',
+  'colin-citron-riz', 'salade-quinoa-patate-douce',
+]);
+function equipmentOf(r) {
+  const text = r.steps.map(([t]) => t).join(' ');
+  const eq = [];
+  if (OVEN.test(text)) eq.push('four');
+  if (HOB.test(text) || r.cook > 0 && !eq.length) eq.push('plaques');
+  return eq;
+}
+
+// Styles (questionnaire « Quelle ambiance ? »), déduits des ingrédients comme les allergènes.
+// 'rapide' (≤ 30 min), 'famille' (tag enfants) et 'vegetal' (végétarien) se lisent sans marqueur.
+const RICH = new Set(['beurre', 'creme', 'creme_fraiche', 'emmental', 'parmesan', 'mozzarella', 'chevre', 'lardons', 'saucisses', 'pate_brisee', 'pate_feuilletee', 'lasagnes', 'gnocchis', 'feta']);
+const WORLD = new Set(['curry', 'cumin', 'ras_el_hanout', 'soja', 'coco', 'tortillas', 'gingembre', 'haricots_rouges']);
+function stylesOf(r, keys) {
+  const fresh = keys.filter((k) => byKey.get(k).aisle === 'fruits_legumes' || ['epinards', 'haricots_verts', 'petits_pois'].includes(k));
+  const rich = keys.filter((k) => RICH.has(k));
+  const tags = [];
+  if (rich.length === 0 && new Set(fresh).size >= 2) tags.push('equilibre');
+  if (rich.length >= 2 || ['gratin', 'tarte'].includes(r.family)) tags.push('gourmand');
+  if (keys.some((k) => WORLD.has(k)) || ['curry', 'wrap'].includes(r.family)) tags.push('monde');
+  if (AIR_FRYER.has(r.slug)) tags.push('air_fryer');
+  return tags;
+}
+
 const out = [];
 out.push('-- catalogue.sql — GÉNÉRÉ par supabase/catalogue/generate.mjs : ne pas modifier à la main.');
 out.push('-- Catalogue de départ (lot 5) : produits, recettes d’automne / hiver et PRIX DE DÉMONSTRATION');
@@ -541,10 +572,11 @@ RECIPES.forEach((r, i) => {
     return k;
   });
   const { diets, tags } = deduce(keys);
-  const allTags = [...new Set([...tags, ...r.tags])];
+  const allTags = [...new Set([...tags, ...r.tags, ...stylesOf(r, keys)])];
+  const equipment = equipmentOf(r);
   const steps = JSON.stringify(r.steps.map(([text, minutes]) => ({ text, minutes })));
   out.push(
-    `insert into recipes (id, slug, title, description, servings, prep_minutes, cook_minutes, diets, season_months, illustration, family, tags, steps, published) values (${q(id)}, ${q(r.slug)}, ${q(r.title)}, ${q(r.description)}, 4, ${r.prep}, ${r.cook}, ${arr(diets)}, ${arr(r.season)}, ${q(r.plat)}, ${q(r.family)}, ${arr(allTags)}, ${q(steps)}, true);`,
+    `insert into recipes (id, slug, title, description, servings, prep_minutes, cook_minutes, diets, season_months, illustration, family, tags, equipment, steps, published) values (${q(id)}, ${q(r.slug)}, ${q(r.title)}, ${q(r.description)}, 4, ${r.prep}, ${r.cook}, ${arr(diets)}, ${arr(r.season)}, ${q(r.plat)}, ${q(r.family)}, ${arr(allTags)}, ${arr(equipment)}, ${q(steps)}, true);`,
   );
   out.push('insert into recipe_ingredients (recipe_id, label, product_id, units, pantry, position) values');
   out.push(
@@ -554,7 +586,7 @@ RECIPES.forEach((r, i) => {
   );
   out.push('');
   const lidl = r.ing.reduce((s, [k, u]) => s + byKey.get(k).base * u, 0);
-  report.push(`${(lidl / 400).toFixed(2).padStart(5)} €/part · ${String(r.prep + r.cook).padStart(3)} min · ${r.family.padEnd(12)} · ${diets.includes('vegetarien') ? 'végé ' : '     '} ${r.title}`);
+  report.push(`${(lidl / 400).toFixed(2).padStart(5)} €/part · ${String(r.prep + r.cook).padStart(3)} min · ${r.family.padEnd(12)} · ${diets.includes('vegetarien') ? 'végé ' : '     '} ${r.title} · [${equipment}] ${stylesOf(r, keys).join(' ')}`);
 });
 
 writeFileSync(OUT, out.join('\n') + '\n');

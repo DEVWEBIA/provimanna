@@ -22,12 +22,26 @@ export interface PlannerRecipe {
   totalMinutes: number;
   /** Coût d'une part dans l'enseigne du foyer, en centimes (null si inconnu). */
   costPerServingCents: number | null;
+  /** Équipement nécessaire (recipes.equipment) : four, plaques. Absent = aucun contrôle. */
+  equipment?: readonly string[];
+  /** Produits utilisés (pour éviter les ingrédients que le foyer n'aime pas). */
+  productIds?: readonly string[];
 }
 
 export interface PlannerHousehold {
   diet: Diet;
   exclusions: readonly string[];
   cookingTime: CookingTime;
+  /** Jours planifiés (1 = lundi … 7). Absent = toute la semaine. */
+  mealDays?: readonly number[];
+  /** Midi + soir (true, par défaut) ou soir seulement. */
+  withLunch?: boolean;
+  /** Équipement du foyer : four, plaques, air_fryer. Absent = tout. */
+  equipment?: readonly string[];
+  /** Produits évités (strictement tant qu'il reste assez de recettes, sinon le moins possible). */
+  dislikedProductIds?: readonly string[];
+  /** Styles préférés (equilibre, rapide, gourmand, famille, monde, vegetal) : favorisés, jamais imposés. */
+  styles?: readonly string[];
 }
 
 /** Filtres de la maquette AppPlan (« Varier la semaine »). */
@@ -55,6 +69,8 @@ export interface GenerateOptions {
   filters?: PlanFilters;
   /** Recettes de la semaine précédente : évitées si possible. */
   recentRecipeIds?: readonly string[];
+  /** Coût visé par part (budget du foyer), en centimes : les recettes plus chères sont pénalisées. */
+  budgetPerServingCents?: number;
   /** Aléa dans [0, 1[ (Math.random par défaut) : injecter `seededRandom(n)` pour des tests déterministes. */
   random?: () => number;
 }
@@ -91,14 +107,60 @@ const EXCLUSION_RULES: Partial<Record<PreferenceId, (r: PlannerRecipe) => boolea
   peu_epice: (r) => !r.tags.includes('epice'),
 };
 
-/** La recette respecte-t-elle le régime et les exclusions du foyer ? (contrainte stricte, jamais relâchée) */
+/**
+ * La recette est-elle faisable avec l'équipement du foyer ? Le four peut être remplacé par un
+ * air fryer quand la recette est marquée 'air_fryer'.
+ */
+export function canCook(recipe: PlannerRecipe, equipment: readonly string[] | undefined): boolean {
+  if (!equipment || !recipe.equipment) return true;
+  if (recipe.equipment.includes('plaques') && !equipment.includes('plaques')) return false;
+  if (
+    recipe.equipment.includes('four') &&
+    !equipment.includes('four') &&
+    !(equipment.includes('air_fryer') && recipe.tags.includes('air_fryer'))
+  )
+    return false;
+  return true;
+}
+
+/**
+ * La recette respecte-t-elle le régime, les exclusions et l'équipement du foyer ?
+ * (contrainte stricte, jamais relâchée)
+ */
 export function isRecipeAllowed(recipe: PlannerRecipe, household: PlannerHousehold): boolean {
   if (household.diet !== 'omnivore' && !recipe.diets.includes(household.diet)) return false;
   for (const ex of household.exclusions) {
     const rule = EXCLUSION_RULES[ex as PreferenceId];
     if (rule && !rule(recipe)) return false;
   }
-  return true;
+  return canCook(recipe, household.equipment);
+}
+
+/** La recette contient-elle un produit que le foyer n'aime pas ? */
+export function hasDisliked(recipe: PlannerRecipe, disliked: readonly string[] | undefined): boolean {
+  if (!disliked?.length || !recipe.productIds) return false;
+  return recipe.productIds.some((p) => disliked.includes(p));
+}
+
+/** La recette correspond-elle à un des styles choisis ? */
+export function matchesStyle(r: PlannerRecipe, style: string): boolean {
+  if (style === 'rapide') return r.totalMinutes <= 30;
+  if (style === 'famille') return r.tags.includes('enfants');
+  if (style === 'vegetal') return r.diets.includes('vegetarien');
+  return r.tags.includes(style);
+}
+
+/** Créneaux à planifier pour ce foyer (jours choisis × midi et/ou soir), dans l'ordre de la semaine. */
+export function householdSlots(household: Pick<PlannerHousehold, 'mealDays' | 'withLunch'>) {
+  const days = DAYS.filter((d) => !household.mealDays || household.mealDays.includes(d));
+  const slots: readonly MealSlot[] = household.withLunch === false ? ['diner'] : SLOTS;
+  return days.flatMap((day) => slots.map((slot) => ({ day, slot })));
+}
+
+/** Coût visé par part pour tenir un budget hebdomadaire (null sans budget). */
+export function budgetPerServing(budgetCents: number | null | undefined, meals: number, servings: number) {
+  if (!budgetCents || meals <= 0 || servings <= 0) return null;
+  return Math.floor(budgetCents / (meals * servings));
 }
 
 function matchesFilters(r: PlannerRecipe, f: PlanFilters, month: number): boolean {
@@ -121,6 +183,7 @@ interface Context {
   random: () => number;
   minCost: number;
   maxCost: number;
+  budget: number | null;
 }
 
 /**
@@ -190,6 +253,10 @@ function score(r: PlannerRecipe, ctx: Context, neighbours: (string | undefined)[
   if (neighbours.includes(r.family)) s += 0.6;
   if (ctx.recent.has(r.id)) s += 0.8;
   if (r.costPerServingCents === null) s += 2;
+  if (ctx.budget && r.costPerServingCents !== null && r.costPerServingCents > ctx.budget)
+    s += ((r.costPerServingCents - ctx.budget) / ctx.budget) * 2.5;
+  if (ctx.household.styles?.some((st) => matchesStyle(r, st))) s -= 0.6;
+  if (hasDisliked(r, ctx.household.dislikedProductIds)) s += 3;
   return s;
 }
 
@@ -199,8 +266,11 @@ function context(
   opts: GenerateOptions,
 ): Context {
   const f = opts.filters ?? {};
-  const allowed = recipes.filter((r) => isRecipeAllowed(r, household));
-  if (allowed.length === 0) throw new PlannerError('Aucune recette ne correspond à ce foyer');
+  const permitted = recipes.filter((r) => isRecipeAllowed(r, household));
+  if (permitted.length === 0) throw new PlannerError('Aucune recette ne correspond à ce foyer');
+  // Ingrédients non aimés : écartés tant qu'il reste de quoi varier, sinon seulement pénalisés.
+  const liked = permitted.filter((r) => !hasDisliked(r, household.dislikedProductIds));
+  const allowed = liked.length >= 7 ? liked : permitted;
   // Les filtres choisis sont respectés tant qu'ils laissent assez de recettes pour varier la semaine.
   const filtered = allowed.filter((r) => matchesFilters(r, f, opts.month));
   const pool = filtered.length >= 7 ? filtered : allowed;
@@ -214,11 +284,12 @@ function context(
     random: opts.random ?? Math.random,
     minCost: costs.length ? Math.min(...costs) : 0,
     maxCost: costs.length ? Math.max(...costs) : 0,
+    budget: opts.budgetPerServingCents ?? null,
   };
 }
 
 /**
- * Compose les 14 repas de la semaine (midi et soir, lundi → dimanche).
+ * Compose les repas de la semaine : les créneaux du foyer (14 par défaut, midi et soir, lundi → dimanche).
  * Les repas verrouillés sont conservés à leur place ; les autres sont choisis pour respecter
  * régime et exclusions (toujours), puis variété, temps de cuisine en semaine, saison et coût.
  */
@@ -229,9 +300,11 @@ export function generatePlan(
 ): PlannedMeal[] {
   const ctx = context(household, recipes, opts);
   const plan = new Map<string, PlannedMeal>();
-  for (const m of opts.locked ?? []) plan.set(key(m.day, m.slot), { ...m, locked: true });
-  // Les soirs de semaine d'abord (créneaux les plus contraints par le temps), puis le reste.
-  const order = [...DAYS].flatMap((day) => SLOTS.map((slot) => ({ day, slot })));
+  const order = householdSlots(household);
+  const wanted = new Set(order.map((o) => key(o.day, o.slot)));
+  for (const m of opts.locked ?? [])
+    if (wanted.has(key(m.day, m.slot))) plan.set(key(m.day, m.slot), { ...m, locked: true });
+  // Les jours de semaine d'abord (créneaux les plus contraints par le temps), puis le reste.
   order.sort((a, b) => Number(b.day <= 5) - Number(a.day <= 5));
   for (const { day, slot } of order) {
     if (plan.has(key(day, slot))) continue;

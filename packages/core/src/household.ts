@@ -49,3 +49,52 @@ export function trialDaysLeft(trialEndsAt: string | Date, bonusDays: number, now
   const end = new Date(trialEndsAt).getTime() + bonusDays * 86_400_000;
   return Math.max(0, Math.ceil((end - now.getTime()) / 86_400_000));
 }
+
+/** Styles de repas du questionnaire (« Quelle ambiance ? »), 3 au plus. */
+export const STYLES = [
+  { id: 'equilibre', label: 'Équilibré', hint: 'Légumes et légèreté' },
+  { id: 'rapide', label: 'Rapide & facile', hint: '30 minutes ou moins' },
+  { id: 'gourmand', label: 'Gourmand', hint: 'Gratins, tartes, fromage' },
+  { id: 'famille', label: 'En famille', hint: 'Ce que les enfants aiment' },
+  { id: 'monde', label: 'Saveurs du monde', hint: 'Curry, épices, coco' },
+  { id: 'vegetal', label: 'Plus végétal', hint: 'Moins de viande' },
+] as const;
+export type StyleId = (typeof STYLES)[number]['id'];
+export const STYLE_IDS = STYLES.map((s) => s.id) as StyleId[];
+export const MAX_STYLES = 3;
+
+/** Équipement de cuisine du foyer. */
+export const EQUIPMENT = [
+  { id: 'plaques', label: 'Plaques' },
+  { id: 'four', label: 'Four' },
+  { id: 'air_fryer', label: 'Air fryer' },
+] as const;
+export type EquipmentId = (typeof EQUIPMENT)[number]['id'];
+export const EQUIPMENT_IDS = EQUIPMENT.map((e) => e.id) as EquipmentId[];
+
+/** Ce qui amène le foyer (premier écran du questionnaire, stats du back-office). */
+export const MOTIVATIONS = [
+  {
+    id: 'inspiration',
+    label: 'Je ne sais jamais quoi cuisiner',
+    hint: 'Les idées de la semaine, prêtes le jeudi.',
+  },
+  {
+    id: 'budget',
+    label: 'Mes courses me coûtent trop cher',
+    hint: 'Le prix de ta liste, enseigne par enseigne.',
+  },
+  { id: 'temps', label: 'Je manque de temps', hint: 'Des recettes rapides les soirs de semaine.' },
+  {
+    id: 'equilibre',
+    label: 'Je voudrais manger plus équilibré',
+    hint: 'Des légumes de saison, sans y penser.',
+  },
+  { id: 'gaspillage', label: 'Je jette trop de nourriture', hint: 'Les bonnes quantités pour ton foyer.' },
+] as const;
+export type MotivationId = (typeof MOTIVATIONS)[number]['id'];
+export const MOTIVATION_IDS = MOTIVATIONS.map((m) => m.id) as MotivationId[];
+
+/** Bornes du budget hebdomadaire (questionnaire), en centimes. */
+export const BUDGET_MIN_CENTS = 1000;
+export const BUDGET_MAX_CENTS = 30000;

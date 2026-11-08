@@ -2,6 +2,8 @@ import { STORE_COUNT } from '@repas/core';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { OnboardingWizard } from '@/components/onboarding/wizard';
+import { dislikableIngredients } from '@/lib/ingredients';
+import { DEFAULT_DRAFT } from '@/lib/onboarding';
 import { createClient } from '@/lib/supabase/server';
 import { listStores } from '@/lib/stores';
 
@@ -22,19 +24,14 @@ export default async function CommencerPage({ searchParams }: { searchParams: Se
   } = await supabase.auth.getUser();
   if (user) redirect('/app');
 
+  const [stores, ingredients] = await Promise.all([listStores(supabase), dislikableIngredients(supabase)]);
   return (
     <OnboardingWizard
       mode="guest"
       referral={typeof parrain === 'string' ? parrain : undefined}
-      stores={await listStores(supabase)}
-      initial={{
-        adults: 2,
-        children: 0,
-        prefs: [],
-        cooking_time: 'peu_importe',
-        store: null,
-        postal_code: '',
-      }}
+      stores={stores}
+      ingredients={ingredients}
+      initial={DEFAULT_DRAFT}
     />
   );
 }

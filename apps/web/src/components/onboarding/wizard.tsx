@@ -1,16 +1,34 @@
 'use client';
 
 import Link from 'next/link';
-import { startTransition, useActionState, useState, type FormEvent, type ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
 import {
+  startTransition,
+  useActionState,
+  useId,
+  useMemo,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from 'react';
+import {
+  BUDGET_MAX_CENTS,
+  BUDGET_MIN_CENTS,
+  EQUIPMENT,
   formatEuro,
   householdFactor,
+  MAX_STYLES,
+  MOTIVATIONS,
   PREFERENCES,
   priceSpread,
   scaleCents,
   STORES_INFO,
+  STYLES,
+  type EquipmentId,
+  type MotivationId,
   type PreferenceId,
   type StoreId,
+  type StyleId,
 } from '@repas/core';
 import {
   animDelay,
@@ -19,20 +37,32 @@ import {
   buttonClasses,
   cx,
   Glow,
+  Icon,
   inputClasses,
   LogoMark,
   Plat,
   TicketCard,
+  type IconName,
 } from '@repas/ui';
 import { saveOnboarding, type GeneratedPlan } from '@/app/app/bienvenue/actions';
+import { updatePreferences } from '@/app/app/(main)/profil/actions';
 import { startSignup } from '@/app/commencer/actions';
 import type { AuthFormState } from '@/app/connexion/actions';
 import { EmailSent } from '@/components/auth/email-sent';
-import { BrandPanel } from '@/components/brand/brand-panel';
 import { StoreLogo } from '@/components/store-logo';
+import type { IngredientGroup } from '@/lib/ingredients';
 import { EXAMPLE_STORES } from '@/lib/landing-data';
 import { href, ROUTES } from '@/lib/site';
-import { enseigneSchema, type COOKING_TIMES } from './schema';
+import { daysSummary } from '@/lib/meal-days';
+import { ChipToggle, IconBubble, InfoNote, OptionCard, OptionTile, WeekGrid } from './controls';
+import {
+  enseigneSchema,
+  equipementSchema,
+  repasSchema,
+  WIZARD_STEPS,
+  type COOKING_TIMES,
+  type WizardStep,
+} from './schema';
 
 type CookingTime = (typeof COOKING_TIMES)[number];
 
@@ -43,157 +73,100 @@ export interface WizardDraft {
   cooking_time: CookingTime;
   store: StoreId | null;
   postal_code: string;
+  meal_days: number[];
+  with_lunch: boolean;
+  budget_cents: number | null;
+  styles: StyleId[];
+  equipment: EquipmentId[];
+  disliked: string[];
+  motivations: MotivationId[];
 }
 
+const LAST_QUESTION = WIZARD_STEPS.indexOf('equipement');
+
 export interface OnboardingWizardProps {
-  /** guest : sans compte, l'étape 4 demande l'email. account : compte connecté, on enregistre à l'étape 3. */
-  mode: 'guest' | 'account';
+  /**
+   * guest : sans compte, le dernier écran demande l'email. account : compte connecté, on enregistre
+   * après la dernière question. edit : une seule réponse modifiée depuis le profil.
+   */
+  mode: 'guest' | 'account' | 'edit';
   stores: { id: StoreId; name: string; initials: string }[];
+  ingredients: IngredientGroup[];
   initial: WizardDraft;
+  /** Le foyer a déjà répondu « pas de budget précis ». */
+  initialNoBudget?: boolean;
+  /** Mode edit : l'écran à afficher. */
+  editStep?: WizardStep;
   /** Code de parrainage reçu dans le lien (/commencer?parrain=…). */
   referral?: string;
 }
 
-const STEPS = [
-  ['Ton foyer', 'Adultes et enfants'],
-  ['Tes préférences', 'Régime, temps de cuisine'],
-  ['Ton enseigne', 'Et ton code postal'],
-  ['Ta semaine', 'Générée pour toi'],
-] as const;
-
 const COOKING: { v: CookingTime; l: string }[] = [
-  { v: 'moins_30', l: 'Moins de 30 minutes' },
-  { v: '30_45', l: '30 à 45 minutes' },
+  { v: 'moins_30', l: 'Moins de 30 min' },
+  { v: '30_45', l: '30 à 45 min' },
   { v: 'peu_importe', l: 'Peu importe' },
 ];
 
-const WEEK_COLORS = [
-  'bg-food-curry',
-  'bg-food-salade',
-  'bg-food-soupe',
-  'bg-food-pates',
-  'bg-food-salade',
-  'bg-food-tomate',
-  'bg-food-curry',
-  'bg-food-pates',
-  'bg-food-soupe',
-  'bg-food-salade',
-  'bg-food-curry',
-  'bg-food-tomate',
-  'bg-food-pates',
-  'bg-food-soupe',
-];
+const MOTIVATION_ICONS: Record<MotivationId, IconName> = {
+  inspiration: 'idee',
+  budget: 'tirelire',
+  temps: 'horloge',
+  equilibre: 'pousse',
+  gaspillage: 'poubelle',
+};
+const STYLE_ICONS: Record<StyleId, IconName> = {
+  equilibre: 'balance',
+  rapide: 'eclair',
+  gourmand: 'toque',
+  famille: 'personnes',
+  monde: 'monde',
+  vegetal: 'pousse',
+};
+const PREF_ICONS: Record<PreferenceId, IconName> = {
+  vegetarien: 'pousse',
+  sans_porc: 'interdit',
+  sans_gluten: 'ble',
+  sans_lactose: 'goutte',
+  halal: 'bouclier',
+  sans_poisson: 'poisson',
+  sans_fruits_a_coque: 'noix',
+  peu_epice: 'piment',
+};
+const EQUIPMENT_ICONS: Record<EquipmentId, IconName> = {
+  plaques: 'plaques',
+  four: 'four',
+  air_fryer: 'airfryer',
+};
 
-// TODO(lot 5) : remplacer le panier d'exemple par le vrai plan généré (generatePlan) et ses totaux.
+// Panier d'exemple de la landing (14 repas) : sert de repère avant le vrai plan.
 const MEDIAN_EXAMPLE = [...EXAMPLE_STORES].sort((a, b) => a.cents - b.cents)[2]?.cents ?? 6420;
 const exampleCents = (id: StoreId | null) => EXAMPLE_STORES.find((s) => s.id === id)?.cents ?? MEDIAN_EXAMPLE;
 const CHEAPEST_EXAMPLE = priceSpread(EXAMPLE_STORES.map((s) => s.cents)).minCents;
+const roundEuro = (cents: number) => Math.round(cents / 100) * 100;
+const clampBudget = (cents: number) => Math.min(BUDGET_MAX_CENTS, Math.max(BUDGET_MIN_CENTS, cents));
 
 const h1Class =
-  'anim-line font-display text-[clamp(34px,3.6vw,50px)] leading-[1.05] font-extrabold tracking-[-1.4px]';
-const glass =
-  'border-line rounded-[22px] border bg-white/75 shadow-[0_2px_20px_rgba(42,26,40,0.05)] backdrop-blur';
+  'anim-line font-display text-[clamp(34px,4.4vw,50px)] leading-[1.04] font-extrabold tracking-[-1.4px]';
+const primaryShadow = 'shadow-[0_12px_30px_rgba(107,56,104,0.28)]';
 
-/** Titre + phrase d'une étape, avec l'entrée en cascade du hero. */
 function StepTitle({ title, lead }: { title: ReactNode; lead: ReactNode }) {
   return (
     <>
       <h1 className={h1Class}>
         <span style={animDelay(40)}>{title}</span>
       </h1>
-      <p className="anim-rise text-ink-muted mb-9 mt-3 text-[18px]" style={animDelay(140)}>
+      <p className="anim-rise text-ink-muted mb-8 mt-3 text-[18px] leading-[26px]" style={animDelay(120)}>
         {lead}
       </p>
     </>
   );
 }
 
-/** Contenu d'une étape qui arrive juste après le titre. */
-function StepBody({ children, delay = 220 }: { children: ReactNode; delay?: number }) {
+function StepBody({ children }: { children: ReactNode }) {
   return (
-    <div className="anim-rise" style={animDelay(delay)}>
+    <div className="anim-rise" style={animDelay(200)}>
       {children}
     </div>
-  );
-}
-
-function Counter(props: {
-  id: string;
-  label: string;
-  hint: string;
-  value: number;
-  min: number;
-  max: number;
-  onChange: (n: number) => void;
-  addLabel: string;
-  removeLabel: string;
-}) {
-  const { id, label, hint, value, min, max, onChange } = props;
-  return (
-    <div className={cx(glass, 'flex items-center justify-between gap-4 px-6 py-5')}>
-      <span>
-        <span className="block text-[19px] font-black" id={`${id}-label`}>
-          {label}
-        </span>
-        <span className="text-ink-muted text-[15px]">{hint}</span>
-      </span>
-      <span className="flex items-center gap-3.5">
-        <button
-          type="button"
-          onClick={() => onChange(Math.max(min, value - 1))}
-          disabled={value <= min}
-          aria-label={props.removeLabel}
-          className="rounded-pill border-line text-brand hover:border-brand h-12 w-12 border-2 bg-white text-[22px] font-black transition-colors disabled:opacity-40"
-        >
-          −
-        </button>
-        <output
-          aria-labelledby={`${id}-label`}
-          aria-live="polite"
-          className="font-display min-w-7 text-center text-[32px] font-extrabold tabular-nums"
-        >
-          {value}
-        </output>
-        <button
-          type="button"
-          onClick={() => onChange(Math.min(max, value + 1))}
-          disabled={value >= max}
-          aria-label={props.addLabel}
-          className="rounded-pill bg-brand text-brand-on h-12 w-12 text-[22px] font-black shadow-[0_6px_16px_rgba(107,56,104,0.3)] transition-transform hover:-translate-y-0.5 disabled:opacity-40 motion-reduce:transition-none"
-        >
-          +
-        </button>
-      </span>
-    </div>
-  );
-}
-
-function Tile(props: {
-  type: 'checkbox' | 'radio';
-  name: string;
-  checked: boolean;
-  onChange: () => void;
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <label className="relative cursor-pointer">
-      <input
-        type={props.type}
-        name={props.name}
-        checked={props.checked}
-        onChange={props.onChange}
-        className="peer sr-only"
-      />
-      <span
-        className={cx(
-          'rounded-pill border-line text-ink hover:border-brand peer-checked:border-brand peer-focus-visible:outline-brand flex border-2 bg-white/80 backdrop-blur transition-[border-color,background-color,box-shadow,transform] hover:-translate-y-0.5 peer-focus-visible:outline peer-focus-visible:outline-[3px] peer-focus-visible:outline-offset-2 motion-reduce:transition-none',
-          props.className,
-        )}
-      >
-        {props.children}
-      </span>
-    </label>
   );
 }
 
@@ -205,44 +178,173 @@ function Alert({ children, id }: { children: ReactNode; id?: string }) {
   );
 }
 
-/** Questionnaire d'onboarding (maquettes AppOnboarding / MOnboarding), avec ou sans compte. */
-export function OnboardingWizard({ mode, stores, initial, referral }: OnboardingWizardProps) {
-  const [step, setStep] = useState(1);
+function Counter(props: {
+  id: string;
+  label: string;
+  hint: string;
+  icon: IconName;
+  value: number;
+  min: number;
+  max: number;
+  onChange: (n: number) => void;
+  addLabel: string;
+  removeLabel: string;
+}) {
+  const { id, label, hint, value, min, max, onChange } = props;
+  return (
+    <div className="dark:bg-surface-0 flex items-center justify-between gap-3 rounded-[24px] bg-white px-4 py-4 shadow-[0_2px_18px_rgba(42,26,40,0.06)] sm:px-5">
+      <span className="flex min-w-0 items-center gap-3 sm:gap-4">
+        <IconBubble name={props.icon} />
+        <span className="min-w-0">
+          <span className="block text-[18px] font-black" id={`${id}-label`}>
+            {label}
+          </span>
+          <span className="text-ink-muted text-[15px] font-bold">{hint}</span>
+        </span>
+      </span>
+      <span className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <button
+          type="button"
+          onClick={() => onChange(Math.max(min, value - 1))}
+          disabled={value <= min}
+          aria-label={props.removeLabel}
+          className="bg-surface-50 text-ink grid h-12 w-12 place-items-center rounded-full text-[24px] font-black transition-colors disabled:opacity-40"
+        >
+          −
+        </button>
+        <output
+          aria-labelledby={`${id}-label`}
+          aria-live="polite"
+          className="font-display text-brand min-w-8 text-center text-[34px] font-extrabold tabular-nums"
+        >
+          {value}
+        </output>
+        <button
+          type="button"
+          onClick={() => onChange(Math.min(max, value + 1))}
+          disabled={value >= max}
+          aria-label={props.addLabel}
+          className="bg-brand text-brand-on grid h-12 w-12 place-items-center rounded-full text-[24px] font-black shadow-[0_6px_16px_rgba(107,56,104,0.3)] transition-transform hover:-translate-y-0.5 disabled:opacity-40 motion-reduce:transition-none"
+        >
+          +
+        </button>
+      </span>
+    </div>
+  );
+}
+
+const toggle = <T,>(list: readonly T[], v: T) =>
+  list.includes(v) ? list.filter((x) => x !== v) : [...list, v];
+
+/** Questionnaire d'onboarding : une question par écran (refonte du 08/11/2026), avec ou sans compte. */
+export function OnboardingWizard({
+  mode,
+  stores,
+  ingredients,
+  initial,
+  initialNoBudget = false,
+  editStep,
+  referral,
+}: OnboardingWizardProps) {
+  const router = useRouter();
+  const [index, setIndex] = useState(editStep ? WIZARD_STEPS.indexOf(editStep) : 0);
+  const step = WIZARD_STEPS[index]!;
   const [d, setD] = useState<WizardDraft>(initial);
-  const [errors, setErrors] = useState<{ store?: string; postal_code?: string; global?: string }>({});
+  const [noBudget, setNoBudget] = useState(initialNoBudget);
+  const [query, setQuery] = useState('');
+  const [errors, setErrors] = useState<{
+    store?: string;
+    postal_code?: string;
+    global?: string;
+    step?: string;
+  }>({});
   const [saving, setSaving] = useState(false);
   const [plan, setPlan] = useState<GeneratedPlan | null>(null);
   const [signup, sendSignup, sending] = useActionState(startSignup, { status: 'idle' } as AuthFormState);
   const [editingEmail, setEditingEmail] = useState(false);
+  const budgetId = useId();
 
   const set = <K extends keyof WizardDraft>(k: K, v: WizardDraft[K]) => setD((prev) => ({ ...prev, [k]: v }));
+  // Enseignes à assortiment partiel (Picard, Grand Frais) : jamais enseigne principale du foyer.
+  const mainStores = stores.filter((s) => !STORES_INFO[s.id].partialAssortment);
   const factor = householdFactor(d.adults, d.children);
   const myStore = stores.find((s) => s.id === d.store);
   const people = d.adults + d.children;
+  const meals = d.meal_days.length * (d.with_lunch ? 2 : 1);
+  // Repère : panier d'exemple à l'échelle du foyer et du nombre de repas.
+  const reference = roundEuro((scaleCents(exampleCents(d.store), factor) * meals) / 14);
+  const budget = clampBudget(d.budget_cents ?? reference);
 
-  const next = async (e: FormEvent) => {
-    e.preventDefault();
-    if (step === 3) {
+  const goTo = (i: number) => {
+    setErrors({});
+    setIndex(i);
+    window.scrollTo({ top: 0 });
+  };
+
+  /** Vérifie l'écran courant ; renvoie le brouillon à jour, ou null si une réponse manque. */
+  const checkStep = (): WizardDraft | null => {
+    if (step === 'repas') {
+      const r = repasSchema.safeParse({ meal_days: d.meal_days, with_lunch: d.with_lunch });
+      if (!r.success) {
+        setErrors({ step: r.error.issues[0]?.message });
+        return null;
+      }
+    }
+    if (step === 'enseigne') {
       const check = enseigneSchema.safeParse({ store: d.store ?? undefined, postal_code: d.postal_code });
       if (!check.success) {
         const fe: typeof errors = {};
         for (const issue of check.error.issues)
           fe[issue.path[0] as 'store' | 'postal_code'] ??= issue.message;
         setErrors(fe);
-        return;
-      }
-      setErrors({});
-      if (mode === 'account') {
-        setSaving(true);
-        const res = await saveOnboarding({ ...d, store: check.data.store });
-        setSaving(false);
-        if (res.error) return setErrors({ global: res.error });
-        setPlan(res.plan ?? null);
+        return null;
       }
     }
-    setStep((s) => Math.min(4, s + 1));
-    window.scrollTo({ top: 0 });
+    if (step === 'equipement') {
+      const r = equipementSchema.safeParse({ equipment: d.equipment });
+      if (!r.success) {
+        setErrors({ step: r.error.issues[0]?.message });
+        return null;
+      }
+    }
+    if (step === 'budget') {
+      const next = { ...d, budget_cents: noBudget ? null : budget };
+      setD(next);
+      return next;
+    }
+    return d;
   };
+
+  const next = async (e: FormEvent) => {
+    e.preventDefault();
+    const draft = checkStep();
+    if (!draft) return;
+    setErrors({});
+    if (mode === 'edit') {
+      setSaving(true);
+      const res = await updatePreferences({ ...draft, store: draft.store ?? '' });
+      if (res.error) {
+        setSaving(false);
+        setErrors({ global: res.error });
+        return;
+      }
+      router.push(`/app/profil?fait=${res.result}`);
+      return;
+    }
+    if (index === LAST_QUESTION && mode === 'account') {
+      setSaving(true);
+      const res = await saveOnboarding({ ...draft, store: draft.store ?? '' });
+      setSaving(false);
+      if (res.error) {
+        setErrors({ global: res.error });
+        return;
+      }
+      setPlan(res.plan ?? null);
+    }
+    goTo(Math.min(WIZARD_STEPS.length - 1, index + 1));
+  };
+
+  const back = () => (index > 0 ? goTo(index - 1) : router.push('/'));
 
   const submitEmail = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -252,90 +354,72 @@ export function OnboardingWizard({ mode, stores, initial, referral }: Onboarding
     startTransition(() => sendSignup(fd));
   };
 
+  const filteredIngredients = useMemo(() => {
+    const q = query.trim().toLocaleLowerCase('fr');
+    if (!q) return ingredients;
+    return ingredients
+      .map((g) => ({ ...g, items: g.items.filter((i) => i.name.toLocaleLowerCase('fr').includes(q)) }))
+      .filter((g) => g.items.length > 0);
+  }, [ingredients, query]);
+
   const emailSent = mode === 'guest' && signup.status === 'sent' && !editingEmail;
   const signupError = (f: string) =>
     signup.status === 'error' && signup.field === f ? signup.message : null;
   const lastEmail =
     signup.status === 'sent' ? signup.email : signup.status === 'error' ? (signup.email ?? '') : '';
+  const progress = mode === 'edit' ? 100 : Math.round(((index + 1) / WIZARD_STEPS.length) * 100);
+  const backButtonClass =
+    'text-ink -ml-2 grid h-11 w-11 shrink-0 place-items-center rounded-full hover:bg-white/70';
 
   return (
-    <div className="bg-surface-50 text-ink flex min-h-screen flex-wrap font-sans">
-      <BrandPanel
-        bowlClassName="-bottom-52 -right-40 w-[400px]"
-        className="flex flex-[1_1_380px] flex-col gap-10 px-[clamp(24px,4vw,56px)] py-10 max-md:gap-6 max-md:py-6"
-      >
-        <Link href="/" className="flex items-center gap-2.5 text-[18px] font-black text-white no-underline">
-          <LogoMark size={30} tone="onBrand" />
+    <div className="bg-surface-50 text-ink relative isolate min-h-screen overflow-x-clip font-sans">
+      <Glow className="bg-raw-aubergine-clair right-[6%] top-24 h-80 w-80" />
+      <Glow className="bg-raw-peche bottom-10 left-[4%] h-72 w-72 opacity-60" />
+
+      <div className="mx-auto flex min-h-screen w-full max-w-[640px] flex-col px-4 pb-36 pt-6 sm:px-6">
+        <Link
+          href={mode === 'guest' ? '/' : '/app'}
+          className="text-brand mx-auto flex items-center gap-2 text-[19px] font-black no-underline"
+        >
+          <LogoMark size={28} />
           {APP_NAME}
         </Link>
-        <div className="anim-rise max-md:hidden" style={animDelay(80)}>
-          <p className="font-display text-[clamp(32px,3vw,44px)] font-extrabold leading-[1.02] tracking-[-1.4px]">
-            Ta première semaine en 2 minutes.
-          </p>
-          <p className="text-site-lilac mt-3.5 text-[17px] leading-[26px]">
-            Tu peux tout changer plus tard dans ton profil.
-          </p>
-        </div>
-        <ol className="anim-rise flex flex-col gap-2 max-md:hidden" style={animDelay(200)}>
-          {STEPS.map(([t, desc], i) => {
-            const n = i + 1;
-            const done = n < step;
-            const cur = n === step;
-            return (
-              <li
-                key={t}
-                aria-current={cur ? 'step' : undefined}
-                className={cx(
-                  'flex items-center gap-3.5 rounded-[16px] px-3.5 py-3 transition-colors duration-300',
-                  cur && 'bg-white/[0.12] backdrop-blur',
-                )}
-              >
-                <span
-                  className={cx(
-                    'rounded-pill box-border grid h-[34px] w-[34px] shrink-0 place-items-center text-[14px] font-black',
-                    done
-                      ? 'bg-saving text-raw-encre'
-                      : cur
-                        ? 'text-brand bg-white'
-                        : 'border-2 border-white/40 text-white',
-                  )}
-                >
-                  {done ? '✓' : n}
-                </span>
-                <span>
-                  <span className="block text-[16px] font-black">{t}</span>
-                  <span className="text-site-on-brand-faint block text-[14px]">{desc}</span>
-                </span>
-              </li>
-            );
-          })}
-        </ol>
-        <p className="text-site-on-brand-faint text-[14px] font-bold max-md:hidden">
-          14 jours de Premium offerts · sans carte bancaire
-        </p>
-      </BrandPanel>
 
-      <main className="relative isolate box-border flex min-w-0 flex-[999_1_560px] flex-col px-[clamp(24px,5vw,88px)] py-10">
-        <Glow className="bg-raw-aubergine-clair right-[10%] top-10 h-80 w-80" />
-        <Glow className="bg-raw-peche bottom-0 left-[5%] h-72 w-72 opacity-70" />
-        <div className="mb-12 flex items-center gap-4">
+        <div className="mb-8 mt-5 flex items-center gap-3">
+          {mode === 'edit' ? (
+            <Link href={href('/app/profil')} aria-label="Retour au profil" className={backButtonClass}>
+              <Icon name="retour" size={24} />
+            </Link>
+          ) : step !== 'resultat' || mode === 'guest' ? (
+            <button
+              type="button"
+              onClick={back}
+              aria-label={index > 0 ? 'Question précédente' : 'Retour à l’accueil'}
+              className={backButtonClass}
+            >
+              <Icon name="retour" size={24} />
+            </button>
+          ) : null}
           <div
-            className="h-2 flex-1 rounded-[9px] bg-white/80 shadow-[inset_0_0_0_1px_theme(colors.line)]"
+            className="h-2.5 flex-1 rounded-full bg-[#E9E2D3] dark:bg-white/10"
             role="progressbar"
             aria-valuemin={0}
-            aria-valuemax={4}
-            aria-valuenow={step}
-            aria-label="Progression"
+            aria-valuemax={100}
+            aria-valuenow={progress}
+            aria-label={
+              mode === 'edit'
+                ? 'Modification'
+                : `Question ${Math.min(index + 1, LAST_QUESTION + 1)} sur ${LAST_QUESTION + 1}`
+            }
           >
             <div
-              className="bg-brand h-2 rounded-[9px] transition-[width] duration-500 ease-out"
-              style={{ width: `${step * 25}%` }}
+              className="h-2.5 rounded-full bg-gradient-to-r from-[#8A5486] to-[#6B3868] transition-[width] duration-500 ease-out motion-reduce:transition-none"
+              style={{ width: `${progress}%` }}
             />
           </div>
-          <span className="text-ink-muted text-[14px] font-black tabular-nums">Étape {step} sur 4</span>
         </div>
 
-        <div className="w-full max-w-[680px] flex-1" key={emailSent ? 'mail' : step}>
+        <div className="flex-1" key={emailSent ? 'mail' : step}>
           {emailSent && signup.status === 'sent' ? (
             <EmailSent
               email={signup.email}
@@ -343,20 +427,47 @@ export function OnboardingWizard({ mode, stores, initial, referral }: Onboarding
               sentAt={signup.sentAt}
               onChangeEmail={() => setEditingEmail(true)}
             />
-          ) : step < 4 ? (
-            <form onSubmit={next} noValidate>
-              {step === 1 ? (
+          ) : step !== 'resultat' ? (
+            <form id="etape" onSubmit={next} noValidate>
+              {step === 'motivations' ? (
                 <>
                   <StepTitle
-                    title="Vous êtes combien à table ?"
+                    title="Qu’est-ce qui t’amène ?"
+                    lead="Coche tout ce qui te ressemble en ce moment. On en tient compte pour ta semaine."
+                  />
+                  <StepBody>
+                    <fieldset className="flex flex-col gap-3">
+                      <legend className="sr-only">Ce qui t’amène</legend>
+                      {MOTIVATIONS.map((m) => (
+                        <OptionCard
+                          key={m.id}
+                          type="checkbox"
+                          name="motivation"
+                          icon={MOTIVATION_ICONS[m.id]}
+                          title={m.label}
+                          hint={m.hint}
+                          checked={d.motivations.includes(m.id)}
+                          onChange={() => set('motivations', toggle(d.motivations, m.id))}
+                        />
+                      ))}
+                    </fieldset>
+                  </StepBody>
+                </>
+              ) : null}
+
+              {step === 'foyer' ? (
+                <>
+                  <StepTitle
+                    title="Vous êtes combien à table ?"
                     lead="On adapte les quantités et le budget à ton foyer."
                   />
                   <StepBody>
-                    <div className="flex flex-col gap-3.5">
+                    <div className="flex flex-col gap-3">
                       <Counter
                         id="adults"
                         label="Adultes"
                         hint="13 ans et plus"
+                        icon="profil"
                         value={d.adults}
                         min={1}
                         max={8}
@@ -368,6 +479,7 @@ export function OnboardingWizard({ mode, stores, initial, referral }: Onboarding
                         id="children"
                         label="Enfants"
                         hint="Portions adaptées"
+                        icon="famille"
                         value={d.children}
                         min={0}
                         max={8}
@@ -375,242 +487,358 @@ export function OnboardingWizard({ mode, stores, initial, referral }: Onboarding
                         addLabel="Ajouter un enfant"
                         removeLabel="Retirer un enfant"
                       />
-                      <p
-                        className="bg-saving-soft text-saving-ink mt-1.5 rounded-[16px] px-[18px] py-3.5 text-[15px] font-extrabold tabular-nums"
-                        aria-live="polite"
-                      >
-                        Budget repère pour ce foyer : ≈{' '}
-                        {formatEuro(scaleCents(exampleCents(d.store), factor))} par semaine
-                      </p>
                     </div>
                   </StepBody>
                 </>
               ) : null}
 
-              {step === 2 ? (
+              {step === 'repas' ? (
                 <>
                   <StepTitle
-                    title="Des choses à éviter ?"
-                    lead="Choisis tout ce qui s’applique. Aucun choix, c’est très bien aussi."
+                    title="Quels repas on prévoit ?"
+                    lead="Les moments et les jours de ta semaine."
                   />
                   <StepBody>
-                    <fieldset>
-                      <legend className="sr-only">Régimes et aliments à éviter</legend>
-                      <div className="flex flex-wrap gap-2.5">
-                        {PREFERENCES.map((p) => {
-                          const on = d.prefs.includes(p.id);
-                          return (
-                            <Tile
-                              key={p.id}
-                              type="checkbox"
-                              name="pref"
-                              checked={on}
-                              onChange={() =>
-                                set('prefs', on ? d.prefs.filter((x) => x !== p.id) : [...d.prefs, p.id])
-                              }
-                              className="peer-checked:bg-brand peer-checked:text-brand-on min-h-12 items-center px-5 text-[16px] font-extrabold"
-                            >
-                              {p.label}
-                            </Tile>
-                          );
-                        })}
-                      </div>
+                    <fieldset className="grid grid-cols-2 gap-3">
+                      <legend className="sr-only">Repas par jour</legend>
+                      <OptionTile
+                        type="radio"
+                        name="moments"
+                        checked={!d.with_lunch}
+                        onChange={() => set('with_lunch', false)}
+                        visual={<IconBubble name="lune" size={60} />}
+                        title="Le soir"
+                        hint="1 repas par jour"
+                      />
+                      <OptionTile
+                        type="radio"
+                        name="moments"
+                        checked={d.with_lunch}
+                        onChange={() => set('with_lunch', true)}
+                        visual={<IconBubble name="soleil" size={60} />}
+                        title="Midi + soir"
+                        hint="2 repas par jour"
+                      />
                     </fieldset>
-                    <div className={cx(glass, 'mt-8 px-6 py-5')}>
-                      <label htmlFor="temps" className="mb-2.5 block text-[17px] font-black">
-                        Temps de cuisine en semaine
-                      </label>
-                      <select
-                        id="temps"
-                        value={d.cooking_time}
-                        onChange={(e) => set('cooking_time', e.target.value as CookingTime)}
-                        className={inputClasses(false, 'px-3.5')}
-                      >
-                        {COOKING.map((c) => (
-                          <option key={c.v} value={c.v}>
-                            {c.l}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <h2 className="text-ink-muted mb-2.5 mt-7 text-[13px] font-black uppercase tracking-[1.4px]">
+                      Ta semaine
+                    </h2>
+                    <WeekGrid
+                      days={d.meal_days}
+                      withLunch={d.with_lunch}
+                      onToggle={(day) => set('meal_days', toggle(d.meal_days, day))}
+                    />
+                    <p className="mt-4 text-center text-[16px]" aria-live="polite">
+                      <strong className="font-black tabular-nums">{meals} repas</strong>
+                      <span className="text-ink-muted font-bold"> · {daysSummary(d.meal_days)}</span>
+                    </p>
+                    {errors.step ? <Alert>{errors.step}</Alert> : null}
                   </StepBody>
                 </>
               ) : null}
 
-              {step === 3 ? (
+              {step === 'enseigne' ? (
                 <>
                   <StepTitle
-                    title="Où fais-tu tes courses ?"
+                    title="Où fais-tu tes courses ?"
                     lead="On calcule les prix dans ton enseigne. Tu verras aussi les autres, pour comparer."
                   />
                   <StepBody>
-                    <fieldset>
+                    <fieldset className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                       <legend className="sr-only">Ton enseigne habituelle</legend>
-                      <div className="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-3">
-                        {stores
-                          .filter((s) => !STORES_INFO[s.id].partialAssortment)
-                          .map((s) => (
-                            <Tile
-                              key={s.id}
-                              type="radio"
-                              name="store"
-                              checked={d.store === s.id}
-                              onChange={() => set('store', s.id)}
-                              className="min-h-[76px] items-center gap-3.5 rounded-[20px] px-4 py-3.5 peer-checked:shadow-[0_0_0_4px_theme(colors.brand.soft)]"
-                            >
-                              <span className="flex items-center gap-3 text-[17px] font-black">
-                                <StoreLogo id={s.id} name={s.name} size={40} />
-                                {s.name}
-                              </span>
-                            </Tile>
-                          ))}
-                      </div>
+                      {mainStores.map((s) => (
+                        <OptionTile
+                          key={s.id}
+                          type="radio"
+                          name="store"
+                          checked={d.store === s.id}
+                          onChange={() => set('store', s.id)}
+                          visual={<StoreLogo id={s.id} name={s.name} size={56} />}
+                          title={s.name}
+                        />
+                      ))}
                     </fieldset>
                     {errors.store ? <Alert>{errors.store}</Alert> : null}
-                    <div className="mt-5 flex flex-wrap items-end gap-3">
-                      <div className="flex-[1_1_220px]">
-                        <label htmlFor="cp" className="mb-2 block text-[15px] font-black">
-                          Code postal
-                        </label>
-                        <input
-                          id="cp"
-                          value={d.postal_code}
-                          onChange={(e) => set('postal_code', e.target.value)}
-                          inputMode="numeric"
-                          autoComplete="postal-code"
-                          maxLength={5}
-                          aria-invalid={errors.postal_code ? true : undefined}
-                          aria-describedby={errors.postal_code ? 'cp-err' : 'cp-aide'}
-                          className={inputClasses(Boolean(errors.postal_code), 'text-[17px] font-extrabold')}
-                        />
-                      </div>
-                      <p id="cp-aide" className="text-ink-muted flex-[1_1_260px] text-[14px] leading-[21px]">
+                    <div className="mt-6">
+                      <label htmlFor="cp" className="mb-2 block text-[15px] font-black">
+                        Code postal
+                      </label>
+                      <input
+                        id="cp"
+                        value={d.postal_code}
+                        onChange={(e) => set('postal_code', e.target.value)}
+                        inputMode="numeric"
+                        autoComplete="postal-code"
+                        maxLength={5}
+                        placeholder="69003"
+                        aria-invalid={errors.postal_code ? true : undefined}
+                        aria-describedby={errors.postal_code ? 'cp-err' : 'cp-aide'}
+                        className={inputClasses(Boolean(errors.postal_code), 'text-[17px] font-extrabold')}
+                      />
+                      <p id="cp-aide" className="text-ink-muted mt-2 text-[14px] font-bold">
                         Il sert à choisir les prix des magasins proches. Il n’est jamais partagé.
                       </p>
+                      {errors.postal_code ? <Alert id="cp-err">{errors.postal_code}</Alert> : null}
                     </div>
-                    {errors.postal_code ? <Alert id="cp-err">{errors.postal_code}</Alert> : null}
+                  </StepBody>
+                </>
+              ) : null}
+
+              {step === 'budget' ? (
+                <>
+                  <StepTitle
+                    title="Quel budget pour tes courses ?"
+                    lead="Par semaine, pour tout le foyer. On compose tes repas pour rester dedans."
+                  />
+                  <StepBody>
+                    <div className={cx('text-center transition-opacity', noBudget && 'opacity-40')}>
+                      <p
+                        className="font-display text-brand text-[clamp(72px,14vw,104px)] font-extrabold tabular-nums leading-none tracking-[-3px]"
+                        aria-hidden="true"
+                      >
+                        {Math.round(budget / 100)} €
+                      </p>
+                      <p className="text-ink-muted mt-2 text-[17px] font-bold">
+                        par semaine, pour {meals} repas
+                      </p>
+                      <p className="bg-brand-soft text-brand mt-4 inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[16px] font-black">
+                        <Icon name="personnes" size={20} />
+                        {people} personne{people > 1 ? 's' : ''}
+                      </p>
+                    </div>
+                    <label htmlFor={budgetId} className="sr-only">
+                      Budget par semaine
+                    </label>
+                    <input
+                      id={budgetId}
+                      type="range"
+                      min={BUDGET_MIN_CENTS / 100}
+                      max={BUDGET_MAX_CENTS / 100}
+                      step={1}
+                      value={Math.round(budget / 100)}
+                      disabled={noBudget}
+                      aria-valuetext={`${Math.round(budget / 100)} euros par semaine`}
+                      onChange={(e) => set('budget_cents', Number(e.target.value) * 100)}
+                      className="accent-brand mt-8 h-11 w-full cursor-pointer disabled:cursor-not-allowed"
+                    />
+                    <div className="flex justify-between text-[15px]">
+                      <span>
+                        <strong className="block font-black tabular-nums">{BUDGET_MIN_CENTS / 100} €</strong>
+                        <span className="text-ink-muted font-bold">Budget serré</span>
+                      </span>
+                      <span className="text-right">
+                        <strong className="block font-black tabular-nums">{BUDGET_MAX_CENTS / 100} €</strong>
+                        <span className="text-ink-muted font-bold">Budget confort</span>
+                      </span>
+                    </div>
+                    <label className="mt-6 flex min-h-11 cursor-pointer items-center gap-3 text-[16px] font-bold">
+                      <input
+                        type="checkbox"
+                        checked={noBudget}
+                        onChange={(e) => setNoBudget(e.target.checked)}
+                        className="accent-brand h-5 w-5"
+                      />
+                      Je n’ai pas de budget précis
+                    </label>
+                    <InfoNote icon="pieces" title={`Repère : ≈ ${formatEuro(reference)} par semaine`}>
+                      {!noBudget && budget < reference * 0.8
+                        ? 'Budget serré : on privilégie les recettes les moins chères de ton enseigne.'
+                        : `C’est le prix habituel de ${meals} repas pour ${people} personne${people > 1 ? 's' : ''}${myStore ? ` chez ${myStore.name}` : ''}.`}
+                    </InfoNote>
+                  </StepBody>
+                </>
+              ) : null}
+
+              {step === 'regime' ? (
+                <>
+                  <StepTitle
+                    title="Un régime ou des allergies ?"
+                    lead="Coche ce qui te concerne. Aucun choix, c’est très bien aussi."
+                  />
+                  <StepBody>
+                    <fieldset className="grid grid-cols-2 gap-3">
+                      <legend className="sr-only">Régimes et aliments à éviter</legend>
+                      {PREFERENCES.map((p) => (
+                        <OptionTile
+                          key={p.id}
+                          type="checkbox"
+                          name="pref"
+                          checked={d.prefs.includes(p.id)}
+                          onChange={() => set('prefs', toggle(d.prefs, p.id))}
+                          visual={<IconBubble name={PREF_ICONS[p.id]} />}
+                          title={p.label}
+                        />
+                      ))}
+                    </fieldset>
+                    <InfoNote icon="bouclier" title="Jamais d’exception">
+                      Ces choix s’appliquent à chaque recette de ta semaine.
+                    </InfoNote>
+                  </StepBody>
+                </>
+              ) : null}
+
+              {step === 'ambiance' ? (
+                <>
+                  <StepTitle
+                    title="Quelle ambiance à table ?"
+                    lead={`Jusqu’à ${MAX_STYLES} styles : on les met en avant dans ta semaine.`}
+                  />
+                  <StepBody>
+                    <fieldset className="flex flex-col gap-3">
+                      <legend className="sr-only">Styles de repas, {MAX_STYLES} au plus</legend>
+                      {STYLES.map((s) => {
+                        const on = d.styles.includes(s.id);
+                        return (
+                          <OptionCard
+                            key={s.id}
+                            type="checkbox"
+                            name="style"
+                            icon={STYLE_ICONS[s.id]}
+                            title={s.label}
+                            hint={s.hint}
+                            checked={on}
+                            disabled={!on && d.styles.length >= MAX_STYLES}
+                            onChange={() => set('styles', toggle(d.styles, s.id))}
+                          />
+                        );
+                      })}
+                    </fieldset>
+                    <p className="text-ink-muted mt-3 text-[14px] font-bold" aria-live="polite">
+                      {d.styles.length >= MAX_STYLES
+                        ? `${MAX_STYLES} styles choisis : décoche-en un pour changer.`
+                        : `${d.styles.length} sur ${MAX_STYLES}`}
+                    </p>
+                    <fieldset className="mt-7">
+                      <legend className="mb-3 text-[17px] font-black">Temps de cuisine en semaine</legend>
+                      <div className="dark:bg-surface-0 grid grid-cols-3 gap-1.5 rounded-[18px] bg-white p-1.5 shadow-[0_2px_18px_rgba(42,26,40,0.06)]">
+                        {COOKING.map((c) => (
+                          <label key={c.v} className="cursor-pointer">
+                            <input
+                              type="radio"
+                              name="temps"
+                              checked={d.cooking_time === c.v}
+                              onChange={() => set('cooking_time', c.v)}
+                              className="peer sr-only"
+                            />
+                            <span className="text-ink-muted peer-checked:bg-brand peer-checked:text-brand-on peer-focus-visible:outline-brand grid min-h-12 place-items-center rounded-[13px] px-2 text-center text-[14px] font-black leading-[18px] transition-colors peer-focus-visible:outline peer-focus-visible:outline-[3px] sm:text-[15px]">
+                              {c.l}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
+                  </StepBody>
+                </>
+              ) : null}
+
+              {step === 'ingredients' ? (
+                <>
+                  <StepTitle
+                    title="Des ingrédients à éviter ?"
+                    lead="Coche ce que tu n’aimes pas : on l’évite dans tes recettes."
+                  />
+                  <StepBody>
+                    <div className="relative">
+                      <Icon
+                        name="recherche"
+                        size={20}
+                        className="text-ink-muted pointer-events-none absolute left-4 top-1/2 -translate-y-1/2"
+                      />
+                      <label htmlFor="ingredient-q" className="sr-only">
+                        Chercher un ingrédient
+                      </label>
+                      <input
+                        id="ingredient-q"
+                        type="search"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Chercher un ingrédient…"
+                        className={inputClasses(false, 'min-h-[56px] pl-12 text-[17px]')}
+                      />
+                    </div>
+                    <p className="text-ink-muted mt-3 text-[14px] font-bold" aria-live="polite">
+                      {d.disliked.length === 0
+                        ? 'Rien à éviter ? Continue simplement.'
+                        : `${d.disliked.length} ingrédient${d.disliked.length > 1 ? 's' : ''} évité${d.disliked.length > 1 ? 's' : ''}`}
+                    </p>
+                    {filteredIngredients.length === 0 ? (
+                      <p className="text-ink-muted mt-6 text-[16px] font-bold">
+                        Aucun ingrédient ne correspond à « {query} ».
+                      </p>
+                    ) : (
+                      filteredIngredients.map((g) => (
+                        <fieldset key={g.id} className="mt-6">
+                          <legend className="mb-3 text-[18px] font-black">{g.label}</legend>
+                          <div className="flex flex-wrap gap-2">
+                            {g.items.map((i) => (
+                              <ChipToggle
+                                key={i.id}
+                                name="ingredient"
+                                label={i.name}
+                                checked={d.disliked.includes(i.id)}
+                                onChange={() => set('disliked', toggle(d.disliked, i.id))}
+                              />
+                            ))}
+                          </div>
+                        </fieldset>
+                      ))
+                    )}
+                  </StepBody>
+                </>
+              ) : null}
+
+              {step === 'equipement' ? (
+                <>
+                  <StepTitle title="Ton équipement ?" lead="Coche ce que tu as dans ta cuisine." />
+                  <StepBody>
+                    <fieldset className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                      <legend className="sr-only">Ton équipement de cuisine</legend>
+                      {EQUIPMENT.map((e) => (
+                        <OptionTile
+                          key={e.id}
+                          type="checkbox"
+                          name="equipement"
+                          checked={d.equipment.includes(e.id)}
+                          onChange={() => set('equipment', toggle(d.equipment, e.id))}
+                          visual={<IconBubble name={EQUIPMENT_ICONS[e.id]} />}
+                          title={e.label}
+                        />
+                      ))}
+                    </fieldset>
+                    {errors.step ? <Alert>{errors.step}</Alert> : null}
+                    <InfoNote icon="check" title="Que des recettes faisables chez toi">
+                      Sans four, pas de gratin. Avec un air fryer, les rôtis passent aussi.
+                    </InfoNote>
                   </StepBody>
                 </>
               ) : null}
 
               {errors.global ? <Alert>{errors.global}</Alert> : null}
-              <div className="mt-12 flex max-w-[680px] items-center justify-between gap-3">
-                {step > 1 ? (
-                  <button
-                    type="button"
-                    onClick={() => setStep(step - 1)}
-                    className="text-brand min-h-[52px] px-[22px] text-[16px] font-black"
-                  >
-                    ← Retour
-                  </button>
-                ) : (
-                  <span />
-                )}
-                <Button type="submit" disabled={saving} className="min-h-14 px-[34px] text-[17px]">
-                  {step === 3 ? 'Générer ma semaine' : 'Continuer'}
-                </Button>
-              </div>
             </form>
           ) : (
-            <>
-              <p className="anim-rise rounded-pill bg-site-mint text-success mb-3.5 inline-flex items-center gap-2 px-3.5 py-2 text-[14px] font-black">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  aria-hidden="true"
-                >
-                  <path d="M20 6 9 17l-5-5" />
-                </svg>
-                {mode === 'guest' ? 'Réponses prêtes' : plan ? 'Plan généré' : 'Foyer enregistré'}
-              </p>
-              <h1 className={h1Class}>
-                <span style={animDelay(80)}>
-                  {mode === 'guest'
-                    ? 'Ta première semaine t’attend.'
-                    : plan
-                      ? `Ta semaine ${plan.weekNumber} est prête.`
-                      : 'Tout est prêt pour ta première semaine.'}
-                </span>
-              </h1>
-              <p className="anim-rise text-ink-muted mb-7 mt-3 text-[18px]" style={animDelay(180)}>
-                14 repas pour {people} personnes, de saison, chez {myStore?.name}.
-              </p>
-              <div className="anim-ticket">
-                <TicketCard
-                  edge="surface-50"
-                  className="rounded-t-[26px] p-[22px] pb-[30px] shadow-[0_24px_50px_rgba(42,26,40,0.12)]"
-                >
-                  <div
-                    className="text-ink-muted grid grid-cols-7 gap-1.5 text-center text-[12px] font-black"
-                    aria-hidden="true"
-                  >
-                    {['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'].map((x) => (
-                      <span key={x}>{x}</span>
-                    ))}
-                    {plan
-                      ? // Ordre du plan : lundi midi, lundi soir… → affichage en 2 lignes (midis, puis soirs).
-                        [0, 1].flatMap((row) =>
-                          [0, 1, 2, 3, 4, 5, 6].map((day) => {
-                            const v = plan.illustrations[day * 2 + row];
-                            return (
-                              <span
-                                key={`${row}-${day}`}
-                                className="anim-rise grid h-11 place-items-center"
-                                style={animDelay(500 + (row * 7 + day) * 40)}
-                              >
-                                {v ? <Plat variant={v} size={40} decorative /> : null}
-                              </span>
-                            );
-                          }),
-                        )
-                      : WEEK_COLORS.map((c, i) => (
-                          <span
-                            key={i}
-                            className={`anim-rise h-11 rounded-[10px] ${c}`}
-                            style={animDelay(500 + i * 40)}
-                          />
-                        ))}
-                  </div>
-                  <div className="border-line mt-5 flex flex-wrap items-center justify-between gap-3 border-t-2 border-dashed pt-[18px]">
-                    <span>
-                      <span className="text-ink-muted block text-[13px] font-black tracking-[1px]">
-                        {plan ? 'TOTAL' : 'TOTAL ESTIMÉ'} CHEZ {myStore?.name.toUpperCase()}
-                      </span>
-                      <span className="font-display text-[44px] font-extrabold tabular-nums tracking-[-1.4px]">
-                        {plan
-                          ? `${plan.estimate ? '≈ ' : ''}${formatEuro(plan.myCents)}`
-                          : `≈ ${formatEuro(scaleCents(exampleCents(d.store), factor))}`}
-                      </span>
-                    </span>
-                    {plan ? (
-                      plan.cheapestId !== d.store ? (
-                        <span className="bg-saving-soft text-saving-ink rounded-[14px] px-4 py-2.5 font-black tabular-nums">
-                          Possible dès {formatEuro(plan.cheapestCents)} chez {plan.cheapestName}
-                        </span>
-                      ) : null
-                    ) : d.store !== 'lidl' ? (
-                      <span className="bg-saving-soft text-saving-ink rounded-[14px] px-4 py-2.5 font-black tabular-nums">
-                        Possible dès ≈ {formatEuro(scaleCents(CHEAPEST_EXAMPLE, factor))} chez Lidl
-                      </span>
-                    ) : null}
-                  </div>
-                </TicketCard>
-              </div>
-
+            <Result
+              mode={mode}
+              plan={plan}
+              meals={meals}
+              people={people}
+              storeName={myStore?.name ?? ''}
+              fallbackCents={reference}
+              cheapestFallback={
+                d.store !== 'lidl' ? roundEuro((scaleCents(CHEAPEST_EXAMPLE, factor) * meals) / 14) : null
+              }
+              withLunch={d.with_lunch}
+              days={d.meal_days}
+            >
               {mode === 'guest' ? (
                 <form
+                  id="email-form"
                   onSubmit={submitEmail}
                   noValidate
-                  className="anim-rise mt-12 max-w-[480px]"
+                  className="anim-rise mt-10"
                   style={animDelay(700)}
                 >
                   {referral ? <input type="hidden" name="parrain" value={referral} /> : null}
-                  <h2 className="text-[22px] font-black">Où t’envoie-t-on ta semaine ?</h2>
+                  <h2 className="text-[22px] font-black">Où t’envoie-t-on ta semaine&nbsp;?</h2>
                   <p className="text-ink-muted mb-5 mt-1 text-[16px]">
                     On t’envoie un lien de connexion : tes réponses sont enregistrées dans ton compte. Pas de
                     mot de passe.
@@ -656,18 +884,6 @@ export function OnboardingWizard({ mode, stores, initial, referral }: Onboarding
                     </span>
                   </label>
                   {signupError('cgu') ? <Alert>{signupError('cgu')}</Alert> : null}
-                  <div className="mt-8 flex items-center justify-between gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setStep(3)}
-                      className="text-brand min-h-[52px] px-[22px] text-[16px] font-black"
-                    >
-                      ← Retour
-                    </button>
-                    <Button type="submit" disabled={sending} className="min-h-14 px-[34px] text-[17px]">
-                      Recevoir ma semaine
-                    </Button>
-                  </div>
                   <p className="text-ink-muted mt-6 text-[14px] font-bold">
                     Déjà un compte ?{' '}
                     <Link href={ROUTES.connexion} className="text-brand underline">
@@ -675,30 +891,163 @@ export function OnboardingWizard({ mode, stores, initial, referral }: Onboarding
                     </Link>
                   </p>
                 </form>
-              ) : (
-                <div
-                  className="anim-rise mt-12 flex max-w-[680px] items-center justify-between gap-3"
-                  style={animDelay(700)}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setStep(3)}
-                    className="text-brand min-h-[52px] px-[22px] text-[16px] font-black"
-                  >
-                    ← Retour
-                  </button>
-                  <Link
-                    href="/app"
-                    className={buttonClasses('primary', 'md', 'min-h-14 px-[34px] text-[17px] no-underline')}
-                  >
-                    Voir mon plan →
-                  </Link>
-                </div>
-              )}
-            </>
+              ) : null}
+            </Result>
           )}
         </div>
-      </main>
+      </div>
+
+      {/* Bouton principal, toujours à portée de pouce. */}
+      {!emailSent ? (
+        <div className="from-surface-50 via-surface-50 pointer-events-none fixed inset-x-0 bottom-0 z-20 bg-gradient-to-t to-transparent px-4 pb-5 pt-10 sm:px-6">
+          <div className="pointer-events-auto mx-auto max-w-[640px]">
+            {step !== 'resultat' ? (
+              <Button
+                type="submit"
+                form="etape"
+                disabled={saving}
+                className={cx('min-h-[60px] w-full text-[18px]', primaryShadow)}
+              >
+                {saving
+                  ? 'Un instant…'
+                  : mode === 'edit'
+                    ? 'Enregistrer'
+                    : index === LAST_QUESTION
+                      ? 'Composer ma semaine'
+                      : 'Continuer'}
+              </Button>
+            ) : mode === 'guest' ? (
+              <Button
+                type="submit"
+                form="email-form"
+                disabled={sending}
+                className={cx('min-h-[60px] w-full text-[18px]', primaryShadow)}
+              >
+                Recevoir ma semaine
+              </Button>
+            ) : (
+              <Link
+                href="/app"
+                className={buttonClasses(
+                  'primary',
+                  'md',
+                  cx('min-h-[60px] w-full text-[18px] no-underline', primaryShadow),
+                )}
+              >
+                Voir mon plan →
+              </Link>
+            )}
+          </div>
+        </div>
+      ) : null}
     </div>
+  );
+}
+
+const DAY_HEADERS = ['LUN', 'MAR', 'MER', 'JEU', 'VEN', 'SAM', 'DIM'];
+
+/** Dernier écran : la semaine composée (ou son aperçu, sans compte), dans le ticket de caisse. */
+function Result(props: {
+  mode: OnboardingWizardProps['mode'];
+  plan: GeneratedPlan | null;
+  meals: number;
+  people: number;
+  storeName: string;
+  fallbackCents: number;
+  cheapestFallback: number | null;
+  withLunch: boolean;
+  days: number[];
+  children: ReactNode;
+}) {
+  const { plan, mode } = props;
+  const rows = props.withLunch ? (['dejeuner', 'diner'] as const) : (['diner'] as const);
+  return (
+    <>
+      <p className="anim-rise bg-site-mint text-success mb-3.5 inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-[14px] font-black">
+        <Icon name="check" size={16} strokeWidth={3} />
+        {mode === 'guest' ? 'Réponses prêtes' : plan ? 'Plan généré' : 'Foyer enregistré'}
+      </p>
+      <h1 className={h1Class}>
+        <span style={animDelay(80)}>
+          {mode === 'guest'
+            ? 'Ta première semaine t’attend.'
+            : plan
+              ? `Ta semaine ${plan.weekNumber} est prête.`
+              : 'Tout est prêt pour ta première semaine.'}
+        </span>
+      </h1>
+      <p className="anim-rise text-ink-muted mb-7 mt-3 text-[18px]" style={animDelay(180)}>
+        {props.meals} repas pour {props.people} personne{props.people > 1 ? 's' : ''}, de saison, chez{' '}
+        {props.storeName}.
+      </p>
+      <div className="anim-ticket">
+        <TicketCard
+          edge="surface-50"
+          className="rounded-t-[26px] p-[18px] pb-[30px] shadow-[0_24px_50px_rgba(42,26,40,0.12)] sm:p-[22px]"
+        >
+          <div
+            className="text-ink-muted grid grid-cols-7 gap-1.5 text-center text-[12px] font-black"
+            aria-hidden="true"
+          >
+            {DAY_HEADERS.map((x) => (
+              <span key={x}>{x}</span>
+            ))}
+            {rows.flatMap((slot, row) =>
+              [1, 2, 3, 4, 5, 6, 7].map((day) => {
+                const meal = plan?.meals.find((m) => m.day === day && m.slot === slot);
+                const planned = props.days.includes(day);
+                return (
+                  <span
+                    key={`${slot}-${day}`}
+                    className={cx(
+                      'anim-rise grid h-11 place-items-center rounded-[10px]',
+                      !planned && 'bg-surface-50',
+                      planned && !plan && 'bg-brand-soft',
+                    )}
+                    style={animDelay(500 + (row * 7 + day) * 40)}
+                  >
+                    {meal ? <Plat variant={meal.illustration} size={40} decorative /> : null}
+                  </span>
+                );
+              }),
+            )}
+          </div>
+          <div className="border-line mt-5 flex flex-wrap items-center justify-between gap-3 border-t-2 border-dashed pt-[18px]">
+            <span>
+              <span className="text-ink-muted block text-[13px] font-black tracking-[1px]">
+                {plan ? 'TOTAL' : 'TOTAL ESTIMÉ'} CHEZ {props.storeName.toUpperCase()}
+              </span>
+              <span className="font-display text-[44px] font-extrabold tabular-nums tracking-[-1.4px]">
+                {plan
+                  ? `${plan.estimate ? '≈ ' : ''}${formatEuro(plan.myCents)}`
+                  : `≈ ${formatEuro(props.fallbackCents)}`}
+              </span>
+            </span>
+            {plan ? (
+              plan.cheapestName !== props.storeName ? (
+                <span className="bg-saving-soft text-saving-ink rounded-[14px] px-4 py-2.5 font-black tabular-nums">
+                  Possible dès {formatEuro(plan.cheapestCents)} chez {plan.cheapestName}
+                </span>
+              ) : null
+            ) : props.cheapestFallback !== null ? (
+              <span className="bg-saving-soft text-saving-ink rounded-[14px] px-4 py-2.5 font-black tabular-nums">
+                Possible dès ≈ {formatEuro(props.cheapestFallback)} chez Lidl
+              </span>
+            ) : null}
+          </div>
+        </TicketCard>
+      </div>
+      {plan?.budgetCents ? (
+        <p
+          className="anim-rise text-ink-muted mt-4 text-[15px] font-bold tabular-nums"
+          style={animDelay(650)}
+        >
+          {plan.myCents <= plan.budgetCents
+            ? `Dans ton budget de ${formatEuro(plan.budgetCents)}.`
+            : `Ton budget est de ${formatEuro(plan.budgetCents)} : on a pris les recettes les moins chères compatibles avec tes choix.`}
+        </p>
+      ) : null}
+      {props.children}
+    </>
   );
 }

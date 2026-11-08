@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { addDays, isoWeek, weekStartOf, STORE_IDS, STORES_INFO } from '@repas/core';
 import { animDelay, cx, glassClasses, PageHeader, Reveal } from '@repas/ui';
+import { OnboardingStats } from '@/components/onboarding-stats';
 import { StoreLogo } from '@/components/store-logo';
 import { coverageByStore, recentObservations, STORES } from '@/lib/coverage';
 import { requireRole } from '@/lib/staff';
@@ -270,6 +271,7 @@ export default async function BoVuePage() {
           </ul>
         </Reveal>
       </div>
+      <OnboardingStats />
     </>
   );
 }

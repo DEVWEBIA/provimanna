@@ -34,6 +34,7 @@ Commence par me confirmer l'état et la prochaine étape.
 | 9 Back-office | ✅ — jalon J6 (écrans Tickets et Imports reportés au lot 10) |
 | 12 Famille, économies, mode sombre, états | ✅ (fait avant 10 et 11, avec accord) |
 | Logos en couleur + vraies photos de plats | ✅ (demandes du 08/11) |
+| Questionnaire enrichi (1 question par écran) | ✅ (demande du 08/11, migration 0008) |
 | **7 Paiement** | ⏳ attend un compte Stripe |
 | **10 Tickets et prix** | ⏳ attend un fournisseur OCR + vérification de licence |
 | **11 Emails, notifications, PWA** | ⏳ attend Resend + un domaine |
@@ -61,7 +62,7 @@ Commence par me confirmer l'état et la prochaine étape.
 - Briques : gabarit `components/site/site-page.tsx`, blocs `components/seo/blocks.tsx`, panier type reproductible `lib/observatory.ts`, client anonyme sans cookies `lib/supabase/public.ts` (pages en ISR 24 h).
 
 **Parcours et espace client (`/app`)**
-- `/commencer` (questionnaire sans compte, puis lien magique ; code de parrainage `?parrain=` transmis), `/connexion` (lien ou code à 6 chiffres ; Google et Apple prêts mais désactivés), `/app/bienvenue` (questionnaire du compte, génère la semaine).
+- `/commencer` (questionnaire sans compte, **9 questions, une par écran** : motivations, foyer, jours et repas, enseigne, budget, régime, ambiance, ingrédients évités, équipement ; puis lien magique ; code de parrainage `?parrain=` transmis). Modifier une seule réponse : `/app/bienvenue?etape=<id>` depuis le profil, `/connexion` (lien ou code à 6 chiffres ; Google et Apple prêts mais désactivés), `/app/bienvenue` (questionnaire du compte, génère la semaine).
 - `/app` tableau de bord (semaine, total, « Possible dès… », série, économies, défi, repas du jour), `/app/plan` (grille 7 × 2 avec glisser-déposer, remplacer, verrouiller, varier ; comparateur latéral), `/app/comparateur` (choisir son enseigne = **valider la semaine**, totaux figés côté serveur), `/app/liste` (par rayon, temps réel, file hors ligne, partage `/liste/[token]`), `/app/recettes` + fiche + **mode cuisine**, `/app/economies`, `/app/famille` (invitations par lien, `/invitation/[token]`), `/app/profil` (préférences, notifications, **thème auto / clair / sombre**). La page Notifications n'existe pas encore (lot 11).
 - **Vraies photos de plats** : 47 recettes sur 53 (`components/recipes/recipe-photo.tsx`, repli sur l'illustration `<Plat>`). Sans photo : chou sauté, colin purée, gratin de butternut, saucisses aux lentilles, spaghetti épinards-tomate, tarte aux poireaux. Liste et crédits : `supabase/catalogue/photos.json`, `apps/web/public/recettes/CREDITS.md`, script `apps/web/scripts/recipe-photos.mjs` (télécharge, recadre, régénère `lib/recipe-photos.ts`).
 - **Logos des enseignes en couleur** dans l'espace client : `components/store-logo.tsx` (vignette blanche, lisible en sombre).
@@ -74,7 +75,7 @@ Commence par me confirmer l'état et la prochaine étape.
 
 **Packages** : `packages/core` (prix, `generatePlan` / `replaceMeal`, semaines à l'heure de Paris, coûts par recette et par ingrédient, comparaisons produit par produit, totaux par rayon, `savingsCents`, `nextStreak`, `challengeProgress`…), `packages/ui` (composants, briques de style : `Reveal`, `Glow`, `PageHeader`, `GlassCard`, `animDelay`, `inputClasses` ; `styles/motion.css`, `styles/dark.css`).
 
-**Migrations** : 0001 schéma, 0002 RLS, 0003 droits colonne par colonne, 0004 temps de cuisine, 0005 familles et marqueurs des recettes, 0006 liste et validation (totaux écrits par le serveur, « coché par » posé par la base, temps réel, `shared_list`), 0007 journal d'audit. **Prochain numéro libre : 0008.**
+**Migrations** : 0001 schéma, 0002 RLS, 0003 droits colonne par colonne, 0004 temps de cuisine, 0005 familles et marqueurs des recettes, 0006 liste et validation (totaux écrits par le serveur, « coché par » posé par la base, temps réel, `shared_list`), 0007 journal d'audit, 0008 réponses enrichies du questionnaire (jours et repas, budget, styles, équipement, ingrédients évités, motivations). **Prochain numéro libre : 0009.**
 
 **Tests** : core 10 node:test + 62 Vitest, ui 16, web 7 Vitest, **32 tests RLS** (`pnpm db:test`), **22 e2e Playwright** desktop + mobile (dont back-office, famille, recettes, SEO).
 
@@ -117,6 +118,7 @@ pnpm --filter @repas/web test:e2e   # nécessite supabase start et pnpm dev
 - **Animations** : une animation sur `transform` écrase `translate`/`rotate` du même élément → deux éléments. Un élément animé crée un contexte d'empilement → monter le parent (`z-30`) quand un menu s'ouvre dedans.
 - **Next.js mémorise les GET identiques pendant un rendu** (supabase-js compris) : après une insertion, renvoyer les lignes insérées au lieu de relire.
 - **Serveur de dev** : après l'ajout d'une fonction exportée par `packages/core` ou une modification de `apps/admin/src/lib/staff.ts`, il garde parfois l'ancien module (« X is not a function ») → le redémarrer.
+- **Fichier `'use client'`** : une constante ou une fonction qu'il exporte devient une référence client côté serveur (« X.includes is not a function ») → la mettre dans un module sans directive (`onboarding/schema.ts`, `lib/meal-days.ts`).
 - **Zod 4** : `z.guid()` pour les identifiants (les ids fixes du seed ne sont pas des UUID versionnés).
 - **Linter React** : pas de `Date.now()` ni de `setState` synchrone dans le corps d'un composant ou d'un effet.
 - **Tests** : la base locale est partagée → chaque test prépare ses données (comptes uniques, relevé aberrant via `e2e/helpers.ts`, `on conflict` en pgTAP). Le délai e2e est à 15 s (compilation à la première visite) ; attendre `networkidle` avant de cocher.

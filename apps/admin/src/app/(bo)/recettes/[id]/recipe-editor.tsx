@@ -44,6 +44,7 @@ export interface EditorRecipe {
   illustration: string;
   diets: string[];
   tags: string[];
+  equipment: string[];
   seasonMonths: number[];
   steps: { text: string; minutes: number | null }[];
   ingredients: { label: string; productId: string | null; units: number; pantry: boolean }[];
@@ -67,6 +68,17 @@ const TAGS = [
   ['epice', 'Épicé'],
   ['enfants', 'Enfants'],
   ['batch', 'Batch cooking'],
+] as const;
+// Styles du questionnaire « Quelle ambiance ? » (rapide, en famille et végétal se lisent déjà
+// dans le temps, le marqueur Enfants et le régime).
+const STYLE_TAGS = [
+  ['equilibre', 'Équilibré'],
+  ['gourmand', 'Gourmand'],
+  ['monde', 'Saveurs du monde'],
+] as const;
+const EQUIPMENT = [
+  ['plaques', 'Plaques'],
+  ['four', 'Four'],
 ] as const;
 const STORE_NAME: Record<string, string> = Object.fromEntries(
   STORE_IDS.map((id) => [id, STORES_INFO[id].name]),
@@ -344,6 +356,42 @@ export function RecipeEditor({
                   </Chip>
                 ))}
               </div>
+            </fieldset>
+            <fieldset>
+              <legend className="mb-2 text-[13px] font-black">Ambiance (questionnaire)</legend>
+              <div className="flex flex-wrap gap-1.5">
+                {STYLE_TAGS.map(([v, l]) => (
+                  <Chip key={v} on={r.tags.includes(v)} onClick={() => set('tags', toggle(r.tags, v))}>
+                    {l}
+                  </Chip>
+                ))}
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend className="mb-2 text-[13px] font-black">Équipement nécessaire</legend>
+              <div className="flex flex-wrap gap-1.5">
+                {EQUIPMENT.map(([v, l]) => (
+                  <Chip
+                    key={v}
+                    on={r.equipment.includes(v)}
+                    onClick={() => set('equipment', toggle(r.equipment, v))}
+                  >
+                    {l}
+                  </Chip>
+                ))}
+                {r.equipment.includes('four') ? (
+                  <Chip
+                    on={r.tags.includes('air_fryer')}
+                    onClick={() => set('tags', toggle(r.tags, 'air_fryer'))}
+                  >
+                    Faisable au air fryer
+                  </Chip>
+                ) : null}
+              </div>
+              <p className="text-ink-muted mt-1.5 text-[12px] font-bold">
+                Sans équipement coché : recette sans cuisson. Un foyer sans four ne la verra que si « air
+                fryer » est coché ici et chez lui.
+              </p>
             </fieldset>
           </section>
 
