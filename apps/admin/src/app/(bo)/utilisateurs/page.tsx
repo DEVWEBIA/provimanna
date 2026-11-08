@@ -1,7 +1,19 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { Route } from 'next';
-import { formatEuro, savingsCents, trialDaysLeft, STORE_IDS, STORES_INFO } from '@repas/core';
+import {
+  daysSummary,
+  EQUIPMENT,
+  formatEuro,
+  PREFERENCES,
+  preferencesFromHousehold,
+  savingsCents,
+  STORE_IDS,
+  STORES_INFO,
+  STYLES,
+  trialDaysLeft,
+  type Diet,
+} from '@repas/core';
 import { cx, glassClasses, inputClasses, PageHeader } from '@repas/ui';
 import { Badge, Kpi } from '@/components/bo-ui';
 import { canAccess, requireRole } from '@/lib/staff';
@@ -37,7 +49,7 @@ export default async function UtilisateursPage({ searchParams }: { searchParams:
       admin
         .from('profiles')
         .select(
-          'id, display_name, created_at, household_id, households(adults, children, preferred_store_id, postal_code, subscriptions(tier, trial_ends_at, bonus_days, interval, current_period_end))',
+          'id, display_name, created_at, household_id, households(adults, children, preferred_store_id, postal_code, diet, exclusions, cooking_time, meal_days, with_lunch, weekly_budget_cents, styles, equipment, disliked_product_ids, subscriptions(tier, trial_ends_at, bonus_days, interval, current_period_end))',
         ),
       admin
         .from('meal_plans')
@@ -220,6 +232,7 @@ export default async function UtilisateursPage({ searchParams }: { searchParams:
                 <p>Formule : {sel.sub.interval === 'year' ? 'annuelle' : 'mensuelle'}</p>
               ) : null}
             </div>
+            {sel.households ? <HouseholdAnswers h={sel.households} /> : null}
             {sel.household_id ? (
               <div>
                 <p className="text-ink-muted mb-2 text-[12px] font-black tracking-[1px]">ACTIONS SUPPORT</p>
@@ -255,5 +268,61 @@ export default async function UtilisateursPage({ searchParams }: { searchParams:
         ) : null}
       </div>
     </>
+  );
+}
+
+const COOKING: Record<string, string> = {
+  moins_30: 'moins de 30 min',
+  '30_45': '30 à 45 min',
+  peu_importe: 'temps libre',
+};
+
+/** Réponses du questionnaire du foyer (lecture seule, pour répondre au support). */
+function HouseholdAnswers({
+  h,
+}: {
+  h: {
+    adults: number;
+    children: number;
+    diet: Diet;
+    exclusions: string[];
+    cooking_time: string;
+    meal_days: number[];
+    with_lunch: boolean;
+    weekly_budget_cents: number | null;
+    styles: string[];
+    equipment: string[];
+    disliked_product_ids: string[];
+  };
+}) {
+  const label = <T extends { id: string; label: string }>(list: readonly T[], ids: readonly string[]) =>
+    ids
+      .map((id) => list.find((x) => x.id === id)?.label)
+      .filter(Boolean)
+      .join(', ');
+  const prefs = label(PREFERENCES, preferencesFromHousehold(h.diet, h.exclusions));
+  const rows: [string, string][] = [
+    [
+      'Repas',
+      `${h.meal_days.length * (h.with_lunch ? 2 : 1)} · ${h.with_lunch ? 'midi et soir' : 'soir'} · ${daysSummary(h.meal_days).toLowerCase()}`,
+    ],
+    ['Budget', h.weekly_budget_cents ? `${formatEuro(h.weekly_budget_cents)} / semaine` : 'aucun'],
+    ['Régime', prefs || 'aucun'],
+    ['Ambiance', `${label(STYLES, h.styles) || 'aucune'} · ${COOKING[h.cooking_time] ?? ''}`],
+    ['Équipement', label(EQUIPMENT, h.equipment)],
+    ['Évités', h.disliked_product_ids.length ? `${h.disliked_product_ids.length} ingrédient(s)` : 'aucun'],
+  ];
+  return (
+    <div className="rounded-[14px] bg-white p-3 text-[13px]">
+      <p className="text-ink-muted mb-1 text-[12px] font-black tracking-[1px]">RÉPONSES DU FOYER</p>
+      <dl className="grid grid-cols-[88px_1fr] gap-x-2 gap-y-1">
+        {rows.map(([k, v]) => (
+          <div key={k} className="contents">
+            <dt className="text-ink-muted font-bold">{k}</dt>
+            <dd className="font-bold">{v}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   );
 }

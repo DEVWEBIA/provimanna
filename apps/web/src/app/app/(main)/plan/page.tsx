@@ -5,6 +5,7 @@ import { DemoNotice } from '@/components/plan/demo-notice';
 import { StalePrices } from '@/components/plan/stale-prices';
 import { PlanBoard } from '@/components/plan/plan-board';
 import { PlanControls } from '@/components/plan/plan-controls';
+import { PlanCriteria } from '@/components/plan/plan-criteria';
 import { StoreTotals } from '@/components/plan/store-totals';
 import { pricesAtLabel, storeTotals } from '@/components/plan/totals';
 import { currentPlan } from '@/lib/plan';
@@ -37,6 +38,7 @@ export default async function PlanPage() {
       </div>
       {view.demoPrices ? <DemoNotice /> : null}
       <StalePrices view={view} storeName={name(view.myStore)} />
+      <PlanCriteria household={household} totalCents={view.comparison.reference.cents} />
       <div className="grid items-start gap-6 2xl:grid-cols-[minmax(0,1fr)_340px]">
         <PlanBoard
           planId={view.id}

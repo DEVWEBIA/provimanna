@@ -22,6 +22,7 @@ import {
   PREFERENCES,
   priceSpread,
   scaleCents,
+  STORE_COUNT,
   STORES_INFO,
   STYLES,
   type EquipmentId,
@@ -259,6 +260,7 @@ export function OnboardingWizard({
     step?: string;
   }>({});
   const [saving, setSaving] = useState(false);
+  const [composing, setComposing] = useState(false);
   const [plan, setPlan] = useState<GeneratedPlan | null>(null);
   const [signup, sendSignup, sending] = useActionState(startSignup, { status: 'idle' } as AuthFormState);
   const [editingEmail, setEditingEmail] = useState(false);
@@ -331,15 +333,26 @@ export function OnboardingWizard({
       router.push(`/app/profil?fait=${res.result}`);
       return;
     }
-    if (index === LAST_QUESTION && mode === 'account') {
-      setSaving(true);
-      const res = await saveOnboarding({ ...draft, store: draft.store ?? '' });
-      setSaving(false);
-      if (res.error) {
-        setErrors({ global: res.error });
-        return;
+    if (index === LAST_QUESTION) {
+      // « On compose ta semaine » : les critères s'affichent un à un pendant l'enregistrement
+      // (durée minimale pour qu'on ait le temps de les lire, plus courte si les animations sont réduites).
+      const started = performance.now();
+      const minMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 600 : 2600;
+      setComposing(true);
+      window.scrollTo({ top: 0 });
+      if (mode === 'account') {
+        setSaving(true);
+        const res = await saveOnboarding({ ...draft, store: draft.store ?? '' });
+        setSaving(false);
+        if (res.error) {
+          setComposing(false);
+          setErrors({ global: res.error });
+          return;
+        }
+        setPlan(res.plan ?? null);
       }
-      setPlan(res.plan ?? null);
+      await new Promise((r) => setTimeout(r, Math.max(0, minMs - (performance.now() - started))));
+      setComposing(false);
     }
     goTo(Math.min(WIZARD_STEPS.length - 1, index + 1));
   };
@@ -386,7 +399,9 @@ export function OnboardingWizard({
         </Link>
 
         <div className="mb-8 mt-5 flex items-center gap-3">
-          {mode === 'edit' ? (
+          {composing ? (
+            <span className="-ml-2 h-11 w-11 shrink-0" aria-hidden="true" />
+          ) : mode === 'edit' ? (
             <Link href={href('/app/profil')} aria-label="Retour au profil" className={backButtonClass}>
               <Icon name="retour" size={24} />
             </Link>
@@ -419,8 +434,28 @@ export function OnboardingWizard({
           </div>
         </div>
 
-        <div className="flex-1" key={emailSent ? 'mail' : step}>
-          {emailSent && signup.status === 'sent' ? (
+        <div className="flex-1" key={composing ? 'compose' : emailSent ? 'mail' : step}>
+          {composing ? (
+            <Composing
+              lines={[
+                `${meals} repas pour ${people} personne${people > 1 ? 's' : ''}`,
+                d.prefs.length
+                  ? `Régime respecté : ${d.prefs.map((p) => PREFERENCES.find((x) => x.id === p)?.label).join(', ')}`
+                  : 'Aucun régime particulier',
+                `Faisable avec : ${d.equipment.map((e) => EQUIPMENT.find((x) => x.id === e)?.label).join(', ')}`,
+                ...(d.disliked.length
+                  ? [
+                      `${d.disliked.length} ingrédient${d.disliked.length > 1 ? 's' : ''} écarté${d.disliked.length > 1 ? 's' : ''}`,
+                    ]
+                  : []),
+                ...(d.styles.length
+                  ? [`Style : ${d.styles.map((s) => STYLES.find((x) => x.id === s)?.label).join(', ')}`]
+                  : []),
+                d.budget_cents ? `Budget visé : ${formatEuro(d.budget_cents)}` : 'Recettes de saison',
+                `Prix comparés dans ${STORE_COUNT} enseignes`,
+              ]}
+            />
+          ) : emailSent && signup.status === 'sent' ? (
             <EmailSent
               email={signup.email}
               suite="/app"
@@ -898,7 +933,7 @@ export function OnboardingWizard({
       </div>
 
       {/* Bouton principal, toujours à portée de pouce. */}
-      {!emailSent ? (
+      {!emailSent && !composing ? (
         <div className="from-surface-50 via-surface-50 pointer-events-none fixed inset-x-0 bottom-0 z-20 bg-gradient-to-t to-transparent px-4 pb-5 pt-10 sm:px-6">
           <div className="pointer-events-auto mx-auto max-w-[640px]">
             {step !== 'resultat' ? (
@@ -1049,5 +1084,33 @@ function Result(props: {
       ) : null}
       {props.children}
     </>
+  );
+}
+
+/** Écran d'attente « On compose ta semaine » : les critères appliqués, cochés un à un. */
+function Composing({ lines }: { lines: string[] }) {
+  return (
+    <div role="status" aria-live="polite">
+      <div className="anim-float mx-auto mb-6 w-fit" aria-hidden="true">
+        <Plat variant="curry" size={120} decorative />
+      </div>
+      <h1 className={cx(h1Class, 'text-center')}>
+        <span style={animDelay(40)}>On compose ta semaine…</span>
+      </h1>
+      <ul className="dark:bg-surface-0 mx-auto mt-8 flex max-w-[460px] flex-col gap-3 rounded-[24px] bg-white p-5 shadow-[0_2px_18px_rgba(42,26,40,0.06)]">
+        {lines.map((l, i) => (
+          <li
+            key={l}
+            className="anim-rise flex items-center gap-3 text-[16px] font-bold"
+            style={animDelay(250 + i * 300)}
+          >
+            <span className="bg-brand text-brand-on grid h-7 w-7 shrink-0 place-items-center rounded-full">
+              <Icon name="check" size={15} strokeWidth={3} />
+            </span>
+            {l}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

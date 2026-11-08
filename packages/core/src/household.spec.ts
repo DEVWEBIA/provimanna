@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { dietFromPreferences, householdFactor, preferencesFromHousehold, trialDaysLeft } from './index.ts';
+import {
+  daysSummary,
+  dietFromPreferences,
+  householdFactor,
+  preferencesFromHousehold,
+  trialDaysLeft,
+} from './index.ts';
 
 describe('householdFactor', () => {
   it('foyer de référence 2 + 2 = 1', () => expect(householdFactor(2, 2)).toBeCloseTo(1));
@@ -31,4 +37,13 @@ describe('trialDaysLeft', () => {
     expect(trialDaysLeft('2026-11-16T12:00:00Z', 3, now)).toBe(12);
   });
   it('jamais négatif', () => expect(trialDaysLeft('2026-11-01T00:00:00Z', 0, now)).toBe(0));
+});
+
+describe('daysSummary', () => {
+  it('résume les jours planifiés', () => {
+    expect(daysSummary([1, 2, 3, 4, 5, 6, 7])).toBe('Toute la semaine');
+    expect(daysSummary([5, 1, 2, 3, 4])).toBe('Du lundi au vendredi');
+    expect(daysSummary([3])).toBe('Le mercredi');
+    expect(daysSummary([1, 3, 6])).toBe('Lundi, mercredi et samedi');
+  });
 });

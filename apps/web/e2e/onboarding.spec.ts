@@ -86,6 +86,10 @@ async function fillQuestionnaire(page: Page, project: string) {
   await page.getByText('Plaques', { exact: true }).click();
   await shot(page, 'equipement', project);
   await page.getByRole('button', { name: 'Composer ma semaine' }).click();
+  // Écran de composition : les critères appliqués.
+  await expect(page.getByRole('heading', { name: 'On compose ta semaine…' })).toBeVisible();
+  await expect(page.getByText('Régime respecté : Sans porc')).toBeVisible();
+  await expect(page.getByText('Faisable avec : Plaques')).toBeVisible();
   await expect(page.getByText('10 repas pour 4 personnes, de saison, chez Auchan.')).toBeVisible();
 }
 
@@ -132,6 +136,10 @@ test('visiteur : questionnaire sans compte → email → espace client déjà co
   // Plan : 10 repas, aucun le week-end.
   await page.goto('/app/plan');
   await expect(page.getByText(/· 10 repas$/)).toBeVisible();
+  const criteria = page.getByRole('region', { name: 'Ce que respecte ta semaine' });
+  await expect(criteria).toContainText('Sans porc');
+  await expect(criteria).toContainText('Sans four');
+  await expect(criteria).toContainText('1 ingrédient évité');
 
   // Connecté : /commencer et /connexion renvoient vers l'espace client.
   await page.goto('/commencer');

@@ -34,7 +34,7 @@ Commence par me confirmer l'état et la prochaine étape.
 | 9 Back-office | ✅ — jalon J6 (écrans Tickets et Imports reportés au lot 10) |
 | 12 Famille, économies, mode sombre, états | ✅ (fait avant 10 et 11, avec accord) |
 | Logos en couleur + vraies photos de plats | ✅ (demandes du 08/11) |
-| Questionnaire enrichi (1 question par écran) | ✅ (demande du 08/11, migration 0008) |
+| Questionnaire enrichi (1 question par écran) | ✅ (demande du 08/11, migration 0008 ; recomposition en gratuit validée) |
 | **7 Paiement** | ⏳ attend un compte Stripe |
 | **10 Tickets et prix** | ⏳ attend un fournisseur OCR + vérification de licence |
 | **11 Emails, notifications, PWA** | ⏳ attend Resend + un domaine |
