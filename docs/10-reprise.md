@@ -35,6 +35,7 @@ Commence par me confirmer l'état et la prochaine étape.
 | 12 Famille, économies, mode sombre, états | ✅ (fait avant 10 et 11, avec accord) |
 | Logos en couleur + vraies photos de plats | ✅ (demandes du 08/11) |
 | Questionnaire enrichi (1 question par écran) | ✅ (demande du 08/11, migration 0008 ; recomposition en gratuit validée) |
+| Landing animée (Motion) + accent Instrument Serif | ✅ (demandes du 08/11) |
 | **7 Paiement** | ⏳ attend un compte Stripe |
 | **10 Tickets et prix** | ⏳ attend un fournisseur OCR + vérification de licence |
 | **11 Emails, notifications, PWA** | ⏳ attend Resend + un domaine |
