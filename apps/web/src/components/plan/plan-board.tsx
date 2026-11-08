@@ -1,9 +1,10 @@
 'use client';
 
+import { RecipePhoto } from '@/components/recipes/recipe-photo';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type DragEvent, type ReactNode } from 'react';
 import type { MealSlot } from '@repas/core';
-import { animDelay, cx, Icon, Plat, Price } from '@repas/ui';
+import { animDelay, cx, Icon, Price } from '@repas/ui';
 import { moveMealAction, replaceMealAction, toggleLockAction } from '@/app/app/(main)/plan/actions';
 import type { PlanMealView } from '@/lib/plan';
 import { href } from '@/lib/site';
@@ -189,7 +190,7 @@ export function PlanBoard({ planId, weekStart, today, meals }: PlanBoardProps) {
                       PLAT_TINT[m.recipe.illustration],
                     )}
                   >
-                    <Plat variant={m.recipe.illustration} size={84} decorative />
+                    <RecipePhoto slug={m.recipe.slug} illustration={m.recipe.illustration} size={84} />
                   </span>
                   <span className="min-w-0">
                     <span className="text-ink-muted flex items-center gap-1.5 text-[12px] font-black tracking-[1px]">
@@ -308,7 +309,7 @@ function MealCell(props: {
             <span className="sr-only">Verrouillé</span>
           </span>
         ) : null}
-        <Plat variant={m.recipe.illustration} size={62} decorative />
+        <RecipePhoto slug={m.recipe.slug} illustration={m.recipe.illustration} size={62} />
         <span className="line-clamp-3 text-[13px] font-black leading-tight">{m.recipe.title}</span>
         <Price
           cents={m.perServingCents}

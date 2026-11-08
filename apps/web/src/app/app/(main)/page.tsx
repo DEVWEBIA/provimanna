@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { RecipePhoto } from '@/components/recipes/recipe-photo';
 import type { CSSProperties } from 'react';
 import Link from 'next/link';
 import { formatEuro, monthOf, seasonalProduce, weekRangeLabel, weekStartOf, zonedDate } from '@repas/core';
@@ -20,6 +21,7 @@ import { DAY_SHORT, PLAT_TINT, SLOT_LABEL } from '@/components/plan/labels';
 import { DemoNotice } from '@/components/plan/demo-notice';
 import { pricesAtLabel } from '@/components/plan/totals';
 import { getEngagement } from '@/lib/engagement';
+import { RECIPE_PHOTOS } from '@/lib/recipe-photos';
 import { currentPlan } from '@/lib/plan';
 import { href } from '@/lib/site';
 
@@ -61,7 +63,11 @@ export default async function DashboardPage() {
   const cheapest = view.comparison.totals[0]!;
   const isCurrent = weekStartOf(data.now) === view.weekStart;
   const todayMeals = view.meals.filter((m) => m.day === (isCurrent ? weekday : 1));
-  const featured = [...new Set(view.meals.map((m) => m.recipe.illustration))].slice(0, 3);
+  // Plats mis en avant : ceux qui ont une vraie photo d'abord.
+  const featured = view.meals
+    .filter((m, i, all) => all.findIndex((x) => x.recipe.id === m.recipe.id) === i)
+    .sort((a, b) => Number(RECIPE_PHOTOS.has(b.recipe.slug)) - Number(RECIPE_PHOTOS.has(a.recipe.slug)))
+    .slice(0, 3);
   const pricesAt = pricesAtLabel(view);
   const engagement = await getEngagement();
   const challenge = engagement.challenges.find((c) => !c.progress.completed);
@@ -134,7 +140,7 @@ export default async function DashboardPage() {
           <div className="relative hidden h-[220px] w-[260px] shrink-0 md:block" aria-hidden="true">
             {featured.map((v, i) => (
               <div
-                key={v}
+                key={v.id}
                 className="absolute"
                 style={
                   [
@@ -148,7 +154,12 @@ export default async function DashboardPage() {
                   className="anim-float drop-shadow-[0_18px_30px_rgba(20,8,18,0.35)]"
                   style={{ animationDelay: `${i * 1.2}s` }}
                 >
-                  <Plat variant={v} size={[150, 110, 120][i]} decorative />
+                  <RecipePhoto
+                    slug={v.recipe.slug}
+                    illustration={v.recipe.illustration}
+                    size={[150, 110, 120][i]}
+                    priority={i === 0}
+                  />
                 </div>
               </div>
             ))}
@@ -226,7 +237,7 @@ export default async function DashboardPage() {
                 <span
                   className={`grid h-[84px] w-[84px] shrink-0 place-items-center rounded-[16px] ${PLAT_TINT[m.recipe.illustration] ?? ''}`}
                 >
-                  <Plat variant={m.recipe.illustration} size={76} decorative />
+                  <RecipePhoto slug={m.recipe.slug} illustration={m.recipe.illustration} size={76} />
                 </span>
                 <span className="min-w-0">
                   <span className="text-ink-muted block text-[12px] font-black tracking-[1px]">
@@ -269,7 +280,7 @@ export default async function DashboardPage() {
                       title={m.recipe.title}
                       className={`grid h-9 w-9 place-items-center rounded-[10px] ${PLAT_TINT[m.recipe.illustration] ?? ''}`}
                     >
-                      <Plat variant={m.recipe.illustration} size={30} decorative />
+                      <RecipePhoto slug={m.recipe.slug} illustration={m.recipe.illustration} size={30} />
                     </span>
                   ))}
               </div>

@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
+import { RecipePhoto } from '@/components/recipes/recipe-photo';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { notFound } from 'next/navigation';
 import { costPerServing, discountPercent, formatEuro, sumCents, zonedDate, type StoreId } from '@repas/core';
-import { animDelay, Glow, Plat, Reveal, TicketCard } from '@repas/ui';
+import { animDelay, Glow, Reveal, TicketCard } from '@repas/ui';
 import { DemoNotice } from '@/components/plan/demo-notice';
 import { RecipeCard } from '@/components/recipes/recipe-card';
 import { RecipePriceTable, type PriceRow } from '@/components/recipes/recipe-price-table';
@@ -219,7 +220,7 @@ export default async function RecettePage({ params }: { params: Params }) {
         <div className="anim-ticket relative mx-auto">
           <Glow className="bg-raw-peche left-10 top-10 h-64 w-64" />
           <div className="anim-float drop-shadow-[0_30px_50px_rgba(42,26,40,0.22)]">
-            <Plat variant={recipe.illustration} size={340} decorative className="max-w-[78vw]" />
+            <RecipePhoto slug={recipe.slug} illustration={recipe.illustration} size={320} priority />
           </div>
           {discountPercent(cheapest.cents, priciest.cents) > 0 ? (
             <span className="bg-saving text-raw-encre rounded-pill absolute bottom-6 right-0 px-4 py-2 text-[15px] font-black shadow-[0_10px_24px_rgba(238,122,48,0.35)]">

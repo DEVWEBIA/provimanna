@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
+import { RecipePhoto } from '@/components/recipes/recipe-photo';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { costPerServing, formatEuro, type PlanFilters, type PlannerHousehold } from '@repas/core';
-import { cx, Plat, Reveal, StoreChip } from '@repas/ui';
+import { cx, Reveal, StoreChip } from '@repas/ui';
 import { DAY_LONG } from '@/components/plan/labels';
 import { CtaTicket, DemoBadge, H2, Panel, SeoHero } from '@/components/seo/blocks';
 import { Faq } from '@/components/site/faq';
@@ -116,7 +117,7 @@ export default async function MenuPage({ params }: { params: Params }) {
                   <ul className="mt-2 flex flex-col gap-2">
                     {meals.map((m) => (
                       <li key={m.slot} className="flex items-center gap-3">
-                        <Plat variant={m.recipe.illustration} size={44} decorative />
+                        <RecipePhoto slug={m.recipe.slug} illustration={m.recipe.illustration} size={44} />
                         <Link
                           href={href(`/recettes/${m.recipe.slug}`)}
                           className="text-ink text-[15px] font-extrabold"

@@ -26,14 +26,22 @@ export function StoreLogo({
 }) {
   const logo = LOGOS[id];
   const ratio = logo ? logo.width / logo.height : 1;
-  const w = Math.round(Math.min(ratio, 2.6) * size * 0.72);
+  const pad = Math.round(size * 0.14);
+  // Le logo tient dans la hauteur disponible, sans dépasser 2,4 fois la hauteur en largeur.
+  const h = size - 2 * pad;
+  const w = Math.round(Math.min(ratio, 2.4) * h);
   return (
     <span
       className={cx(
         'border-line bg-raw-blanc grid shrink-0 place-items-center overflow-hidden rounded-[12px] border',
         className,
       )}
-      style={{ height: size, minWidth: size, padding: logo ? Math.round(size * 0.14) : 0 }}
+      style={{
+        height: size,
+        width: logo ? Math.max(size, w + 2 * pad) : undefined,
+        minWidth: size,
+        padding: logo ? pad : 0,
+      }}
     >
       {logo ? (
         <Image

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { RecipePhoto } from '@/components/recipes/recipe-photo';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
@@ -12,7 +13,7 @@ import {
   zonedDate,
   type StoreId,
 } from '@repas/core';
-import { animDelay, Glow, Plat } from '@repas/ui';
+import { animDelay, Glow } from '@repas/ui';
 import { DAY_LONG } from '@/components/plan/labels';
 import { RecipeDetail, type Alternative } from '@/components/recipes/recipe-detail';
 import { coreRecipe, getRecipe, ingredientLines, recipeTags } from '@/lib/recipes';
@@ -85,6 +86,7 @@ export default async function AppRecettePage({ params }: { params: Params }) {
     );
     alternatives = picks.map(({ r: p, reason }) => ({
       id: p.r.id,
+      slug: p.r.slug,
       title: p.r.title,
       illustration: p.r.illustration,
       minutes: p.r.minutes,
@@ -108,7 +110,7 @@ export default async function AppRecettePage({ params }: { params: Params }) {
         <Glow className="bg-raw-peche left-0 top-0 h-60 w-60" />
         <div className="anim-ticket">
           <div className="anim-float drop-shadow-[0_24px_40px_rgba(42,26,40,0.2)]">
-            <Plat variant={recipe.illustration} size={220} decorative />
+            <RecipePhoto slug={recipe.slug} illustration={recipe.illustration} size={220} priority />
           </div>
         </div>
         <div className="min-w-0 flex-[1_1_380px]">

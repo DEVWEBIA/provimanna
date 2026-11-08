@@ -9,3 +9,4 @@ design/legacy-maquettes
 supabase/migrations
 supabase/seed.sql
 packages/core/src/database.types.ts
+apps/web/public/recettes/CREDITS.md

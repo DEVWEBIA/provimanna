@@ -1,6 +1,7 @@
 import Link from 'next/link';
+import { RecipePhoto } from '@/components/recipes/recipe-photo';
 import type { Route } from 'next';
-import { Icon, Plat, Price, type PlatVariant } from '@repas/ui';
+import { Icon, Price, type PlatVariant } from '@repas/ui';
 import { PLAT_TINT } from '@/components/plan/labels';
 
 export interface RecipeCardProps {
@@ -30,8 +31,13 @@ export function RecipeCard({
         <div
           className={`relative grid aspect-[5/4] place-items-center overflow-hidden rounded-[22px] ${PLAT_TINT[illustration] ?? 'bg-surface-0'}`}
         >
-          <div className="transition-transform duration-500 group-hover:rotate-6 group-hover:scale-105 motion-reduce:transition-none">
-            <Plat variant={illustration} size={132} decorative />
+          <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none">
+            <RecipePhoto
+              slug={href.split('/').pop() ?? ''}
+              illustration={illustration}
+              shape="cover"
+              size={132}
+            />
           </div>
           {tags.length ? (
             <ul className="absolute left-3 top-3 flex flex-wrap gap-1.5">

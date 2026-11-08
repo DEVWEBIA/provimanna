@@ -1,10 +1,11 @@
 'use client';
 
+import { RecipePhoto } from '@/components/recipes/recipe-photo';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 import { formatEuro, sumCents } from '@repas/core';
-import { buttonClasses, cx, glassClasses, Plat, Toast, type PlatVariant } from '@repas/ui';
+import { buttonClasses, cx, glassClasses, Toast, type PlatVariant } from '@repas/ui';
 import { swapMealAction } from '@/app/app/(main)/plan/actions';
 import { href } from '@/lib/site';
 
@@ -17,6 +18,7 @@ export interface DetailIngredient {
 
 export interface Alternative {
   id: string;
+  slug: string;
   title: string;
   illustration: PlatVariant;
   minutes: number;
@@ -233,7 +235,7 @@ export function RecipeDetail({
                 onClick={() => swap(a.id)}
                 className="border-line hover:border-brand flex items-center gap-4 rounded-[20px] border bg-white p-3 text-left transition-colors disabled:opacity-60"
               >
-                <Plat variant={a.illustration} size={72} decorative />
+                <RecipePhoto slug={a.slug} illustration={a.illustration} size={72} />
                 <span className="flex-1">
                   <span className="text-ink-muted block text-[12px] font-black uppercase tracking-[1px]">
                     {a.reason}

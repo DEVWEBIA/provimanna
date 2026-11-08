@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { RecipePhoto } from '@/components/recipes/recipe-photo';
 import Link from 'next/link';
 import { formatEuro, recipeServingCents, weekRangeLabel, weekSavingCents, type StoreId } from '@repas/core';
 import {
@@ -203,7 +204,7 @@ export default async function EconomiesPage() {
                       href={href(`/app/recettes/${r.slug}`)}
                       className="border-line text-ink flex items-center gap-3 border-t py-2.5 no-underline"
                     >
-                      <Plat variant={r.illustration} size={44} decorative />
+                      <RecipePhoto slug={r.slug} illustration={r.illustration} size={44} />
                       <span className="min-w-0 flex-1">
                         <span className="block font-black">{r.title}</span>
                         <span className="text-ink-muted text-[13px] font-bold tabular-nums">

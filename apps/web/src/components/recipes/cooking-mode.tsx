@@ -1,8 +1,9 @@
 'use client';
 
+import { RecipePhoto } from '@/components/recipes/recipe-photo';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { cx, Plat, type PlatVariant } from '@repas/ui';
+import { cx, type PlatVariant } from '@repas/ui';
 import { href } from '@/lib/site';
 
 export interface CookingModeProps {
@@ -68,7 +69,7 @@ export function CookingMode({ slug, title, illustration, servings, steps, ingred
   return (
     <div className="bg-raw-encre flex min-h-screen flex-col text-white">
       <header className="flex items-center gap-4 px-[clamp(16px,4vw,48px)] py-4">
-        <Plat variant={illustration} size={56} decorative />
+        <RecipePhoto slug={slug} illustration={illustration} size={56} />
         <div className="min-w-0 flex-1">
           <p className="truncate text-[18px] font-black">{title}</p>
           <p className="text-site-on-ink-faint text-[14px] font-bold">
