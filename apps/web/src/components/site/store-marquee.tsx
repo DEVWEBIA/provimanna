@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { STORE_COUNT, type StoreId } from '@repas/core';
 import { STORE_LOGOS } from '@/lib/store-logos';
+import { VelocityMarquee } from './motion';
 
 /** Hauteur d'affichage par logo, pour un poids visuel comparable (logos carrés plus hauts). */
 const HEIGHT: Record<StoreId, number> = {
@@ -31,6 +32,7 @@ function StoreMark({ store }: { store: MarqueeStore }) {
       width={w}
       height={h}
       unoptimized
+      style={{ height: h, width: w, maxWidth: 'none' }}
       className="transition-transform duration-300 hover:scale-105 motion-reduce:transition-none"
     />
   );
@@ -38,7 +40,7 @@ function StoreMark({ store }: { store: MarqueeStore }) {
 
 /**
  * Bandeau défilant des enseignes comparées : vrais logos en couleur (src/assets/logos/SOURCES.md), avec la
- * mention de propriété des marques. Figé si l'utilisateur réduit les animations.
+ * mention de propriété des marques. Accélère avec le défilement (Motion) ; figé si l'utilisateur réduit les animations.
  */
 export function StoreMarquee({ stores }: { stores: MarqueeStore[] }) {
   const row = () => (
@@ -56,14 +58,8 @@ export function StoreMarquee({ stores }: { stores: MarqueeStore[] }) {
         {STORE_COUNT} enseignes comparées à chaque plan
       </p>
       <p className="sr-only">{stores.map((s) => s.name).join(', ')}</p>
-      <div className="mt-7 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]">
-        <div
-          className="animate-marquee flex w-max hover:[animation-play-state:paused] motion-reduce:animate-none"
-          aria-hidden="true"
-        >
-          {row()}
-          {row()}
-        </div>
+      <div className="mt-7">
+        <VelocityMarquee>{row()}</VelocityMarquee>
       </div>
       <p className="text-ink-muted mx-auto mt-6 max-w-[640px] px-6 text-center text-[12px]">
         Marques et logos © leurs propriétaires respectifs. Cités à titre de comparaison des prix, sans
