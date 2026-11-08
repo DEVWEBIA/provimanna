@@ -1,7 +1,7 @@
-# 10 — Fichier de reprise (état au 08/11/2026, après le lot 12)
+# 10 — Fichier de reprise (état au 08/11/2026)
 
-> À lire en début de nouvelle conversation, après `CLAUDE.md`. Il dit où on en est, ce qui a été décidé, ce qui bloque et comment reprendre.
-> Détail des décisions : `docs/09-plan-action.md` (section « Journal des décisions techniques »). Lots : `docs/08-roadmap-claude-code.md`.
+> À lire en début de nouvelle conversation, après `CLAUDE.md`. Il dit où on en est, ce qui a été décidé, ce qui attend une réponse et comment reprendre.
+> Détail de chaque décision : `docs/09-plan-action.md` (section « Journal des décisions techniques »). Lots : `docs/08-roadmap-claude-code.md`.
 
 ## Message à coller pour reprendre
 
@@ -14,117 +14,118 @@ Commence par me confirmer l'état et la prochaine étape.
 
 ## Contexte en bref
 
-- Projet personnel d'Emmanuel avec son/sa conjoint·e. Web app de plans de repas + comparaison de prix dans 6 enseignes.
-- Mode de travail validé : Claude avance **en autonomie, lot par lot**, et s'arrête pour demander dès qu'il faut un compte ou une clé, une décision produit, ou une migration SQL qui change le modèle de données. Point d'étape aux jalons.
+- Projet personnel d'Emmanuel avec son/sa conjoint·e. Web app (PWA) de plans de repas + prix de la liste de courses dans 6 enseignes. Nom définitif pas encore choisi (`[Nom de l'appli]`, constante `APP_NAME`).
+- Mode de travail validé : Claude avance **en autonomie, lot par lot** (un commit par lot), et s'arrête pour demander dès qu'il faut un compte ou une clé, une décision produit, ou une migration SQL qui change le modèle de données. Point d'étape aux jalons.
 - L'app mobile (Expo) est hors périmètre pour l'instant.
 
 ## Où on en est
 
+25 commits sur `main`, rien en attente. Dernier : `4425a27 Ajoute de vraies photos de plats aux recettes et ajuste les logos d'enseignes`.
+
 | Lot | État |
 |---|---|
-| 0 Monorepo | ✅ |
-| 1 Supabase | ✅ (+ migrations 0003 privilèges, 0004 temps de cuisine) |
-| 2 Design system | ✅ |
-| 3 Landing + socle SEO | ✅, puis landing **entièrement refaite** à la demande (voir plus bas) |
-| 4 Connexion + onboarding | ✅, puis parcours **questionnaire avant compte** (`/commencer`) |
-| Harmonisation visuelle | ✅ (08/11) effets de la home sur tout le produit |
-| 5 Génération du plan | ✅ (08/11) |
-| 6 Comparateur et liste | ✅ (08/11) — **jalon J3 atteint** |
-| 8 Recettes et pages SEO | ✅ (08/11, fait avant le lot 7 avec l'accord d'Emmanuel) — **jalon J5 atteint** |
-| 7 Paiement | ⏳ attend un compte Stripe (mode test) |
-| 9 Back-office | ✅ (08/11) — **jalon J6 atteint** (Tickets et Imports avec le lot 10) |
-| 12 Famille, économies, mode sombre | ✅ (08/11, fait avant 10 et 11 avec l'accord d'Emmanuel) |
-| 10, 11, 13 | à faire (OCR au lot 10, Resend + domaine au lot 11, comptes de prod au lot 13) |
+| 0 Monorepo · 1 Supabase · 2 Design system | ✅ |
+| 3 Landing + socle SEO | ✅ (landing refaite plusieurs fois à la demande) |
+| 4 Connexion + onboarding | ✅ (questionnaire avant compte sur `/commencer`) |
+| Harmonisation visuelle | ✅ effets de la page d'accueil étendus à tout le produit |
+| 5 Génération du plan | ✅ |
+| 6 Comparateur et liste | ✅ — jalon J3 |
+| 8 Recettes et pages SEO | ✅ (fait avant le 7, avec accord) — jalon J5 |
+| 9 Back-office | ✅ — jalon J6 (écrans Tickets et Imports reportés au lot 10) |
+| 12 Famille, économies, mode sombre, états | ✅ (fait avant 10 et 11, avec accord) |
+| Logos en couleur + vraies photos de plats | ✅ (demandes du 08/11) |
+| **7 Paiement** | ⏳ attend un compte Stripe |
+| **10 Tickets et prix** | ⏳ attend un fournisseur OCR + vérification de licence |
+| **11 Emails, notifications, PWA** | ⏳ attend Resend + un domaine |
+| **13 Qualité et mise en ligne** | ⏳ attend les comptes de prod, le nom et le domaine |
 
-Dernier commit : `60fe4da Affiche les logos des enseignes dans le bandeau…` (13 commits sur `main`, rien en attente).
+**Tous les lots restants dépendent d'Emmanuel.** Sans réponse, il ne reste que des améliorations ponctuelles (voir « Prochaines étapes »).
 
-## Points ouverts
+## Ce qui attend une réponse d'Emmanuel
 
-- **Logo Carrefour** : aucun fichier réutilisable trouvé ; le bandeau affiche « Carrefour » en lettres grises en attendant un SVG.
-- **Parrainage** : la récompense reste à décider (CLAUDE.md) ; le lien et le rattachement du parrain fonctionnent.
-- **Lot 7 bloqué sans compte Stripe** (mode test suffit) : clés `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, 2 prix (4,99 €/mois, 39,99 €/an). Et décision : mention TVA des factures (micro-entreprise, art. 293 B du CGI ?).
+1. **Lot 7** : compte Stripe en mode test (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, 2 prix : 4,99 €/mois et 39,99 €/an) + décision sur la **mention TVA** des factures (micro-entreprise : « TVA non applicable, art. 293 B du CGI » ?).
+2. **Lot 10** : choix d'un **fournisseur OCR** (clé) + vérifier la **licence Open Prices (ODbL)** avant de republier des prix (point ouvert de `CLAUDE.md`).
+3. **Lot 11** : compte **Resend** (ou Brevo) + domaine d'envoi.
+4. **Lot 13** : nom de l'appli, domaine, Vercel, Supabase prod (UE), PostHog, Sentry.
+5. **Logos sur les pages éditoriales publiques** (observatoire, pages enseigne, tableaux de prix des recettes et menus) : encore en pastilles neutres. Les passer aussi en logos couleur ? (question posée, sans réponse)
+6. **Logo Carrefour** : aucun fichier réutilisable trouvé, le nom est écrit en clair. Fournir un SVG si possible.
+7. **Récompense de parrainage** : à décider (le lien et le rattachement du parrain fonctionnent, aucune récompense n'est promise).
+8. Écarts de maquettes laissés de côté (à trancher si besoin) : droits par membre de la famille (« coche la liste seulement », demande une migration), règle des « jokers » de la série, badges de défis visuels, paramètres du BO modifiables (demande une table de réglages, donc une migration).
 
 ## Ce qui existe
 
-**Site public (`apps/web`)** — en plus de la page d'accueil : `/recettes` et `/recettes/[slug]`, `/comparatif-prix-supermarches`, `/enseignes/[id]`, `/menus/[slug]`, `/guide/batch-cooking`, `/methodologie`, `/comment-ca-marche`, pages légales (gabarits), 404, `/prix-courses/[ville]` (seuil de 30 relevés). Gabarit commun `components/site/site-page.tsx`, blocs `components/seo/blocks.tsx`, panier type `lib/observatory.ts`, client sans cookies `lib/supabase/public.ts`.
+**Site public (`apps/web`, :3000)**
+- Accueil `/` : menu flottant, hero animé (ticket comparateur interactif, bol qui tourne), **bandeau des enseignes avec vrais logos en couleur**, « Comment ça marche », recettes en photos, FAQ, CTA en ticket.
+- Pages : `/recettes` (filtres `?filtre=`, tri, recherche `?q=`) et `/recettes/[slug]` (réponse chiffrée, prix des 6 enseignes pour 2 à 8 personnes, JSON-LD `Recipe`), `/comparatif-prix-supermarches` (observatoire, `Dataset`), `/enseignes/[id]`, `/menus/[slug]` (2 menus), `/guide/batch-cooking`, `/methodologie`, `/comment-ca-marche` (`HowTo`), pages légales (gabarits avec mentions entre crochets), 404 avec recherche, `/prix-courses/[ville]` (publiée seulement au-delà de 30 relevés locaux récents : aucune aujourd'hui).
+- Socle SEO : metadata, JSON-LD, OG, `robots.ts`, sitemap segmenté (pages + recettes), `/llms.txt`.
+- Briques : gabarit `components/site/site-page.tsx`, blocs `components/seo/blocks.tsx`, panier type reproductible `lib/observatory.ts`, client anonyme sans cookies `lib/supabase/public.ts` (pages en ISR 24 h).
 
-**Page d'accueil (`/`)** — page d'accueil refaite plusieurs fois à la demande d'Emmanuel (la maquette `Main.dc.html` n'est plus la référence pour la landing) :
-- menu flottant (`components/site/site-header.tsx`) : large et transparent en haut, pastille de verre au défilement, section active surlignée, « Créer mon plan » visible seulement après le hero, panneau mobile ;
-- hero : titre animé, trait orange sous « Tu choisis. », ticket comparateur interactif (taille du foyer) qui flotte, 2 étiquettes flottantes, **buddha bowl détouré en cercle** qui sort à droite et tourne lentement ;
-- bandeau défilant des enseignes avec **vrais logos en gris** (exception autorisée, voir décisions) ;
-- « Comment ça marche » (3 cartes), panneau photo famille + 3 garanties, 4 recettes en photos avec prix/part, FAQ en cartes, CTA final en ticket aubergine, pied de page minimal ;
-- apparitions au défilement (`components/site/reveal.tsx`), halos flous, ~130 px entre sections ;
-- SEO : metadata, JSON-LD (Organization, WebSite, SoftwareApplication, FAQPage), image OG/Twitter, `robots.ts`, sitemap segmenté (`/sitemap.xml` → `/sitemap/pages.xml`), `/llms.txt`.
+**Parcours et espace client (`/app`)**
+- `/commencer` (questionnaire sans compte, puis lien magique ; code de parrainage `?parrain=` transmis), `/connexion` (lien ou code à 6 chiffres ; Google et Apple prêts mais désactivés), `/app/bienvenue` (questionnaire du compte, génère la semaine).
+- `/app` tableau de bord (semaine, total, « Possible dès… », série, économies, défi, repas du jour), `/app/plan` (grille 7 × 2 avec glisser-déposer, remplacer, verrouiller, varier ; comparateur latéral), `/app/comparateur` (choisir son enseigne = **valider la semaine**, totaux figés côté serveur), `/app/liste` (par rayon, temps réel, file hors ligne, partage `/liste/[token]`), `/app/recettes` + fiche + **mode cuisine**, `/app/economies`, `/app/famille` (invitations par lien, `/invitation/[token]`), `/app/profil` (préférences, notifications, **thème auto / clair / sombre**). La page Notifications n'existe pas encore (lot 11).
+- **Vraies photos de plats** : 47 recettes sur 53 (`components/recipes/recipe-photo.tsx`, repli sur l'illustration `<Plat>`). Sans photo : chou sauté, colin purée, gratin de butternut, saucisses aux lentilles, spaghetti épinards-tomate, tarte aux poireaux. Liste et crédits : `supabase/catalogue/photos.json`, `apps/web/public/recettes/CREDITS.md`, script `apps/web/scripts/recipe-photos.mjs` (télécharge, recadre, régénère `lib/recipe-photos.ts`).
+- **Logos des enseignes en couleur** dans l'espace client : `components/store-logo.tsx` (vignette blanche, lisible en sombre).
+- États : `loading.tsx`, `error.tsx`, bandeau hors ligne, encart « prix incomplets », encart « Prix de démonstration ».
+- Logique : `lib/plan.ts` (`currentPlan`, `ensureWeekPlan`, `planView`), `lib/list.ts` (`validatePlan` + série, `syncShoppingList`), `lib/engagement.ts`, `lib/family.ts`, `lib/recipes.ts`. Écritures sensibles via `lib/supabase/admin.ts` (clé serveur, jamais côté client).
 
-**Parcours d'inscription**
-- `/commencer` : questionnaire **sans compte** (foyer, préférences, enseigne + CP), étape 4 = estimation + email + CGU → lien magique. Les réponses partent dans `user_metadata.onboarding` et sont **appliquées au foyer au premier accès** (`lib/household.ts > getAccount`), même si le lien est ouvert sur un autre appareil.
-- `/connexion` : lien magique **ou code à 6 chiffres** (crée le compte si besoin), Google/Apple prêts mais désactivés (`supabase/config.toml`, identifiants à fournir).
-- `/app/bienvenue` : même questionnaire (`components/onboarding/wizard.tsx`, mode `account`) pour les comptes créés via « Se connecter ».
-- `/app` : tableau de bord (maquettes AppDashboard/MDashboard) : semaine en ticket aubergine, total dans l'enseigne du foyer, « Possible dès … », repas du jour, produits de saison. Garde : session (proxy) + onboarding terminé (layout `app/app/(main)`).
-- `/app/plan` : grille 7 jours × midi/soir (glisser-déposer, menu Voir la recette / Remplacer / Verrouiller), jour par jour sur mobile, filtres + « Varier la semaine », comparateur 6 enseignes « Ce plan coûte… ». Données : `lib/plan.ts` (`currentPlan`, `ensureWeekPlan`, `planView`), actions : `app/app/(main)/plan/actions.ts`.
-- `/app/comparateur` : barres des 6 enseignes, détail produit par produit (Premium ; 2 lignes en gratuit), « Basculer ma liste chez … » / « Garder … » = validation de la semaine.
-- `/app/liste` : liste par rayon, cochage temps réel + file hors ligne, partage. Liste publique `/liste/[token]`. Logique : `lib/list.ts` (`validatePlan`, `syncShoppingList`), action `app/app/(main)/liste/actions.ts`. Écritures sensibles via `lib/supabase/admin.ts` (service_role, serveur seulement).
-- Catalogue : 53 recettes, `supabase/catalogue/generate.mjs` → `supabase/catalogue.sql` (relancer le script après modification, puis `supabase db reset`).
+**Back-office (`apps/admin`, :3001)** : connexion staff par code (aucune création de compte), rôle vérifié par page (`lib/staff.ts`), journal d'audit (`log_action`). Rubriques : vue d'ensemble (chiffres réels), prix (modération des aberrants au clavier), produits (fusion de doublons), recettes (éditeur, **coût recalculé en direct**), utilisateurs (support), enseignes (**logos couleur**), contenu SEO, engagement, rôles et journal, paramètres (lecture).
 
-**Back-office (`apps/admin`, :3001)** : connexion staff par code (`admin@example.com` en local), rôle vérifié par page (`lib/staff.ts`), journal d'audit (`log_action`, migration 0007). Rubriques : vue d'ensemble, prix (modération des aberrants), produits (fusion de doublons), recettes (éditeur, coût en direct), utilisateurs, enseignes, contenu SEO, engagement, rôles et journal, paramètres.
+**Données** : catalogue de 53 recettes et 76 produits, généré par `supabase/catalogue/generate.mjs` → `supabase/catalogue.sql` (régimes et allergènes déduits des ingrédients). **Prix de démonstration** (`source = 'manual'`) en attendant Open Prices et les tickets (lot 10), signalés dans l'appli.
 
-**Packages** : `packages/core` (moteur de prix, `generatePlan`/`replaceMeal`, semaines à l'heure de Paris, `recipeServingCents`, `cheaperProductCount`, saisons…), `packages/ui` (composants + briques de style de la home : `Reveal`, `Glow`, `PageHeader`, `GlassCard`, `animDelay`, `inputClasses` ; animations dans `packages/ui/styles/motion.css`), `packages/eslint-config`.
+**Packages** : `packages/core` (prix, `generatePlan` / `replaceMeal`, semaines à l'heure de Paris, coûts par recette et par ingrédient, comparaisons produit par produit, totaux par rayon, `savingsCents`, `nextStreak`, `challengeProgress`…), `packages/ui` (composants, briques de style : `Reveal`, `Glow`, `PageHeader`, `GlassCard`, `animDelay`, `inputClasses` ; `styles/motion.css`, `styles/dark.css`).
 
-**Tests** : core 10 node:test + 62 Vitest, ui 16, web 7 Vitest, **32 tests RLS pgTAP**, **22 e2e Playwright** (desktop + mobile, dont le back-office). Lighthouse landing : desktop 100 partout, mobile 94-95 en performance (le bol est l'élément le plus lourd en 4G simulée).
+**Migrations** : 0001 schéma, 0002 RLS, 0003 droits colonne par colonne, 0004 temps de cuisine, 0005 familles et marqueurs des recettes, 0006 liste et validation (totaux écrits par le serveur, « coché par » posé par la base, temps réel, `shared_list`), 0007 journal d'audit. **Prochain numéro libre : 0008.**
+
+**Tests** : core 10 node:test + 62 Vitest, ui 16, web 7 Vitest, **32 tests RLS** (`pnpm db:test`), **22 e2e Playwright** desktop + mobile (dont back-office, famille, recettes, SEO).
 
 ## Décisions clés (à ne pas défaire sans demander)
 
-- **Couleur de marque : aubergine `#6B3868`** (éclaircie à la demande, ancienne `#4A2545` encore dans les maquettes).
-- **Logos d'enseignes** : uniquement dans le bandeau de la landing, en gris, avec « Marques et logos © leurs propriétaires respectifs » ; sources dans `apps/web/src/assets/logos/SOURCES.md`. Partout ailleurs : pastilles neutres. (`CLAUDE.md` mis à jour.)
-- **Inscription directe** (pas de liste d'attente). Tous les CTA → `/commencer`.
-- **Migration 0003** : Supabase ne donne plus de droits par défaut → GRANT explicites colonne par colonne. A fermé une faille réelle (un utilisateur pouvait rejoindre le foyer d'un autre via `profiles.household_id`).
-- **Migration 0004** : `households.cooking_time` (enum `moins_30 | 30_45 | peu_importe`).
-- **Régimes multiples** : `diet` = régime principal (végétarien > halal > sans porc), le reste dans `exclusions` (conversion dans `core`).
-- « 16 % » de la maquette remplacé par une valeur calculée (19 %, `priceSpread`).
-- Textes en français directement dans les composants ; `next-intl` gère locale/fuseau (extraction des messages quand un 2ᵉ marché arrive).
-- Photos : Unsplash (licence gratuite, vérifiée « Free Photo », pas Unsplash+), crédits dans `apps/web/src/assets/photos/CREDITS.md`. Provisoires : à remplacer par de vraies photos des recettes.
+- **Aubergine `#6B3868`** (l'ancienne `#4A2545` reste dans les maquettes). Orange réservé aux économies, texte foncé dessus.
+- **Logos d'enseignes en couleur** (décision du 08/11, remplace celle du 07/11) : bandeau de la landing, espace client, back-office. Pages éditoriales publiques : pastilles neutres pour l'instant. Mention « Marques et logos © leurs propriétaires respectifs » ; retirer immédiatement si une enseigne le demande. `CLAUDE.md` à jour.
+- **Inscription directe**, tous les CTA mènent à `/commencer`.
+- **Choisir son enseigne = valider la semaine** ; totaux figés par le serveur (base des économies). La bascule vers une autre enseigne que la sienne est Premium ; varier et remplacer aussi ; verrouiller et déplacer restent gratuits.
+- **Économies** : uniquement sur les semaines validées, jamais d'économie hypothétique.
+- Un enfant compte pour 0,7 part, arrondi à la part supérieure.
+- Régimes multiples : `diet` = régime principal, le reste dans `exclusions`.
+- Textes en français dans les composants ; `next-intl` gère locale et fuseau.
+- Photos Unsplash (licence gratuite vérifiée, pas d'Unsplash+), provisoires.
+- Ordre des lots modifié avec accord : 8, 9 et 12 faits avant 7, 10 et 11.
 
 ## Environnement local
 
 ```bash
 pnpm install
-supabase start              # API :55321, Studio :55323, boîte mail (Mailpit) :55324, DB :55322
-supabase db reset           # migrations + seed
+supabase start              # API :55321, Studio :55323, boîte mail Mailpit :55324, DB :55322
+supabase db reset           # migrations + seed + catalogue
 pnpm dev                    # web :3000, admin :3001
 pnpm lint && pnpm typecheck && pnpm test
-pnpm db:test                # tests RLS
-pnpm --filter @repas/web test:e2e   # nécessite supabase start
+pnpm db:test                # tests RLS (pgTAP)
+pnpm --filter @repas/web test:e2e   # nécessite supabase start et pnpm dev
 ```
 
-- `apps/web/.env.local` et `apps/admin/.env.local` existent (non commités), générés depuis `supabase status`.
-- **Une autre stack Supabase (« masonate ») tourne sur la machine** sur les ports 543xx : ne pas y toucher. Ce projet est sur **553xx** et **Postgres 17**.
-- Captures de contrôle : `node apps/web/scripts/screenshots.mjs <dossier> /chemin` (options `STEPS=n`, `WAIT=ms`, `BASE_URL`). Playwright + Chromium installés. Lighthouse : `npx lighthouse@13.6.0` (Chrome est installé).
+- Comptes de démo (connexion par code, lu dans Mailpit) : **`marion@example.com`** (espace client : Auchan, 2 adultes + 2 enfants, sans porc, 6 semaines validées, 58,30 € d'économies) et **`admin@example.com`** (back-office, rôle admin). N'importe quelle adresse inventée crée un compte en local.
+- `apps/web/.env.local` et `apps/admin/.env.local` existent (non commités), avec la clé serveur locale.
+- **Une autre stack Supabase (« masonate ») tourne sur la machine** sur les ports 543xx : ne pas y toucher. Ce projet est sur **553xx**, Postgres 17.
+- Captures : `node apps/web/scripts/screenshots.mjs <dossier> /chemin` (`STEPS`, `WAIT`, `BASE_URL`). Playwright + Chromium installés. Lighthouse : `npx lighthouse@13.6.0`.
 
 ## Pièges déjà rencontrés (gagner du temps)
 
-- **Tailwind + couleurs en variables CSS** : l'opacité (`bg-surface-50/80`) ne marche pas sur les tokens définis en `var(--…)`. Utiliser les couleurs `raw-*` du preset (ex. `from-raw-sable/90`, `bg-raw-peche`) ou `bg-white/70`.
-- **`typedRoutes`** : les liens vers des routes pas encore créées échouent au typecheck → passer par `href()` de `apps/web/src/lib/site.ts`. Le script `typecheck` fait `next typegen` avant `tsc`.
-- **React 19 réinitialise les formulaires** après une action `<form action>` : pour garder la saisie en cas d'erreur, soumettre via `onSubmit` + `startTransition` (voir le wizard).
-- **Animations et `transform`** : une animation qui anime `transform` écrase les classes `translate`/`rotate` du même élément → séparer positionnement et animation sur deux éléments (cas du bol du hero).
-- **`opengraph-image`** doit être dans le même segment que la page qui déclare `openGraph` (sinon l'image disparaît).
-- Next 16 : `middleware` s'appelle **`proxy.ts`**.
-- Prettier (plugin Tailwind) réordonne les classes : les remplacements de texte par script échouent souvent → relire le fichier avant d'éditer.
-- Sites qui bloquent les robots (notretemps.com, API interne Unsplash, API Wikipédia) : ne pas contourner.
-- `body` a `suppressHydrationWarning` (extension ColorZilla de l'utilisateur).
-- **Next.js mémorise les requêtes GET identiques pendant un rendu** (y compris celles de supabase-js) : relire une ligne avec la même requête juste après l'avoir créée renvoie l'ancien résultat. Renvoyer les lignes insérées (`.insert().select()`), voir `ensureWeekPlan`.
-- **Captures Playwright `fullPage: true`** : elles relancent les animations d'entrée, les éléments apparaissent vides. Capturer l'écran visible (après défilement) pour juger du rendu.
-- **Animations et piles** : un élément animé (`anim-rise`) crée un contexte d'empilement ; un menu déroulant à l'intérieur passe sous la carte suivante → remonter le parent (`z-30`) quand le menu est ouvert.
-- **Serveur de dev** : après l'ajout d'une fonction exportée par core, ou une modification de `apps/admin/src/lib/staff.ts`, le serveur garde parfois l'ancien module (« X is not a function », navigation incomplète) : le redémarrer.
-- **Tests e2e et base locale** : chaque test prépare ses propres données (comptes uniques, relevé aberrant créé via la clé serveur de `.env.local`, voir `e2e/helpers.ts`) ; ne pas supposer l'état laissé par un autre test.
-- **Zod 4** : utiliser `z.guid()` pour les identifiants (les ids fixes du seed ne sont pas des UUID versionnés, `z.uuid()` les refuse).
-- Espace client, lot 12 : `/app/economies`, `/app/famille` (+ `/invitation/[token]`), `/app/profil` (thème), `loading.tsx` / `error.tsx`, bandeau hors ligne. Mode sombre : attribut `data-theme` sur l'AppShell + `packages/ui/styles/dark.css` (à compléter si un nouvel écran utilise d'autres fonds clairs).
-- Espace client : `/app/recettes`, `/app/recettes/[slug]`, mode cuisine `/app/recettes/[slug]/cuisine` (groupe de routes `(cuisine)`, sans la navigation).
-- Démo locale : `marion@example.com` (Auchan, 2 adultes + 2 enfants, sans porc), connexion par code via Mailpit. Sa semaine en cours vient du seed (validée chez Lidl).
-- Les tests RLS tournent sur la base locale réelle : ils doivent rester indépendants des données créées en testant l'appli à la main (`on conflict`, nettoyage).
+- **Tailwind + tokens en `var(--…)`** : l'opacité (`bg-surface-50/80`) ne marche pas → couleurs `raw-*` du preset ou `bg-white/70`. Blanc constant : `bg-raw-blanc`.
+- **Mode sombre** : attribut `data-theme` sur l'AppShell (`light` / `dark` / `system`) + `packages/ui/styles/dark.css`. Un nouvel écran qui utilise d'autres fonds clairs doit y être ajouté.
+- **`typedRoutes`** : lien vers une route pas encore créée → `href()` de `apps/web/src/lib/site.ts`.
+- **React 19** réinitialise les formulaires après `<form action>` → `onSubmit` + `startTransition` pour garder la saisie. Un message affiché dans un composant qui disparaît après l'action est perdu → rediriger avec un paramètre (`?fait=…`) et afficher un bandeau.
+- **Animations** : une animation sur `transform` écrase `translate`/`rotate` du même élément → deux éléments. Un élément animé crée un contexte d'empilement → monter le parent (`z-30`) quand un menu s'ouvre dedans.
+- **Next.js mémorise les GET identiques pendant un rendu** (supabase-js compris) : après une insertion, renvoyer les lignes insérées au lieu de relire.
+- **Serveur de dev** : après l'ajout d'une fonction exportée par `packages/core` ou une modification de `apps/admin/src/lib/staff.ts`, il garde parfois l'ancien module (« X is not a function ») → le redémarrer.
+- **Zod 4** : `z.guid()` pour les identifiants (les ids fixes du seed ne sont pas des UUID versionnés).
+- **Linter React** : pas de `Date.now()` ni de `setState` synchrone dans le corps d'un composant ou d'un effet.
+- **Tests** : la base locale est partagée → chaque test prépare ses données (comptes uniques, relevé aberrant via `e2e/helpers.ts`, `on conflict` en pgTAP). Le délai e2e est à 15 s (compilation à la première visite) ; attendre `networkidle` avant de cocher.
+- **Captures `fullPage: true`** relancent les animations → capturer l'écran visible.
+- `opengraph-image` doit être dans le même segment que la page. Next 16 : `middleware` s'appelle `proxy.ts`. Prettier réordonne les classes Tailwind → relire avant d'éditer.
+- **Photos Unsplash** : le téléchargement passe par `https://unsplash.com/photos/<id>/download` (script) ; ne pas contourner les sites qui bloquent les robots. Toujours vérifier les images à l'œil (planche contact) avant de les intégrer.
 
 ## Prochaines étapes
 
-1. **Lot 7 — Paiement** dès réception du compte Stripe (mode test) et de la décision sur la mention TVA.
-2. **Lot 10 — Tickets et prix** (fournisseur OCR + vérification de la licence Open Prices), **lot 11 — Emails, PWA** (Resend + domaine ; brancher alors l'envoi des invitations famille et du lien support), **lot 13 — mise en ligne** (revalidation à la demande des pages publiques, RGPD, PostHog, Sentry, Vercel, Supabase prod).
-3. Idée validée en principe : capture de l'appli dans un téléphone pour la landing.
-3. Idée proposée, non tranchée : une photo de saison qui change automatiquement sur la landing.
+1. **Lot 7 — Paiement** dès réception du compte Stripe et de la décision TVA (maquettes MPaywall, AppAbonnement, SiteTarifs, SiteMerci, EmailRecu ; le webhook écrira `subscriptions` avec la clé serveur ; les liens « Essayer Premium » mènent déjà à `/app/abonnement`).
+2. **Lot 10** (OCR + licence), **lot 11** (Resend + domaine : brancher alors l'envoi des invitations famille, du lien support et la page Notifications), **lot 13** (revalidation à la demande des pages publiques depuis le BO, RGPD, PostHog, Sentry, Vercel, Supabase prod).
+3. En attendant, sans compte : trouver de meilleures photos pour les 6 recettes sans photo ; passer les pages éditoriales en logos couleur si Emmanuel le confirme ; capture de l'appli dans un téléphone pour la landing (idée validée en principe) ; photo de saison qui change automatiquement sur la landing (idée non tranchée).
