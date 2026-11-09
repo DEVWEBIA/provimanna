@@ -9,18 +9,25 @@ export default async function BoLayout({ children }: { children: ReactNode }) {
   const { supabase, user, role } = await getStaff();
   if (!role) redirect('/acces-refuse');
   // Compteurs « à traiter » (lus avec les droits du staff, RLS).
-  const { count: aberrant } = canAccess(role, ['moderateur_prix'])
-    ? await supabase
-        .from('prices')
-        .select('id', { count: 'exact', head: true })
-        .eq('flagged_aberrant', true)
-        .is('moderated_by', null)
-    : { count: 0 };
+  const moderator = canAccess(role, ['moderateur_prix']);
+  const [{ count: aberrant }, { count: tickets }] = moderator
+    ? await Promise.all([
+        supabase
+          .from('prices')
+          .select('id', { count: 'exact', head: true })
+          .eq('flagged_aberrant', true)
+          .is('moderated_by', null),
+        supabase
+          .from('receipts')
+          .select('id', { count: 'exact', head: true })
+          .in('status', ['en_attente', 'en_revue']),
+      ])
+    : [{ count: 0 }, { count: 0 }];
   const name = String(user.user_metadata?.name ?? user.email ?? 'Staff');
   const items = SECTIONS.filter((s) => canAccess(role, s.roles)).map((s) => ({
     href: s.href,
     label: s.label,
-    badge: s.href === '/prix' ? (aberrant ?? 0) : undefined,
+    badge: s.href === '/prix' ? (aberrant ?? 0) : s.href === '/tickets' ? (tickets ?? 0) : undefined,
   }));
   return (
     <div className="bg-surface-50 relative isolate flex min-h-screen overflow-x-clip">

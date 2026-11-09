@@ -16,6 +16,7 @@ export const ROLE_LABEL: Record<StaffRole, string> = {
 /** Rubriques du back-office et rôle minimum (docs/07). L'admin a accès à tout. */
 export const SECTIONS = [
   { href: '/', label: 'Vue d’ensemble', roles: ['admin', 'moderateur_prix', 'editeur', 'support'] },
+  { href: '/tickets', label: 'Tickets', roles: ['moderateur_prix'] },
   { href: '/prix', label: 'Prix', roles: ['moderateur_prix'] },
   { href: '/produits', label: 'Produits', roles: ['moderateur_prix'] },
   { href: '/recettes', label: 'Recettes', roles: ['editeur'] },

@@ -78,3 +78,45 @@ export async function seedAberrantPrice() {
   });
   if (!res.ok) throw new Error(`Relevé de test non créé : ${res.status}`);
 }
+
+/** Crée un compte staff « modérateur prix » (base locale uniquement) et renvoie son adresse. */
+export async function createModerator(tag: string): Promise<string> {
+  const env = localEnv();
+  const email = uniqueEmail(`moderateur-${tag}`);
+  const headers = {
+    apikey: env.SUPABASE_SERVICE_ROLE_KEY!,
+    Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+    'Content-Type': 'application/json',
+  };
+  const user = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ email, email_confirm: true, user_metadata: { name: 'Modératrice test' } }),
+  });
+  if (!user.ok) throw new Error(`Modérateur non créé : ${user.status}`);
+  const { id } = (await user.json()) as { id: string };
+  const role = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/roles`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ user_id: id, role: 'moderateur_prix' }),
+  });
+  if (!role.ok) throw new Error(`Rôle non attribué : ${role.status}`);
+  return email;
+}
+
+/** Identifiant du dernier ticket envoyé (base locale), pour l'ouvrir directement dans le back-office. */
+export async function latestReceiptId(): Promise<string> {
+  const env = localEnv();
+  const res = await fetch(
+    `${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/receipts?select=id&order=created_at.desc&limit=1`,
+    {
+      headers: {
+        apikey: env.SUPABASE_SERVICE_ROLE_KEY!,
+        Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      },
+    },
+  );
+  const [row] = (await res.json()) as { id: string }[];
+  if (!row) throw new Error('Aucun ticket en base');
+  return row.id;
+}
