@@ -151,6 +151,8 @@ pnpm --filter @repas/web test:e2e   # nécessite supabase start et pnpm dev
 
 ## Prochaines étapes
 
+0. **Déploiement Vercel préparé (10/11)** : deux projets (web, admin sur sous-domaine), voir `docs/11-deploiement-vercel.md`. Bloqué tant que la base Supabase de production n'existe pas (le build du site lit le catalogue).
+
 1. **Réponse attendue sur l'ODbL** (point 2bis) : si oui, coder l'export public quotidien des prix sous ODbL (page Méthodologie ou observatoire, `Dataset` JSON-LD avec la licence). C'est la seule tâche prête à coder sans compte.
 2. **Lot 7 — Paiement** dès le compte Stripe et la décision TVA (maquettes MPaywall, AppAbonnement, SiteTarifs, SiteMerci, EmailRecu ; les liens « Essayer Premium » mènent déjà à `/app/abonnement`).
 3. **Lot 11** (Resend + domaine : invitations famille, lien support, page Notifications) et **lot 13** (cron de l'import Open Prices à 4 h, revalidation des pages publiques depuis le BO, RGPD, PostHog, Sentry, Vercel, Supabase prod).
