@@ -4,7 +4,7 @@
 
 ## Le produit en une phrase
 
-Une web app (PWA) qui génère le **plan de repas de la semaine** d'un foyer et montre **combien coûte la liste de courses dans 12 enseignes** (Lidl, Aldi, Netto, E.Leclerc, Super U, Intermarché, Carrefour, Auchan, Grand Frais, Picard, Franprix, Monoprix ; liste unique dans `packages/core/src/stores.ts`, décision du 08/11/2026). Grand Frais et Picard ont un **assortiment partiel** : sous 90 % des produits de la liste avec un prix, le total est signalé « partiel », jamais « le moins cher », et ces enseignes ne peuvent pas être l'enseigne principale ni recevoir la liste. L'utilisateur reste **libre de garder son enseigne**, même plus chère. Nom définitif pas encore choisi : utilise `[Nom de l'appli]` / la constante `APP_NAME`.
+Une web app (PWA) qui génère le **plan de repas de la semaine** d'un foyer et montre **combien coûte la liste de courses dans 13 enseignes** (Lidl, Aldi, Netto, E.Leclerc, Super U, Intermarché, Carrefour, Match, Auchan, Grand Frais, Picard, Franprix, Monoprix ; liste unique dans `packages/core/src/stores.ts`, décisions des 08 et 09/11/2026), **filtrées selon la région du foyer** (métropole ou outre-mer, d'après le code postal). Grand Frais et Picard ont un **assortiment partiel** : sous 90 % des produits de la liste avec un prix, le total est signalé « partiel », jamais « le moins cher » ; elles peuvent être choisies comme enseigne habituelle avec la mention « Assortiment partiel », mais la liste ne peut pas être basculée vers elles. L'utilisateur reste **libre de garder son enseigne**, même plus chère. Nom définitif pas encore choisi : utilise `[Nom de l'appli]` / la constante `APP_NAME`.
 
 ## Décisions figées
 

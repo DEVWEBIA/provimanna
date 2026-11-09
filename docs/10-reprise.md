@@ -1,4 +1,4 @@
-# 10 — Fichier de reprise (état au 08/11/2026)
+# 10 — Fichier de reprise (état au 09/11/2026)
 
 > À lire en début de nouvelle conversation, après `CLAUDE.md`. Il dit où on en est, ce qui a été décidé, ce qui attend une réponse et comment reprendre.
 > Détail de chaque décision : `docs/09-plan-action.md` (section « Journal des décisions techniques »). Lots : `docs/08-roadmap-claude-code.md`.
@@ -14,13 +14,13 @@ Commence par me confirmer l'état et la prochaine étape.
 
 ## Contexte en bref
 
-- Projet personnel d'Emmanuel avec son/sa conjoint·e. Web app (PWA) de plans de repas + prix de la liste de courses dans 6 enseignes. Nom définitif pas encore choisi (`[Nom de l'appli]`, constante `APP_NAME`).
+- Projet personnel d'Emmanuel avec son/sa conjoint·e. Web app (PWA) de plans de repas + prix de la liste de courses dans **13 enseignes** (dont Match ; filtrées selon la région du foyer, métropole ou outre-mer). Nom définitif pas encore choisi (`[Nom de l'appli]`, constante `APP_NAME`).
 - Mode de travail validé : Claude avance **en autonomie, lot par lot** (un commit par lot), et s'arrête pour demander dès qu'il faut un compte ou une clé, une décision produit, ou une migration SQL qui change le modèle de données. Point d'étape aux jalons.
 - L'app mobile (Expo) est hors périmètre pour l'instant.
 
 ## Où on en est
 
-25 commits sur `main`, rien en attente. Dernier : `4425a27 Ajoute de vraies photos de plats aux recettes et ajuste les logos d'enseignes`.
+37 commits sur `main`, rien en attente, aucun worktree ni branche ouverts. Dernier : `0ce95eb Ajoute l'import quotidien des prix Open Prices et l'écran Imports du back-office`.
 
 | Lot | État |
 |---|---|
@@ -35,18 +35,21 @@ Commence par me confirmer l'état et la prochaine étape.
 | 12 Famille, économies, mode sombre, états | ✅ (fait avant 10 et 11, avec accord) |
 | Logos en couleur + vraies photos de plats | ✅ (demandes du 08/11) |
 | Questionnaire enrichi (1 question par écran) | ✅ (demande du 08/11, migration 0008 ; recomposition en gratuit validée) |
-| Landing animée (Motion) + accent Instrument Serif | ✅ (demandes du 08/11) |
+| 12 puis 13 enseignes, logos, enseignes par région | ✅ (08/11 ; Match et régions ajoutés par l'autre session, migration 0009) |
+| Landing animée (Motion) + accent Instrument Serif | ✅ (08/11), puis **étendus à l'espace client, au questionnaire et au BO** |
 | **7 Paiement** | ⏳ attend un compte Stripe |
-| **10 Tickets et prix** | ⏳ attend un fournisseur OCR + vérification de licence |
+| 10 Tickets et prix | ✅ (09/11) — lecture par Claude (démo sans clé), modération, bonus ; import Open Prices + écran Imports ; migration 0010 |
 | **11 Emails, notifications, PWA** | ⏳ attend Resend + un domaine |
 | **13 Qualité et mise en ligne** | ⏳ attend les comptes de prod, le nom et le domaine |
 
-**Tous les lots restants dépendent d'Emmanuel.** Sans réponse, il ne reste que des améliorations ponctuelles (voir « Prochaines étapes »).
+**Les lots restants (7, 11, 13) dépendent tous d'un compte ou d'une décision d'Emmanuel.** Sans réponse, il ne reste que des améliorations ponctuelles (voir « Prochaines étapes »).
 
 ## Ce qui attend une réponse d'Emmanuel
 
 1. **Lot 7** : compte Stripe en mode test (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, 2 prix : 4,99 €/mois et 39,99 €/an) + décision sur la **mention TVA** des factures (micro-entreprise : « TVA non applicable, art. 293 B du CGI » ?).
-2. ~~Lot 10~~ fait le 09/11. Reste : **clé Anthropic** pour lire de vrais tickets (`supabase/functions/.env` en local : `ANTHROPIC_API_KEY=…` ; en prod : `supabase secrets set ANTHROPIC_API_KEY=…`), et un **compte Open Prices** pour reverser les prix des tickets.
+2. **Clé Anthropic** (Emmanuel la fournira plus tard) pour lire de vrais tickets : Emmanuel la met lui-même dans `supabase/functions/.env` (non commité) : `ANTHROPIC_API_KEY=…`, puis relancer `supabase functions serve` ; en prod : `supabase secrets set ANTHROPIC_API_KEY=…`.
+2bis. **Licence ODbL — décision en attente.** Correction du 09/11 : nos totaux reposent sur une base qui mélange Open Prices et nos tickets (base dérivée) ; les afficher oblige à **mettre cette base de prix à disposition sous ODbL** (art. 4.6), pas seulement à créditer. Proposition faite, sans réponse : un **export public quotidien des prix** (produit, enseigne, date, prix, source ; ni photo ni lien avec l'utilisateur) sous ODbL, sur Méthodologie ou l'observatoire. À faire confirmer par reuse@openfoodfacts.org avant la mise en ligne.
+2ter. **Reversement à Open Prices : déconseillé pour l'instant.** L'API exige une **preuve (photo du ticket) publiée en CC-BY-SA** pour chaque prix, ce qui contredit « photo supprimée, sans lien avec ton nom ». Options présentées : ne pas reverser, reverser avec accord explicite par ticket, ou reporter. Emmanuel s'occupe du compte Open Prices ; rien n'est codé.
 3. **Lot 11** : compte **Resend** (ou Brevo) + domaine d'envoi.
 4. **Lot 13** : nom de l'appli, domaine, Vercel, Supabase prod (UE), PostHog, Sentry.
 5. **Logos sur les pages éditoriales publiques** (observatoire, pages enseigne, tableaux de prix des recettes et menus) : encore en pastilles neutres. Les passer aussi en logos couleur ? (question posée, sans réponse)
@@ -70,15 +73,21 @@ Commence par me confirmer l'état et la prochaine étape.
 - États : `loading.tsx`, `error.tsx`, bandeau hors ligne, encart « prix incomplets », encart « Prix de démonstration ».
 - Logique : `lib/plan.ts` (`currentPlan`, `ensureWeekPlan`, `planView`), `lib/list.ts` (`validatePlan` + série, `syncShoppingList`), `lib/engagement.ts`, `lib/family.ts`, `lib/recipes.ts`. Écritures sensibles via `lib/supabase/admin.ts` (clé serveur, jamais côté client).
 
-**Back-office (`apps/admin`, :3001)** : connexion staff par code (aucune création de compte), rôle vérifié par page (`lib/staff.ts`), journal d'audit (`log_action`). Rubriques : vue d'ensemble (chiffres réels), prix (modération des aberrants au clavier), produits (fusion de doublons), recettes (éditeur, **coût recalculé en direct**), utilisateurs (support), enseignes (**logos couleur**), contenu SEO, engagement, rôles et journal, paramètres (lecture).
+**Tickets (lot 10)** : `/app/ticket` (photo JPG/PNG/WEBP 10 Mo, enseigne auto ou choisie, lecture animée, résultat, historique) ; Edge Function `supabase/functions/ocr-receipt` (lecteur Claude `claude-opus-5-5` via `messages.parse` + Zod, ou `demo` sans clé ; appelée seulement par le serveur) ; rapprochement dans core `packages/core/src/receipts.ts` (seuil 0,85, abréviations, lignes ignorées, promos, `detectStoreId`, récompense +3 j, 14 j/mois) ; `apps/web/src/lib/receipts.ts` + action `app/app/(main)/ticket/actions.ts` (limite des actions serveur 11 Mo dans `next.config.ts`). Photo supprimée après la décision du modérateur.
+
+**Import Open Prices (lot 10)** : Edge Function `supabase/functions/import-open-prices` (incrémentale, importe directement `packages/core`, anti-doublon `prices.external_id`, aberrants signalés, historique `import_runs`) ; conversion dans `packages/core/src/open-prices.ts` (France, euro, hors promos, prix au kilo × `unit_kg`) ; 18 catégories de vrac vérifiées sur l'API (`OFF_CATEGORIES` dans `generate.mjs`). Crédit `OPEN_PRICES_CREDIT` dans le pied de page du site. Planification à 4 h : à créer au lot 13 (pg_cron + pg_net).
+
+**Back-office (`apps/admin`, :3001)** : connexion staff par code (aucune création de compte), rôle vérifié par page (`lib/staff.ts`), journal d'audit (`log_action`). Rubriques : vue d'ensemble (chiffres réels), **tickets (modération, compteur)**, prix (modération des aberrants au clavier, **sous-page Imports `/prix/imports` avec « Lancer maintenant »**), produits (fusion de doublons), recettes (éditeur, **coût recalculé en direct**), utilisateurs (support), enseignes (**logos couleur**), contenu SEO, engagement, rôles et journal, paramètres (lecture).
 
 **Données** : catalogue de 53 recettes et 76 produits, généré par `supabase/catalogue/generate.mjs` → `supabase/catalogue.sql` (régimes et allergènes déduits des ingrédients). **Prix de démonstration** (`source = 'manual'`) en attendant Open Prices et les tickets (lot 10), signalés dans l'appli.
 
-**Packages** : `packages/core` (prix, `generatePlan` / `replaceMeal`, semaines à l'heure de Paris, coûts par recette et par ingrédient, comparaisons produit par produit, totaux par rayon, `savingsCents`, `nextStreak`, `challengeProgress`…), `packages/ui` (composants, briques de style : `Reveal`, `Glow`, `PageHeader`, `GlassCard`, `animDelay`, `inputClasses` ; `styles/motion.css`, `styles/dark.css`).
+**Animations et typographie** : Motion 14.6.0 (version figée) ; primitives dans `packages/ui/src/motion.tsx` (`Reveal` à ressort, `FadeUp`, `Stagger`, `CountUp`, `PageTransition` dans les `template.tsx` des deux apps, `StepTransition` du questionnaire, `NavIndicator`) ; `MotionRoot` dans les gabarits racines ; effets de la landing dans `apps/web/src/components/site/motion/`. Accent **Instrument Serif italique** (`.font-accent`) sur le dernier mot des titres (`AccentTitle`, `PageHeader`, `SectionHeading` : automatique dès 2 mots, sauf chiffre ; prop `accent`).
 
-**Migrations** : 0001 schéma, 0002 RLS, 0003 droits colonne par colonne, 0004 temps de cuisine, 0005 familles et marqueurs des recettes, 0006 liste et validation (totaux écrits par le serveur, « coché par » posé par la base, temps réel, `shared_list`), 0007 journal d'audit, 0008 réponses enrichies du questionnaire (jours et repas, budget, styles, équipement, ingrédients évités, motivations). 0009 équipement élargi et cuisines. **Prochain numéro libre : 0010.**
+**Packages** : `packages/core` (prix, **enseignes et régions `stores.ts`, tickets `receipts.ts`, Open Prices `open-prices.ts`**, `generatePlan` / `replaceMeal`, semaines à l'heure de Paris, coûts par recette et par ingrédient, comparaisons produit par produit, totaux par rayon, `savingsCents`, `nextStreak`, `challengeProgress`…), `packages/ui` (composants, briques de style : `Reveal`, `Glow`, `PageHeader`, `GlassCard`, `animDelay`, `inputClasses` ; `styles/motion.css`, `styles/dark.css`).
 
-**Tests** : core 10 node:test + 62 Vitest, ui 16, web 7 Vitest, **32 tests RLS** (`pnpm db:test`), **22 e2e Playwright** desktop + mobile (dont back-office, famille, recettes, SEO).
+**Migrations** : 0001 schéma, 0002 RLS, 0003 droits colonne par colonne, 0004 temps de cuisine, 0005 familles et marqueurs des recettes, 0006 liste et validation (totaux écrits par le serveur, « coché par » posé par la base, temps réel, `shared_list`), 0007 journal d'audit, 0008 réponses enrichies du questionnaire (jours et repas, budget, styles, équipement, ingrédients évités, motivations). 0009 équipement élargi et cuisines. 0010 import Open Prices (`products.off_category`, `products.unit_kg`, `prices.external_id` unique, table `import_runs`). **Prochain numéro libre : 0011.**
+
+**Tests** : core 12 node:test + 89 Vitest, ui 20, web 7 Vitest, **35 tests RLS** (`pnpm db:test`), **e2e Playwright : 26 passent, 4 ignorés** (back-office desktop seulement) — dont `tickets.spec.ts` et `imports.spec.ts`.
 
 ## Décisions clés (à ne pas défaire sans demander)
 
@@ -91,7 +100,10 @@ Commence par me confirmer l'état et la prochaine étape.
 - Régimes multiples : `diet` = régime principal, le reste dans `exclusions`.
 - Textes en français dans les composants ; `next-intl` gère locale et fuseau.
 - Photos Unsplash (licence gratuite vérifiée, pas d'Unsplash+), provisoires.
-- Ordre des lots modifié avec accord : 8, 9 et 12 faits avant 7, 10 et 11.
+- Ordre des lots modifié avec accord : 8, 9, 12 et 10 faits avant 7 et 11.
+- **Enseignes** : liste unique dans `packages/core/src/stores.ts` ; filtrage par région du foyer (code postal 97x/98x = outre-mer). Grand Frais et Picard : assortiment partiel, total « partiel » sous 90 % de la liste, jamais « le moins cher », choisissables comme enseigne habituelle avec la mention « Assortiment partiel », pas de bascule de liste vers elles.
+- **Tickets** : lecture par Claude (choix du 09/11), +3 jours par ticket validé (14 par mois au plus), photo supprimée après vérification. Pas de validation automatique pour l'instant.
+- **Open Prices** : ODbL, crédit affiché ; prix en promotion jamais importés ; reversement non codé (voir décisions en attente).
 
 ## Lot 10 en local
 
@@ -136,6 +148,7 @@ pnpm --filter @repas/web test:e2e   # nécessite supabase start et pnpm dev
 
 ## Prochaines étapes
 
-1. **Lot 7 — Paiement** dès réception du compte Stripe et de la décision TVA (maquettes MPaywall, AppAbonnement, SiteTarifs, SiteMerci, EmailRecu ; le webhook écrira `subscriptions` avec la clé serveur ; les liens « Essayer Premium » mènent déjà à `/app/abonnement`).
-2. **Lot 10** (OCR + licence), **lot 11** (Resend + domaine : brancher alors l'envoi des invitations famille, du lien support et la page Notifications), **lot 13** (revalidation à la demande des pages publiques depuis le BO, RGPD, PostHog, Sentry, Vercel, Supabase prod).
-3. En attendant, sans compte : trouver de meilleures photos pour les 6 recettes sans photo ; passer les pages éditoriales en logos couleur si Emmanuel le confirme ; capture de l'appli dans un téléphone pour la landing (idée validée en principe) ; photo de saison qui change automatiquement sur la landing (idée non tranchée).
+1. **Réponse attendue sur l'ODbL** (point 2bis) : si oui, coder l'export public quotidien des prix sous ODbL (page Méthodologie ou observatoire, `Dataset` JSON-LD avec la licence). C'est la seule tâche prête à coder sans compte.
+2. **Lot 7 — Paiement** dès le compte Stripe et la décision TVA (maquettes MPaywall, AppAbonnement, SiteTarifs, SiteMerci, EmailRecu ; les liens « Essayer Premium » mènent déjà à `/app/abonnement`).
+3. **Lot 11** (Resend + domaine : invitations famille, lien support, page Notifications) et **lot 13** (cron de l'import Open Prices à 4 h, revalidation des pages publiques depuis le BO, RGPD, PostHog, Sentry, Vercel, Supabase prod).
+4. Sans compte, au choix d'Emmanuel : photos des 6 recettes sans photo ; logos couleur sur les pages éditoriales (question ouverte) ; capture de l'appli dans un téléphone pour la landing ; revue accessibilité et Lighthouse après les animations ; ajouter des codes-barres / catégories au catalogue pour que l'import Open Prices rattache plus de prix.
