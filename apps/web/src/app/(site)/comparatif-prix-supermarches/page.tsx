@@ -151,7 +151,12 @@ export default async function ComparatifPage() {
             Coût du panier type par rayon. En orange : l’enseigne la moins chère du rayon. « — » : rayon pas
             vendu en entier par l’enseigne.
           </p>
-          <div className="mt-5 overflow-x-auto">
+          <div
+            className="mt-5 overflow-x-auto"
+            tabIndex={0}
+            role="region"
+            aria-label="Coût du panier type par rayon"
+          >
             <table className="w-full min-w-[1180px] text-[14px] tabular-nums">
               <thead>
                 <tr className="text-ink-muted text-left text-[12px] font-black tracking-[1px]">

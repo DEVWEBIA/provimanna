@@ -148,7 +148,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
             <p className="text-ink-muted mt-2 text-[16px]">
               Pour 5 dîners de 4 personnes, voici le coût des courses dans les 3 enseignes les moins chères de
               notre{' '}
-              <Link href={href(ROUTES.comparatif)} className="text-brand">
+              <Link href={href(ROUTES.comparatif)} className="text-brand underline underline-offset-2">
                 observatoire
               </Link>
               .
@@ -188,7 +188,10 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
               {recipes.map((r, i) => (
                 <li key={r.id}>
                   <strong>{['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'][i]} :</strong>{' '}
-                  <Link href={href(`/recettes/${r.slug}`)} className="text-brand">
+                  <Link
+                    href={href(`/recettes/${r.slug}`)}
+                    className="text-brand underline underline-offset-2"
+                  >
                     {r.title.charAt(0).toLowerCase() + r.title.slice(1)}
                   </Link>
                 </li>

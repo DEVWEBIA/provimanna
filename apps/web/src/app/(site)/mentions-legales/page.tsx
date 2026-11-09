@@ -33,7 +33,7 @@ export default function MentionsLegalesPage() {
       <p>
         Les textes, illustrations et recettes du site sont la propriété de [éditeur], sauf mention contraire.
         Les données de prix agrégées sont réutilisables selon les conditions décrites dans la{' '}
-        <Link href={href(ROUTES.methodologie)} className="text-brand">
+        <Link href={href(ROUTES.methodologie)} className="text-brand underline underline-offset-2">
           méthodologie
         </Link>
         .

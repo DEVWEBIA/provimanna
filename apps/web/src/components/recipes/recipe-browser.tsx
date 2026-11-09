@@ -82,7 +82,7 @@ export function RecipeBrowser({
               aria-pressed={filter === id}
               onClick={() => setFilter(id)}
               className={cx(
-                'rounded-pill min-h-[40px] border-2 px-4 text-[14px] font-extrabold transition-colors',
+                'rounded-pill min-h-tap border-2 px-4 text-[14px] font-extrabold transition-colors',
                 filter === id
                   ? 'border-brand bg-brand text-brand-on'
                   : 'border-line text-ink hover:border-brand bg-white/80',
@@ -121,6 +121,7 @@ export function RecipeBrowser({
             return (
               <Reveal as="li" key={r.id} delay={(i % 4) * 70}>
                 <RecipeCard
+                  headingLevel="h2"
                   href={`/app/recettes/${r.slug}`}
                   title={r.title}
                   illustration={r.illustration}

@@ -143,7 +143,7 @@ export default function HomePage() {
                   className="font-display mt-6 text-[clamp(44px,6vw,76px)] font-extrabold leading-[0.98] tracking-[-2px]"
                   lines={[
                     { text: 'Le même menu.' },
-                    { text: 'Douze prix.' },
+                    { text: 'Treize prix.' },
                     { text: 'Tu choisis.', className: 'text-saving-ink font-accent', underline: true },
                   ]}
                 />
@@ -161,7 +161,7 @@ export default function HomePage() {
                   <PrimaryCta />
                   <a
                     href="#comment"
-                    className="text-brand text-[15px] font-extrabold underline-offset-4 hover:underline"
+                    className="text-brand min-h-tap inline-flex items-center text-[15px] font-extrabold underline-offset-4 hover:underline"
                   >
                     Voir comment ça marche
                   </a>
@@ -186,6 +186,7 @@ export default function HomePage() {
                       src={bowlColore}
                       alt=""
                       priority
+                      fetchPriority="high"
                       placeholder="blur"
                       sizes="(min-width: 1024px) 700px, (min-width: 640px) 560px, 220px"
                       className="h-full w-full scale-105 object-cover"

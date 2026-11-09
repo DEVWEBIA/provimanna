@@ -133,7 +133,7 @@ export default async function UtilisateursPage({ searchParams }: { searchParams:
               href={href({ filtre: id === 'tous' ? '' : id, id: '' })}
               aria-current={filter === id ? 'page' : undefined}
               className={cx(
-                'rounded-pill min-h-[40px] border-2 px-3.5 py-1.5 text-[14px] font-extrabold no-underline',
+                'rounded-pill min-h-tap border-2 px-3.5 py-1.5 text-[14px] font-extrabold no-underline',
                 filter === id ? 'border-brand bg-brand text-brand-on' : 'border-line text-ink bg-white',
               )}
             >

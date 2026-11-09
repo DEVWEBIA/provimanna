@@ -54,7 +54,10 @@ export default async function ComparateurPage() {
 
   return (
     <>
-      <Link href={href('/app/plan')} className="anim-rise text-brand self-start text-[15px] font-black">
+      <Link
+        href={href('/app/plan')}
+        className="anim-rise text-brand min-h-tap inline-flex items-center self-start text-[15px] font-black"
+      >
         ← Semaine {view.weekNumber}
       </Link>
       <PageHeader

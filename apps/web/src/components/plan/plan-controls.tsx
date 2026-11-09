@@ -30,7 +30,7 @@ export function PlanControls({ planId }: { planId: string }) {
               aria-pressed={on}
               onClick={() => setFilters({ ...filters, [f.key]: !on })}
               className={cx(
-                'rounded-pill min-h-[40px] border-2 px-4 text-[14px] font-extrabold transition-[background-color,border-color,transform] hover:-translate-y-0.5 motion-reduce:transition-none',
+                'rounded-pill min-h-tap border-2 px-4 text-[14px] font-extrabold transition-[background-color,border-color,transform] hover:-translate-y-0.5 motion-reduce:transition-none',
                 on
                   ? 'border-brand bg-brand text-brand-on'
                   : 'border-line text-ink hover:border-brand bg-white/80 backdrop-blur',

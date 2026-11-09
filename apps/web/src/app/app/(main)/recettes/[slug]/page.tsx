@@ -106,7 +106,7 @@ export default async function AppRecettePage({ params }: { params: Params }) {
     <>
       <Link
         href={href(meal ? '/app/plan' : '/app/recettes')}
-        className="anim-rise text-brand self-start text-[15px] font-black"
+        className="anim-rise text-brand min-h-tap inline-flex items-center self-start text-[15px] font-black"
       >
         ←{' '}
         {meal && view

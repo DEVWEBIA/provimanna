@@ -33,7 +33,7 @@ export function ThemeChooser({ value }: { value: 'auto' | 'clair' | 'sombre' }) 
             })
           }
           className={cx(
-            'rounded-pill min-h-[40px] px-4 text-[14px] font-black',
+            'rounded-pill min-h-tap px-4 text-[14px] font-black',
             current === v ? 'bg-brand text-brand-on' : 'text-ink',
           )}
         >
@@ -72,17 +72,23 @@ export function NotificationToggles({ thursday, promos }: { thursday: boolean; p
             aria-checked={state[k]}
             aria-label={t}
             onClick={() => toggle(k)}
-            className={cx(
-              'relative h-8 w-14 shrink-0 rounded-full transition-colors',
-              state[k] ? 'bg-brand' : 'bg-toggle-off',
-            )}
+            className="grid h-11 w-14 shrink-0 place-items-center rounded-full"
           >
+            {/* Piste de 32 px dans une cible de 44 px. */}
             <span
+              aria-hidden="true"
               className={cx(
-                'absolute top-1 h-6 w-6 rounded-full bg-white shadow transition-[left]',
-                state[k] ? 'left-7' : 'left-1',
+                'relative h-8 w-14 rounded-full transition-colors',
+                state[k] ? 'bg-brand' : 'bg-toggle-off',
               )}
-            />
+            >
+              <span
+                className={cx(
+                  'absolute top-1 h-6 w-6 rounded-full bg-white shadow transition-[left]',
+                  state[k] ? 'left-7' : 'left-1',
+                )}
+              />
+            </span>
           </button>
         </li>
       ))}

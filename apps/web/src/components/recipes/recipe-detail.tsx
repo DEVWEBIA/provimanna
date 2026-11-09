@@ -134,10 +134,7 @@ export function RecipeDetail({
                           className="accent-brand h-5 w-5 shrink-0"
                         />
                         <span
-                          className={cx(
-                            'flex-1 text-[16px] font-bold',
-                            on && 'text-disabled-ink line-through',
-                          )}
+                          className={cx('flex-1 text-[16px] font-bold', on && 'text-ink-muted line-through')}
                         >
                           {g.label}
                         </span>
@@ -149,7 +146,7 @@ export function RecipeDetail({
                         <span
                           className={cx(
                             'w-[64px] text-right text-[14px] font-black tabular-nums',
-                            on && 'text-disabled-ink',
+                            on && 'text-ink-muted',
                           )}
                         >
                           {g.cents !== null ? formatEuro(g.cents) : '—'}

@@ -148,7 +148,7 @@ export function PlanBoard({ planId, weekStart, today, meals, days, withLunch }: 
 
       {/* Mobile : un jour à la fois */}
       <div className="lg:hidden">
-        <div role="tablist" aria-label="Jours" className="flex gap-1.5 pb-2">
+        <div role="tablist" aria-label="Jours" className="flex gap-1 pb-2">
           {shown.map((d) => {
             const i = d - 1;
             const label = DAY_SHORT[i]!;

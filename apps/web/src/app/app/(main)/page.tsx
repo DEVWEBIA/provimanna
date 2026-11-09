@@ -147,7 +147,7 @@ export default async function DashboardPage() {
               </Link>
               <Link
                 href={href('/app/comparateur')}
-                className="text-[15px] font-extrabold text-white underline-offset-4 hover:underline"
+                className="min-h-tap inline-flex items-center text-[15px] font-extrabold text-white underline-offset-4 hover:underline"
               >
                 Comparer les enseignes
               </Link>
@@ -239,7 +239,10 @@ export default async function DashboardPage() {
         <Reveal as="section" className={`${glassClasses} p-6`}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="font-display text-[26px] font-extrabold tracking-[-0.6px]">Au menu aujourd’hui</h2>
-            <Link href={href('/app/plan')} className="text-brand text-[15px] font-black">
+            <Link
+              href={href('/app/plan')}
+              className="text-brand min-h-tap inline-flex items-center text-[15px] font-black"
+            >
               Toute la semaine
             </Link>
           </div>

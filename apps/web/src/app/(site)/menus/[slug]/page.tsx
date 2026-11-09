@@ -127,7 +127,7 @@ export default async function MenuPage({ params }: { params: Params }) {
                         <RecipePhoto slug={m.recipe.slug} illustration={m.recipe.illustration} size={44} />
                         <Link
                           href={href(`/recettes/${m.recipe.slug}`)}
-                          className="text-ink text-[15px] font-extrabold"
+                          className="text-ink min-h-tap inline-flex items-center text-[15px] font-extrabold"
                         >
                           {m.recipe.title}
                         </Link>

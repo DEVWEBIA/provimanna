@@ -143,7 +143,7 @@ export default async function PrixPage({ searchParams }: { searchParams: SearchP
             href={(id === 'alertes' ? '/prix' : '/prix?onglet=tous') as Route}
             aria-current={tab === id ? 'page' : undefined}
             className={cx(
-              'rounded-pill min-h-[40px] px-4 py-2 text-[14px] font-black no-underline',
+              'rounded-pill min-h-tap px-4 py-2 text-[14px] font-black no-underline',
               tab === id ? 'bg-brand text-brand-on' : 'text-ink',
             )}
           >

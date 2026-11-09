@@ -399,14 +399,14 @@ export function OnboardingWizard({
     'text-ink -ml-2 grid h-11 w-11 shrink-0 place-items-center rounded-full hover:bg-white/70';
 
   return (
-    <div className="bg-surface-50 text-ink relative isolate min-h-screen overflow-x-clip font-sans">
+    <main className="bg-surface-50 text-ink relative isolate min-h-screen overflow-x-clip font-sans">
       <Glow className="bg-raw-aubergine-clair right-[6%] top-24 h-80 w-80" />
       <Glow className="bg-raw-peche bottom-10 left-[4%] h-72 w-72 opacity-60" />
 
       <div className="mx-auto flex min-h-screen w-full max-w-[640px] flex-col px-4 pb-36 pt-6 sm:px-6">
         <Link
           href={mode === 'guest' ? '/' : '/app'}
-          className="text-brand mx-auto flex items-center gap-2 text-[19px] font-black no-underline"
+          className="text-brand min-h-tap mx-auto flex items-center gap-2 text-[19px] font-black no-underline"
         >
           <LogoMark size={28} />
           {APP_NAME}
@@ -1055,7 +1055,7 @@ export function OnboardingWizard({
           </div>
         </div>
       ) : null}
-    </div>
+    </main>
   );
 }
 

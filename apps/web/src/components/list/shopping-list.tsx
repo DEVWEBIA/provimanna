@@ -233,7 +233,7 @@ export function ShoppingList({
                       <span
                         className={cx(
                           'min-w-0 flex-1 text-[16px] font-extrabold',
-                          it.checked && 'text-disabled-ink line-through',
+                          it.checked && 'text-ink-muted line-through',
                         )}
                       >
                         {it.label}{' '}
@@ -246,7 +246,7 @@ export function ShoppingList({
                           {who}
                         </span>
                       ) : null}
-                      <Price cents={it.cents} size="sm" className={cx(it.checked && 'text-disabled-ink')} />
+                      <Price cents={it.cents} size="sm" className={cx(it.checked && 'text-ink-muted')} />
                     </label>
                   </li>
                 );

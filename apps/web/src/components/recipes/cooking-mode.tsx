@@ -71,7 +71,7 @@ export function CookingMode({ slug, title, illustration, servings, steps, ingred
       <header className="flex items-center gap-4 px-[clamp(16px,4vw,48px)] py-4">
         <RecipePhoto slug={slug} illustration={illustration} size={56} />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[18px] font-black">{title}</p>
+          <h1 className="truncate text-[18px] font-black">{title}</h1>
           <p className="text-site-on-ink-faint text-[14px] font-bold">
             {servings} parts{awake ? ' · écran maintenu allumé' : ''}
           </p>

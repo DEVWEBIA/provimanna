@@ -41,17 +41,20 @@ export default function NotFound() {
         </form>
         <ul className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[15px] font-black">
           <li>
-            <Link href={href(`${ROUTES.recettes}?filtre=saison`)} className="text-brand">
+            <Link
+              href={href(`${ROUTES.recettes}?filtre=saison`)}
+              className="text-brand underline underline-offset-2"
+            >
               Recettes de saison →
             </Link>
           </li>
           <li>
-            <Link href={href(ROUTES.menus)} className="text-brand">
+            <Link href={href(ROUTES.menus)} className="text-brand underline underline-offset-2">
               Menu de la semaine →
             </Link>
           </li>
           <li>
-            <Link href="/" className="text-brand">
+            <Link href="/" className="text-brand underline underline-offset-2">
               Page d’accueil →
             </Link>
           </li>

@@ -131,7 +131,7 @@ export default async function RecettesPage({ searchParams }: { searchParams: Sea
         {pricesAt ? (
           <p className="anim-rise text-ink-muted mt-3 text-[14px] font-bold" style={animDelay(200)}>
             Prix relevés le {longDate(pricesAt)} ·{' '}
-            <Link href={href(ROUTES.methodologie)} className="text-brand">
+            <Link href={href(ROUTES.methodologie)} className="text-brand underline underline-offset-2">
               méthodologie
             </Link>
           </p>
@@ -180,7 +180,7 @@ export default async function RecettesPage({ searchParams }: { searchParams: Sea
                 href={query({ filter: p.filter, sort: t, page: 1, q: p.q }) as Route}
                 aria-current={p.sort === t ? 'true' : undefined}
                 className={cx(
-                  'rounded-pill min-h-[40px] border px-3.5 py-2 no-underline',
+                  'rounded-pill min-h-tap border px-3.5 py-2 no-underline',
                   p.sort === t ? 'border-ink bg-ink text-white' : 'border-line text-ink bg-white',
                 )}
               >

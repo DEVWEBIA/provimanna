@@ -44,7 +44,7 @@ export default async function SharedListPage({ params }: { params: Params }) {
       <Glow className="bg-raw-aubergine-clair -left-24 top-24 h-80 w-80" />
       <Glow className="bg-raw-peche right-0 top-1/2 h-72 w-72 opacity-70" />
       <main className="mx-auto flex max-w-[720px] flex-col gap-8 px-5 py-8">
-        <Link href="/" className="anim-rise self-start no-underline">
+        <Link href="/" className="anim-rise min-h-tap inline-flex items-center self-start no-underline">
           <Logo />
         </Link>
         <PageHeader
@@ -76,7 +76,7 @@ export default async function SharedListPage({ params }: { params: Params }) {
                       {it.checked ? '✓' : ''}
                     </span>
                     <span
-                      className={`flex-1 font-extrabold ${it.checked ? 'text-disabled-ink line-through' : ''}`}
+                      className={`flex-1 font-extrabold ${it.checked ? 'text-ink-muted line-through' : ''}`}
                     >
                       {it.label}{' '}
                       {it.quantity ? <span className="text-ink-muted font-bold">· {it.quantity}</span> : null}

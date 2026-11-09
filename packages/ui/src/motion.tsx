@@ -129,7 +129,12 @@ export function CountUp({
   }, [inView, reduce, value, duration]);
   const fmt = (n: number) => (format === 'euro' ? formatEuro(n) : new Intl.NumberFormat('fr-FR').format(n));
   return (
-    <span ref={ref} className="tabular-nums" aria-label={`${prefix}${fmt(value)}`}>
+    <span ref={ref} className="tabular-nums">
+      {/* Lecteurs d'écran : la valeur finale seulement (un aria-label sur un span est ignoré). */}
+      <span className="sr-only">
+        {prefix}
+        {fmt(value)}
+      </span>
       {/* Animations réduites : la valeur finale directement (choix en CSS, sans écart d'hydratation). */}
       <span aria-hidden="true" className="motion-reduce:hidden">
         {prefix}

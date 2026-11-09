@@ -29,7 +29,7 @@ export default async function ConnexionPage({ searchParams }: { searchParams: Se
       <main className="relative isolate box-border flex min-w-0 flex-[999_1_520px] flex-col px-[clamp(24px,6vw,96px)] pb-12 pt-8">
         <Glow className="bg-raw-aubergine-clair -left-24 top-24 h-80 w-80" />
         <Glow className="bg-raw-peche bottom-10 right-0 h-72 w-72 opacity-70" />
-        <Link href="/" className="anim-rise self-start no-underline">
+        <Link href="/" className="anim-rise min-h-tap inline-flex items-center self-start no-underline">
           <Logo />
         </Link>
         <div className="flex flex-1 items-center py-12">

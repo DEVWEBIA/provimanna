@@ -13,6 +13,8 @@ export interface RecipeCardProps {
   tags: string[];
   /** Action sous la carte (ex. « + Ajouter à ma semaine »). */
   action?: React.ReactNode;
+  /** Niveau du titre, selon la page (h2 quand la grille suit directement le h1). */
+  headingLevel?: 'h2' | 'h3';
 }
 
 /** Carte recette (maquettes SiteRecettes / AppRecettes) : illustration, étiquettes, temps, prix par part. */
@@ -24,6 +26,7 @@ export function RecipeCard({
   perServingCents,
   tags,
   action,
+  headingLevel: Heading = 'h3',
 }: RecipeCardProps) {
   return (
     <article className="group flex h-full flex-col">
@@ -52,7 +55,7 @@ export function RecipeCard({
             </ul>
           ) : null}
         </div>
-        <h3 className="mt-3 text-[17px] font-black leading-snug group-hover:underline">{title}</h3>
+        <Heading className="mt-3 text-[17px] font-black leading-snug group-hover:underline">{title}</Heading>
         <p className="text-ink-muted mt-1 flex items-center gap-1.5 text-[14px] font-bold">
           <Icon name="horloge" size={14} />
           {minutes} min · <Price cents={perServingCents} size="sm" suffix="/ part" className="text-ink" />

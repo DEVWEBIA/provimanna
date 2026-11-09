@@ -42,7 +42,7 @@ export function RecipePriceTable({
           onClick={() => setN(options[i - 1]!)}
           disabled={i <= 0}
           aria-label="Moins de parts"
-          className="rounded-pill border-line text-brand h-11 w-11 border-2 bg-white text-[20px] font-black disabled:opacity-40"
+          className="rounded-pill border-line text-brand h-11 w-11 shrink-0 border-2 bg-white text-[20px] font-black disabled:opacity-40"
         >
           −
         </button>
@@ -57,12 +57,17 @@ export function RecipePriceTable({
           onClick={() => setN(options[i + 1]!)}
           disabled={i >= options.length - 1}
           aria-label="Plus de parts"
-          className="rounded-pill bg-brand text-brand-on h-11 w-11 text-[20px] font-black disabled:opacity-40"
+          className="rounded-pill bg-brand text-brand-on h-11 w-11 shrink-0 text-[20px] font-black disabled:opacity-40"
         >
           +
         </button>
       </div>
-      <div className="mt-5 overflow-x-auto">
+      <div
+        className="mt-5 overflow-x-auto"
+        tabIndex={0}
+        role="region"
+        aria-label="Prix de la recette par enseigne"
+      >
         <table className="w-full min-w-[520px] text-[15px] tabular-nums">
           <thead>
             <tr className="text-ink-muted text-left text-[12px] font-black tracking-[1px]">

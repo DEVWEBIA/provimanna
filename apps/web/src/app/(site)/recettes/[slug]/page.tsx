@@ -221,7 +221,7 @@ export default async function RecettePage({ params }: { params: Params }) {
           {pricesAt ? (
             <p className="anim-rise text-ink-muted mt-4 text-[14px] font-bold" style={animDelay(300)}>
               Prix relevés le {longDate(pricesAt)} ·{' '}
-              <Link href={href(ROUTES.methodologie)} className="text-brand">
+              <Link href={href(ROUTES.methodologie)} className="text-brand underline underline-offset-2">
                 méthodologie
               </Link>
             </p>

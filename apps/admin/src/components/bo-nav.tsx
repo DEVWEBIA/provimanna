@@ -25,7 +25,7 @@ export function BoNav({ items, group = 'bo' }: { items: BoNavItem[]; group?: str
             href={it.href as Route}
             aria-current={on ? 'page' : undefined}
             className={cx(
-              'relative isolate flex min-h-[42px] items-center gap-3 rounded-[12px] px-3 text-[14px] font-bold no-underline transition-colors',
+              'min-h-tap relative isolate flex items-center gap-3 rounded-[12px] px-3 text-[14px] font-bold no-underline transition-colors',
               on ? 'text-white' : 'text-site-on-ink hover:bg-white/[0.06] hover:text-white',
             )}
           >

@@ -84,7 +84,7 @@ export function SiteHeader({ variant = 'home' }: { variant?: 'home' | 'pages' })
             compact ? 'h-[60px]' : 'h-[72px]',
           )}
         >
-          <Link href="/" className="mr-auto no-underline" aria-label="Accueil">
+          <Link href="/" className="min-h-tap mr-auto inline-flex items-center no-underline">
             <Logo />
           </Link>
 
@@ -100,7 +100,7 @@ export function SiteHeader({ variant = 'home' }: { variant?: 'home' | 'pages' })
                       href={l.href}
                       aria-current={on ? (l.anchor ? 'location' : 'page') : undefined}
                       className={cx(
-                        'rounded-pill inline-flex min-h-[40px] items-center px-4 text-[14px] font-extrabold no-underline transition-colors',
+                        'rounded-pill min-h-tap inline-flex items-center px-4 text-[14px] font-extrabold no-underline transition-colors',
                         on ? 'bg-brand-soft text-brand' : 'text-ink-muted hover:text-ink',
                       )}
                     >

@@ -43,8 +43,11 @@ export function AppShell({
       {/* Halos de la page d'accueil, discrets derrière le contenu. */}
       <Glow className="bg-raw-aubergine-clair -top-24 left-[30%] h-96 w-96" />
       <Glow className="bg-raw-peche right-0 top-[40vh] h-80 w-80 opacity-60" />
-      <aside className="dark:border-line dark:bg-surface-0 sticky top-0 hidden h-screen w-[260px] shrink-0 flex-col gap-6 border-r border-white/70 bg-white/60 px-4 py-6 shadow-[8px_0_30px_rgba(42,26,40,0.04)] backdrop-blur-xl lg:flex">
-        <Link href={homeHref} className="px-2 no-underline">
+      <aside
+        aria-label="Menu principal"
+        className="dark:border-line dark:bg-surface-0 sticky top-0 hidden h-screen w-[260px] shrink-0 flex-col gap-6 border-r border-white/70 bg-white/60 px-4 py-6 shadow-[8px_0_30px_rgba(42,26,40,0.04)] backdrop-blur-xl lg:flex"
+      >
+        <Link href={homeHref} className="min-h-tap inline-flex items-center px-2 no-underline">
           <Logo />
         </Link>
         <nav aria-label="Web app" className="flex flex-col gap-0.5">

@@ -160,7 +160,10 @@ export default async function EconomiesPage() {
                       <span className="text-ink-muted text-[13px] font-bold">ton enseigne</span>
                     )
                   ) : p.week_start === e.week ? (
-                    <Link href={href('/app/comparateur')} className="text-brand text-[14px] font-black">
+                    <Link
+                      href={href('/app/comparateur')}
+                      className="text-brand min-h-tap inline-flex items-center text-[14px] font-black"
+                    >
                       Choisir mon enseigne →
                     </Link>
                   ) : null}

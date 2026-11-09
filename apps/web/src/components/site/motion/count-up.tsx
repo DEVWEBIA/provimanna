@@ -30,7 +30,12 @@ export function CountUp({
   const text = format === 'euro' ? formatEuro(shown) : String(shown);
   const final = format === 'euro' ? formatEuro(value) : String(value);
   return (
-    <span ref={ref} className="tabular-nums" aria-label={`${prefix}${final}`}>
+    <span ref={ref} className="tabular-nums">
+      {/* Lecteurs d'écran : la valeur finale seulement (un aria-label sur un span est ignoré). */}
+      <span className="sr-only">
+        {prefix}
+        {final}
+      </span>
       {/* Animations réduites : la valeur finale directement (choix en CSS, sans écart d'hydratation). */}
       <span aria-hidden="true" className="motion-reduce:hidden">
         {prefix}

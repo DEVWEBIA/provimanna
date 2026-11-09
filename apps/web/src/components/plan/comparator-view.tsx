@@ -149,7 +149,12 @@ export function ComparatorView({
             </span>
           </div>
           {detail && detail.rows.length > 0 ? (
-            <div className="mt-4 overflow-x-auto">
+            <div
+              className="mt-4 overflow-x-auto"
+              tabIndex={0}
+              role="region"
+              aria-label="Détail produit par produit"
+            >
               <table className="w-full min-w-[460px] text-[15px] tabular-nums">
                 <thead>
                   <tr className="text-ink-muted text-left text-[12px] font-black tracking-[1px]">

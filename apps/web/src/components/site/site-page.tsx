@@ -28,7 +28,7 @@ export function SitePage({ crumbs, children }: { crumbs?: Crumb[]; children: Rea
                   {c.href ? (
                     <Link
                       href={c.href as never}
-                      className="text-ink-muted hover:text-brand no-underline hover:underline"
+                      className="text-ink-muted hover:text-brand min-h-tap inline-flex items-center no-underline hover:underline"
                     >
                       {c.label}
                     </Link>

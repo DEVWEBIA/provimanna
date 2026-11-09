@@ -52,7 +52,9 @@ export default async function RolesPage() {
               <th scope="col" className="pb-2">
                 DEPUIS
               </th>
-              <th scope="col" className="pb-2" />
+              <th scope="col" className="pb-2">
+                <span className="sr-only">Action</span>
+              </th>
             </tr>
           </thead>
           <tbody>

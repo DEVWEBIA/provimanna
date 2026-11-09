@@ -3,7 +3,7 @@ import { formatEuro, priceSpread } from '@repas/core';
 import { APP_NAME } from '@repas/ui';
 import { EXAMPLE_WEEK, HERO_STORES } from '@/lib/landing-data';
 
-export const alt = 'Le même menu. Douze prix. Tu choisis.';
+export const alt = 'Le même menu. Treize prix. Tu choisis.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -29,7 +29,7 @@ export default function OpengraphImage() {
       <div style={{ fontSize: 34, fontWeight: 800, color: C.clair }}>{APP_NAME}</div>
       <div style={{ display: 'flex', flexDirection: 'column', fontSize: 92, fontWeight: 800, lineHeight: 1 }}>
         <span>Le même menu.</span>
-        <span>Six prix.</span>
+        <span>Treize prix.</span>
         <span style={{ color: C.orange }}>Tu choisis.</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 24, fontSize: 32, color: C.clair }}>

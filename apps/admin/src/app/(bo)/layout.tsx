@@ -33,7 +33,10 @@ export default async function BoLayout({ children }: { children: ReactNode }) {
     <div className="bg-surface-50 relative isolate flex min-h-screen overflow-x-clip">
       <Glow className="bg-raw-aubergine-clair -top-24 left-[30%] h-96 w-96" />
       <Glow className="bg-raw-peche right-0 top-[40vh] h-80 w-80 opacity-60" />
-      <aside className="bg-raw-encre sticky top-0 flex h-screen w-[240px] shrink-0 flex-col gap-6 px-3 py-5 max-md:hidden">
+      <aside
+        aria-label="Menu du back-office"
+        className="bg-raw-encre sticky top-0 flex h-screen w-[240px] shrink-0 flex-col gap-6 px-3 py-5 max-md:hidden"
+      >
         <p className="flex items-center gap-2.5 px-2 text-[15px] font-black text-white">
           <LogoMark size={26} tone="onBrand" />
           Back-office
