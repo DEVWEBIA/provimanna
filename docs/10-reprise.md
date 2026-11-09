@@ -1,4 +1,4 @@
-# 10 — Fichier de reprise (état au 09/11/2026)
+# 10 — Fichier de reprise (état au 10/11/2026)
 
 > À lire en début de nouvelle conversation, après `CLAUDE.md`. Il dit où on en est, ce qui a été décidé, ce qui attend une réponse et comment reprendre.
 > Détail de chaque décision : `docs/09-plan-action.md` (section « Journal des décisions techniques »). Lots : `docs/08-roadmap-claude-code.md`.
@@ -20,7 +20,7 @@ Commence par me confirmer l'état et la prochaine étape.
 
 ## Où on en est
 
-37 commits sur `main`, rien en attente, aucun worktree ni branche ouverts. Dernier : `0ce95eb Ajoute l'import quotidien des prix Open Prices et l'écran Imports du back-office`.
+40 commits sur `main`, rien en attente, aucun worktree ni branche ouverts. Derniers (10/11) : revue accessibilité + Lighthouse, puis rattachement des produits emballés d'Open Prices par catégorie.
 
 | Lot | État |
 |---|---|
@@ -68,18 +68,18 @@ Commence par me confirmer l'état et la prochaine étape.
 **Parcours et espace client (`/app`)**
 - `/commencer` (questionnaire sans compte, **9 questions, une par écran** : motivations, foyer, jours et repas, enseigne, budget, régime, ambiance, ingrédients évités, équipement ; puis lien magique ; code de parrainage `?parrain=` transmis). Modifier une seule réponse : `/app/bienvenue?etape=<id>` depuis le profil, `/connexion` (lien ou code à 6 chiffres ; Google et Apple prêts mais désactivés), `/app/bienvenue` (questionnaire du compte, génère la semaine).
 - `/app` tableau de bord (semaine, total, « Possible dès… », série, économies, défi, repas du jour), `/app/plan` (grille 7 × 2 avec glisser-déposer, remplacer, verrouiller, varier ; comparateur latéral), `/app/comparateur` (choisir son enseigne = **valider la semaine**, totaux figés côté serveur), `/app/liste` (par rayon, temps réel, file hors ligne, partage `/liste/[token]`), `/app/recettes` + fiche + **mode cuisine**, `/app/economies`, `/app/famille` (invitations par lien, `/invitation/[token]`), `/app/profil` (préférences, notifications, **thème auto / clair / sombre**). La page Notifications n'existe pas encore (lot 11).
-- **Vraies photos de plats** : 47 recettes sur 53 (`components/recipes/recipe-photo.tsx`, repli sur l'illustration `<Plat>`). Sans photo : chou sauté, colin purée, gratin de butternut, saucisses aux lentilles, spaghetti épinards-tomate, tarte aux poireaux. Liste et crédits : `supabase/catalogue/photos.json`, `apps/web/public/recettes/CREDITS.md`, script `apps/web/scripts/recipe-photos.mjs` (télécharge, recadre, régénère `lib/recipe-photos.ts`).
+- **Vraies photos de plats** : 47 recettes sur 63 (`components/recipes/recipe-photo.tsx`, repli sur l'illustration `<Plat>`). Sans photo (16) : chou sauté, colin purée, gratin de butternut, saucisses aux lentilles, spaghetti épinards-tomate, tarte aux poireaux, et les 10 recettes ajoutées le 08/11 (rougail saucisses, cari poulet, cari de lentilles, colombo, colin coco citron, poulet yassa, mafé, fish pie, cottage pie, poulet soja gingembre). Liste et crédits : `supabase/catalogue/photos.json`, `apps/web/public/recettes/CREDITS.md`, script `apps/web/scripts/recipe-photos.mjs` (télécharge, recadre, régénère `lib/recipe-photos.ts`).
 - **Logos des enseignes en couleur** dans l'espace client : `components/store-logo.tsx` (vignette blanche, lisible en sombre).
 - États : `loading.tsx`, `error.tsx`, bandeau hors ligne, encart « prix incomplets », encart « Prix de démonstration ».
 - Logique : `lib/plan.ts` (`currentPlan`, `ensureWeekPlan`, `planView`), `lib/list.ts` (`validatePlan` + série, `syncShoppingList`), `lib/engagement.ts`, `lib/family.ts`, `lib/recipes.ts`. Écritures sensibles via `lib/supabase/admin.ts` (clé serveur, jamais côté client).
 
 **Tickets (lot 10)** : `/app/ticket` (photo JPG/PNG/WEBP 10 Mo, enseigne auto ou choisie, lecture animée, résultat, historique) ; Edge Function `supabase/functions/ocr-receipt` (lecteur Claude `claude-opus-5-5` via `messages.parse` + Zod, ou `demo` sans clé ; appelée seulement par le serveur) ; rapprochement dans core `packages/core/src/receipts.ts` (seuil 0,85, abréviations, lignes ignorées, promos, `detectStoreId`, récompense +3 j, 14 j/mois) ; `apps/web/src/lib/receipts.ts` + action `app/app/(main)/ticket/actions.ts` (limite des actions serveur 11 Mo dans `next.config.ts`). Photo supprimée après la décision du modérateur.
 
-**Import Open Prices (lot 10)** : Edge Function `supabase/functions/import-open-prices` (incrémentale, importe directement `packages/core`, anti-doublon `prices.external_id`, aberrants signalés, historique `import_runs`) ; conversion dans `packages/core/src/open-prices.ts` (France, euro, hors promos, prix au kilo × `unit_kg`) ; 18 catégories de vrac vérifiées sur l'API (`OFF_CATEGORIES` dans `generate.mjs`). Crédit `OPEN_PRICES_CREDIT` dans le pied de page du site. Planification à 4 h : à créer au lot 13 (pg_cron + pg_net).
+**Import Open Prices (lot 10)** : Edge Function `supabase/functions/import-open-prices` (incrémentale, importe directement `packages/core`, anti-doublon `prices.external_id`, aberrants signalés, historique `import_runs`) ; conversion dans `packages/core/src/open-prices.ts` (France, euro, hors promos et bio, prix au kilo × `unit_kg`) ; `OFF_CATEGORIES` dans `generate.mjs` : 20 catégories de vrac + 57 de produits emballés (10/11 : un code-barres inconnu est rattaché par la catégorie de sa fiche, contenance comparable exigée ; fruits et légumes en vrac seulement). Crédit `OPEN_PRICES_CREDIT` dans le pied de page du site. Planification à 4 h : à créer au lot 13 (pg_cron + pg_net).
 
 **Back-office (`apps/admin`, :3001)** : connexion staff par code (aucune création de compte), rôle vérifié par page (`lib/staff.ts`), journal d'audit (`log_action`). Rubriques : vue d'ensemble (chiffres réels), **tickets (modération, compteur)**, prix (modération des aberrants au clavier, **sous-page Imports `/prix/imports` avec « Lancer maintenant »**), produits (fusion de doublons), recettes (éditeur, **coût recalculé en direct**), utilisateurs (support), enseignes (**logos couleur**), contenu SEO, engagement, rôles et journal, paramètres (lecture).
 
-**Données** : catalogue de 53 recettes et 76 produits, généré par `supabase/catalogue/generate.mjs` → `supabase/catalogue.sql` (régimes et allergènes déduits des ingrédients). **Prix de démonstration** (`source = 'manual'`) en attendant Open Prices et les tickets (lot 10), signalés dans l'appli.
+**Données** : catalogue de 63 recettes et 78 produits, généré par `supabase/catalogue/generate.mjs` → `supabase/catalogue.sql` (régimes et allergènes déduits des ingrédients). **Prix de démonstration** (`source = 'manual'`) en attendant Open Prices et les tickets (lot 10), signalés dans l'appli.
 
 **Animations et typographie** : Motion 14.6.0 (version figée) ; primitives dans `packages/ui/src/motion.tsx` (`Reveal` à ressort, `FadeUp`, `Stagger`, `CountUp`, `PageTransition` dans les `template.tsx` des deux apps, `StepTransition` du questionnaire, `NavIndicator`) ; `MotionRoot` dans les gabarits racines ; effets de la landing dans `apps/web/src/components/site/motion/`. Accent **Instrument Serif italique** (`.font-accent`) sur le dernier mot des titres (`AccentTitle`, `PageHeader`, `SectionHeading` : automatique dès 2 mots, sauf chiffre ; prop `accent`).
 
@@ -87,7 +87,7 @@ Commence par me confirmer l'état et la prochaine étape.
 
 **Migrations** : 0001 schéma, 0002 RLS, 0003 droits colonne par colonne, 0004 temps de cuisine, 0005 familles et marqueurs des recettes, 0006 liste et validation (totaux écrits par le serveur, « coché par » posé par la base, temps réel, `shared_list`), 0007 journal d'audit, 0008 réponses enrichies du questionnaire (jours et repas, budget, styles, équipement, ingrédients évités, motivations). 0009 équipement élargi et cuisines. 0010 import Open Prices (`products.off_category`, `products.unit_kg`, `prices.external_id` unique, table `import_runs`). **Prochain numéro libre : 0011.**
 
-**Tests** : core 12 node:test + 89 Vitest, ui 20, web 7 Vitest, **35 tests RLS** (`pnpm db:test`), **e2e Playwright : 26 passent, 4 ignorés** (back-office desktop seulement) — dont `tickets.spec.ts` et `imports.spec.ts`.
+**Tests** : core 12 node:test + 94 Vitest, ui 20, web 7 Vitest, **35 tests RLS** (`pnpm db:test`), **e2e Playwright : 26 passent, 4 ignorés** (back-office desktop seulement) — dont `tickets.spec.ts` et `imports.spec.ts`.
 
 ## Décisions clés (à ne pas défaire sans demander)
 
@@ -109,7 +109,7 @@ Commence par me confirmer l'état et la prochaine étape.
 
 - Edge Functions : `supabase functions serve` (sert `ocr-receipt` et `import-open-prices`). Sans `ANTHROPIC_API_KEY`, la lecture utilise le ticket de démo.
 - Import Open Prices : bouton « Lancer maintenant » dans BO › Prix › Imports (appelle l'API réelle).
-- **Piège** : un `supabase db reset` lancé depuis un worktree fait perdre le modèle d'email (connexion sans code à 6 chiffres, e2e en échec « Code introuvable »). Remède : `supabase stop && supabase start` depuis le dossier principal, puis relancer `supabase functions serve`.
+- **Piège** : un `supabase db reset` (depuis un worktree, et constaté aussi depuis le dossier principal le 10/11) fait perdre le modèle d'email (connexion sans code à 6 chiffres, e2e en échec « Code introuvable »). Remède : `supabase stop && supabase start` depuis le dossier principal, puis relancer `supabase functions serve`.
 - Tests e2e : `tickets.spec.ts` (envoi → modération → +3 jours) et `imports.spec.ts` créent un modérateur de test dédié (évite la limite d'un code par 30 s sur `admin@example.com`) et ouvrent la modération dans un contexte séparé (cookies partagés entre ports sur localhost).
 
 ## Environnement local
@@ -131,6 +131,9 @@ pnpm --filter @repas/web test:e2e   # nécessite supabase start et pnpm dev
 
 ## Pièges déjà rencontrés (gagner du temps)
 
+- **Catégories Open Food Facts** : beaucoup de noms devinés n'existent pas. Vérifier dans `https://static.openfoodfacts.org/data/taxonomies/categories.json` (l'API `/api/v2/taxonomy` renvoie `{}` pour un nom inconnu, sans erreur). Les `categories_tags` d'une fiche contiennent les parents, du général au précis.
+- **Audit accessibilité** : axe-core est déjà installé (`node_modules/.pnpm/axe-core@4.14.0`) ; l'injecter avec Playwright sur un build de production. Pages avec temps réel (`/app/liste`) : ne pas attendre `networkidle`. Mesurer les cibles après les animations d'entrée (l'échelle du `Reveal` fausse les tailles d'un pixel). `pkill -f "next start"` ne tue pas le serveur : c'est `next-server`.
+
 - **Tailwind + tokens en `var(--…)`** : l'opacité (`bg-surface-50/80`) ne marche pas → couleurs `raw-*` du preset ou `bg-white/70`. Blanc constant : `bg-raw-blanc`.
 - **Mode sombre** : attribut `data-theme` sur l'AppShell (`light` / `dark` / `system`) + `packages/ui/styles/dark.css`. Un nouvel écran qui utilise d'autres fonds clairs doit y être ajouté.
 - **`typedRoutes`** : lien vers une route pas encore créée → `href()` de `apps/web/src/lib/site.ts`.
@@ -151,4 +154,6 @@ pnpm --filter @repas/web test:e2e   # nécessite supabase start et pnpm dev
 1. **Réponse attendue sur l'ODbL** (point 2bis) : si oui, coder l'export public quotidien des prix sous ODbL (page Méthodologie ou observatoire, `Dataset` JSON-LD avec la licence). C'est la seule tâche prête à coder sans compte.
 2. **Lot 7 — Paiement** dès le compte Stripe et la décision TVA (maquettes MPaywall, AppAbonnement, SiteTarifs, SiteMerci, EmailRecu ; les liens « Essayer Premium » mènent déjà à `/app/abonnement`).
 3. **Lot 11** (Resend + domaine : invitations famille, lien support, page Notifications) et **lot 13** (cron de l'import Open Prices à 4 h, revalidation des pages publiques depuis le BO, RGPD, PostHog, Sentry, Vercel, Supabase prod).
-4. Sans compte, au choix d'Emmanuel : photos des 6 recettes sans photo ; logos couleur sur les pages éditoriales (question ouverte) ; capture de l'appli dans un téléphone pour la landing ; revue accessibilité et Lighthouse après les animations ; ajouter des codes-barres / catégories au catalogue pour que l'import Open Prices rattache plus de prix.
+4. Sans compte, au choix d'Emmanuel : photos des 16 recettes sans photo ; logos couleur sur les pages éditoriales (question ouverte) ; capture de l'appli dans un téléphone pour la landing ; performance mobile de l'accueil (Lighthouse 89, LCP simulé du bol tournant) ; élargir le catalogue (œufs au nombre, autres formes de pâtes) si les imports réels le justifient.
+
+**Fait le 10/11** : revue accessibilité (axe sur 42 écrans, tout corrigé ; Lighthouse 100 partout sauf accueil mobile perf 89 / a11y 96 et `/commencer` en `noindex`) ; « Douze prix. » corrigé en « Treize prix. » ; import Open Prices étendu aux produits emballés (×10 de prix rattachés sur un échantillon).

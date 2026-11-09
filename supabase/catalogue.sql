@@ -999,7 +999,7 @@ insert into prices (product_id, store_id, cents, observed_at, source, flagged_ab
   ('00000000-0000-0000-0001-000000000074', 'aldi', 199, now() - interval '3 days', 'ticket', true),
   ('00000000-0000-0000-0000-000000000101', 'intermarche', 349, now() - interval '2 days', 'open_prices', true);
 
--- Catégories Open Food Facts du vrac (import Open Prices).
+-- Catégories Open Food Facts (import Open Prices : vrac et produits emballés).
 update products set off_category = 'en:pumpkins', unit_kg = 1.2 where id = '00000000-0000-0000-0000-000000000101';
 update products set off_category = 'en:yellow-onions', unit_kg = 1 where id = '00000000-0000-0000-0000-000000000102';
 update products set off_category = 'en:carrots', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000009';
@@ -1018,6 +1018,65 @@ update products set off_category = 'en:corn-salad', unit_kg = 0.15 where id = '0
 update products set off_category = 'en:ginger', unit_kg = 0.1 where id = '00000000-0000-0000-0001-000000000023';
 update products set off_category = 'en:parsley', unit_kg = null where id = '00000000-0000-0000-0001-000000000024';
 update products set off_category = 'en:cabbages', unit_kg = 1.2 where id = '00000000-0000-0000-0001-000000000026';
+update products set off_category = 'en:fresh-turnips', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000025';
+update products set off_category = 'en:fresh-sweet-peppers', unit_kg = 0.5 where id = '00000000-0000-0000-0001-000000000018';
+update products set off_category = 'en:unfermented-creams', unit_kg = 0.2 where id = '00000000-0000-0000-0000-000000000103';
+update products set off_category = 'en:vegetable-bouillon-cubes', unit_kg = 0.1 where id = '00000000-0000-0000-0000-000000000104';
+update products set off_category = 'en:extra-virgin-olive-oils', unit_kg = 1 where id = '00000000-0000-0000-0000-000000000105';
+update products set off_category = 'en:pains-de-campagne', unit_kg = 0.4 where id = '00000000-0000-0000-0000-000000000106';
+update products set off_category = 'en:feta', unit_kg = 0.2 where id = '00000000-0000-0000-0000-000000000107';
+update products set off_category = 'en:coconut-milks', unit_kg = 0.4 where id = '00000000-0000-0000-0000-000000000108';
+update products set off_category = 'en:semi-skimmed-milks', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000028';
+update products set off_category = 'en:unsalted-butters', unit_kg = 0.25 where id = '00000000-0000-0000-0001-000000000029';
+update products set off_category = 'en:grated-emmentaler', unit_kg = 0.2 where id = '00000000-0000-0000-0001-000000000030';
+update products set off_category = 'en:parmigiano-reggiano', unit_kg = 0.1 where id = '00000000-0000-0000-0001-000000000031';
+update products set off_category = 'en:mozzarella', unit_kg = 0.125 where id = '00000000-0000-0000-0001-000000000032';
+update products set off_category = 'en:goat-cheese-logs', unit_kg = 0.18 where id = '00000000-0000-0000-0001-000000000033';
+update products set off_category = 'en:cremes-fraiches', unit_kg = 0.2 where id = '00000000-0000-0000-0001-000000000034';
+update products set off_category = 'en:shortcrust-pastry', unit_kg = 0.23 where id = '00000000-0000-0000-0001-000000000035';
+update products set off_category = 'en:puff-pastry-sheets', unit_kg = 0.23 where id = '00000000-0000-0000-0001-000000000036';
+update products set off_category = 'en:green-pestos', unit_kg = 0.19 where id = '00000000-0000-0000-0001-000000000037';
+update products set off_category = 'en:penne', unit_kg = 0.5 where id = '00000000-0000-0000-0001-000000000038';
+update products set off_category = 'en:spaghetti', unit_kg = 0.5 where id = '00000000-0000-0000-0001-000000000039';
+update products set off_category = 'en:lasagna-sheets', unit_kg = 0.5 where id = '00000000-0000-0000-0001-000000000040';
+update products set off_category = 'en:basmati-rices', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000041';
+update products set off_category = 'en:rices-for-risotto', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000042';
+update products set off_category = 'en:durum-wheat-semolinas-for-couscous', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000043';
+update products set off_category = 'en:quinoa', unit_kg = 0.4 where id = '00000000-0000-0000-0001-000000000044';
+update products set off_category = 'en:decorticated-red-lentils', unit_kg = 0.5 where id = '00000000-0000-0000-0001-000000000045';
+update products set off_category = 'en:green-lentils', unit_kg = 0.5 where id = '00000000-0000-0000-0001-000000000046';
+update products set off_category = 'en:canned-chickpeas', unit_kg = 0.4 where id = '00000000-0000-0000-0001-000000000047';
+update products set off_category = 'en:canned-red-kidney-beans', unit_kg = 0.4 where id = '00000000-0000-0000-0001-000000000048';
+update products set off_category = 'en:canned-tomatoes', unit_kg = 0.4 where id = '00000000-0000-0000-0001-000000000049';
+update products set off_category = 'en:strained-tomatoes', unit_kg = 0.5 where id = '00000000-0000-0000-0001-000000000050';
+update products set off_category = 'en:canned-sweet-corn', unit_kg = 0.3 where id = '00000000-0000-0000-0001-000000000051';
+update products set off_category = 'en:tunas-in-brine', unit_kg = 0.14 where id = '00000000-0000-0000-0001-000000000052';
+update products set off_category = 'en:potato-gnocchi', unit_kg = 0.5 where id = '00000000-0000-0000-0001-000000000053';
+update products set off_category = 'en:wheat-flatbreads', unit_kg = 0.32 where id = '00000000-0000-0000-0001-000000000054';
+update products set off_category = 'en:shelled-chestnuts', unit_kg = 0.4 where id = '00000000-0000-0000-0001-000000000055';
+update products set off_category = 'en:walnut-kernels', unit_kg = 0.1 where id = '00000000-0000-0000-0001-000000000056';
+update products set off_category = 'en:soy-sauces', unit_kg = 0.25 where id = '00000000-0000-0000-0001-000000000057';
+update products set off_category = 'en:peanut-butters', unit_kg = 0.35 where id = '00000000-0000-0000-0001-000000000058';
+update products set off_category = 'en:curry-powders', unit_kg = 0.05 where id = '00000000-0000-0000-0001-000000000059';
+update products set off_category = 'en:ground-cumin-seeds', unit_kg = 0.04 where id = '00000000-0000-0000-0001-000000000060';
+update products set off_category = 'en:paprika', unit_kg = 0.04 where id = '00000000-0000-0000-0001-000000000061';
+update products set off_category = 'en:ras-el-hanout', unit_kg = 0.04 where id = '00000000-0000-0000-0001-000000000062';
+update products set off_category = 'en:herbes-de-provence', unit_kg = 0.03 where id = '00000000-0000-0000-0001-000000000063';
+update products set off_category = 'en:wheat-flours', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000064';
+update products set off_category = 'en:dijon-mustards', unit_kg = 0.37 where id = '00000000-0000-0000-0001-000000000065';
+update products set off_category = 'en:turmeric', unit_kg = 0.04 where id = '00000000-0000-0000-0001-000000000066';
+update products set off_category = 'en:chicken-breasts', unit_kg = 0.6 where id = '00000000-0000-0000-0001-000000000067';
+update products set off_category = 'en:chicken-thighs', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000068';
+update products set off_category = 'en:ground-beef-steaks', unit_kg = 0.5 where id = '00000000-0000-0000-0001-000000000069';
+update products set off_category = 'en:beef-stew-meat', unit_kg = 0.6 where id = '00000000-0000-0000-0001-000000000070';
+update products set off_category = 'en:smoked-lardons', unit_kg = 0.2 where id = '00000000-0000-0000-0001-000000000071';
+update products set off_category = 'en:toulouse-sausages', unit_kg = 0.6 where id = '00000000-0000-0000-0001-000000000072';
+update products set off_category = 'en:white-hams', unit_kg = 0.16 where id = '00000000-0000-0000-0001-000000000073';
+update products set off_category = 'en:salmon-fillets', unit_kg = 0.25 where id = '00000000-0000-0000-0001-000000000074';
+update products set off_category = 'en:pollock-fillets', unit_kg = 0.4 where id = '00000000-0000-0000-0001-000000000075';
+update products set off_category = 'en:frozen-chopped-spinachs', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000076';
+update products set off_category = 'en:frozen-green-beans', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000077';
+update products set off_category = 'en:frozen-green-peas', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000078';
 
 update recipes set family = 'soupe', tags = '{lactose,enfants,batch}', diets = '{omnivore,sans_porc,vegetarien,halal}' where id = '00000000-0000-0000-0000-000000000201';
 

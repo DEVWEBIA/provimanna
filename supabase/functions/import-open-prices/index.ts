@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
 
   const counts = { fetched: 0, imported: 0, unmatched: 0, aberrant: 0, skipped: 0 };
   try {
-    const { data: products } = await db.from('products').select('id, ean, off_category, unit_kg');
+    const { data: products } = await db.from('products').select('id, ean, off_category, unit_kg, aisle_id');
     const index = openPriceIndex(products ?? []);
     const toImport: Extract<ReturnType<typeof mapOpenPrice>, { status: 'import' }>[] = [];
 
@@ -74,7 +74,9 @@ Deno.serve(async (req) => {
         .gte('observed_at', new Date(Date.now() - 30 * DAY).toISOString())
         .in('product_id', [...new Set(toImport.map((m) => m.productId))]);
       const rows = toImport.map((m) => {
-        const ref = (recent ?? []).filter((r) => r.product_id === m.productId && r.store_id === m.storeId).map((r) => r.cents);
+        const ref = (recent ?? [])
+          .filter((r) => r.product_id === m.productId && r.store_id === m.storeId)
+          .map((r) => r.cents);
         return {
           product_id: m.productId,
           store_id: m.storeId,
@@ -94,7 +96,10 @@ Deno.serve(async (req) => {
       counts.aberrant = (inserted ?? []).filter((r) => r.flagged_aberrant).length;
       counts.skipped += rows.length - counts.imported;
     }
-    await db.from('import_runs').update({ ...counts, finished_at: new Date().toISOString() }).eq('id', run.id);
+    await db
+      .from('import_runs')
+      .update({ ...counts, finished_at: new Date().toISOString() })
+      .eq('id', run.id);
     return json({ run: run.id, since, ...counts });
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
