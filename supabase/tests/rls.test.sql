@@ -2,7 +2,7 @@
 -- Marion = utilisatrice du seed. Bob = second foyer créé ici. Tout est annulé en fin de transaction.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(32);
+select plan(35);
 
 -- ─── Préparation (superutilisateur) ─────────────────────────────────────────
 insert into auth.users (instance_id, id, aud, role, email, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
@@ -33,6 +33,9 @@ insert into shopping_list_items (list_id, product_id, label, quantity_label, ais
 values (current_setting('test.list')::uuid, '00000000-0000-0000-0000-000000000101', 'Potimarron', 'pièce', 'fruits_legumes', 249);
 
 -- ─── En tant que Marion ─────────────────────────────────────────────────────
+-- Historique d'import Open Prices (écrit par l'Edge Function, clé serveur).
+insert into import_runs (fetched, imported, finished_at) values (10, 2, now());
+
 set local role authenticated;
 select set_config('request.jwt.claims', json_build_object('sub', current_setting('test.marion'), 'role', 'authenticated')::text, true);
 
@@ -113,10 +116,14 @@ select set_config('request.jwt.claims', json_build_object('sub', '00000000-0000-
 select lives_ok($$ select log_action('prix.valider', 'prices', '42', '{"motif":"test"}') $$, 'L''admin journalise une action');
 select is((select actor_id::text || '/' || actor_role::text from audit_log where entity_id = '42'),
   '00000000-0000-0000-0000-000000000401/admin', 'L''auteur et son rôle sont fixés par la base');
+select ok((select count(*) from import_runs) >= 1, 'L''admin lit l''historique des imports');
+select throws_ok($$ insert into import_runs (fetched) values (1) $$, '42501', null,
+  'Personne n''écrit l''historique des imports depuis l''appli');
 
 -- ─── En tant que Bob ────────────────────────────────────────────────────────
 select set_config('request.jwt.claims', json_build_object('sub', current_setting('test.bob'), 'role', 'authenticated')::text, true);
 select is((select count(*)::int from meal_plans), 1, 'Bob ne voit que son plan');
+select is((select count(*)::int from import_runs), 0, 'Bob (sans rôle staff) ne voit pas l''historique des imports');
 
 -- ─── En visiteur anonyme (site public) ──────────────────────────────────────
 set local role anon;

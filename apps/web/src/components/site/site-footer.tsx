@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { OPEN_PRICES_CREDIT } from '@repas/core';
 import { href, ROUTES } from '@/lib/site';
 
 const LINKS = [
@@ -31,7 +32,8 @@ export function SiteFooter() {
         </ul>
       </nav>
       <p className="mt-4 text-center text-[13px]">
-        Les noms d’enseignes sont cités à titre de comparaison. Aucune affiliation.
+        Les noms d’enseignes sont cités à titre de comparaison. Aucune affiliation. Prix :{' '}
+        {OPEN_PRICES_CREDIT}.
       </p>
     </footer>
   );

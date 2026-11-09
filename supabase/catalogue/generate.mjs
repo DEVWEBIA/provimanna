@@ -459,6 +459,29 @@ const VELOUTE = {
   ing: ['potimarron', 'oignons', 'creme', 'bouillon', 'huile', 'pain'],
 };
 
+// Catégories Open Food Facts du vrac (vérifiées sur l'API Open Prices le 09/11/2026) et poids d'une unité de vente
+// en kg pour convertir un prix au kilo ; null = vendu à la pièce (prix « UNIT » d'Open Prices).
+const OFF_CATEGORIES = {
+  potimarron: ['en:pumpkins', 1.2],
+  oignons: ['en:yellow-onions', 1],
+  carottes: ['en:carrots', 1],
+  poireaux: ['en:leeks', 1],
+  pdt: ['en:potatoes', 2.5],
+  butternut: ['en:butternut-squashes', 1.5],
+  patate_douce: ['en:sweet-potatoes', 1],
+  choufleur: ['en:cauliflowers', 1],
+  brocoli: ['en:broccoli', 0.5],
+  champignons: ['en:mushrooms', 0.5],
+  endives: ['en:endives', 1],
+  ail: ['en:garlic', 0.15],
+  citrons: ['en:lemons', 0.5],
+  pommes: ['en:apples', 1.5],
+  mache: ['en:corn-salad', 0.15],
+  gingembre: ['en:ginger', 0.1],
+  persil: ['en:parsley', null],
+  chou: ['en:cabbages', 1.2],
+};
+
 // ─── Génération ───────────────────────────────────────────────────────────
 const STORES = [
   ['lidl', 1.0],
@@ -623,6 +646,14 @@ out.push('insert into prices (product_id, store_id, cents, observed_at, source, 
 out.push(
   ABERRANT.map(([k, store, cents, src, days]) => `  (${q(byKey.get(k).id)}, ${q(store)}, ${cents}, now() - interval '${days} days', '${src}', true)`).join(',\n') + ';',
 );
+out.push('');
+
+// Import Open Prices (lot 10) : catégorie du vrac et poids d'une unité de vente.
+out.push('-- Catégories Open Food Facts du vrac (import Open Prices).');
+for (const [key, [category, kg]] of Object.entries(OFF_CATEGORIES)) {
+  if (!byKey.has(key)) throw new Error(`catégorie OFF : produit inconnu ${key}`);
+  out.push(`update products set off_category = ${q(category)}, unit_kg = ${kg === null ? 'null' : kg} where id = ${q(byKey.get(key).id)};`);
+}
 out.push('');
 
 // Velouté (seed) : famille, marqueurs, régimes recalculés

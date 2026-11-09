@@ -105,4 +105,4 @@ En attendant le monorepo, le moteur de prix se teste seul : `node --test package
 - Nom de l'appli, domaine, logo.
 - Récompense de parrainage (proposition actuelle : 1 mois offert par ami abonné).
 - Mention TVA des factures (micro-entreprise : « TVA non applicable, art. 293 B du CGI » à confirmer).
-- Licences exactes Open Prices / Open Food Facts à vérifier avant de republier des données.
+- ~~Licences Open Prices / Open Food Facts~~ → ODbL 1.0, crédit « © Open Food Facts contributors » affiché, reversement des prix des tickets prévu (09/11/2026).

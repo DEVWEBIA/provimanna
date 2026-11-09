@@ -999,6 +999,26 @@ insert into prices (product_id, store_id, cents, observed_at, source, flagged_ab
   ('00000000-0000-0000-0001-000000000074', 'aldi', 199, now() - interval '3 days', 'ticket', true),
   ('00000000-0000-0000-0000-000000000101', 'intermarche', 349, now() - interval '2 days', 'open_prices', true);
 
+-- Catégories Open Food Facts du vrac (import Open Prices).
+update products set off_category = 'en:pumpkins', unit_kg = 1.2 where id = '00000000-0000-0000-0000-000000000101';
+update products set off_category = 'en:yellow-onions', unit_kg = 1 where id = '00000000-0000-0000-0000-000000000102';
+update products set off_category = 'en:carrots', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000009';
+update products set off_category = 'en:leeks', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000010';
+update products set off_category = 'en:potatoes', unit_kg = 2.5 where id = '00000000-0000-0000-0001-000000000011';
+update products set off_category = 'en:butternut-squashes', unit_kg = 1.5 where id = '00000000-0000-0000-0001-000000000012';
+update products set off_category = 'en:sweet-potatoes', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000013';
+update products set off_category = 'en:cauliflowers', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000014';
+update products set off_category = 'en:broccoli', unit_kg = 0.5 where id = '00000000-0000-0000-0001-000000000015';
+update products set off_category = 'en:mushrooms', unit_kg = 0.5 where id = '00000000-0000-0000-0001-000000000016';
+update products set off_category = 'en:endives', unit_kg = 1 where id = '00000000-0000-0000-0001-000000000017';
+update products set off_category = 'en:garlic', unit_kg = 0.15 where id = '00000000-0000-0000-0001-000000000019';
+update products set off_category = 'en:lemons', unit_kg = 0.5 where id = '00000000-0000-0000-0001-000000000020';
+update products set off_category = 'en:apples', unit_kg = 1.5 where id = '00000000-0000-0000-0001-000000000021';
+update products set off_category = 'en:corn-salad', unit_kg = 0.15 where id = '00000000-0000-0000-0001-000000000022';
+update products set off_category = 'en:ginger', unit_kg = 0.1 where id = '00000000-0000-0000-0001-000000000023';
+update products set off_category = 'en:parsley', unit_kg = null where id = '00000000-0000-0000-0001-000000000024';
+update products set off_category = 'en:cabbages', unit_kg = 1.2 where id = '00000000-0000-0000-0001-000000000026';
+
 update recipes set family = 'soupe', tags = '{lactose,enfants,batch}', diets = '{omnivore,sans_porc,vegetarien,halal}' where id = '00000000-0000-0000-0000-000000000201';
 
 insert into recipes (id, slug, title, description, servings, prep_minutes, cook_minutes, diets, season_months, illustration, family, tags, equipment, cuisine, steps, published) values ('00000000-0000-0000-0002-000000000001', 'soupe-poireaux-pommes-de-terre', 'Soupe de poireaux et pommes de terre', 'La soupe de grand-mère, douce et rassasiante.', 4, 15, 30, '{omnivore,sans_porc,vegetarien,halal,sans_gluten}', '{9,10,11,12,1,2,3}', 'soupeverte', 'soupe', '{lactose,enfants,batch,robot}', '{plaques}', 'francaise', '[{"text":"Lave et émince les poireaux, épluche et coupe les pommes de terre en cubes.","minutes":15},{"text":"Fais revenir l''oignon dans l''huile, ajoute les légumes, couvre d''eau et ajoute le bouillon.","minutes":5},{"text":"Laisse cuire 25 min, mixe et ajoute la crème.","minutes":25}]', true);

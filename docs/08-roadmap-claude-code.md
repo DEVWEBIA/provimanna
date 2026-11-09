@@ -111,7 +111,7 @@ apps/admin. Maquettes BO*. Auth staff via la table roles (has_role), garde par r
 puis le reste. Journalise chaque action de modération (ajoute une migration 0005_audit.sql, propose-la d'abord).
 ```
 
-## Lot 10 — Tickets de caisse et prix  ☐
+## Lot 10 — Tickets de caisse et prix  ☑
 
 ```
 Maquettes : AppTicket, MTicket, BOTickets, BOImports.

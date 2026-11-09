@@ -46,7 +46,7 @@ Commence par me confirmer l'état et la prochaine étape.
 ## Ce qui attend une réponse d'Emmanuel
 
 1. **Lot 7** : compte Stripe en mode test (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, 2 prix : 4,99 €/mois et 39,99 €/an) + décision sur la **mention TVA** des factures (micro-entreprise : « TVA non applicable, art. 293 B du CGI » ?).
-2. **Lot 10** : choix d'un **fournisseur OCR** (clé) + vérifier la **licence Open Prices (ODbL)** avant de republier des prix (point ouvert de `CLAUDE.md`).
+2. ~~Lot 10~~ fait le 09/11. Reste : **clé Anthropic** pour lire de vrais tickets (`supabase/functions/.env` en local : `ANTHROPIC_API_KEY=…` ; en prod : `supabase secrets set ANTHROPIC_API_KEY=…`), et un **compte Open Prices** pour reverser les prix des tickets.
 3. **Lot 11** : compte **Resend** (ou Brevo) + domaine d'envoi.
 4. **Lot 13** : nom de l'appli, domaine, Vercel, Supabase prod (UE), PostHog, Sentry.
 5. **Logos sur les pages éditoriales publiques** (observatoire, pages enseigne, tableaux de prix des recettes et menus) : encore en pastilles neutres. Les passer aussi en logos couleur ? (question posée, sans réponse)
@@ -92,6 +92,13 @@ Commence par me confirmer l'état et la prochaine étape.
 - Textes en français dans les composants ; `next-intl` gère locale et fuseau.
 - Photos Unsplash (licence gratuite vérifiée, pas d'Unsplash+), provisoires.
 - Ordre des lots modifié avec accord : 8, 9 et 12 faits avant 7, 10 et 11.
+
+## Lot 10 en local
+
+- Edge Functions : `supabase functions serve` (sert `ocr-receipt` et `import-open-prices`). Sans `ANTHROPIC_API_KEY`, la lecture utilise le ticket de démo.
+- Import Open Prices : bouton « Lancer maintenant » dans BO › Prix › Imports (appelle l'API réelle).
+- **Piège** : un `supabase db reset` lancé depuis un worktree fait perdre le modèle d'email (connexion sans code à 6 chiffres, e2e en échec « Code introuvable »). Remède : `supabase stop && supabase start` depuis le dossier principal, puis relancer `supabase functions serve`.
+- Tests e2e : `tickets.spec.ts` (envoi → modération → +3 jours) et `imports.spec.ts` créent un modérateur de test dédié (évite la limite d'un code par 30 s sur `admin@example.com`) et ouvrent la modération dans un contexte séparé (cookies partagés entre ports sur localhost).
 
 ## Environnement local
 

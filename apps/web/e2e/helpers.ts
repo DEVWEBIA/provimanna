@@ -120,3 +120,29 @@ export async function latestReceiptId(): Promise<string> {
   if (!row) throw new Error('Aucun ticket en base');
   return row.id;
 }
+
+/** Ajoute un import Open Prices terminé à l'historique (base locale), sans appeler l'API réelle. */
+export async function seedImportRun(): Promise<number> {
+  const env = localEnv();
+  const res = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/import_runs`, {
+    method: 'POST',
+    headers: {
+      apikey: env.SUPABASE_SERVICE_ROLE_KEY!,
+      Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=representation',
+    },
+    body: JSON.stringify({
+      since: new Date(Date.now() - 86_400_000).toISOString(),
+      finished_at: new Date().toISOString(),
+      fetched: 520,
+      imported: 12,
+      unmatched: 395,
+      aberrant: 2,
+      skipped: 113,
+    }),
+  });
+  if (!res.ok) throw new Error(`Import de test non créé : ${res.status}`);
+  const [row] = (await res.json()) as { id: number }[];
+  return row!.id;
+}

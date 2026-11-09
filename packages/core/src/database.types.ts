@@ -231,6 +231,51 @@ export type Database = {
           },
         ]
       }
+      import_runs: {
+        Row: {
+          aberrant: number
+          error: string | null
+          fetched: number
+          finished_at: string | null
+          id: number
+          imported: number
+          since: string | null
+          skipped: number
+          source: string
+          started_at: string
+          triggered_by: string | null
+          unmatched: number
+        }
+        Insert: {
+          aberrant?: number
+          error?: string | null
+          fetched?: number
+          finished_at?: string | null
+          id?: never
+          imported?: number
+          since?: string | null
+          skipped?: number
+          source?: string
+          started_at?: string
+          triggered_by?: string | null
+          unmatched?: number
+        }
+        Update: {
+          aberrant?: number
+          error?: string | null
+          fetched?: number
+          finished_at?: string | null
+          id?: never
+          imported?: number
+          since?: string | null
+          skipped?: number
+          source?: string
+          started_at?: string
+          triggered_by?: string | null
+          unmatched?: number
+        }
+        Relationships: []
+      }
       meal_plan_items: {
         Row: {
           day: number
@@ -382,6 +427,7 @@ export type Database = {
         Row: {
           cents: number
           created_at: string
+          external_id: string | null
           flagged_aberrant: boolean
           id: number
           location_id: string | null
@@ -395,6 +441,7 @@ export type Database = {
         Insert: {
           cents: number
           created_at?: string
+          external_id?: string | null
           flagged_aberrant?: boolean
           id?: never
           location_id?: string | null
@@ -408,6 +455,7 @@ export type Database = {
         Update: {
           cents?: number
           created_at?: string
+          external_id?: string | null
           flagged_aberrant?: boolean
           id?: never
           location_id?: string | null
@@ -457,8 +505,10 @@ export type Database = {
           ean: string | null
           id: string
           name: string
+          off_category: string | null
           off_synced_at: string | null
           quantity_label: string | null
+          unit_kg: number | null
         }
         Insert: {
           aisle_id?: string | null
@@ -467,8 +517,10 @@ export type Database = {
           ean?: string | null
           id?: string
           name: string
+          off_category?: string | null
           off_synced_at?: string | null
           quantity_label?: string | null
+          unit_kg?: number | null
         }
         Update: {
           aisle_id?: string | null
@@ -477,8 +529,10 @@ export type Database = {
           ean?: string | null
           id?: string
           name?: string
+          off_category?: string | null
           off_synced_at?: string | null
           quantity_label?: string | null
+          unit_kg?: number | null
         }
         Relationships: [
           {

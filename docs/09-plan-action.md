@@ -61,7 +61,7 @@ Ordre strict : on ne passe au lot suivant que si `pnpm typecheck && pnpm lint &&
 | Lot 4 | Identifiants OAuth **Google** (console Google Cloud) et **Apple** (compte développeur, 99 €/an). En attendant, le lien magique suffit. | Non |
 | Lot 7 | Compte **Stripe** (mode test) et ses clés. | Oui pour le lot 7 |
 | Lot 8 | Textes légaux validés (mentions, CGU, confidentialité) et **mention TVA**. Je mets des brouillons marqués « à valider ». | Non |
-| Lot 10 | Choix du fournisseur OCR (Google Vision, Mindee…) + clé ; vérification des **licences Open Prices (ODbL) / Open Food Facts**. | Oui pour la mise en ligne |
+| Lot 10 | ~~Choix du fournisseur OCR~~ → Claude (09/11) ; **clé Anthropic** à fournir (`ANTHROPIC_API_KEY`) ; ~~licences~~ → ODbL, crédit affiché, reversement prévu (09/11). | Clé : oui pour lire de vrais tickets |
 | Lot 11 | Compte **Resend** + domaine d'envoi. | Oui pour le lot 11 |
 | Lot 13 | Comptes **Vercel**, **Supabase** (prod UE), **PostHog** (UE), **Sentry**, et le **nom + domaine** de l'appli. | Oui pour la mise en ligne |
 | À tout moment | Récompense de parrainage, logo. | Non |
@@ -164,6 +164,9 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 
 - **08/11 — Motion et accent typographique étendus à tout le produit (demande d'Emmanuel).** Espace client, back-office et questionnaire : `Reveal` passe sur un ressort Motion (toutes les pages qui l'utilisaient en profitent), entrée de page à chaque navigation (`template.tsx` des deux apps), indicateur de rubrique active qui glisse (barre latérale de l'appli et du BO), compteurs animés (total de la semaine, économies, indicateurs du BO), transition gauche/droite entre les écrans du questionnaire. Titres : dernier mot en Instrument Serif italique (dès 2 mots, sauf chiffre), mots qui montent un à un en haut de page. Instrument Serif chargée aussi dans le BO.
 
+- **09/11 — Lot 10a : tickets de caisse.** Choix d'Emmanuel : **lecture par Claude** (vision, `claude-opus-5-5`, effort bas, sortie JSON validée par Zod via `messages.parse`). Edge Function `ocr-receipt` : lecteur derrière une interface (`OCR_PROVIDER` ; `demo` sans clé = ticket de la maquette), appelée seulement par le serveur (clé serveur), photo lue dans Storage `receipts/{uid}/`. Un ticket refusé ou illisible part en vérification manuelle (pas de repli automatique sur un autre modèle : la modération humaine fait office de filet). Rapprochement des lignes dans core (`matchReceiptLine` : abréviations développées, Dice sur les mots, libellé lisible proposé par le lecteur, seuil 0,85 ; lignes de total, paiement, sacs ignorées ; promos signalées ; `detectStoreId` pour l'en-tête). Écran `/app/ticket` (photo JPG/PNG/WEBP 10 Mo, enseigne auto ou choisie, lecture animée, résultat, historique). Back-office `/tickets` (file, photo par lien signé de 10 min, suggestion corrigible, médiane, confiance, publier ou rejeter). Publication : prix `source = ticket` avec contrôle des aberrants (core), **+3 jours de Premium, 14 par mois au plus**, photo supprimée après décision (le texte de la maquette « supprimée après lecture » devient « après vérification »). Limite des actions serveur portée à 11 Mo. Non repris : validation automatique « confiance ≥ 95 % » (demande une table de réglages).
+- **09/11 — Lot 10b : import Open Prices.** Licence vérifiée : **ODbL 1.0** (photos CC-BY-SA 4.0) ; choix d'Emmanuel : crédit « © Open Food Facts contributors » affiché (pied de page du site, écran Imports) et **reversement prévu** des prix validés des tickets à Open Prices (demande un compte et un jeton Open Prices : à faire). Migration **0010** validée : `products.off_category` + `products.unit_kg` (vrac), `prices.external_id` unique (anti-doublon), table `import_runs`. Conversion dans core (`mapOpenPrice` : France et euro seulement, promos écartées, enseigne reconnue, code-barres ou catégorie, prix au kilo × poids de l'unité ; prix « à l'unité » seulement pour un produit vendu à la pièce). 18 catégories de vrac **vérifiées sur l'API** (certaines devinées n'existent pas). Edge Function `import-open-prices` (incrémentale depuis le dernier import réussi, pages de 100, 20 pages au plus, aberrants signalés) ; elle importe directement `packages/core`. Premier import réel : 520 prix lus sur 3 jours, 2 importés (peu de produits rattachables tant que le catalogue a peu de codes-barres). Écran BO `/prix/imports` avec « Lancer maintenant ». Planification quotidienne à 4 h : à créer à la mise en ligne (lot 13, pg_cron + pg_net).
+
 ## Questions ouvertes (à trancher par vous)
 
 1. ~~Liste d'attente ou inscription directe ?~~ → inscription directe (07/11). Une liste d'attente peut s'ajouter plus tard si besoin.
@@ -182,7 +185,7 @@ Tant qu'une décision n'est pas prise, j'utilise `APP_NAME` / `[Nom de l'appli]`
 - [ ] Lot 7 — Paiement
 - [x] Lot 8 — Recettes et pages SEO (8a recettes, 8b observatoire, enseignes, menus, guide, méthodologie, légal, 404 ; 56 tests core, 16 e2e)
 - [x] Lot 9 — Back-office (connexion staff, journal d'audit 0007, vue d'ensemble, prix, produits, recettes, utilisateurs, enseignes, SEO, engagement, rôles, paramètres ; Tickets et Imports avec le lot 10)
-- [ ] Lot 10 — Tickets et prix
+- [x] Lot 10 — Tickets et prix (lecture par Claude, modération, bonus plafonné ; import Open Prices incrémental, écran Imports)
 - [ ] Lot 11 — Emails, notifications, PWA
 - [x] Lot 12 — Famille, économies, mode sombre (invitations par lien, parrainage relié, série et défis, profil, thème auto/clair/sombre, états)
 - [ ] Lot 13 — Qualité et mise en ligne

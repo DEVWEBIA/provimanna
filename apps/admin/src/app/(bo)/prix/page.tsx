@@ -110,7 +110,15 @@ export default async function PrixPage({ searchParams }: { searchParams: SearchP
 
   return (
     <>
-      <PageHeader eyebrow={`France · ${STORES.length} enseignes`} title="Prix" />
+      <PageHeader
+        eyebrow={`France · ${STORES.length} enseignes`}
+        title="Prix"
+        actions={
+          <Link href="/prix/imports" className="text-brand min-h-tap inline-flex items-center font-black">
+            Imports Open Prices →
+          </Link>
+        }
+      />
       <dl className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         {kpis.map(([l, v, d], i) => (
           <div key={l} className={cx(glassClasses, 'anim-rise p-4')} style={animDelay(100 + i * 60)}>
